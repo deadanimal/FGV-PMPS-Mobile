@@ -1,0 +1,7 @@
+{
+  "name": "fpg",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
