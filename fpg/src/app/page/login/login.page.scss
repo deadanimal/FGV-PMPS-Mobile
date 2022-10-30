@@ -1,0 +1,57 @@
+.background{
+    // background-image: url('../../../assets/fpg_bg.png');
+    // width: 100vw;
+    // height: 100vh;
+    // opacity: 0.5;
+}
+
+.primary-red {
+    background-color: #EC2427;
+  }
+
+.item ion-thumbnail {
+    min-width: 5rem;    
+    min-height: 5rem;
+    margin: auto;
+    img {
+        height: 70vh;
+        width: auto;
+        margin: auto;
+        display: block;
+    }
+}
+
+.rounded{ 
+    border-radius: 20px !important;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+} 
+
+a:link {
+    text-decoration: none;
+}
+
+.subject{
+    font-size: 12px; 
+    font-weight: 600; 
+    line-height: 100%; 
+    text-align: center; 
+    color: white
+}
+
+.forgot-password{
+    text-align: right;
+    font-size: small;
+}
+
+.sub-sub-subject{
+    font-size: small;
+    line-height: 20px; 
+    text-align: center;
+}
+
+ion-button{
+    font-size:smaller;
+}
