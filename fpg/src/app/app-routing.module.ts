@@ -18,6 +18,10 @@ const routes: Routes = [
   {
     path: 'app',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
+  },
+  {
+    path: 'main-task',
+    loadChildren: () => import('./page/main-task/main-task.module').then( m => m.MainTaskPageModule)
   }
 ];
 @NgModule({

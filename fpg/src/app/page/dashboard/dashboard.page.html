@@ -21,7 +21,7 @@
   </ion-grid>
   <ion-grid class="mt-5">
     <ion-row class="mt-5 w-75 mx-auto ion-justify-content-between ion-align-items-center">
-      <div style="width: 318px; height: 89px; padding-top: 16px; padding-bottom: 15px; padding-left: 17px; padding-right: 55px; background-color: rgba(236, 36, 39, 1); border-radius: 20px; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;">
+      <button (click)="task('wrap')" style="width: 318px; height: 89px; padding-top: 16px; padding-bottom: 15px; padding-left: 17px; padding-right: 55px; background-color: rgba(236, 36, 39, 1); border-radius: 20px; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;">
         <ion-col>
           <div style="width: 58px; height: 58px;">
             <div style="width: 58px; height: 58px; padding-top: 14px; padding-bottom: 14px; padding-left: 13px; padding-right: 14px; background-color: white; border-radius: 10px; display: flex; flex-direction: row; align-items: center; justify-content: center;">
@@ -32,10 +32,10 @@
         <ion-col>
           <p style="font-size: 20px; font-weight: 600; line-height: 100%; color: white;">Balut</p>
         </ion-col>
-      </div>
+      </button>
     </ion-row>
     <ion-row class="w-75 my-3 mx-auto ion-justify-content-between ion-align-items-center">
-      <div style="width: 318px; height: 89px; padding-top: 16px; padding-bottom: 15px; padding-left: 17px; padding-right: 55px; background-color: rgba(236, 36, 39, 1); border-radius: 20px; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;">
+      <button (click)="task('cp')" style="width: 318px; height: 89px; padding-top: 16px; padding-bottom: 15px; padding-left: 17px; padding-right: 55px; background-color: rgba(236, 36, 39, 1); border-radius: 20px; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;" >
         <ion-col>
           <div style="width: 58px; height: 58px;">
             <div style="width: 58px; height: 58px; padding-top: 14px; padding-bottom: 14px; padding-left: 13px; padding-right: 14px; background-color: white; border-radius: 10px; display: flex; flex-direction: row; align-items: center; justify-content: center;">
@@ -44,9 +44,9 @@
           </div>
         </ion-col>
         <ion-col>
-          <p style="font-size: 20px; font-weight: 600; line-height: 100%; color: white;">Pendebungaan Terkawal (CP)</p>
+          <p class="text-end" style="font-size: 20px; font-weight: 600; line-height: 100%; color: white;">Pendebungaan Terkawal (CP)</p>
         </ion-col>
-      </div>
+      </button>
     </ion-row>
   </ion-grid>
 </ion-content>
