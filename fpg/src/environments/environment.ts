@@ -6,6 +6,7 @@ export const environment = {
   production: false,
   baseUrl: 'https://fgv.prototype.com.my/api',
   login:'/login',
+  taskByUserId:'/tugasan/user/',
 };
 
 /*
