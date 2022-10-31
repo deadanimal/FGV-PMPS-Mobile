@@ -1,0 +1,21 @@
+<ion-content>
+  <app-user-info-header></app-user-info-header>
+  <form #form="ngForm" class="mx-auto" style="max-width: 300px;">
+    <ion-item lines="full">
+      <ion-label position="floating">No Daftar</ion-label>
+      <ion-input type="text" [(ngModel)]="regNumber" name="regNumber" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Kitaran</ion-label>
+      <ion-input type="text" [(ngModel)]="cycle" name="cycle" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Status Tandan</ion-label>
+      <ion-input type="text" [(ngModel)]="status" name="status" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Umur Tandan</ion-label>
+      <ion-input type="text" [(ngModel)]="age" name="age" required [readonly]="true"></ion-input>
+    </ion-item>
+  </form>
+</ion-content>

@@ -26,6 +26,10 @@ const routes: Routes = [
   {
     path: 'tree-info',
     loadChildren: () => import('./page/tree-info/tree-info.module').then( m => m.TreeInfoPageModule)
+  },
+  {
+    path: 'register-status',
+    loadChildren: () => import('./page/register-status/register-status.module').then( m => m.RegisterStatusPageModule)
   }
 ];
 @NgModule({
