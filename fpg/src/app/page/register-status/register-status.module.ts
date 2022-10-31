@@ -7,15 +7,16 @@ import { IonicModule } from '@ionic/angular';
 import { RegisterStatusPageRoutingModule } from './register-status-routing.module';
 
 import { RegisterStatusPage } from './register-status.page';
-import { UserInfoHeaderComponent } from 'src/app/component/user-info-header/user-info-header.component';
+import { SharedComponentModule } from 'src/app/modules/shared-component/shared-component.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    RegisterStatusPageRoutingModule
+    RegisterStatusPageRoutingModule,
+    SharedComponentModule
   ],
-  declarations: [RegisterStatusPage,UserInfoHeaderComponent]
+  declarations: [RegisterStatusPage]
 })
 export class RegisterStatusPageModule {}

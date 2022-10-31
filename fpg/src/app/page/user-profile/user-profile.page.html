@@ -1,0 +1,42 @@
+<ion-content>
+  <div class="w-100 text-center mt-3">
+    <img class="mx-auto w-25" src="../../../assets/logo_fgv.png"/>
+  </div>
+  <div class="mx-auto mt-4" style="width: 124px; height: 124px; ">
+    <div class="p-3 rounded" style="width: 124px; height: 124px;  background-color: rgba(64, 19, 28, 1); align-items: center; justify-content: center;">
+      <div class="text-center w-75 m-auto">
+        <div class="mx-auto" style="width: 48px; height: 48px; background-color: rgba(64, 19, 28, 1); border-radius: 8px;">
+          <img class="m-auto" src="../../../assets/penyelia_icon.png"/>
+        </div>
+          <p class="my-2 mx-auto text-white">Penyelia</p>
+      </div>
+    </div>
+  </div>
+  <form #form="ngForm" class="mx-auto" style="max-width: 300px;">
+    <ion-item lines="full">
+      <ion-label position="floating">Nama</ion-label>
+      <ion-input type="text" [(ngModel)]="name" name="name" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">No Kakitangan</ion-label>
+      <ion-input type="text" [(ngModel)]="employeeId" name="employeeId" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">E-mel</ion-label>
+      <ion-input type="text" [(ngModel)]="email" name="email" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Tarikh</ion-label>
+      <ion-input type="text" [(ngModel)]="date" name="date" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">No. Tel</ion-label>
+      <ion-input type="text" [(ngModel)]="phone" name="phone" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Peranan Pengguna</ion-label>
+      <ion-input type="text" [(ngModel)]="role" name="role" required [readonly]="true"></ion-input>
+    </ion-item>
+  </form>
+
+</ion-content>

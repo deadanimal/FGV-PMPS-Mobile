@@ -7,15 +7,16 @@ import { IonicModule } from '@ionic/angular';
 import { TreeInfoPageRoutingModule } from './tree-info-routing.module';
 
 import { TreeInfoPage } from './tree-info.page';
-import { UserInfoHeaderComponent } from 'src/app/component/user-info-header/user-info-header.component';
+import { SharedComponentModule } from 'src/app/modules/shared-component/shared-component.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    TreeInfoPageRoutingModule
+    TreeInfoPageRoutingModule,
+    SharedComponentModule
   ],
-  declarations: [TreeInfoPage,UserInfoHeaderComponent]
+  declarations: [TreeInfoPage]
 })
 export class TreeInfoPageModule {}

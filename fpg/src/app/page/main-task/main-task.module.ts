@@ -7,15 +7,16 @@ import { IonicModule } from '@ionic/angular';
 import { MainTaskPageRoutingModule } from './main-task-routing.module';
 
 import { MainTaskPage } from './main-task.page';
-import { UserInfoHeaderComponent } from 'src/app/component/user-info-header/user-info-header.component';
+import { SharedComponentModule } from 'src/app/modules/shared-component/shared-component.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    MainTaskPageRoutingModule
+    MainTaskPageRoutingModule,
+    SharedComponentModule
   ],
-  declarations: [MainTaskPage, UserInfoHeaderComponent]
+  declarations: [MainTaskPage]
 })
 export class MainTaskPageModule {}

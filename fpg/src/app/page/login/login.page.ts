@@ -11,6 +11,9 @@ import { LoadingController } from '@ionic/angular';
 export class LoginPage implements OnInit {
 
   loadingModal:any;
+  resetPass:boolean;
+  username:string;
+  password:string;
 
   constructor(
     private loadingCtrl: LoadingController,

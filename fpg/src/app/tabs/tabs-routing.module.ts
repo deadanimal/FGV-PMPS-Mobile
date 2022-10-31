@@ -17,7 +17,7 @@ const routes: Routes = [
       },
       {
         path: 'tab3',
-        loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule)
+        loadChildren: () => import('../page/user-profile/user-profile.module').then(m => m.UserProfilePageModule)
       },
       {
         path: 'tab1/main-task',
