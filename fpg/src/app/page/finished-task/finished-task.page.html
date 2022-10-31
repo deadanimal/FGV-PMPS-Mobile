@@ -1,0 +1,67 @@
+<ion-content>
+  <app-user-info-header></app-user-info-header>
+  <div class="mx-2">
+    <div class="row">
+      <div class="col text-center">
+        <div style="height: 32px; width: 32px; background-color: #40131C;" class="mx-auto rounded-circle text-center text-white p-auto">
+          <p class="m-auto">1</p>
+        </div>
+        <small class="font-weight-light">Balut</small>
+      </div>
+      <div class="col text-center">
+        <div style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
+          <p class="m-auto">2</p>
+        </div>
+        <small class="font-weight-light">Kerosakan Sebelum CP</small>
+      </div>
+      <div class="col text-center">
+        <div style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
+          <p class="m-auto">3</p>
+        </div>
+        <small class="font-weight-light">CP</small>
+      </div>
+      <div class="col text-center">
+        <div style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
+          <p class="m-auto">4</p>
+        </div>
+        <small class="font-weight-light">QC</small>
+      </div>
+      <div class="col text-center">
+        <div style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
+          <p class="m-auto">5</p>
+        </div>
+        <small class="font-weight-light">Kerosakan Sebelum Tuai</small>
+      </div>
+      <div class="col text-center">
+        <div style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
+          <p class="m-auto">6</p>
+        </div>
+        <small class="font-weight-light">Tuai</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="w-100 text-center mt-5">
+    <p style="color: #626262;">No. Pokok:</p>
+    <p class="font-weight-bold h1">{{treeNumber}}</p>
+  </div>
+
+  <form #form="ngForm" class="mx-auto my-2" style="max-width: 300px;">
+    <ion-item lines="full">
+      <ion-label position="floating">No Daftar</ion-label>
+      <ion-input type="text" [(ngModel)]="regNo" name="regNo" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Kitaran</ion-label>
+      <ion-input type="text" [(ngModel)]="cycle" name="cycle" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Status Tandan</ion-label>
+      <ion-input type="text" [(ngModel)]="status" name="status" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Umur Tandan (Hari)</ion-label>
+      <ion-input type="text" [(ngModel)]="age" name="age" required [readonly]="true"></ion-input>
+    </ion-item>
+  </form>
+</ion-content>

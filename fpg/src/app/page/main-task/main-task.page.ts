@@ -29,8 +29,12 @@ export class MainTaskPage implements OnInit {
     });
   }
 
-  viewTask(taskId:String){
-    this.router.navigate(['app/tabs/tab1/task-status',{taskId:taskId}]);
+  viewTask(taskId:String,status:String){
+    if(status == "new"){
+      this.router.navigate(['app/tabs/tab1/task-status',{taskId:taskId}]);
+    }else if(status == "completed"){
+      this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId}]);
+    }
   }
 
 }

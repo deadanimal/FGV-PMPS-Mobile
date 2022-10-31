@@ -38,6 +38,10 @@ const routes: Routes = [
   {
     path: 'task-status',
     loadChildren: () => import('./page/task-status/task-status.module').then( m => m.TaskStatusPageModule)
+  },
+  {
+    path: 'finished-task',
+    loadChildren: () => import('./page/finished-task/finished-task.module').then( m => m.FinishedTaskPageModule)
   }
 ];
 @NgModule({
