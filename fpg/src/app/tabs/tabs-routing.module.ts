@@ -24,6 +24,10 @@ const routes: Routes = [
         loadChildren: () => import('../page/main-task/main-task.module').then(m => m.MainTaskPageModule)
       },
       {
+        path: 'tab1/task-status',
+        loadChildren: () => import('../page/task-status/task-status.module').then(m => m.TaskStatusPageModule)
+      },
+      {
         path: '',
         redirectTo: 'tabs/tab1/',
         pathMatch: 'full'

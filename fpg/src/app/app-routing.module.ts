@@ -34,6 +34,10 @@ const routes: Routes = [
   {
     path: 'user-profile',
     loadChildren: () => import('./page/user-profile/user-profile.module').then( m => m.UserProfilePageModule)
+  },
+  {
+    path: 'task-status',
+    loadChildren: () => import('./page/task-status/task-status.module').then( m => m.TaskStatusPageModule)
   }
 ];
 @NgModule({

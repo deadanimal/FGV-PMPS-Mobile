@@ -1,0 +1,46 @@
+<ion-content>
+  <app-user-info-header></app-user-info-header>
+  <div class="text-center mx-auto" style="width: 90%;">
+    <img class="rounded mx-auto" src="../../../assets/placeholder.png"/>
+  </div>
+
+  <form #form="ngForm" class="mx-auto my-2" style="max-width: 300px;">
+    <ion-item lines="full">
+      <ion-label position="floating">Petugas Balut</ion-label>
+      <ion-input type="text" [(ngModel)]="name" name="name" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">No Pokok</ion-label>
+      <ion-input type="text" [(ngModel)]="treeId" name="treeId" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">No Daftar</ion-label>
+      <ion-input type="text" [(ngModel)]="regNo" name="regNo" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Tarikh</ion-label>
+      <ion-input type="text" [(ngModel)]="date" name="date" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Catatan</ion-label>
+      <ion-input type="text" [(ngModel)]="remark" name="remark" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Catatan Penyelia</ion-label>
+      <ion-input type="text" [(ngModel)]="svRemark" name="svRemark" required></ion-input>
+    </ion-item>
+  </form>
+
+  <div class="d-flex flex-row mx-3 justify-content-center my-4">
+    <button class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+      <ion-icon size="large" color="white" name="close-circle-outline"></ion-icon>
+      <p class="m-auto">TOLAK</p>
+    </button>
+
+    <button class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
+      <ion-icon size="large" color="white" name="checkmark-circle-outline"></ion-icon>
+      <p class="m-auto">TERIMA</p>
+    </button>
+
+  </div>
+</ion-content>
