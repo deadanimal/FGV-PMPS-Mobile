@@ -13,7 +13,8 @@ const routes: Routes = [
       },
       {
         path: 'tab2',
-        loadChildren: () => import('../page/tree-info/tree-info.module').then(m => m.TreeInfoPageModule)
+        // loadChildren: () => import('../page/tree-info/tree-info.module').then(m => m.TreeInfoPageModule)
+        loadChildren: () => import('../page/qr-scanner/qr-scanner.module').then(m => m.QrScannerPageModule)
       },
       {
         path: 'tab3',

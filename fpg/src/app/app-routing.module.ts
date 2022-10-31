@@ -42,6 +42,10 @@ const routes: Routes = [
   {
     path: 'finished-task',
     loadChildren: () => import('./page/finished-task/finished-task.module').then( m => m.FinishedTaskPageModule)
+  },
+  {
+    path: 'qr-scanner',
+    loadChildren: () => import('./page/qr-scanner/qr-scanner.module').then( m => m.QrScannerPageModule)
   }
 ];
 @NgModule({

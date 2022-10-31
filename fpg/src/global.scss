@@ -73,3 +73,8 @@ ion-button.mainBtn {
     --color: white;
   }
   
+  body.scanner-active {
+    --background: transparent;
+    --ion-background-color: transparent;
+  }
+  
