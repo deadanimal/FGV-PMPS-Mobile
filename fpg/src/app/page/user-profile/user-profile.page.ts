@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { LoginResponseModel } from 'src/app/model/login-response';
+import { AccountService } from 'src/app/service/account.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -14,15 +16,18 @@ export class UserProfilePage implements OnInit {
   phone:String;
   role:String;
 
-  constructor() { }
+  constructor(
+    private accountService:AccountService
+  ) { }
 
   ngOnInit() {
-    this.name = "Abu Bin Bakar";
-    this.employeeId = "00110-090X-11FXGV";
-    this.email = "aliabu@hotmail.com";
-    this.date = "04/07/2022";
-    this.phone = "012-3456789";
-    this.role = "Penyelia";
+    let loginDetails:LoginResponseModel = this.accountService.getSessionDetails();
+    this.name = loginDetails.nama;
+    this.employeeId = loginDetails.no_kakitangan;
+    this.email = loginDetails.email;
+    this.date = loginDetails.created_at.toString();
+    this.phone = loginDetails.no_telefon;
+    this.role = loginDetails.peranan;
   }
 
 }
