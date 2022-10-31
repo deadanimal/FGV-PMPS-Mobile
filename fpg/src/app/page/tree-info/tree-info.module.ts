@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { MainTaskPageRoutingModule } from './main-task-routing.module';
+import { TreeInfoPageRoutingModule } from './tree-info-routing.module';
 
-import { MainTaskPage } from './main-task.page';
+import { TreeInfoPage } from './tree-info.page';
 import { UserInfoHeaderComponent } from 'src/app/component/user-info-header/user-info-header.component';
 
 @NgModule({
@@ -14,8 +14,8 @@ import { UserInfoHeaderComponent } from 'src/app/component/user-info-header/user
     CommonModule,
     FormsModule,
     IonicModule,
-    MainTaskPageRoutingModule
+    TreeInfoPageRoutingModule
   ],
-  declarations: [MainTaskPage, UserInfoHeaderComponent]
+  declarations: [TreeInfoPage,UserInfoHeaderComponent]
 })
-export class MainTaskPageModule {}
+export class TreeInfoPageModule {}

@@ -22,6 +22,10 @@ const routes: Routes = [
   {
     path: 'main-task',
     loadChildren: () => import('./page/main-task/main-task.module').then( m => m.MainTaskPageModule)
+  },
+  {
+    path: 'tree-info',
+    loadChildren: () => import('./page/tree-info/tree-info.module').then( m => m.TreeInfoPageModule)
   }
 ];
 @NgModule({

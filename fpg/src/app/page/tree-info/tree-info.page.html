@@ -1,0 +1,33 @@
+<ion-content>
+  <app-user-info-header></app-user-info-header>
+  <form #form="ngForm" class="mx-auto" style="max-width: 300px;">
+    <ion-item lines="full">
+      <ion-label position="floating">No Pokok</ion-label>
+      <ion-input type="text" [(ngModel)]="treeNumber" name="treeNumber" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Jantina</ion-label>
+      <ion-input type="text" [(ngModel)]="sex" name="sex" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Baka</ion-label>
+      <ion-input type="text" [(ngModel)]="breed" name="breed" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Progeny</ion-label>
+      <ion-input type="text" [(ngModel)]="progeny" name="progeny" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Block</ion-label>
+      <ion-input type="text" [(ngModel)]="block" name="block" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Trial</ion-label>
+      <ion-input type="text" [(ngModel)]="trial" name="trial" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Status Pokok</ion-label>
+      <ion-input type="text" [(ngModel)]="status" name="status" required [readonly]="true"></ion-input>
+    </ion-item>
+  </form>
+</ion-content>
