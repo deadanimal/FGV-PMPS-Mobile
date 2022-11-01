@@ -14,6 +14,10 @@ export class QrScannerPage implements OnInit {
     this.didUserGrantPermission();
   }
 
+  async ionViewWillLeave(){
+    await BarcodeScanner.stopScan();
+  }
+
   startScan = async () => {
     document.querySelector('body').classList.add('scanner-active');
     // Check camera permission
