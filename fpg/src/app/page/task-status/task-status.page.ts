@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Photo } from '@capacitor/camera';
+import { UserPhoto } from 'src/app/model/user-photo';
+import { AccountService } from 'src/app/service/account.service';
+import { PhotoService } from 'src/app/services/photo.service';
 
 @Component({
   selector: 'app-task-status',
@@ -13,8 +17,13 @@ export class TaskStatusPage implements OnInit {
   date:String;
   remark:String;
   svRemark:String;
+  photo:Photo;
+  userRole:String;
 
-  constructor() { }
+  constructor(
+    private photoService:PhotoService,
+    private accountService:AccountService,
+  ) { }
 
   ngOnInit() {
     this.name = "Muhammad Ali Bin Abu";
@@ -22,6 +31,21 @@ export class TaskStatusPage implements OnInit {
     this.regNo = "2C00065B2R";
     this.date = "04/07/2022";
     this.remark = "Aktif";
+
+    let userDetails = this.accountService.getSessionDetails();
+    this.userRole = userDetails.peranan;
+  }
+
+  async takePicture() {
+    this.photo = await this.photoService.addNewToGallery();
+  }
+
+  erasePicture(){
+    this.photo = null;
+  }
+
+  submitTask(){
+    
   }
 
 }

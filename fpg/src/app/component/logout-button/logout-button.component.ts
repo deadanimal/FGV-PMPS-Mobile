@@ -18,7 +18,7 @@ export class LogoutButtonComponent implements OnInit {
 
   ngOnInit() {
     if(this.accountService.getSessionDetails() == null){
-      this.logout();
+      // this.logout();
     }
   }
 
