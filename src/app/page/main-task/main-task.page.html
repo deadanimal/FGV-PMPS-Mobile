@@ -9,7 +9,7 @@
   <div>
     <ion-grid class="my-5">
       <ion-row class="ion-justify-content-center">
-        <ion-col *ngIf="role == 'pekerja'" size="6" size-md="4" size-lg="2">
+        <ion-col *ngIf="role == 'pekerja' && numOfActiveTask > 0" size="6" size-md="4" size-lg="2">
           <div>
             <button (click)="activeTask()" [disabled]="disableActiveTaskBtn" class="btn w-100 mx-auto rounded blueBtn text-center text-white p-2">
               <ion-badge *ngIf="numOfActiveTask > 0" color="danger">{{numOfActiveTask}}</ion-badge>
@@ -18,7 +18,7 @@
             </button>
           </div>
         </ion-col>
-        <ion-col *ngIf="role == 'penyelia'" size="6" size-md="4" size-lg="2">
+        <ion-col *ngIf="role == 'penyelia' && numOfActiveTask > 0" size="6" size-md="4" size-lg="2">
           <div>
             <button (click)="newRecord()" [disabled]="disableNewRecord" class="btn w-100 mx-auto rounded orangeBtn text-center text-white p-2">
               <ion-badge *ngIf="numOfActiveTask > 0" color="danger">{{numOfActiveTask}}</ion-badge>
@@ -27,7 +27,7 @@
             </button>
           </div>
         </ion-col>
-        <ion-col size="6" size-md="4" size-lg="2">
+        <ion-col *ngIf="numOfFinishTask > 0" size="6" size-md="4" size-lg="2">
           <div>
             <button (click)="finishRecord()" [disabled]="disableFinishRecord" class="btn w-100 mx-auto rounded greenBtn text-center text-white p-2">
               <ion-badge *ngIf="numOfFinishTask > 0" color="danger">{{numOfFinishTask}}</ion-badge>

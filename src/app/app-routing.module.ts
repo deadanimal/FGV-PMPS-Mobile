@@ -53,6 +53,10 @@ const routes: Routes = [
   {
     path: 'start-work-find',
     loadChildren: () => import('./page/start-work-find/start-work-find.module').then( m => m.StartWorkFindPageModule)
+  },
+  {
+    path: 'create-new-task',
+    loadChildren: () => import('./page/create-new-task/create-new-task.module').then( m => m.CreateNewTaskPageModule)
   }
 ];
 @NgModule({

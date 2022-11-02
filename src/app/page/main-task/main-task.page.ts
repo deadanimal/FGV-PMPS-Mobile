@@ -82,6 +82,8 @@ export class MainTaskPage implements OnInit {
       this.router.navigate(['app/tabs/tab1/task-status',{taskId:id,viewOnly:true}]);
     }else if(status == "activeTaskSV"){
       this.router.navigate(['app/tabs/tab1/task-status',{taskId:id}]);
+    }else if(status == "createNewTask"){
+      this.router.navigate(['app/tabs/tab1/create-new-task',{taskType:this.task}]);
     }
   }
 
@@ -109,6 +111,7 @@ export class MainTaskPage implements OnInit {
   newTask(){
     this._enableAllBtn();
     this.disableNewTaskBtn = true;
+    this.viewTask('cp','createNewTask',0);
   }
 
   _enableAllBtn(){

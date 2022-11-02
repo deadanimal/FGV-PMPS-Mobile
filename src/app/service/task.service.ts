@@ -95,4 +95,25 @@ export class TaskService {
       postData
     );
   }
+
+  createNewTask(
+    tandanId:String,
+    type:String,
+    remark:String,
+    date:String,
+    workerId:String,
+  ): Observable<TaskResponseModel> {
+    let postData={
+      "tandan_id":tandanId,
+      "jenis":type,
+      "catatan":remark,
+      "tarikh":date,
+      "petugas_id":workerId,
+    };
+  
+    return this.http.post<TaskResponseModel>(
+      `${environment.baseUrl}${environment.task}`,
+      postData
+    );
+  }
 }

@@ -8,7 +8,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage-angular';
-import { FileTransfer, FileUploadOptions, FileTransferObject, FileUploadResult } from '@awesome-cordova-plugins/file-transfer/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -18,7 +17,7 @@ import { FileTransfer, FileUploadOptions, FileTransferObject, FileUploadResult }
     IonicModule.forRoot(),
     AppRoutingModule,
     IonicStorageModule.forRoot()],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },FileTransfer],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
