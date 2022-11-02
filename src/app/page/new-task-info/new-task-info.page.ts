@@ -42,7 +42,7 @@ export class NewTaskInfoPage implements OnInit {
     this.block = "25C1";
     this.status = "Aktif";
     // let userInfo = this.accountService.getSessionDetails();
-    this.userRole = "Pengguna";
+    this.userRole = "pekerja";
     this.tasks.push({
       aktiviti:"",
       created_at:"",

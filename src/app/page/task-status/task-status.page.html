@@ -33,7 +33,7 @@
     </ion-item>
     <ion-item lines="full">
       <ion-label position="floating">Catatan</ion-label>
-      <ion-input type="text" [(ngModel)]="remark" name="remark" required [readonly]="userRole!='Pengguna'"></ion-input>
+      <ion-input type="text" [(ngModel)]="remark" name="remark" required [readonly]="userRole!='pekerja'"></ion-input>
     </ion-item>
     <ion-item *ngIf="userRole=='Penyelia'" lines="full">
       <ion-label position="floating">Catatan Penyelia</ion-label>
@@ -52,7 +52,7 @@
       <p class="m-auto">TERIMA</p>
     </button>
 
-    <button [disabled]="!form.valid || photo ==null" (click)="submitTask()" *ngIf="userRole=='Pengguna'" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="!form.valid || photo ==null" (click)="submitTask()" *ngIf="userRole=='pekerja'" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>
