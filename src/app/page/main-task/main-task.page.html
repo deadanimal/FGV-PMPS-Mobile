@@ -80,5 +80,11 @@
         <button (click)="viewTask('cp','new',0)" class="btn orangeBtn text-white">Info</button>
       </div>
     </div>
+    <!-- <div *ngIf="disableTaskBtn">
+      <div *ngFor="let item of newTaskList"class="p-3 my-3 mx-auto w-75 shadow rounded border border-warning d-flex justify-content-between align-items-center">
+        <p class="h5">Rekod {{item.id}}</p>
+        <button (click)="viewTask('cp','newTask',item.id)" class="btn orangeBtn text-white">Info</button>
+      </div>
+    </div> -->
   </div>
 </ion-content>

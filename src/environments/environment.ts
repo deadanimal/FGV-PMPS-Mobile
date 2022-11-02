@@ -9,6 +9,7 @@ export const environment = {
   taskByUserId:'/tugasan/user/',
   allTaskList:'/tugasan/',
   taskById:'/tugasan/',
+  task:'/tugasan/',
   profileById:'/profil/',
   tandanInfo:'/tandan/',
   storageUrl:'https://fgv.prototype.com.my/storage/',

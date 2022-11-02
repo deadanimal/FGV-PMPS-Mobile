@@ -49,6 +49,10 @@ const routes: Routes = [
   {
     path: 'new-task-info',
     loadChildren: () => import('./page/new-task-info/new-task-info.module').then( m => m.NewTaskInfoPageModule)
+  },
+  {
+    path: 'start-work-find',
+    loadChildren: () => import('./page/start-work-find/start-work-find.module').then( m => m.StartWorkFindPageModule)
   }
 ];
 @NgModule({

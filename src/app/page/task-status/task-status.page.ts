@@ -1,8 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Photo } from '@capacitor/camera';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, ModalController } from '@ionic/angular';
+import { GenericTextModalComponent } from 'src/app/component/generic-text-modal/generic-text-modal.component';
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { TaskResponseModel } from 'src/app/model/task-response';
@@ -30,6 +31,7 @@ export class TaskStatusPage implements OnInit {
   viewOnly:boolean = false;
   loadingModal:any;
   serverImage:String;
+  taskId:String;
 
   constructor(
     private photoService:PhotoService,
@@ -37,12 +39,15 @@ export class TaskStatusPage implements OnInit {
     private activatedRoute:ActivatedRoute,
     private taskService:TaskService,
     private loadingCtrl: LoadingController,
+    private modalCtrl: ModalController,
+    private router: Router,
   ) { }
 
   ngOnInit() {
     this.activatedRoute.params.subscribe(params => {
       if(params['taskId']!=null){
         this._getTask(params['taskId']);
+        this.taskId = params['taskId'];
       }
       
       if(params['viewOnly']!=null){
@@ -62,8 +67,54 @@ export class TaskStatusPage implements OnInit {
     this.photo = null;
   }
 
-  submitTask(){
-    
+  async submitTask(){
+    this.loadingModal= await this.showLoading();
+    const formData = new FormData();
+    const response = await fetch(this.photo.dataUrl);
+    const blob = await response.blob();
+    formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
+    formData.append('catatan_petugas',this.remark.toString());
+    this.taskService.updateTaskToDone(
+      this.taskId,
+      formData
+    ).subscribe(
+      async (res:TaskResponseModel) => {
+        this.loadingModal.dismiss();
+        if(res!=null){
+          const modal= await this.modalCtrl.create({
+            component: GenericTextModalComponent,
+            componentProps:{
+              value:"Success"
+            },
+            cssClass:"small-modal",
+            backdropDismiss:false,
+          });
+          modal.present();
+          setTimeout(() => {
+            modal.dismiss();
+            this.router.navigateByUrl(
+              '/app/tabs/tab1',
+              {
+                replaceUrl : true
+              }
+            );
+          },500);
+        }else{
+          const modal= await this.modalCtrl.create({
+            component: GenericTextModalComponent,
+            componentProps:{
+              value:"Failed"
+            },
+            cssClass:"small-modal",
+            backdropDismiss:false,
+          });
+          modal.present();
+        }
+      },
+      (err:HttpErrorResponse) => {
+        this.loadingModal.dismiss();
+      }
+    );
   }
 
   async _getTask(taskId:String){
@@ -75,7 +126,9 @@ export class TaskStatusPage implements OnInit {
         this.remark = res.catatan_petugas;
         this._getUserInfo(res.petugas_id.toString());
         this._getTandanInfo(res.tandan_id.toString());
-        this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
+        if(res.url_gambar!=null){
+          this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
+        }
       },
       (err:HttpErrorResponse) => {
         this.loadingModal.dismiss();

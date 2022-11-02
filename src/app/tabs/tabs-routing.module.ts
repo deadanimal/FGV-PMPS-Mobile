@@ -37,6 +37,10 @@ const routes: Routes = [
         loadChildren: () => import('../page/new-task-info/new-task-info.module').then(m => m.NewTaskInfoPageModule)
       },
       {
+        path: 'tab1/start-work-find',
+        loadChildren: () => import('../page/start-work-find/start-work-find.module').then(m => m.StartWorkFindPageModule)
+      },
+      {
         path: '',
         redirectTo: 'tabs/tab1/',
         pathMatch: 'full'

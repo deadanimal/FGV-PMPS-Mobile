@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 
 @Component({
@@ -8,13 +9,31 @@ import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 })
 export class QrScannerPage implements OnInit {
 
-  constructor() { }
+  treeNum:String;
+  taskId:String;
+
+  constructor(
+    private activatedRoute:ActivatedRoute,
+    private router:Router,
+  ) { }
 
   ngOnInit() {
+    this.activatedRoute.params.subscribe(params => {
+      if(params['treeNum']!=null){
+        this.treeNum = params['treeNum'];
+      }
+      if(params['taskId']!=null){
+        this.taskId = params['taskId'];
+      }
+    });
     this.didUserGrantPermission();
+    setTimeout(() => {
+      this.startScan();
+    }, 500);
   }
 
   async ionViewWillLeave(){
+    document.querySelector('body').classList.remove('scanner-active');
     await BarcodeScanner.stopScan();
   }
 
@@ -32,7 +51,12 @@ export class QrScannerPage implements OnInit {
   
     // if the result has content
     if (result.hasContent) {
-      console.log(result.content); // log the raw scanned content
+      // console.log(result.content); // log the raw scanned content
+      if(this.treeNum!=null){
+        this.router.navigate(['app/tabs/tab1/start-work-find',{treeNum:this.treeNum,regNo:result.content,taskId:this.taskId}]);
+      }else{
+        this.router.navigate(['app/tabs/tab1/start-work-find',{treeNum:result.content,taskId:this.taskId}]);
+      }
     }
     document.querySelector('body').classList.remove('scanner-active');
   };

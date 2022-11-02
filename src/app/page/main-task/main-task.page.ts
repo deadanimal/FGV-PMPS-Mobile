@@ -31,6 +31,7 @@ export class MainTaskPage implements OnInit {
   hasNewTask:boolean = false;
   activeTaskList:TaskResponseModel[];
   finishedTaskList:TaskResponseModel[];
+  newTaskList:TaskResponseModel[];
 
   constructor(
     private activatedRoute:ActivatedRoute,
@@ -73,8 +74,8 @@ export class MainTaskPage implements OnInit {
   }
 
   viewTask(taskId:String,status:String,id:number){
-    if(status == "new"){
-      this.router.navigate(['app/tabs/tab1/new-task',{taskId:taskId}]);
+    if(status == "newTask"){
+      this.router.navigate(['app/tabs/tab1/start-work-find',{taskId:this.newTaskList[0].id}]);
     }else if(status == "completed"){
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId,tandanId:id}]);
     }else if(status == "activeTask"){
@@ -100,6 +101,7 @@ export class MainTaskPage implements OnInit {
   runTask(){
     this._enableAllBtn();
     this.disableTaskBtn = true;
+    this.viewTask('cp','newTask',0);
   }
 
   newTask(){
@@ -119,6 +121,7 @@ export class MainTaskPage implements OnInit {
     this.loadingModal= await this.showLoading();
     this.activeTaskList = [];
     this.finishedTaskList = [];
+    this.newTaskList = [];
     this.taskService.getTaskById(this.employeeId).subscribe(
       (res:[TaskResponseModel]) => {
         this.loadingModal.dismiss();
@@ -143,6 +146,7 @@ export class MainTaskPage implements OnInit {
                 this.finishedTaskList.push(element);
               }else if(element.status == "dicipta"){
                 this.numOfNewTask++;
+                this.newTaskList.push(element);
                 this.hasNewTask = true;
               }
             }

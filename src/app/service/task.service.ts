@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { LoginResponseModel } from '../model/login-response';
 import { TandanResponse } from '../model/tandan-response';
 import { TaskResponseModel } from '../model/task-response';
+import { FileTransfer, FileUploadOptions, FileTransferObject } from '@awesome-cordova-plugins/file-transfer/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,8 @@ import { TaskResponseModel } from '../model/task-response';
 export class TaskService {
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private transfer: FileTransfer
   ) { }
 
   getTaskById(
@@ -51,6 +53,16 @@ export class TaskService {
   ): Observable<TandanResponse> {
     return this.http.get<TandanResponse>(
       `${environment.baseUrl}${environment.tandanInfo}${tandanId}`
+    );
+  }
+
+  updateTaskToDone(
+    taskId:String,
+    formData:FormData
+  ): Observable<TaskResponseModel> {
+    return this.http.post<TaskResponseModel>(
+      `${environment.baseUrl}${environment.task}${taskId}/siap`,
+      formData
     );
   }
 }
