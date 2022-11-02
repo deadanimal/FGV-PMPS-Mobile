@@ -1,0 +1,37 @@
+<ion-content>
+  <app-logout-button></app-logout-button>
+  <app-user-info-header></app-user-info-header>
+
+  <div *ngFor="let task of tasks" class="border border-danger mx-2 mb-5 mt-2 p-2 rounded">
+    <div class="w-100 text-center mt-2">
+      <p style="color: #626262;">No. Pokok:</p>
+      <p class="font-weight-bold h1">{{treeNumber}}</p>
+    </div>
+  
+    <form #form="ngForm" class="mx-auto my-2" style="max-width: 300px;">
+      <ion-item lines="full">
+        <ion-label position="floating">Induk</ion-label>
+        <ion-input type="text" [(ngModel)]="ancestor" name="ancestor" required [readonly]="true"></ion-input>
+      </ion-item>
+      <ion-item lines="full">
+        <ion-label position="floating">Baka</ion-label>
+        <ion-input type="text" [(ngModel)]="breed" name="breed" required [readonly]="true"></ion-input>
+      </ion-item>
+      <ion-item lines="full">
+        <ion-label position="floating">Progeny</ion-label>
+        <ion-input type="text" [(ngModel)]="progeny" name="progeny" required [readonly]="true"></ion-input>
+      </ion-item>
+      <ion-item lines="full">
+        <ion-label position="floating">Block</ion-label>
+        <ion-input type="text" [(ngModel)]="block" name="block" required [readonly]="true"></ion-input>
+      </ion-item>
+      <ion-item lines="full">
+        <ion-label position="floating">Status Pokok</ion-label>
+        <ion-input type="text" [(ngModel)]="status" name="status" required [readonly]="true"></ion-input>
+      </ion-item>
+    </form>
+    <button (click)="submitTask()" *ngIf="userRole=='Pengguna'" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-auto mt-5">
+      Seterusnya
+    </button>
+  </div>
+</ion-content>

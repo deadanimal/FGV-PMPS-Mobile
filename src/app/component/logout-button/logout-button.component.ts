@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { LoginResponseModel } from 'src/app/model/login-response';
 import { AccountService } from 'src/app/service/account.service';
 import { StorageService } from 'src/app/service/storage.service';
 
@@ -17,9 +18,6 @@ export class LogoutButtonComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    if(this.accountService.getSessionDetails() == null){
-      // this.logout();
-    }
   }
 
   logout(){

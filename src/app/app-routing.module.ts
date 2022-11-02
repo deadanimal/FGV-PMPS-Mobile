@@ -4,7 +4,6 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    // loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
     loadChildren: () => import('./page/landing/landing.module').then( m => m.LandingPageModule)
   },
   {
@@ -46,6 +45,10 @@ const routes: Routes = [
   {
     path: 'qr-scanner',
     loadChildren: () => import('./page/qr-scanner/qr-scanner.module').then( m => m.QrScannerPageModule)
+  },
+  {
+    path: 'new-task-info',
+    loadChildren: () => import('./page/new-task-info/new-task-info.module').then( m => m.NewTaskInfoPageModule)
   }
 ];
 @NgModule({

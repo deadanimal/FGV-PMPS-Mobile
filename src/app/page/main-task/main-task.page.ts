@@ -31,7 +31,7 @@ export class MainTaskPage implements OnInit {
 
   viewTask(taskId:String,status:String){
     if(status == "new"){
-      this.router.navigate(['app/tabs/tab1/task-status',{taskId:taskId}]);
+      this.router.navigate(['app/tabs/tab1/new-task',{taskId:taskId}]);
     }else if(status == "completed"){
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId}]);
     }
