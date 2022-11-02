@@ -23,18 +23,18 @@ export class NewTaskInfoPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.tasks = [{
-      aktiviti:"",
-      created_at:"",
-      id:0,
-      jenis:"",
-      petugas_id:1,
-      status:"",
-      tandan_id:1,
-      tarikh:"10/10/2022",
-      tarikh_pengesahan:"10/10/2022",
-      updated_at:"10/10/2022",
-    },];
+    // this.tasks = [{
+    //   catatan
+    //   created_at:"",
+    //   id:0,
+    //   jenis:"",
+    //   petugas_id:1,
+    //   status:"",
+    //   tandan_id:1,
+    //   tarikh:"10/10/2022",
+    //   tarikh_pengesahan:"10/10/2022",
+    //   updated_at:"10/10/2022",
+    // },];
     this.treeNumber = "FJ2-35";
     this.ancestor = "Fatherpalm";
     this.breed = "Platinum";
@@ -43,18 +43,18 @@ export class NewTaskInfoPage implements OnInit {
     this.status = "Aktif";
     // let userInfo = this.accountService.getSessionDetails();
     this.userRole = "pekerja";
-    this.tasks.push({
-      aktiviti:"",
-      created_at:"",
-      id:0,
-      jenis:"",
-      petugas_id:1,
-      status:"",
-      tandan_id:1,
-      tarikh:"10/10/2022",
-      tarikh_pengesahan:"10/10/2022",
-      updated_at:"10/10/2022",
-    });
+    // this.tasks.push({
+    //   aktiviti:"",
+    //   created_at:"",
+    //   id:0,
+    //   jenis:"",
+    //   petugas_id:1,
+    //   status:"",
+    //   tandan_id:1,
+    //   tarikh:"10/10/2022",
+    //   tarikh_pengesahan:"10/10/2022",
+    //   updated_at:"10/10/2022",
+    // });
   }
 
   submitTask(){

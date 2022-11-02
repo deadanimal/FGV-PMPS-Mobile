@@ -51,30 +51,38 @@ export class DashboardPage implements OnInit {
   }
 
   async _getTasks(){
-    this.loadingModal= await this.showLoading();
-    this.taskService.getTaskById(this.employeeId).subscribe(
-      (res:[TaskResponseModel]) => {
-        this.loadingModal.dismiss();
-        if(res.length > 0){
-          res.forEach(element => {
-            console.log(element);
-            if(element.jenis == "balut"){
-              this.wrapTask = true;
-            }else if(element.jenis == "debung"){
-              this.debungTask = true;
-            }else if(element.jenis == "kawal"){
-              this.qcTask = true;
-            }else if(element.jenis == "tuai"){
-              this.harvestTask = true;
-            }
-          });
-        }else{
+    if(this.role == "pekerja"){
+      this.loadingModal= await this.showLoading();
+      this.taskService.getTaskById(this.employeeId).subscribe(
+        (res:[TaskResponseModel]) => {
+          this.loadingModal.dismiss();
+          if(res.length > 0){
+            res.forEach(element => {
+              if(element.jenis == "balut"){
+                this.wrapTask = true;
+              }else if(element.jenis == "debung"){
+                this.debungTask = true;
+              }else if(element.jenis == "kawal"){
+                this.qcTask = true;
+              }else if(element.jenis == "tuai"){
+                this.harvestTask = true;
+              }
+            });
+          }else{
+          }
+        },
+        (err:HttpErrorResponse) => {
+          this.loadingModal.dismiss();
         }
-      },
-      (err:HttpErrorResponse) => {
-        this.loadingModal.dismiss();
-      }
-    );
+      );
+    }else{
+      this.wrapTask = true;
+      this.debungTask = true;
+      this.qcTask = true;
+      this.harvestTask = true;
+      this.pollenSupplyTask = false;
+      this.pollenUseTask = false;
+    }
   }
 
   async showLoading():Promise<HTMLIonLoadingElement> {

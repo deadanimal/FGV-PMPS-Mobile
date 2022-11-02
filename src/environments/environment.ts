@@ -7,6 +7,11 @@ export const environment = {
   baseUrl: 'https://fgv.prototype.com.my/api',
   login:'/login',
   taskByUserId:'/tugasan/user/',
+  allTaskList:'/tugasan/',
+  taskById:'/tugasan/',
+  profileById:'/profil/',
+  tandanInfo:'/tandan/',
+  storageUrl:'https://fgv.prototype.com.my/storage/',
 };
 
 /*

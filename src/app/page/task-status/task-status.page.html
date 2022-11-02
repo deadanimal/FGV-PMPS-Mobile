@@ -4,13 +4,15 @@
   <div class="text-center mx-auto" style="width: 90%;">
     <div class="imageContainer w-100">
       <!-- when no photo -->
-      <img  *ngIf="photo==null" src="../../../assets/placeholder.png" alt="Snow">
-      <button *ngIf="photo==null" (click)="takePicture()" class="btn">+</button>
+      <img  *ngIf="serverImage==null && photo==null" src="../../../assets/placeholder.png" alt="Snow">
+      <button *ngIf="serverImage==null && photo==null" (click)="takePicture()" class="btn">+</button>
       <!-- when have photo -->
       <img *ngIf="photo!=null" class="rounded mx-auto" [src]="photo.dataUrl"/>
       <button *ngIf="photo!=null" (click)="erasePicture()" class="btn-danger">
         <ion-icon name="trash-outline"></ion-icon>
       </button>
+      <!-- photo from server -->
+      <img *ngIf="serverImage!=null" class="rounded mx-auto" [src]="serverImage"/>
     </div>
   </div>
 
@@ -41,7 +43,7 @@
     </ion-item>
   </form>
 
-  <div class="d-flex flex-row mx-3 justify-content-center my-4">
+  <div *ngIf="!viewOnly" class="d-flex flex-row mx-3 justify-content-center my-4">
     <button *ngIf="userRole=='Penyelia'" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="close-circle-outline"></ion-icon>
       <p class="m-auto">TOLAK</p>
