@@ -5,7 +5,6 @@ import { environment } from 'src/environments/environment';
 import { LoginResponseModel } from '../model/login-response';
 import { TandanResponse } from '../model/tandan-response';
 import { TaskResponseModel } from '../model/task-response';
-import { FileTransfer, FileUploadOptions, FileTransferObject } from '@awesome-cordova-plugins/file-transfer/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +13,6 @@ export class TaskService {
 
   constructor(
     private http: HttpClient,
-    private transfer: FileTransfer
   ) { }
 
   getTaskById(
@@ -63,6 +61,38 @@ export class TaskService {
     return this.http.post<TaskResponseModel>(
       `${environment.baseUrl}${environment.task}${taskId}/siap`,
       formData
+    );
+  }
+
+  acceptTask(
+    taskId:String,
+    svId:String,
+    svRemarks:String
+  ): Observable<TaskResponseModel> {
+    let postData={
+      "pengesah_id":svId,
+      "catatan_pengesah":svRemarks,
+    };
+  
+    return this.http.post<TaskResponseModel>(
+      `${environment.baseUrl}${environment.task}${taskId}/sah`,
+      postData
+    );
+  }
+
+  rejectTask(
+    taskId:String,
+    svId:String,
+    svRemarks:String
+  ): Observable<TaskResponseModel> {
+    let postData={
+      "pengesah_id":svId,
+      "catatan_pengesah":svRemarks,
+    };
+  
+    return this.http.post<TaskResponseModel>(
+      `${environment.baseUrl}${environment.task}${taskId}/rosak`,
+      postData
     );
   }
 }

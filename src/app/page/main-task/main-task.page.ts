@@ -80,6 +80,8 @@ export class MainTaskPage implements OnInit {
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId,tandanId:id}]);
     }else if(status == "activeTask"){
       this.router.navigate(['app/tabs/tab1/task-status',{taskId:id,viewOnly:true}]);
+    }else if(status == "activeTaskSV"){
+      this.router.navigate(['app/tabs/tab1/task-status',{taskId:id}]);
     }
   }
 
@@ -117,47 +119,63 @@ export class MainTaskPage implements OnInit {
     this.disableActiveTaskBtn = false;
   }
 
+  _populateData(res:[TaskResponseModel]){
+    if(res.length > 0){
+      res.forEach(element => {
+        let countThis:boolean = false;
+        if(element.jenis == "balut" && this.task == "Balut"){
+          countThis = true;
+        }else if(element.jenis == "debung" && this.task == "Pendebungaan Terkawal (CP)"){
+          countThis = true;
+        }else if(element.jenis == "kawal" && this.task == "Kawalan Kualiti (QC)"){
+          countThis = true;
+        }else if(element.jenis == "tuai" && this.task == "Tuai"){
+          countThis = true;
+        }
+        if(countThis){
+          if(element.status == "siap"){
+            this.numOfActiveTask++;
+            this.activeTaskList.push(element);
+          }else if(element.status == "sah"){
+            this.numOfFinishTask++;
+            this.finishedTaskList.push(element);
+          }else if(element.status == "dicipta"){
+            this.numOfNewTask++;
+            this.newTaskList.push(element);
+            this.hasNewTask = true;
+          }
+        }
+      });
+    }else{
+    }
+  }
+
   async _getTask(){
     this.loadingModal= await this.showLoading();
     this.activeTaskList = [];
     this.finishedTaskList = [];
     this.newTaskList = [];
-    this.taskService.getTaskById(this.employeeId).subscribe(
-      (res:[TaskResponseModel]) => {
-        this.loadingModal.dismiss();
-        if(res.length > 0){
-          res.forEach(element => {
-            let countThis:boolean = false;
-            if(element.jenis == "balut" && this.task == "Balut"){
-              countThis = true;
-            }else if(element.jenis == "debung" && this.task == "Pendebungaan Terkawal (CP)"){
-              countThis = true;
-            }else if(element.jenis == "kawal" && this.task == "Kawalan Kualiti (QC)"){
-              countThis = true;
-            }else if(element.jenis == "tuai" && this.task == "Tuai"){
-              countThis = true;
-            }
-            if(countThis){
-              if(element.status == "siap"){
-                this.numOfActiveTask++;
-                this.activeTaskList.push(element);
-              }else if(element.status == "sah"){
-                this.numOfFinishTask++;
-                this.finishedTaskList.push(element);
-              }else if(element.status == "dicipta"){
-                this.numOfNewTask++;
-                this.newTaskList.push(element);
-                this.hasNewTask = true;
-              }
-            }
-          });
-        }else{
+    if(this.role == "pekerja"){
+      this.taskService.getTaskById(this.employeeId).subscribe(
+        (res:[TaskResponseModel]) => {
+          this.loadingModal.dismiss();
+          this._populateData(res);
+        },
+        (err:HttpErrorResponse) => {
+          this.loadingModal.dismiss();
         }
-      },
-      (err:HttpErrorResponse) => {
-        this.loadingModal.dismiss();
-      }
-    );
+      );
+    }else{
+      this.taskService.getAllTask().subscribe(
+        (res:[TaskResponseModel]) => {
+          this.loadingModal.dismiss();
+          this._populateData(res);
+        },
+        (err:HttpErrorResponse) => {
+          this.loadingModal.dismiss();
+        }
+      );
+    }
   }
 
   async showLoading():Promise<HTMLIonLoadingElement> {

@@ -10,7 +10,7 @@ import { TaskResponseModel } from 'src/app/model/task-response';
 import { UserPhoto } from 'src/app/model/user-photo';
 import { AccountService } from 'src/app/service/account.service';
 import { TaskService } from 'src/app/service/task.service';
-import { PhotoService } from 'src/app/services/photo.service';
+import { PhotoService } from 'src/app/service/photo.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -167,6 +167,45 @@ export class TaskStatusPage implements OnInit {
     const loading = await this.loadingCtrl.create();
     loading.present();
     return loading;
+  }
+
+  async accept(){
+    this.loadingModal= await this.showLoading();
+    this.taskService.acceptTask(this.taskId,this.accountService.getSessionDetails().id.toString(),this.svRemark).subscribe(
+      (res:TaskResponseModel) => {
+        this.loadingModal.dismiss();
+        this.router.navigateByUrl(
+          '/app/tabs/tab1',
+          {
+            replaceUrl : true
+          }
+        );
+      },
+      (err:HttpErrorResponse) => {
+        this.loadingModal.dismiss();
+      }
+    );
+  }
+
+  async reject(){
+    this.loadingModal= await this.showLoading();
+    this.taskService.rejectTask(
+      this.taskId,
+      this.accountService.getSessionDetails().id.toString(),
+      this.svRemark).subscribe(
+        (res:TaskResponseModel) => {
+          this.loadingModal.dismiss();
+          this.router.navigateByUrl(
+            '/app/tabs/tab1',
+            {
+              replaceUrl : true
+            }
+          );
+        },
+        (err:HttpErrorResponse) => {
+          this.loadingModal.dismiss();
+        }
+    );
   }
 
 }

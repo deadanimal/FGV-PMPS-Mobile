@@ -37,19 +37,19 @@
       <ion-label position="floating">Catatan</ion-label>
       <ion-input type="text" [(ngModel)]="remark" name="remark" required [readonly]="userRole!='pekerja'"></ion-input>
     </ion-item>
-    <ion-item *ngIf="userRole=='Penyelia'" lines="full">
+    <ion-item *ngIf="userRole=='penyelia'" lines="full">
       <ion-label position="floating">Catatan Penyelia</ion-label>
       <ion-input type="text" [(ngModel)]="svRemark" name="svRemark" required></ion-input>
     </ion-item>
   </form>
 
   <div *ngIf="!viewOnly" class="d-flex flex-row mx-3 justify-content-center my-4">
-    <button *ngIf="userRole=='Penyelia'" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+    <button (click)="reject()" [disabled]="!form.valid" *ngIf="userRole=='penyelia'" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="close-circle-outline"></ion-icon>
       <p class="m-auto">TOLAK</p>
     </button>
 
-    <button *ngIf="userRole == 'Penyelia'" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
+    <button (click)="accept()" [disabled]="!form.valid" *ngIf="userRole == 'penyelia'" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="checkmark-circle-outline"></ion-icon>
       <p class="m-auto">TERIMA</p>
     </button>
