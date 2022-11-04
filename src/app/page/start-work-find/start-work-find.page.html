@@ -9,14 +9,14 @@
           <ion-label position="floating">No Pokok</ion-label>
           <ion-input type="text" [(ngModel)]="treeNumber" name="treeNumber" required></ion-input>
         </ion-item>
-        <button (click)="scanQr()" class="btn col-2"><ion-icon name="camera"></ion-icon></button>
+        <button type="button" (click)="scanQr()" class="btn col-2"><ion-icon name="camera"></ion-icon></button>
       </div>
       <div *ngIf="treeNumber!=null" class="d-flex flex-col mx-2">
         <ion-item class="col-10">
           <ion-label position="floating">No Daftar</ion-label>
           <ion-input type="text" [(ngModel)]="regNumber" name="regNumber" required></ion-input>
         </ion-item>
-        <button (click)="scanQr()" class="btn col-2"><ion-icon name="camera"></ion-icon></button>
+        <button type="button" (click)="scanQr()" class="btn col-2"><ion-icon name="camera"></ion-icon></button>
       </div>
       <div class="w-100 text-center mt-5">
         <button [disabled]="!form.valid" type="submit" class="btn primary-red text-white mx-auto">Seterusnya</button>

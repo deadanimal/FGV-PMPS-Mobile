@@ -70,6 +70,9 @@ export class MainTaskPage implements OnInit {
   }
 
   ionViewWillEnter() {
+    this.numOfActiveTask = 0;
+    this.numOfFinishTask = 0;
+    this.numOfNewTask = 0;
     this._getTask();
   }
 

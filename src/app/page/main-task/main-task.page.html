@@ -38,7 +38,7 @@
         </ion-col>
         <ion-col *ngIf="role == 'pekerja' && hasNewTask" size="6" size-md="4" size-lg="2">
           <div>
-            <button (click)="runTask()" [disabled]="disableTaskBtn" class="btn w-100 mx-auto rounded orangeBtn text-center text-white p-2">
+            <button (click)="runTask()" class="btn w-100 mx-auto rounded orangeBtn text-center text-white p-2">
               <div class="mx-auto" style="width: 58px; height: 58px; padding-top: 14px; padding-bottom: 14px; padding-left: 13px; padding-right: 14px; background-color: white; border-radius: 10px; display: flex; flex-direction: row; align-items: center; justify-content: center;">
                 <img style="width: 31.32px; height: 30px; border-radius: 8px;" src={{taskIconPath}}/>
               </div>

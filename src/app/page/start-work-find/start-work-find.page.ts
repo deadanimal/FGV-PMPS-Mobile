@@ -39,14 +39,14 @@ export class StartWorkFindPage implements OnInit {
   scanQr(){
     if(this.treeNumber!=null){
       this.router.navigate(
-        ['qr-scanner',{treeNum:this.treeNumber,taskId:this.taskId}],
+        ['/app/tabs/tab2',{treeNum:this.treeNumber,taskId:this.taskId}],
         {
           replaceUrl : true
         }
       );
     }else{
       this.router.navigate(
-        ['qr-scanner',{taskId:this.taskId}],
+        ['/app/tabs/tab2',{taskId:this.taskId}],
         {
           replaceUrl : true
         }
