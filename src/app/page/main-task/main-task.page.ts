@@ -1,7 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, ModalController } from '@ionic/angular';
+import { ScannerPromptComponent } from 'src/app/component/scanner-prompt/scanner-prompt.component';
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { TaskResponseModel } from 'src/app/model/task-response';
 import { AccountService } from 'src/app/service/account.service';
@@ -39,6 +40,7 @@ export class MainTaskPage implements OnInit {
     private accountService:AccountService,
     private taskService:TaskService,
     private loadingCtrl: LoadingController,
+    private modalCtrl: ModalController,
   ) { }
 
   ngOnInit() {
@@ -78,7 +80,8 @@ export class MainTaskPage implements OnInit {
 
   viewTask(taskId:String,status:String,id:number){
     if(status == "newTask"){
-      this.router.navigate(['app/tabs/tab1/start-work-find',{taskId:this.newTaskList[0].id}]);
+      this._promptQrScan();
+      // this.router.navigate(['app/tabs/tab1/start-work-find',{taskId:this.newTaskList[0].id}]);
     }else if(status == "completed"){
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId,tandanId:id}]);
     }else if(status == "activeTask"){
@@ -88,6 +91,18 @@ export class MainTaskPage implements OnInit {
     }else if(status == "createNewTask"){
       this.router.navigate(['app/tabs/tab1/create-new-task',{taskType:this.task}]);
     }
+  }
+
+  async _promptQrScan(){
+    const modal= await this.modalCtrl.create({
+      component: ScannerPromptComponent,
+      componentProps:{
+        value:"text"
+      },
+      cssClass:"small-modal",
+      backdropDismiss:false,
+    });
+    modal.present();
   }
 
   activeTask(){
