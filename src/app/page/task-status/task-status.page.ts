@@ -12,6 +12,8 @@ import { AccountService } from 'src/app/service/account.service';
 import { TaskService } from 'src/app/service/task.service';
 import { PhotoService } from 'src/app/service/photo.service';
 import { environment } from 'src/environments/environment';
+import { ModalService } from 'src/app/service/modal.service';
+import { UserContinueSelection } from 'src/app/component/continue-prompt/continue-prompt.component';
 
 @Component({
   selector: 'app-task-status',
@@ -41,6 +43,7 @@ export class TaskStatusPage implements OnInit {
     private loadingCtrl: LoadingController,
     private modalCtrl: ModalController,
     private router: Router,
+    private modalService: ModalService,
   ) { }
 
   ngOnInit() {
@@ -69,6 +72,21 @@ export class TaskStatusPage implements OnInit {
     this.photo = null;
   }
 
+  _promptCompleted(){
+    this.modalService.successPrompt("Aktiviti anda telah dihantar kepada penyelia").then(
+      (value)=>{
+        setTimeout(() => {
+            this.router.navigateByUrl(
+              '/app/tabs/tab1',
+              {
+                replaceUrl : true
+              }
+            );
+          },500);
+      }
+    );
+  }
+
   async submitTask(){
     this.loadingModal= await this.showLoading();
     const formData = new FormData();
@@ -83,24 +101,41 @@ export class TaskStatusPage implements OnInit {
       async (res:TaskResponseModel) => {
         this.loadingModal.dismiss();
         if(res!=null){
-          const modal= await this.modalCtrl.create({
-            component: GenericTextModalComponent,
-            componentProps:{
-              value:"Success"
-            },
-            cssClass:"small-modal",
-            backdropDismiss:false,
-          });
-          modal.present();
-          setTimeout(() => {
-            modal.dismiss();
-            this.router.navigateByUrl(
-              '/app/tabs/tab1',
-              {
-                replaceUrl : true
+          this.modalService.continuePrompt().then(
+            (value)=>{
+              if(value['data'] == UserContinueSelection.no){
+                this._promptCompleted();
+              }else{
+                this.router.navigate(
+                  [
+                    '/app/tabs/tab1/start-work-find',
+                    {
+                      taskId:this.taskId,
+                      treeNum:this.treeId,
+                    }
+                  ]
+                );
               }
-            );
-          },500);
+            }
+          );
+          // const modal= await this.modalCtrl.create({
+          //   component: GenericTextModalComponent,
+          //   componentProps:{
+          //     value:"Success"
+          //   },
+          //   cssClass:"small-modal",
+          //   backdropDismiss:false,
+          // });
+          // modal.present();
+          // setTimeout(() => {
+          //   modal.dismiss();
+          //   this.router.navigateByUrl(
+          //     '/app/tabs/tab1',
+          //     {
+          //       replaceUrl : true
+          //     }
+          //   );
+          // },500);
         }else{
           const modal= await this.modalCtrl.create({
             component: GenericTextModalComponent,

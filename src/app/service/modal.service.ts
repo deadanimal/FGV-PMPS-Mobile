@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import { ContinuePromptComponent } from '../component/continue-prompt/continue-prompt.component';
+import { ContinuePromptComponent, UserContinueSelection } from '../component/continue-prompt/continue-prompt.component';
 import { ManualInputComponent } from '../component/manual-input/manual-input.component';
 import { ScannerPromptComponent, UserSelection } from '../component/scanner-prompt/scanner-prompt.component';
 import { SuccessPromptComponent } from '../component/success-prompt/success-prompt.component';
@@ -45,7 +45,7 @@ export class ModalService {
     return retVal;
   }
 
-  async continuePrompt():Promise<NgForm>{
+  async continuePrompt():Promise<UserContinueSelection>{
     let retVal:Promise<any>;
     const modal= await this.modalCtrl.create({
       component: ContinuePromptComponent,
@@ -57,7 +57,7 @@ export class ModalService {
     return retVal;
   }
 
-  async successPrompt(label:string):Promise<NgForm>{
+  async successPrompt(label:string):Promise<any>{
     let retVal:Promise<any>;
     const modal= await this.modalCtrl.create({
       component: SuccessPromptComponent,componentProps:{
