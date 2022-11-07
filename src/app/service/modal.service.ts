@@ -13,12 +13,12 @@ export class ModalService {
     private modalCtrl:ModalController
   ) { }
 
-  async qrPrompt():Promise<UserSelection>{
+  async qrPrompt(label:string):Promise<UserSelection>{
     let retVal:Promise<any>;
     const modal= await this.modalCtrl.create({
       component: ScannerPromptComponent,
       componentProps:{
-        value:"text"
+        value:label
       },
       cssClass:"small-modal",
       backdropDismiss:true,

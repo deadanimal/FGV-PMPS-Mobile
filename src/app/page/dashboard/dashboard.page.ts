@@ -17,6 +17,7 @@ export class DashboardPage implements OnInit {
   username:String;
   employeeId:String;
   role:String;
+  userIconPath:String;
   loadingModal:any;
   wrapTask:boolean;
   debungTask:boolean;
@@ -38,6 +39,15 @@ export class DashboardPage implements OnInit {
     this.username = loginDetails.nama;
     this.employeeId = loginDetails.no_kakitangan;
     this.role = loginDetails.peranan;
+    if(this.role.indexOf('pekerja')>=0){
+      this.userIconPath="../../../assets/worker_icon.png"
+      document.getElementById('iconBg').style.backgroundColor = "#F89521";
+      document.getElementById('iconBgLg').style.backgroundColor = "#F89521";
+    }else{
+      this.userIconPath="../../../assets/penyelia_icon.png"
+      document.getElementById('iconBg').style.backgroundColor = "rgba(64, 19, 28, 1)";
+      document.getElementById('iconBgLg').style.backgroundColor = "rgba(64, 19, 28, 1)";
+    }
   }
 
   ionViewWillEnter() {

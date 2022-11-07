@@ -11,6 +11,7 @@ export class QrScannerPage implements OnInit {
 
   treeNum:String;
   taskId:String;
+  returnUrl:String;
 
   constructor(
     private activatedRoute:ActivatedRoute,
@@ -24,6 +25,10 @@ export class QrScannerPage implements OnInit {
       }
       if(params['taskId']!=null){
         this.taskId = params['taskId'];
+      }if(params['returnUrl']!=null){
+        this.returnUrl = params['returnUrl'];
+      }else{
+        this.returnUrl = 'app/tabs/tab1/start-work-find';
       }
     });
     this.didUserGrantPermission();
@@ -53,9 +58,9 @@ export class QrScannerPage implements OnInit {
     if (result.hasContent) {
       // console.log(result.content); // log the raw scanned content
       if(this.treeNum!=null){
-        this.router.navigate(['app/tabs/tab1/start-work-find',{treeNum:this.treeNum,regNo:result.content,taskId:this.taskId}]);
+        this.router.navigate([this.returnUrl,{treeNum:this.treeNum,regNo:result.content,taskId:this.taskId}]);
       }else{
-        this.router.navigate(['app/tabs/tab1/start-work-find',{treeNum:result.content,taskId:this.taskId}]);
+        this.router.navigate([this.returnUrl,{treeNum:result.content,taskId:this.taskId,scanInput:result.content}]);
       }
     }
     document.querySelector('body').classList.remove('scanner-active');

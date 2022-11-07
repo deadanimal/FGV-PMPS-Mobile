@@ -14,6 +14,8 @@ export class UserInfoHeaderComponent implements OnInit {
   name:String;
   id:String;
   role:String;
+  userIconPath:String;
+  userIconBgColor:String;
 
   constructor(
     private accountService:AccountService,
@@ -31,6 +33,13 @@ export class UserInfoHeaderComponent implements OnInit {
       this.name = loginDetails.nama;
       this.id = loginDetails.no_kakitangan;
       this.role = loginDetails.peranan;
+      if(this.role.indexOf('pekerja')>=0){
+        this.userIconPath="../../../assets/worker_icon.png"
+        document.getElementById('iconBg').style.backgroundColor = "#F89521";
+      }else{
+        this.userIconPath="../../../assets/penyelia_icon.png"
+        document.getElementById('iconBg').style.backgroundColor = "rgba(64, 19, 28, 1)";
+      }
     }
   }
 
@@ -41,6 +50,13 @@ export class UserInfoHeaderComponent implements OnInit {
     this.name = loginDetails.nama;
     this.id = loginDetails.no_kakitangan;
     this.role = loginDetails.peranan;
+    if(this.role.indexOf('pekerja')>=0){
+      this.userIconPath="../../../assets/worker_icon.png"
+      document.getElementById('iconBg').style.backgroundColor = "#F89521";
+    }else{
+      this.userIconPath="../../../assets/penyelia_icon.png"
+      document.getElementById('iconBg').style.backgroundColor = "rgba(64, 19, 28, 1)";
+    }
   }
 
   logout(){

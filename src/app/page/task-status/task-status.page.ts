@@ -49,9 +49,11 @@ export class TaskStatusPage implements OnInit {
         this._getTask(params['taskId']);
         this.taskId = params['taskId'];
       }
-      
       if(params['viewOnly']!=null){
         this.viewOnly = params['viewOnly'];
+      }
+      if(params['regNumber']!=null){
+        this.regNo = params['regNumber'];
       }
     });
 
@@ -150,12 +152,11 @@ export class TaskStatusPage implements OnInit {
   }
 
   async _getTandanInfo(tandanId:String){
-    // this.loadingModal= await this.showLoading();
     this.taskService.getTandanById(tandanId).subscribe(
       (res:TandanResponse) => {
         this.loadingModal.dismiss();
         this.treeId = res.pokok_id.toString();
-        this.regNo = res.no_daftar;
+        // this.regNo = res.no_daftar;
       },
       (err:HttpErrorResponse) => {
         this.loadingModal.dismiss();

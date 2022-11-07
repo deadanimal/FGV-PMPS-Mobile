@@ -12,14 +12,13 @@
         <button type="button" (click)="scanQr()" class="btn col-2"><ion-icon name="camera"></ion-icon></button>
       </div>
       <div *ngIf="treeNumber!=null" class="d-flex flex-col mx-2">
-        <ion-item class="col-10">
+        <button type="button" (click)="scanQr()" class="btn btn-outline-danger text-dark mx-auto">
           <ion-label position="floating">No Daftar</ion-label>
-          <ion-input type="text" [(ngModel)]="regNumber" name="regNumber" required></ion-input>
-        </ion-item>
-        <button type="button" (click)="scanQr()" class="btn col-2"><ion-icon name="camera"></ion-icon></button>
+          <ion-input type="text" [(ngModel)]="regNumber" name="regNumber" required [disabled]="true"></ion-input>
+        </button>
       </div>
       <div class="w-100 text-center mt-5">
-        <button [disabled]="!form.valid" type="submit" class="btn primary-red text-white mx-auto">Seterusnya</button>
+        <button type="submit" class="btn primary-red text-white mx-auto">Seterusnya</button>
       </div>
     </form>
   </div>

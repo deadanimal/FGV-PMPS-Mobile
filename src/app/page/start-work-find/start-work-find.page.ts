@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
+import { ModalService } from 'src/app/service/modal.service';
 
 @Component({
   selector: 'app-start-work-find',
@@ -16,42 +18,69 @@ export class StartWorkFindPage implements OnInit {
   constructor(
     private activatedRoute:ActivatedRoute,
     private router:Router,
+    private modalService:ModalService,
   ) { }
 
   ngOnInit() {
     this.activatedRoute.params.subscribe(params => {
       if(params['treeNum']!=null){
        this.treeNumber = params['treeNum'];
+       console.log("treeNum:%s",this.treeNumber)
       }
       if(params['regNo']!=null){
         this.regNumber = params['regNo'];
+        console.log("regNumber:%s",this.regNumber)
       }
       if(params['taskId']!=null){
         this.taskId = params['taskId'];
+        console.log("taskId:%s",this.taskId)
       }
     });
   }
 
   submit(form:NgForm){
-    this.router.navigate(['app/tabs/tab1/task-status',{taskId:this.taskId}]);
+    if(this.regNumber!=null && this.regNumber!=""){
+      this.router.navigate(['app/tabs/tab1/task-status',{taskId:this.taskId,regNumber:this.regNumber}]);
+    }
+  }
+
+  promptScan(){
+    this.modalService.qrPrompt("No Daftar").then(
+      (value)=>{
+        let sel:UserSelection;
+        sel = value['data'];
+        if(sel == UserSelection.manual){
+          this._manualInput();
+        }else{
+          this.router.navigate(
+            [
+              '/app/tabs/tab2',
+              {
+                taskId:this.taskId,
+                returnUrl:"/app/tabs/tab1/start-work-find",
+                treeNum:this.treeNumber,
+              }
+            ],
+            {
+              replaceUrl : true
+            }
+          );
+        }
+    });
+  }
+
+  _manualInput(){
+    this.modalService.singleInput("No Pokok").then(
+      (value)=>{
+        let form:NgForm;
+        form = value['data'];
+        this.regNumber = form.value.value;
+      }
+    );
   }
 
   scanQr(){
-    if(this.treeNumber!=null){
-      this.router.navigate(
-        ['/app/tabs/tab2',{treeNum:this.treeNumber,taskId:this.taskId}],
-        {
-          replaceUrl : true
-        }
-      );
-    }else{
-      this.router.navigate(
-        ['/app/tabs/tab2',{taskId:this.taskId}],
-        {
-          replaceUrl : true
-        }
-      );
-    }
+    this.promptScan();
   }
 
 }
