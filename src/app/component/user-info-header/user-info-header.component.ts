@@ -40,12 +40,12 @@ export class UserInfoHeaderComponent implements OnInit {
         this.userIconPath="../../../assets/penyelia_icon.png"
         document.getElementById('iconBg').style.backgroundColor = "rgba(64, 19, 28, 1)";
       }
+      document.getElementById('iconBg').style.zIndex = "1000";
     }
   }
 
   async _getFromStorage(){
     const loginDetails = await this.storageService.get(this.storageService.loginDetail);
-    console.log(loginDetails);
     this.accountService.saveAsSessionDetails(loginDetails);
     this.name = loginDetails.nama;
     this.id = loginDetails.no_kakitangan;

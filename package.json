@@ -35,6 +35,8 @@
     "bootstrap": "^5.2.2",
     "cordova-js": "^6.1.0",
     "ionicons": "^6.0.3",
+    "jquery": "^3.6.1",
+    "popper.js": "^1.16.1",
     "rxjs": "~6.6.0",
     "storage-angular": "^0.0.1",
     "tslib": "^2.2.0",
