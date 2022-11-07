@@ -8,15 +8,25 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage-angular';
+import { FormsModule } from '@angular/forms';
+import { ManualInputComponent } from './component/manual-input/manual-input.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent,
+    ManualInputComponent,
+  ],
+  entryComponents: [
+    ManualInputComponent,
+  ],
   imports: [
     BrowserModule,
     HttpClientModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    IonicStorageModule.forRoot()],
+    IonicStorageModule.forRoot(),
+    FormsModule,
+  ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })

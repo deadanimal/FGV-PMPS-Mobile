@@ -1,0 +1,14 @@
+<div class="mx-auto my-2 text-center">
+  <form (ngSubmit)="btnClick(form)" #form="ngForm">
+    <ion-item lines="full">
+      <ion-label position="floating">{{label}}</ion-label>
+      <ion-input type="text" [(ngModel)]='value' name={{label}} id={{label}} required></ion-input>
+    </ion-item>
+    <ion-row>
+      <ion-col class="text-center my-4">
+        <button [disabled]="" type="submit" class="btn primary-red text-white w-100 mx-auto">Cari</button>
+      </ion-col>
+    </ion-row>
+  </form>
+  
+</div>
