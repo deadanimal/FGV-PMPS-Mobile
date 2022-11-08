@@ -11,14 +11,19 @@ import { IonicStorageModule } from '@ionic/storage-angular';
 import { FormsModule } from '@angular/forms';
 import { ManualInputComponent } from './component/manual-input/manual-input.component';
 import { DatePipe } from '@angular/common';
+import { PosponePromptComponent } from './component/pospone-prompt/pospone-prompt.component';
+import { TextBtnPromptComponent } from './component/text-btn-prompt/text-btn-prompt.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ManualInputComponent,
+    PosponePromptComponent,
+    TextBtnPromptComponent,
   ],
   entryComponents: [
     ManualInputComponent,
+    PosponePromptComponent,
   ],
   imports: [
     BrowserModule,
