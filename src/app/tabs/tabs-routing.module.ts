@@ -45,6 +45,10 @@ const routes: Routes = [
         loadChildren: () => import('../page/create-new-task/create-new-task.module').then(m => m.CreateNewTaskPageModule)
       },
       {
+        path: 'tab1/defect',
+        loadChildren: () => import('../page/defect/defect.module').then(m => m.DefectPageModule)
+      },
+      {
         path: '',
         redirectTo: 'tabs/tab1/',
         pathMatch: 'full'

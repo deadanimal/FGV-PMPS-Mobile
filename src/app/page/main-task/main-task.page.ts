@@ -95,6 +95,8 @@ export class MainTaskPage implements OnInit {
       this.router.navigate(['app/tabs/tab1/task-status',{taskId:id}]);
     }else if(status == "createNewTask"){
       this.router.navigate(['app/tabs/tab1/create-new-task',{taskType:this.task}]);
+    }else if(status == "overdueTask"){
+      this.router.navigate(['app/tabs/tab1/defect',{taskType:this.task}]);
     }
   }
 

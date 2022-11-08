@@ -13,6 +13,7 @@ import { ManualInputComponent } from './component/manual-input/manual-input.comp
 import { DatePipe } from '@angular/common';
 import { PosponePromptComponent } from './component/pospone-prompt/pospone-prompt.component';
 import { TextBtnPromptComponent } from './component/text-btn-prompt/text-btn-prompt.component';
+import { GenericTextModalComponent } from './component/generic-text-modal/generic-text-modal.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { TextBtnPromptComponent } from './component/text-btn-prompt/text-btn-pro
     ManualInputComponent,
     PosponePromptComponent,
     TextBtnPromptComponent,
+    GenericTextModalComponent,
   ],
   entryComponents: [
     ManualInputComponent,
