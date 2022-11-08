@@ -14,6 +14,7 @@ export class StartWorkFindPage implements OnInit {
   treeNumber:String;
   regNumber:String;
   taskId:String;
+  taskType:String;
 
   constructor(
     private activatedRoute:ActivatedRoute,
@@ -25,22 +26,32 @@ export class StartWorkFindPage implements OnInit {
     this.activatedRoute.params.subscribe(params => {
       if(params['treeNum']!=null){
        this.treeNumber = params['treeNum'];
-       console.log("treeNum:%s",this.treeNumber)
       }
       if(params['regNo']!=null){
         this.regNumber = params['regNo'];
-        console.log("regNumber:%s",this.regNumber)
       }
       if(params['taskId']!=null){
         this.taskId = params['taskId'];
-        console.log("taskId:%s",this.taskId)
+      }
+      if(params['taskType']!=null){
+        this.taskType = params['taskType'];
       }
     });
   }
 
   submit(form:NgForm){
     if(this.regNumber!=null && this.regNumber!=""){
-      this.router.navigate(['app/tabs/tab1/task-status',{taskId:this.taskId,regNumber:this.regNumber}]);
+      this.router.navigate(
+        [
+          'app/tabs/tab1/task-status',
+          {
+            taskId:this.taskId,
+            regNumber:this.regNumber,
+            treeNumber:this.treeNumber,
+            taskType:this.taskType,
+          }
+        ]
+      );
     }
   }
 
@@ -70,7 +81,7 @@ export class StartWorkFindPage implements OnInit {
   }
 
   _manualInput(){
-    this.modalService.singleInput("No Pokok").then(
+    this.modalService.singleInput("No Daftar").then(
       (value)=>{
         let form:NgForm;
         form = value['data'];

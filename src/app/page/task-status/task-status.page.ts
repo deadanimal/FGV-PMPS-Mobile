@@ -7,13 +7,13 @@ import { GenericTextModalComponent } from 'src/app/component/generic-text-modal/
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { TaskResponseModel } from 'src/app/model/task-response';
-import { UserPhoto } from 'src/app/model/user-photo';
 import { AccountService } from 'src/app/service/account.service';
 import { TaskService } from 'src/app/service/task.service';
 import { PhotoService } from 'src/app/service/photo.service';
 import { environment } from 'src/environments/environment';
 import { ModalService } from 'src/app/service/modal.service';
 import { UserContinueSelection } from 'src/app/component/continue-prompt/continue-prompt.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-task-status',
@@ -34,6 +34,7 @@ export class TaskStatusPage implements OnInit {
   loadingModal:any;
   serverImage:String;
   taskId:String;
+  taskType:String;
 
   constructor(
     private photoService:PhotoService,
@@ -44,9 +45,12 @@ export class TaskStatusPage implements OnInit {
     private modalCtrl: ModalController,
     private router: Router,
     private modalService: ModalService,
+    private datePipe: DatePipe,
   ) { }
 
   ngOnInit() {
+    this.date = this.datePipe.transform(Date.now(),"dd/MM/yyyy");
+    this.name = this.accountService.getSessionDetails().nama;
     this.activatedRoute.params.subscribe(params => {
       if(params['taskId']!=null){
         this._getTask(params['taskId']);
@@ -57,6 +61,12 @@ export class TaskStatusPage implements OnInit {
       }
       if(params['regNumber']!=null){
         this.regNo = params['regNumber'];
+      }
+      if(params['treeNumber']!=null){
+        this.treeId = params['treeNumber'];
+      }
+      if(params['taskType']!=null){
+        this.taskType = params['taskType'];
       }
     });
 
@@ -94,8 +104,13 @@ export class TaskStatusPage implements OnInit {
     const blob = await response.blob();
     formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
     formData.append('catatan_petugas',this.remark.toString());
+    formData.append('jenis',this.taskType.toString());
+    formData.append('petugas_id',this.accountService.getSessionDetails().no_kakitangan);
+    formData.append('tarikh',this.date.toString());
+    formData.append('no_daftar',this.regNo.toString());
+    formData.append('pokok_id',this.treeId.toString());
+    formData.append('catatan',this.remark.toString());
     this.taskService.updateTaskToDone(
-      this.taskId,
       formData
     ).subscribe(
       async (res:TaskResponseModel) => {
@@ -191,7 +206,7 @@ export class TaskStatusPage implements OnInit {
       (res:TandanResponse) => {
         this.loadingModal.dismiss();
         this.treeId = res.pokok_id.toString();
-        // this.regNo = res.no_daftar;
+        this.regNo = res.no_daftar;
       },
       (err:HttpErrorResponse) => {
         this.loadingModal.dismiss();

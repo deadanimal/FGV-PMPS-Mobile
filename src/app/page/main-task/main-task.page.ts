@@ -1,10 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController, ModalController } from '@ionic/angular';
+import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { TaskResponseModel } from 'src/app/model/task-response';
 import { AccountService } from 'src/app/service/account.service';
+import { ModalService } from 'src/app/service/modal.service';
 import { TaskService } from 'src/app/service/task.service';
 
 @Component({
@@ -27,6 +30,7 @@ export class MainTaskPage implements OnInit {
   numOfFinishTask:number = 0;
   numOfNewTask:number = 0;
   employeeId:String;
+  scanInput:String;
   loadingModal:any;
   hasNewTask:boolean = false;
   activeTaskList:TaskResponseModel[];
@@ -39,6 +43,7 @@ export class MainTaskPage implements OnInit {
     private accountService:AccountService,
     private taskService:TaskService,
     private loadingCtrl: LoadingController,
+    private modalService: ModalService,
   ) { }
 
   ngOnInit() {
@@ -62,6 +67,9 @@ export class MainTaskPage implements OnInit {
           this.taskIconPath = "../../../assets/tuai_icon.png";
         }
       }
+      if(params['scanInput']!=null){
+        this.scanInput = params['scanInput'];
+       }
     });
 
     let user:LoginResponseModel = this.accountService.getSessionDetails();
@@ -82,7 +90,7 @@ export class MainTaskPage implements OnInit {
     }else if(status == "completed"){
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId,tandanId:id}]);
     }else if(status == "activeTask"){
-      this.router.navigate(['app/tabs/tab1/task-status',{taskId:id,viewOnly:true}]);
+      this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId,tandanId:id}]);
     }else if(status == "activeTaskSV"){
       this.router.navigate(['app/tabs/tab1/task-status',{taskId:id}]);
     }else if(status == "createNewTask"){
@@ -107,7 +115,59 @@ export class MainTaskPage implements OnInit {
 
   runTask(){
     this._enableAllBtn();
-    this.disableTaskBtn = true;
+    // this.disableTaskBtn = true;
+    this._promptQrScan();
+  }
+
+  _promptQrScan(){
+    this.modalService.qrPrompt("No Pokok").then(
+      (value)=>{
+        let sel:UserSelection;
+        sel = value['data'];
+        if(sel == UserSelection.manual){
+          this._manualInput();
+        }else{
+          this.router.navigate(
+            [
+              '/app/tabs/tab2',
+              {
+                returnUrl:"app/tabs/tab1/main-task"
+              }
+            ],
+            {
+              replaceUrl : true
+            }
+          );
+        }
+    });
+  }
+
+  _proceedToWork(){
+    this.router.navigate(
+      [
+        '/app/tabs/tab1/start-work-find',
+        {
+          treeNum:this.scanInput,
+          taskType:this.task,
+        }
+      ],
+      {
+        replaceUrl : true
+      }
+    );
+  }
+
+  _manualInput(){
+    this.modalService.singleInput("No Pokok").then(
+      (value)=>{
+        let form:NgForm;
+        form = value['data'];
+        this.scanInput = form.value.value;
+        if(this.scanInput!=null && this.scanInput != ""){
+          this._proceedToWork();
+        }
+      }
+    );
   }
 
   newTask(){

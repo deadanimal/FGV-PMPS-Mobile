@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { FormsModule } from '@angular/forms';
 import { ManualInputComponent } from './component/manual-input/manual-input.component';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { ManualInputComponent } from './component/manual-input/manual-input.comp
     IonicStorageModule.forRoot(),
     FormsModule,
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    DatePipe],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

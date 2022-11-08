@@ -47,7 +47,7 @@
             </button>
           </div>
         </ion-col>
-        <ion-col *ngIf="role == 'penyelia'" size="6" size-md="4" size-lg="2">
+        <ion-col *ngIf="role == 'penyelia' && task != 'Balut'" size="6" size-md="4" size-lg="2">
           <div>
             <button (click)="newTask()" [disabled]="disableNewTaskBtn" class="btn w-100 mx-auto rounded blueBtn text-center text-white p-2">
               <img height="56px" src="../../../assets/active_task_icon.png">
@@ -58,7 +58,7 @@
       </ion-row>
     </ion-grid>
 
-    <p style="font-size: 14px; font-weight: 600; line-height: 100%; text-align: center; color: rgba(57.37, 57.37, 57.37, 1);">Senarai Rekod</p>
+    <p *ngIf="disableFinishRecord || disableActiveTaskBtn || disableNewRecord || disableTaskBtn" style="font-size: 14px; font-weight: 600; line-height: 100%; text-align: center; color: rgba(57.37, 57.37, 57.37, 1);">Senarai Rekod</p>
     <div *ngIf="disableFinishRecord">
       <div *ngFor="let item of finishedTaskList" class="p-3 my-3 mx-auto w-75 shadow rounded border border-success d-flex justify-content-between align-items-center">
         <p class="h5">Rekod {{item.id}}</p>
@@ -68,7 +68,7 @@
     <div *ngIf="disableActiveTaskBtn">
       <div *ngFor="let item of activeTaskList"class="p-3 my-3 mx-auto w-75 shadow rounded border border-primary d-flex justify-content-between align-items-center">
         <p class="h5">Rekod {{item.id}}</p>
-        <button (click)="viewTask('cp','activeTask',item.id)" class="btn blueBtn text-white">Info</button>
+        <button (click)="viewTask('cp','activeTask',item.tandan_id)" class="btn blueBtn text-white">Info</button>
       </div>
     </div>
     <div *ngIf="disableNewRecord">

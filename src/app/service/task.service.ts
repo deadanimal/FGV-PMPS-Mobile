@@ -55,11 +55,10 @@ export class TaskService {
   }
 
   updateTaskToDone(
-    taskId:String,
     formData:FormData
   ): Observable<TaskResponseModel> {
     return this.http.post<TaskResponseModel>(
-      `${environment.baseUrl}${environment.task}${taskId}/siap`,
+      `${environment.baseUrl}${environment.task}`,
       formData
     );
   }
