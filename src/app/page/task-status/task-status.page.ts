@@ -7,7 +7,7 @@ import { GenericTextModalComponent } from 'src/app/component/generic-text-modal/
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { TaskResponseModel } from 'src/app/model/task-response';
-import { AccountService } from 'src/app/service/account.service';
+import { AccountService, UserRole } from 'src/app/service/account.service';
 import { TaskService } from 'src/app/service/task.service';
 import { PhotoService } from 'src/app/service/photo.service';
 import { environment } from 'src/environments/environment';
@@ -29,7 +29,7 @@ export class TaskStatusPage implements OnInit {
   remark:String;
   svRemark:String;
   photo:Photo;
-  userRole:String;
+  userRole:UserRole;
   viewOnly:boolean = false;
   loadingModal:any;
   serverImage:String;
@@ -69,9 +69,7 @@ export class TaskStatusPage implements OnInit {
         this.taskType = params['taskType'];
       }
     });
-
-    let userDetails = this.accountService.getSessionDetails();
-    this.userRole = userDetails.peranan;
+    this.userRole = this.accountService.getUserRole();
   }
 
   async takePicture() {

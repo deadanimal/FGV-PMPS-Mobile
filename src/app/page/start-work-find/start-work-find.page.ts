@@ -36,6 +36,9 @@ export class StartWorkFindPage implements OnInit {
       if(params['taskType']!=null){
         this.taskType = params['taskType'];
       }
+      if(params['task']!=null){
+        this.taskType = params['task'];
+      }
     });
   }
 
@@ -70,6 +73,7 @@ export class StartWorkFindPage implements OnInit {
                 taskId:this.taskId,
                 returnUrl:"/app/tabs/tab1/start-work-find",
                 treeNum:this.treeNumber,
+                task:this.taskType,
               }
             ],
             {

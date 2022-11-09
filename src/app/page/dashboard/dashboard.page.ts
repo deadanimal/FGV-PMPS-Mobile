@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AccountService } from 'src/app/service/account.service';
+import { AccountService, UserRole } from 'src/app/service/account.service';
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { StorageService } from 'src/app/service/storage.service';
 import { TaskService } from 'src/app/service/task.service';
@@ -16,7 +16,8 @@ export class DashboardPage implements OnInit {
 
   username:String;
   employeeId:String;
-  role:String;
+  role:UserRole;
+  roleShort:String;
   userIconPath:String;
   loadingModal:any;
   wrapTask:boolean;
@@ -38,15 +39,21 @@ export class DashboardPage implements OnInit {
     let loginDetails:LoginResponseModel = this.accountService.getSessionDetails();
     this.username = loginDetails.nama;
     this.employeeId = loginDetails.no_kakitangan;
-    this.role = loginDetails.peranan;
-    if(this.role.indexOf('pekerja')>=0){
+    this.role = this.accountService.getUserRole();
+    if(this.role == UserRole.penyelia_qa){
+      this.roleShort = "Penyelia QC";
+    }else if(this.role == UserRole.petugas_balut){
+      this.roleShort = "Petugas Balut";
+    }
+    if( this.role == UserRole.general_worker || 
+        this.role == UserRole.petugas_balut || 
+        this.role == UserRole.petugas_qa
+      ){
       this.userIconPath="../../../assets/worker_icon.png"
       document.getElementById('iconBg').style.backgroundColor = "#F89521";
-      document.getElementById('iconBgLg').style.backgroundColor = "#F89521";
     }else{
       this.userIconPath="../../../assets/penyelia_icon.png"
       document.getElementById('iconBg').style.backgroundColor = "rgba(64, 19, 28, 1)";
-      document.getElementById('iconBgLg').style.backgroundColor = "rgba(64, 19, 28, 1)";
     }
   }
 
@@ -61,18 +68,21 @@ export class DashboardPage implements OnInit {
   }
 
   async _getTasks(){
-    if(this.role == "pekerja"){
+    if( this.role == UserRole.general_worker || 
+        this.role == UserRole.petugas_balut || 
+        this.role == UserRole.petugas_qa
+      ){
       this.loadingModal= await this.showLoading();
       this.taskService.getTaskById(this.employeeId).subscribe(
         (res:[TaskResponseModel]) => {
           this.loadingModal.dismiss();
           if(res.length > 0){
             res.forEach(element => {
-              if(element.jenis == "balut"){
+              if(element.jenis == "balut" && this.role == UserRole.petugas_balut){
                 this.wrapTask = true;
-              }else if(element.jenis == "debung"){
+              }else if(element.jenis == "debung" && this.role == UserRole.petugas_balut){
                 this.debungTask = true;
-              }else if(element.jenis == "kawal"){
+              }else if(element.jenis == "kawal" && this.role == UserRole.petugas_qa){
                 this.qcTask = true;
               }else if(element.jenis == "tuai"){
                 this.harvestTask = true;
@@ -85,7 +95,13 @@ export class DashboardPage implements OnInit {
           this.loadingModal.dismiss();
         }
       );
-    }else{
+    }else if(this.role == UserRole.penyelia_balut){
+      this.wrapTask = true;
+      this.debungTask = true;
+    }else if(this.role == UserRole.penyelia_qa){
+      this.qcTask = true;
+    }
+    else{
       this.wrapTask = true;
       this.debungTask = true;
       this.qcTask = true;

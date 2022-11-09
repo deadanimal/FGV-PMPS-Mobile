@@ -1,27 +1,28 @@
 <ion-content>
   <div class="h-50" style="position: relative;">
-    <img src="../../../assets/header_bg.png" style="position: absolute; top: 0%; left: 0%;">
+    <img class="w-100" src="../../../assets/header_bg.png" style="position: absolute; top: 0%; left: 0%; z-index: -1;">
     <app-logout-button></app-logout-button>
-    <ion-grid>
-        <ion-row class="w-75 mx-auto ion-justify-content-between">
-          <ion-col size="8">
-            <p class="mainTitle">Ladang<br/>Benih</p>
-            <p class="userInfo">NAMA: {{username}}<br/>NO.KAKITANGAN: {{employeeId}}<br/><span class="text-capitalize">Peranan: {{role}} </span></p>
-          </ion-col>
-          <ion-col size="3">
-            <div style="width: 94px; height: 94px; ">
-              <div id="iconBgLg" style="width: 94px; height: 94px; padding-top: 9px; padding-bottom: 10px; padding-left: 12px; padding-right: 11px; background-color: rgba(64, 19, 28, 1); border-radius: 10px; align-items: center; justify-content: center;">
-                <div class="text-center" style="width: 71px; height: 75px; align-items: center; ">
-                  <div id="iconBg" class="mx-auto" style="width: 48px; height: 48px; background-color: rgba(64, 19, 28, 1); border-radius: 8px;">
-                    <img class="m-auto" src={{userIconPath}}/>
-                  </div>
-                    <p class="my-2 mx-auto text-white text-capitalize">{{role}}</p>
-                </div>
-              </div>
-            </div>
-          </ion-col>
-        </ion-row>
-    </ion-grid>
+    <div class="w-75 mx-auto d-flex flex-column">
+      <div class="d-flex flex-row justify-content-between">
+        <p class="mainTitle">Ladang<br/>Benih</p>
+        <div id="iconBg" class="rounded" style="width: 94px; height: 94px; background-color: rgba(64, 19, 28, 1);">
+          <div class="h-50 mx-auto mt-2 text-center w-100">
+            <img class="m-auto h-100" src={{userIconPath}}/>
+          </div>
+          <div class="h-25 w-100 text-center">
+            <p *ngIf="roleShort == null; else qcSV" class="small my-2 mx-auto text-white text-capitalize">{{role}}</p>
+            <ng-template #qcSV>
+              <p class="small my-2 mx-auto text-white text-capitalize">{{roleShort}}</p>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <p class="userInfo">
+        NAMA: {{username}}<br/>
+        NO.KAKITANGAN: {{employeeId}}<br/>
+        <span class="text-capitalize">Peranan: {{role}} </span>
+      </p>
+    </div>
   </div>
   <div style="position: relative; top: 0%;">
     <ion-grid class="mt-3">

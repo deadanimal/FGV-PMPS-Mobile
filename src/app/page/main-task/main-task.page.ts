@@ -6,7 +6,7 @@ import { LoadingController, ModalController } from '@ionic/angular';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { TaskResponseModel } from 'src/app/model/task-response';
-import { AccountService } from 'src/app/service/account.service';
+import { AccountService, UserRole } from 'src/app/service/account.service';
 import { ModalService } from 'src/app/service/modal.service';
 import { TaskService } from 'src/app/service/task.service';
 
@@ -23,7 +23,7 @@ export class MainTaskPage implements OnInit {
   disableNewTaskBtn:boolean;
   disableTaskBtn:boolean;
   disableActiveTaskBtn:boolean;
-  role:String;
+  role:UserRole;
   taskIconPath:String;
   taskBtnName:String;
   numOfActiveTask:number = 0;
@@ -69,11 +69,12 @@ export class MainTaskPage implements OnInit {
       }
       if(params['scanInput']!=null){
         this.scanInput = params['scanInput'];
+        this._proceedToWork();
        }
     });
 
     let user:LoginResponseModel = this.accountService.getSessionDetails();
-    this.role = user.peranan;
+    this.role = this.accountService.getUserRole();
     this.employeeId = user.no_kakitangan;
   }
 
@@ -121,6 +122,11 @@ export class MainTaskPage implements OnInit {
     this._promptQrScan();
   }
 
+  newCPTask(){
+    this._enableAllBtn();
+    this.disableNewRecord = true;
+  }
+
   _promptQrScan(){
     this.modalService.qrPrompt("No Pokok").then(
       (value)=>{
@@ -128,12 +134,13 @@ export class MainTaskPage implements OnInit {
         sel = value['data'];
         if(sel == UserSelection.manual){
           this._manualInput();
-        }else{
+        }else if(sel == UserSelection.qr_scan){
           this.router.navigate(
             [
               '/app/tabs/tab2',
               {
-                returnUrl:"app/tabs/tab1/main-task"
+                returnUrl:"app/tabs/tab1/main-task",
+                task:this.task,
               }
             ],
             {
@@ -198,6 +205,9 @@ export class MainTaskPage implements OnInit {
           countThis = true;
         }else if(element.jenis == "tuai" && this.task == "Tuai"){
           countThis = true;
+        }else if(element.jenis == "balut" && this.task == "Pendebungaan Terkawal (CP)" && element.status == "sah"){
+          this.numOfNewTask++;
+          this.newTaskList.push(element);
         }
         if(countThis){
           if(element.status == "siap"){
@@ -222,7 +232,11 @@ export class MainTaskPage implements OnInit {
     this.activeTaskList = [];
     this.finishedTaskList = [];
     this.newTaskList = [];
-    if(this.role == "pekerja"){
+    if(
+        this.role == UserRole.general_worker || 
+        this.role == UserRole.petugas_balut || 
+        this.role == UserRole.petugas_qa
+      ){
       this.taskService.getTaskById(this.employeeId).subscribe(
         (res:[TaskResponseModel]) => {
           this.loadingModal.dismiss();

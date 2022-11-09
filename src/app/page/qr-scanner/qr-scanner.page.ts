@@ -12,6 +12,7 @@ export class QrScannerPage implements OnInit {
   treeNum:String;
   taskId:String;
   returnUrl:String;
+  task:String;
 
   constructor(
     private activatedRoute:ActivatedRoute,
@@ -27,6 +28,8 @@ export class QrScannerPage implements OnInit {
         this.taskId = params['taskId'];
       }if(params['returnUrl']!=null){
         this.returnUrl = params['returnUrl'];
+      }if(params['task']!=null){
+        this.task = params['task'];
       }else{
         this.returnUrl = 'app/tabs/tab1/start-work-find';
       }
@@ -57,10 +60,13 @@ export class QrScannerPage implements OnInit {
     // if the result has content
     if (result.hasContent) {
       // console.log(result.content); // log the raw scanned content
+      let scanResult = result.content.replace('http://fgv.prototype.com.my/pengurusan-pokok-induk/pokok/edit/',""); // for pokok
       if(this.treeNum!=null){
-        this.router.navigate([this.returnUrl,{treeNum:this.treeNum,regNo:result.content,taskId:this.taskId}]);
+        this.router.navigate([this.returnUrl,{task:this.task,treeNum:this.treeNum,regNo:scanResult,taskId:this.taskId}]);
+      }else if(this.task != null){
+        this.router.navigate([this.returnUrl,{task:this.task,taskId:this.taskId,scanInput:scanResult}]);
       }else{
-        this.router.navigate([this.returnUrl,{treeNum:result.content,taskId:this.taskId,scanInput:result.content}]);
+        this.router.navigate([this.returnUrl,{treeNum:scanResult,taskId:this.taskId,scanInput:scanResult}]);
       }
     }
     document.querySelector('body').classList.remove('scanner-active');
