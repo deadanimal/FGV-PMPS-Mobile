@@ -35,6 +35,8 @@ export class TaskStatusPage implements OnInit {
   serverImage:String;
   taskId:String;
   taskType:String;
+  time:String;
+  posponedDay:String;
 
   constructor(
     private photoService:PhotoService,
@@ -50,6 +52,7 @@ export class TaskStatusPage implements OnInit {
 
   ngOnInit() {
     this.date = this.datePipe.transform(Date.now(),"dd/MM/yyyy");
+    this.time = this.datePipe.transform(Date.now(),"HH:mm a");
     this.name = this.accountService.getSessionDetails().nama;
     this.activatedRoute.params.subscribe(params => {
       if(params['taskId']!=null){
@@ -102,7 +105,7 @@ export class TaskStatusPage implements OnInit {
     const blob = await response.blob();
     formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
     formData.append('catatan_petugas',this.remark.toString());
-    formData.append('jenis',this.taskType.toString());
+    formData.append('jenis',this.taskType.toString().toLowerCase());
     formData.append('petugas_id',this.accountService.getSessionDetails().no_kakitangan);
     formData.append('tarikh',this.date.toString());
     formData.append('no_daftar',this.regNo.toString());
@@ -114,23 +117,27 @@ export class TaskStatusPage implements OnInit {
       async (res:TaskResponseModel) => {
         this.loadingModal.dismiss();
         if(res!=null){
-          this.modalService.continuePrompt().then(
-            (value)=>{
-              if(value['data'] == UserContinueSelection.no){
-                this._promptCompleted();
-              }else{
-                this.router.navigate(
-                  [
-                    '/app/tabs/tab1/start-work-find',
-                    {
-                      taskId:this.taskId,
-                      treeNum:this.treeId,
-                    }
-                  ]
-                );
+          if(this.taskType == 'debung'){
+            this._promptCompleted();
+          }else{
+            this.modalService.continuePrompt().then(
+              (value)=>{
+                if(value['data'] == UserContinueSelection.no){
+                  this._promptCompleted();
+                }else{
+                  this.router.navigate(
+                    [
+                      '/app/tabs/tab1/start-work-find',
+                      {
+                        taskId:this.taskId,
+                        treeNum:this.treeId,
+                      }
+                    ]
+                  );
+                }
               }
-            }
-          );
+            );
+          }
           // const modal= await this.modalCtrl.create({
           //   component: GenericTextModalComponent,
           //   componentProps:{
@@ -255,6 +262,29 @@ export class TaskStatusPage implements OnInit {
           this.loadingModal.dismiss();
         }
     );
+  }
+
+  pospone(){
+    this.modalService.yesNoPrompt("Anjak hari?").then((value)=>{
+      let user_selection:UserContinueSelection = value['data'];
+      if(user_selection == UserContinueSelection.yes){
+        this.modalService.posponePrompt().then((value1)=>{
+          this.posponedDay = value1['data'];
+          if(this.posponedDay!= null){
+            this.modalService.successPrompt("Proses telah berjaya dianjakkan kepada +"+this.posponedDay+" hari").then((value1)=>{
+              this.router.navigateByUrl(
+                '/app/tabs/tab1',
+                {
+                  replaceUrl : true
+                }
+              );
+            });
+          }
+        });
+      }else if(user_selection == UserContinueSelection.no){
+
+      }
+    });
   }
 
 }

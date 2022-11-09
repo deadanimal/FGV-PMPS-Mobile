@@ -41,6 +41,7 @@ export class NewTaskInfoPage implements OnInit {
     this.activatedRoute.params.subscribe(params => {
       if(params['scanInput']!=null){
        this.scanInput = params['scanInput'];
+      //  todo: check for the scan qr code tree id, if ok proceed
       }
       if(params['taskId']!=null){
         this.taskId = params['taskId'];
@@ -82,10 +83,10 @@ export class NewTaskInfoPage implements OnInit {
   _proceedToWork(){
     this.router.navigate(
       [
-        '/app/tabs/tab1/start-work-find',
+        '/app/tabs/tab1/reg-status',
         {
           taskId:this.taskId,
-          treeNum:this.scanInput,
+          treeNum:this.treeNumber,
         }
       ],
       {
@@ -95,7 +96,7 @@ export class NewTaskInfoPage implements OnInit {
   }
 
   _manualInput(){
-    this.modalService.singleInput("No Daftar").then(
+    this.modalService.singleInput("No Pokok").then(
       (value)=>{
         let form:NgForm;
         form = value['data'];

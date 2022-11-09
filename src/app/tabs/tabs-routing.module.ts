@@ -49,6 +49,10 @@ const routes: Routes = [
         loadChildren: () => import('../page/defect/defect.module').then(m => m.DefectPageModule)
       },
       {
+        path: 'tab1/reg-status',
+        loadChildren: () => import('../page/register-status/register-status.module').then(m => m.RegisterStatusPageModule)
+      },
+      {
         path: '',
         redirectTo: 'tabs/tab1/',
         pathMatch: 'full'

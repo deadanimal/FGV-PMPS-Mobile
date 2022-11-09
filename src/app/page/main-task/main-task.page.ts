@@ -86,14 +86,16 @@ export class MainTaskPage implements OnInit {
   }
 
   viewTask(taskId:String,status:String,id:number){
-    if(status == "newTask"){
-      this.router.navigate(['app/tabs/tab1/new-task',{taskId:id}]);
-    }else if(status == "completed"){
+    if(status == "completed"){
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId,tandanId:id}]);
     }else if(status == "activeTask"){
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId,tandanId:id}]);
     }else if(status == "activeTaskSV"){
-      this.router.navigate(['app/tabs/tab1/task-status',{taskId:id}]);
+      if(taskId == "cp"){
+        this.router.navigate(['app/tabs/tab1/new-task',{taskId:id}]);
+      }else{
+        this.router.navigate(['app/tabs/tab1/task-status',{taskId:id}]);
+      }
     }else if(status == "createNewTask"){
       this.router.navigate(['app/tabs/tab1/create-new-task',{taskType:this.task}]);
     }else if(status == "overdueTask"){
@@ -216,7 +218,7 @@ export class MainTaskPage implements OnInit {
           }else if(element.status == "sah"){
             this.numOfFinishTask++;
             this.finishedTaskList.push(element);
-          }else if(element.status == "dicipta"){
+          }else if(element.status == "dicipta" && element.jenis != "debung"){
             this.numOfNewTask++;
             this.newTaskList.push(element);
             this.hasNewTask = true;

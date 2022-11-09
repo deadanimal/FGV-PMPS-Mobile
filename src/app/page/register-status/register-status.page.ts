@@ -1,4 +1,14 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LoadingController } from '@ionic/angular';
+import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
+import { TandanResponse } from 'src/app/model/tandan-response';
+import { TaskResponseModel } from 'src/app/model/task-response';
+import { AccountService } from 'src/app/service/account.service';
+import { ModalService } from 'src/app/service/modal.service';
+import { TaskService } from 'src/app/service/task.service';
 
 @Component({
   selector: 'app-register-status',
@@ -11,14 +21,127 @@ export class RegisterStatusPage implements OnInit {
   cycle:String;
   status:String;
   age:String;
+  taskId:String;
+  treeNumber:String;
+  scanInput:String;
+  loadingModal:any;
 
-  constructor() { }
+  constructor(
+    private activatedRoute:ActivatedRoute,
+    private taskService:TaskService,
+    private modalService:ModalService,
+    private loadingCtrl: LoadingController,
+    private router: Router,
+  ) { }
 
   ngOnInit() {
-    this.regNumber = "22C 0061 25C1";
-    this.cycle = "Balut";
-    this.status="Pass";
-    this.age="140 Hari"
+    this.regNumber = "-";
+    this.cycle = "-";
+    this.status="-";
+    this.age="-";
+
+    this.activatedRoute.params.subscribe(params => {
+      if(params['taskId']!=null){
+        this.taskId = params['taskId'];
+        this._getTask();
+      }
+      if(params['treeNum']!=null){
+        this.treeNumber = params['treeNum'];
+      } 
+      if(params['scanInput']!=null){
+        this.scanInput = params['scanInput'];
+      }
+
+      if(this.scanInput != null){
+        this.regNumber = this.scanInput;
+        this._proceedToWork();
+      }
+    });
+  }
+
+  async _getTask(){
+    this.loadingModal= await this.showLoading();
+    this.taskService.getTask(this.taskId).subscribe(
+      (res:TaskResponseModel) => {
+        this.loadingModal.dismiss();
+        this._getTandanInfo(res.tandan_id.toString());
+      },
+      (err:HttpErrorResponse) => {
+        this.loadingModal.dismiss();
+      }
+    );
+  }
+
+  async _getTandanInfo(tandan_id:String){
+    this.loadingModal= await this.showLoading();
+    this.taskService.getTandanById(tandan_id).subscribe(
+      (res:TandanResponse) => {
+        this.loadingModal.dismiss();
+        this.regNumber = res.no_daftar;
+        this.cycle = res.kitaran;
+        this.status=res.status_tandan;
+        this.age=res.umur+" Hari";
+      },
+      (err:HttpErrorResponse) => {
+        this.loadingModal.dismiss();
+      }
+    );
+  }
+
+  async showLoading():Promise<HTMLIonLoadingElement> {
+    const loading = await this.loadingCtrl.create();
+    loading.present();
+    return loading;
+  }
+
+  promptScan(){
+    this.modalService.qrPrompt("No Daftar").then(
+      (value)=>{
+        let sel:UserSelection;
+        sel = value['data'];
+        if(sel == UserSelection.manual){
+          this._manualInput();
+        }else{
+          this.router.navigate(
+            [
+              '/app/tabs/tab2',
+              {
+                taskId:this.taskId,
+                returnUrl:"/app/tabs/tab1/reg-status",
+                treeNum:this.treeNumber,
+              }
+            ],
+            {
+              replaceUrl : true
+            }
+          );
+        }
+    });
+  }
+
+  _manualInput(){
+    this.modalService.singleInput("No Daftar").then(
+      (value)=>{
+        let form:NgForm;
+        form = value['data'];
+        // todo: check for regNumber before proceed to next step
+        this.regNumber = form.value.value;
+        this._proceedToWork();
+      }
+    );
+  }
+
+  _proceedToWork(){
+    this.router.navigate(
+      [
+        'app/tabs/tab1/task-status',
+        {
+          regNumber:this.regNumber,
+          treeNumber:this.treeNumber,
+          taskType:"debung",
+        }
+      ]
+    );
   }
 
 }

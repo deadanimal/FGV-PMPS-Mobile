@@ -17,21 +17,25 @@
   </div>
 
   <form #form="ngForm" class="mx-auto my-2" style="max-width: 300px;">
-    <ion-item lines="full">
+    <ion-item *ngIf="taskType == 'Balut'" lines="full">
       <ion-label position="floating">Petugas Balut</ion-label>
       <ion-input type="text" [(ngModel)]="name" name="name" required [readonly]="true"></ion-input>
     </ion-item>
-    <ion-item lines="full">
+    <ion-item *ngIf="taskType == 'Balut'" lines="full">
       <ion-label position="floating">No Pokok</ion-label>
       <ion-input type="text" [(ngModel)]="treeId" name="treeId" required [readonly]="true"></ion-input>
     </ion-item>
-    <ion-item lines="full">
+    <ion-item *ngIf="taskType == 'Balut'" lines="full">
       <ion-label position="floating">No Daftar</ion-label>
       <ion-input type="text" [(ngModel)]="regNo" name="regNo" required [readonly]="true"></ion-input>
     </ion-item>
     <ion-item lines="full">
       <ion-label position="floating">Tarikh</ion-label>
       <ion-input type="text" [(ngModel)]="date" name="date" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="taskType == 'debung'" lines="full">
+      <ion-label position="floating">Masa</ion-label>
+      <ion-input type="text" [(ngModel)]="time" name="time" required [readonly]="true"></ion-input>
     </ion-item>
     <ion-item lines="full">
       <ion-label position="floating">Catatan</ion-label>
@@ -54,8 +58,18 @@
       <p class="m-auto">TERIMA</p>
     </button>
 
-    <button [disabled]="!form.valid || photo ==null" (click)="submitTask()" *ngIf="userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Kawalan Kualiti'" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="!form.valid || photo ==null" (click)="submitTask()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Kawalan Kualiti') && taskType == 'Balut'" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
+      <p class="m-auto">Hantar</p>
+    </button>
+
+    <button (click)="pospone()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' ) && taskType == 'debung'" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+      <ion-icon size="large" color="white" name="add-circle-outline"></ion-icon>
+      <p class="m-auto">Anjak</p>
+    </button>
+
+    <button [disabled]="!form.valid || photo ==null" (click)="submitTask()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' ) && taskType == 'debung'" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
+      <ion-icon size="large" color="white" name="checkmark-circle-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>
 
