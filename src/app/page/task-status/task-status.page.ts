@@ -111,7 +111,40 @@ export class TaskStatusPage implements OnInit {
     formData.append('no_daftar',this.regNo.toString());
     formData.append('pokok_id',this.treeId.toString());
     formData.append('catatan',this.remark.toString());
+    this.taskService.createTask(
+      formData
+    ).subscribe(
+      async (res:TaskResponseModel) => {
+        this.loadingModal.dismiss();
+        if(res!=null){
+          this._updateTaskToDone(res);
+        }else{
+          const modal= await this.modalCtrl.create({
+            component: GenericTextModalComponent,
+            componentProps:{
+              value:"Failed"
+            },
+            cssClass:"small-modal",
+            backdropDismiss:false,
+          });
+          modal.present();
+        }
+      },
+      (err:HttpErrorResponse) => {
+        this.loadingModal.dismiss();
+      }
+    );
+  }
+
+  async _updateTaskToDone(task:TaskResponseModel){
+    this.loadingModal= await this.showLoading();
+    const formData = new FormData();
+    const response = await fetch(this.photo.dataUrl);
+    const blob = await response.blob();
+    formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
+    formData.append('catatan_petugas',this.remark.toString());
     this.taskService.updateTaskToDone(
+      task.id.toString(),
       formData
     ).subscribe(
       async (res:TaskResponseModel) => {
@@ -138,24 +171,6 @@ export class TaskStatusPage implements OnInit {
               }
             );
           }
-          // const modal= await this.modalCtrl.create({
-          //   component: GenericTextModalComponent,
-          //   componentProps:{
-          //     value:"Success"
-          //   },
-          //   cssClass:"small-modal",
-          //   backdropDismiss:false,
-          // });
-          // modal.present();
-          // setTimeout(() => {
-          //   modal.dismiss();
-          //   this.router.navigateByUrl(
-          //     '/app/tabs/tab1',
-          //     {
-          //       replaceUrl : true
-          //     }
-          //   );
-          // },500);
         }else{
           const modal= await this.modalCtrl.create({
             component: GenericTextModalComponent,
