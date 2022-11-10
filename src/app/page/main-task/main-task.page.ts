@@ -197,39 +197,125 @@ export class MainTaskPage implements OnInit {
   }
 
   _populateData(res:[TaskResponseModel]){
-    if(res.length > 0){
-      res.forEach(element => {
-        let countThis:boolean = false;
-        if(element.jenis.toLowerCase() == "balut" && this.task == "Balut"){
-          countThis = true;
-        }else if(element.jenis == "debung" && this.task == "Pendebungaan Terkawal (CP)"){
-          countThis = true;
-        }else if(element.jenis == "kawal" && this.task == "Kawalan Kualiti (QC)"){
-          countThis = true;
-        }else if(element.jenis == "tuai" && this.task == "Tuai"){
-          countThis = true;
-        }else if((element.jenis == "balut" && this.role ==UserRole.petugas_balut) && this.task == "Pendebungaan Terkawal (CP)" && element.status == "sah"){
-          this.numOfNewTask++;
-          this.newTaskList.push(element);
-        }
-        if(countThis){
-          if(element.status == "siap"){
-            this.numOfActiveTask++;
-            this.activeTaskList.push(element);
-          }else if(element.status == "sah"){
-            this.numOfFinishTask++;
-            this.finishedTaskList.push(element);
-          }else if(element.status == "dicipta" && element.jenis == "debung" && this.task == "Pendebungaan Terkawal (CP)"){
-            this.numOfNewTask++;
-            this.newTaskList.push(element);
-          }else if(element.status == "dicipta" && element.jenis != "debung"){
+    this.activeTaskList = [];
+    this.finishedTaskList = [];
+    this.newTaskList = [];
+    if(this.task == "Balut"){
+      if(this.role == UserRole.penyelia_balut){
+        this._populateDataForBalutSvTask(res);
+      }else if(this.role == UserRole.petugas_balut){
+        this._populateDataForBalutWorkerTask(res);
+      }
+    }else if(this.task == "Pendebungaan Terkawal (CP)"){
+      if(this.role == UserRole.penyelia_balut){
+        this._populateDataForCPSvTask(res);
+      }else if(this.role == UserRole.petugas_balut){
+        this._populateDataForCPWorkerTask(res);
+      }
+    }else{
+      if(res.length > 0){
+        res.forEach(element => {
+          let countThis:boolean = false;
+          if(element.jenis.toLowerCase() == "balut" && this.task == "Balut"){
+            countThis = true;
+          }else if(element.jenis == "debung" && this.task == "Pendebungaan Terkawal (CP)"){
+            countThis = true;
+          }else if(element.jenis == "kawal" && this.task == "Kawalan Kualiti (QC)"){
+            countThis = true;
+          }else if(element.jenis == "tuai" && this.task == "Tuai"){
+            countThis = true;
+          }else if((element.jenis == "balut" && this.role ==UserRole.petugas_balut) && this.task == "Pendebungaan Terkawal (CP)" && element.status == "sah"){
             this.numOfNewTask++;
             this.newTaskList.push(element);
           }
-          this.hasNewTask = true;
+          if(countThis){
+            if(element.status == "siap"){
+              this.numOfActiveTask++;
+              this.activeTaskList.push(element);
+            }else if(element.status == "sah"){
+              this.numOfFinishTask++;
+              this.finishedTaskList.push(element);
+            }else if(element.status == "dicipta" && element.jenis == "debung" && this.task == "Pendebungaan Terkawal (CP)"){
+              this.numOfNewTask++;
+              this.newTaskList.push(element);
+            }else if(element.status == "dicipta" && element.jenis != "debung"){
+              this.numOfNewTask++;
+              this.newTaskList.push(element);
+            }
+            this.hasNewTask = true;
+          }
+        });
+      }else{
+      }
+    }
+  }
+
+  _populateDataForBalutSvTask(res:[TaskResponseModel]){
+    if(res.length > 0){
+      res.forEach(el => {
+        if(el.jenis.toLowerCase() == "balut"){
+          if(el.status == "siap"){
+            this.numOfNewTask++;
+            this.newTaskList.push(el);
+          } else if(el.status == "sah"){
+            this.numOfFinishTask++;
+            this.finishedTaskList.push(el);
+          }
         }
       });
-    }else{
+    }
+  }
+
+  _populateDataForCPSvTask(res:[TaskResponseModel]){
+    if(res.length > 0){
+      res.forEach(el => {
+        if(el.jenis.toLowerCase() == "debung"){
+          if(el.status == "siap"){
+            this.numOfNewTask++;
+            this.newTaskList.push(el);
+          } else if(el.status == "sah"){
+            this.numOfFinishTask++;
+            this.finishedTaskList.push(el);
+          }
+        }
+      });
+    }
+  }
+
+  _populateDataForBalutWorkerTask(res:[TaskResponseModel]){
+    if(res.length > 0){
+      res.forEach(el => {
+        if(el.jenis.toLowerCase() == "balut"){
+          if(el.status == "siap"){
+            this.numOfActiveTask++;
+            this.activeTaskList.push(el);
+          } else if(el.status == "sah"){
+            this.numOfFinishTask++;
+            this.finishedTaskList.push(el);
+          }
+        }
+      });
+    }
+  }
+
+  _populateDataForCPWorkerTask(res:[TaskResponseModel]){
+    if(res.length > 0){
+      res.forEach(el => {
+        if(el.jenis.toLowerCase() == "debung"){
+          if(el.status == "siap"){
+            this.numOfActiveTask++;
+            this.activeTaskList.push(el);
+          } else if(el.status == "sah"){
+            this.numOfFinishTask++;
+            this.finishedTaskList.push(el);
+          }
+        }else if(el.jenis.toLowerCase() == "balut"){
+          if(el.status == "sah"){
+            this.numOfNewTask++;
+            this.newTaskList.push(el);
+          }
+        }
+      });
     }
   }
 

@@ -149,6 +149,18 @@
           <button (click)="viewTask('cp','activeTaskSV',item.id)" class="btn orangeBtn text-white">Info</button>
         </div>
       </div>
+      <div *ngIf="disableActiveTaskBtn">
+        <div *ngFor="let item of activeTaskList"class="p-3 my-3 mx-auto w-75 shadow rounded border border-warning d-flex justify-content-between align-items-center">
+          <p class="h5">Rekod {{item.id}}</p>
+          <button (click)="viewTask('cp','completed',item.id)" class="btn blueBtn text-white">Info</button>
+        </div>
+      </div>
+      <div *ngIf="disableFinishRecord">
+        <div *ngFor="let item of finishedTaskList" class="p-3 my-3 mx-auto w-75 shadow rounded border border-success d-flex justify-content-between align-items-center">
+          <p class="h5">Rekod {{item.id}}</p>
+          <button (click)="viewTask('balut','completed',item.tandan_id)" class="btn greenBtn text-white">Info</button>
+        </div>
+      </div>
     </div>
   </div>
 </ion-content>

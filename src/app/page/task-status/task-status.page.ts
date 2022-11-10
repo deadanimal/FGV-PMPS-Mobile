@@ -196,10 +196,15 @@ export class TaskStatusPage implements OnInit {
         this.loadingModal.dismiss();
         this.date = res.tarikh;
         this.remark = res.catatan_petugas;
-        this._getUserInfo(res.petugas_id.toString());
-        this._getTandanInfo(res.tandan_id.toString());
         if(res.url_gambar!=null){
           this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
+        }
+        this._getUserInfo(res.petugas_id.toString());
+        if(res.tandan_id != null){
+          this._getTandanInfo(res.tandan_id.toString());
+        }else{
+          this.treeId = "-";
+          this.regNo = "-";
         }
       },
       (err:HttpErrorResponse) => {
