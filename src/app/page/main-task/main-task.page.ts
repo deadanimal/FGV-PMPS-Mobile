@@ -94,7 +94,8 @@ export class MainTaskPage implements OnInit {
       if(taskId == "cp"){
         this.router.navigate(['app/tabs/tab1/new-task',{taskId:id}]);
       }else{
-        this.router.navigate(['app/tabs/tab1/task-status',{taskId:id}]);
+        this.router.navigate(['app/tabs/tab1/task-status',{taskId:id,
+          taskType:taskId}]);
       }
     }else if(status == "createNewTask"){
       this.router.navigate(['app/tabs/tab1/create-new-task',{taskType:this.task}]);
@@ -199,7 +200,7 @@ export class MainTaskPage implements OnInit {
     if(res.length > 0){
       res.forEach(element => {
         let countThis:boolean = false;
-        if(element.jenis == "balut" && this.task == "Balut"){
+        if(element.jenis.toLowerCase() == "balut" && this.task == "Balut"){
           countThis = true;
         }else if(element.jenis == "debung" && this.task == "Pendebungaan Terkawal (CP)"){
           countThis = true;
@@ -207,7 +208,7 @@ export class MainTaskPage implements OnInit {
           countThis = true;
         }else if(element.jenis == "tuai" && this.task == "Tuai"){
           countThis = true;
-        }else if(element.jenis == "balut" && this.task == "Pendebungaan Terkawal (CP)" && element.status == "sah"){
+        }else if((element.jenis == "balut" && this.role ==UserRole.petugas_balut) && this.task == "Pendebungaan Terkawal (CP)" && element.status == "sah"){
           this.numOfNewTask++;
           this.newTaskList.push(element);
         }
@@ -218,11 +219,14 @@ export class MainTaskPage implements OnInit {
           }else if(element.status == "sah"){
             this.numOfFinishTask++;
             this.finishedTaskList.push(element);
+          }else if(element.status == "dicipta" && element.jenis == "debung" && this.task == "Pendebungaan Terkawal (CP)"){
+            this.numOfNewTask++;
+            this.newTaskList.push(element);
           }else if(element.status == "dicipta" && element.jenis != "debung"){
             this.numOfNewTask++;
             this.newTaskList.push(element);
-            this.hasNewTask = true;
           }
+          this.hasNewTask = true;
         }
       });
     }else{

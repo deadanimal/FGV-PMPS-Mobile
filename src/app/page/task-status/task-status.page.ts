@@ -69,7 +69,7 @@ export class TaskStatusPage implements OnInit {
         this.treeId = params['treeNumber'];
       }
       if(params['taskType']!=null){
-        this.taskType = params['taskType'];
+        this.taskType = params['taskType'].toLowerCase();
       }
     });
     this.userRole = this.accountService.getUserRole();
