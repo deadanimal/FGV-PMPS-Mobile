@@ -45,7 +45,7 @@ export class TandanService {
   ){
     this.loadingModal = this.showLoading();
     this.http.get<TandanResponse>(
-      `${environment.baseUrl}${environment.bagging}${tandanId}`
+      `${environment.baseUrl}${environment.tandanInfo}${tandanId}`
     ).subscribe(
       async (res:TandanResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()

@@ -1,9 +1,10 @@
-import { HttpErrorResponse } from '@angular/common/http';
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
+import { PokokResponse } from 'src/app/model/pokok-respons';
 import { TandanResponse } from 'src/app/model/tandan-response';
-import { TaskService } from 'src/app/service/task.service';
+import { TandanService } from 'src/app/service/tasks/tandan.service';
+import { TreeService } from 'src/app/service/tasks/tree.service';
 
 @Component({
   selector: 'app-finished-task',
@@ -20,8 +21,9 @@ export class FinishedTaskPage implements OnInit {
   loadingModal:any;
   constructor(
     private activatedRoute:ActivatedRoute,
-    private taskService:TaskService,
-    private loadingCtrl: LoadingController,
+    private tandanService: TandanService,
+    private treeService: TreeService,
+    private datePipe: DatePipe,
   ) { }
 
   ngOnInit() {
@@ -33,28 +35,23 @@ export class FinishedTaskPage implements OnInit {
   }
 
   async _getTandanInfo(tandanId:String){
-    this.loadingModal= await this.showLoading();
-    this.taskService.getTandanById(tandanId).subscribe(
-      (res:TandanResponse) => {
-        this.loadingModal.dismiss();
-        if(res!=null){
-          this.treeNumber = res.pokok_id.toString();
-          this.regNo = res.no_daftar;
-          this.age = res.umur.toString();
-          this.cycle = res.kitaran;
-          this.status = res.status_tandan;
-        }
-      },
-      (err:HttpErrorResponse) => {
-        this.loadingModal.dismiss();
-      }
-    );
+    this.tandanService.getById(tandanId,(res:TandanResponse)=>{
+      this.regNo = res.no_daftar;
+      this.regNo = res.no_daftar;
+      this.age = res.umur? res.umur.toString(): this._calculateAge(res.tarikh_daftar).toString();
+      this.cycle = res.kitaran.toUpperCase();
+      this.status = res.status_tandan? res.status_tandan:"-";
+      this.treeService.getById(res.pokok_id.toString(),(treeRes:PokokResponse)=>{
+        this.treeNumber = treeRes.no_pokok;
+      });
+    });
   }
 
-  async showLoading():Promise<HTMLIonLoadingElement> {
-    const loading = await this.loadingCtrl.create();
-    loading.present();
-    return loading;
+  _calculateAge(prvDate:string){
+    let currentDate = Date.parse(this.datePipe.transform(Date.now(),"yyyy-MM-dd"));
+    let rawStringArray = prvDate.split("/");
+    let prevDate = Date.parse(rawStringArray[2]+"-"+rawStringArray[1]+"-"+rawStringArray[0]);
+    return currentDate - prevDate;
   }
 
 }
