@@ -4,11 +4,13 @@ import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
+import { BaggingTask } from 'src/app/model/bagging-task';
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { TaskResponseModel } from 'src/app/model/task-response';
 import { AccountService, UserRole } from 'src/app/service/account.service';
 import { ModalService } from 'src/app/service/modal.service';
 import { TaskService } from 'src/app/service/task.service';
+import { BaggingService } from 'src/app/service/tasks/bagging.service';
 
 @Component({
   selector: 'app-main-task',
@@ -33,9 +35,9 @@ export class MainTaskPage implements OnInit {
   scanInput:String;
   loadingModal:any;
   hasNewTask:boolean = false;
-  activeTaskList:TaskResponseModel[];
-  finishedTaskList:TaskResponseModel[];
-  newTaskList:TaskResponseModel[];
+  activeTaskList:any[];
+  finishedTaskList:any[];
+  newTaskList:any[];
 
   constructor(
     private activatedRoute:ActivatedRoute,
@@ -44,6 +46,7 @@ export class MainTaskPage implements OnInit {
     private taskService:TaskService,
     private loadingCtrl: LoadingController,
     private modalService: ModalService,
+    private baggingService:BaggingService,
   ) { }
 
   ngOnInit() {
@@ -78,7 +81,7 @@ export class MainTaskPage implements OnInit {
     this.employeeId = user.no_kakitangan;
   }
 
-  ionViewWillEnter() {
+  ionViewDidEnter() {
     this.numOfActiveTask = 0;
     this.numOfFinishTask = 0;
     this.numOfNewTask = 0;
@@ -319,7 +322,36 @@ export class MainTaskPage implements OnInit {
     }
   }
 
-  async _getTask(){
+  _getBaggingTask(){
+    if(
+      this.role == UserRole.general_worker || 
+      this.role == UserRole.petugas_balut || 
+      this.role == UserRole.petugas_qa
+    ){
+      this.baggingService.getById(this.employeeId,(res:[BaggingTask])=>{
+        res.forEach(el => {
+          if(el.pengesah_id == null){
+            this.numOfActiveTask++;
+            this.activeTaskList.push(el);
+          }else{
+            this.numOfFinishTask++;
+            this.finishedTaskList.push(el);
+          }
+        });
+      });
+    }
+  }
+
+  _getTask(){
+    this.activeTaskList = [];
+    this.finishedTaskList = [];
+    this.newTaskList = [];
+    if(this.task == 'Balut'){
+      this._getBaggingTask();
+    }
+  }
+
+  async _getTaskOld(){
     this.loadingModal= await this.showLoading();
     this.activeTaskList = [];
     this.finishedTaskList = [];

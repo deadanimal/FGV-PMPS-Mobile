@@ -79,6 +79,7 @@ export class BaggingService {
     tandanForm.append('no_daftar',formData.get("no_daftar"));
     tandanForm.append('tarikh_daftar',formData.get("tarikh_daftar"));
     tandanForm.append('pokok_id',formData.get("pokok_id"));
+    tandanForm.append('kitaran',formData.get("kitaran"));
     this.tandanService.create(
       tandanForm,
       (tandanRes:TandanResponse)=>{

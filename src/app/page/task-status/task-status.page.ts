@@ -14,6 +14,10 @@ import { environment } from 'src/environments/environment';
 import { ModalService } from 'src/app/service/modal.service';
 import { UserContinueSelection } from 'src/app/component/continue-prompt/continue-prompt.component';
 import { DatePipe } from '@angular/common';
+import { TreeService } from 'src/app/service/tasks/tree.service';
+import { PokokResponse } from 'src/app/model/pokok-respons';
+import { BaggingService } from 'src/app/service/tasks/bagging.service';
+import { BaggingTask } from 'src/app/model/bagging-task';
 
 @Component({
   selector: 'app-task-status',
@@ -24,6 +28,7 @@ export class TaskStatusPage implements OnInit {
 
   name:String;
   treeId:String;
+  treeNum:String;
   regNo:String;
   date:String;
   remark:String;
@@ -48,6 +53,8 @@ export class TaskStatusPage implements OnInit {
     private router: Router,
     private modalService: ModalService,
     private datePipe: DatePipe,
+    private treeService: TreeService,
+    private baggingService: BaggingService,
   ) { }
 
   ngOnInit() {
@@ -67,6 +74,7 @@ export class TaskStatusPage implements OnInit {
       }
       if(params['treeNumber']!=null){
         this.treeId = params['treeNumber'];
+        this._getTreeNumber();
       }
       if(params['taskType']!=null){
         this.taskType = params['taskType'].toLowerCase();
@@ -99,94 +107,50 @@ export class TaskStatusPage implements OnInit {
   }
 
   async submitTask(){
-    this.loadingModal= await this.showLoading();
     const formData = new FormData();
     const response = await fetch(this.photo.dataUrl);
     const blob = await response.blob();
-    formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
-    formData.append('catatan_petugas',this.remark.toString());
-    formData.append('jenis',this.taskType.toString().toLowerCase());
-    formData.append('petugas_id',this.accountService.getSessionDetails().no_kakitangan);
-    formData.append('tarikh',this.date.toString());
+    // for tandan
     formData.append('no_daftar',this.regNo.toString());
+    formData.append('tarikh_daftar',this.date.toString());
     formData.append('pokok_id',this.treeId.toString());
-    formData.append('catatan',this.remark.toString());
-    this.taskService.createTask(
-      formData
-    ).subscribe(
-      async (res:TaskResponseModel) => {
-        this.loadingModal.dismiss();
-        if(res!=null){
-          this._updateTaskToDone(res);
-        }else{
-          const modal= await this.modalCtrl.create({
-            component: GenericTextModalComponent,
-            componentProps:{
-              value:"Failed"
-            },
-            cssClass:"small-modal",
-            backdropDismiss:false,
-          });
-          modal.present();
-        }
-      },
-      (err:HttpErrorResponse) => {
-        this.loadingModal.dismiss();
-      }
-    );
-  }
-
-  async _updateTaskToDone(task:TaskResponseModel){
-    this.loadingModal= await this.showLoading();
-    const formData = new FormData();
-    const response = await fetch(this.photo.dataUrl);
-    const blob = await response.blob();
+    formData.append('kitaran',this.taskType.toString());
+    // for bagging
     formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
-    formData.append('catatan_petugas',this.remark.toString());
-    this.taskService.updateTaskToDone(
-      task.id.toString(),
-      formData
-    ).subscribe(
-      async (res:TaskResponseModel) => {
-        this.loadingModal.dismiss();
-        if(res!=null){
-          if(this.taskType == 'debung'){
-            this._promptCompleted();
-          }else{
-            this.modalService.continuePrompt().then(
-              (value)=>{
-                if(value['data'] == UserContinueSelection.no){
-                  this._promptCompleted();
-                }else{
-                  this.router.navigate(
-                    [
-                      '/app/tabs/tab1/start-work-find',
-                      {
-                        taskId:this.taskId,
-                        treeNum:this.treeId,
-                      }
-                    ]
-                  );
-                }
-              }
-            );
+    formData.append('id_sv_balut',this.accountService.getSessionDetails().no_kakitangan);
+    formData.append('catatan',this.remark.toString());
+
+    this.baggingService.createTask(formData,async (res:BaggingTask)=>{
+      if(res==null){
+        const modal= await this.modalCtrl.create({
+          component: GenericTextModalComponent,
+          componentProps:{
+            value:"Failed"
+          },
+          cssClass:"small-modal",
+          backdropDismiss:false,
+        });
+        modal.present();
+      }else{
+        this.modalService.continuePrompt().then(
+          (value)=>{
+            if(value['data'] == UserContinueSelection.no){
+              this._promptCompleted();
+            }else{
+              this.router.navigate(
+                [
+                  '/app/tabs/tab1/start-work-find',
+                  {
+                    treeNum:this.treeId,
+                    taskType:this.taskType,
+                  }
+                ]
+              );
+            }
           }
-        }else{
-          const modal= await this.modalCtrl.create({
-            component: GenericTextModalComponent,
-            componentProps:{
-              value:"Failed"
-            },
-            cssClass:"small-modal",
-            backdropDismiss:false,
-          });
-          modal.present();
-        }
-      },
-      (err:HttpErrorResponse) => {
-        this.loadingModal.dismiss();
+        );
       }
-    );
+    });
   }
 
   async _getTask(taskId:String){
@@ -305,6 +269,12 @@ export class TaskStatusPage implements OnInit {
 
       }
     });
+  }
+
+  _getTreeNumber(){
+    this.treeService.getById(this.treeId,(res:PokokResponse)=>{
+      this.treeNum = res.no_pokok;
+    })
   }
 
 }
