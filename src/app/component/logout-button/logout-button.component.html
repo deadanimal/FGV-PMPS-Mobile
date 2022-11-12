@@ -1,5 +1,13 @@
 <div class="w-100 text-end">
-  <button (click)="logout()" class="btn">
-    <ion-icon name="log-out-outline" size="large"></ion-icon>
+  <button id="click-trigger" class="btn">
+    <ion-icon name="ellipsis-vertical-outline" size="large" class="text-danger"></ion-icon>
   </button>
+  <ion-popover trigger="click-trigger" triggerAction="click" side="left">
+    <button (click)="logout()" class="btn mx-auto d-flex flex-row">
+      <ion-icon name="log-out-outline" class="my-auto mx-2"></ion-icon>
+      <p class="my-auto">
+        Log Keluar
+      </p>
+  </button>
+  </ion-popover>
 </div>
