@@ -328,11 +328,23 @@ export class MainTaskPage implements OnInit {
       this.role == UserRole.petugas_balut || 
       this.role == UserRole.petugas_qa
     ){
-      this.baggingService.getById(this.employeeId,(res:[BaggingTask])=>{
+      this.baggingService.getByUserId(this.employeeId,(res:[BaggingTask])=>{
         res.forEach(el => {
           if(el.pengesah_id == null){
             this.numOfActiveTask++;
             this.activeTaskList.push(el);
+          }else{
+            this.numOfFinishTask++;
+            this.finishedTaskList.push(el);
+          }
+        });
+      });
+    }else{
+      this.baggingService.getAll((res:[BaggingTask])=>{
+        res.forEach(el => {
+          if(el.pengesah_id == null){
+            this.numOfNewTask++;
+            this.newTaskList.push(el);
           }else{
             this.numOfFinishTask++;
             this.finishedTaskList.push(el);

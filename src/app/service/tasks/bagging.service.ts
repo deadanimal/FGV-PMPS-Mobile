@@ -26,7 +26,7 @@ export class BaggingService {
     return loading;
   }
 
-  getById(
+  getByUserId(
     userId:String,
     callback
   ){
@@ -70,6 +70,26 @@ export class BaggingService {
     );
   }
 
+  getById(
+    taskId:String,
+    callback
+  ){
+    this.loadingModal = this.showLoading();
+    this.http.get<BaggingTask>(
+      `${environment.baseUrl}${environment.bagging}${taskId}`
+    ).subscribe(
+      async (res:BaggingTask) => {
+        this.loadingModal = await this.loadingCtrl.getTop()
+        this.loadingModal.dismiss();
+        callback(res);
+      },
+      async (err:HttpErrorResponse) => {
+        this.loadingModal = await this.loadingCtrl.getTop()
+        this.loadingModal.dismiss();
+      }
+    );
+  }
+
   createTask(
     formData:FormData,
     callback
@@ -98,6 +118,32 @@ export class BaggingService {
             this.loadingModal.dismiss();
           }
         );
+      }
+    );
+  }
+
+  verify(
+    taskId:String,
+    userId:String,
+    comments:String,
+    callback
+  ){
+    this.loadingModal = this.showLoading();
+    this.http.put<BaggingTask>(
+      `${environment.baseUrl}${environment.bagging}${taskId}`,
+      {
+        pengesah_id:userId,
+        catatan_pengesah:comments,
+      }
+    ).subscribe(
+      async (res:BaggingTask) => {
+        this.loadingModal = await this.loadingCtrl.getTop()
+        this.loadingModal.dismiss();
+        callback(res);
+      },
+      async (err:HttpErrorResponse) => {
+        this.loadingModal = await this.loadingCtrl.getTop()
+        this.loadingModal.dismiss();
       }
     );
   }

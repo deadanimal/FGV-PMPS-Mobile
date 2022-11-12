@@ -18,6 +18,7 @@ import { TreeService } from 'src/app/service/tasks/tree.service';
 import { PokokResponse } from 'src/app/model/pokok-respons';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
 import { BaggingTask } from 'src/app/model/bagging-task';
+import { TandanService } from 'src/app/service/tasks/tandan.service';
 
 @Component({
   selector: 'app-task-status',
@@ -54,6 +55,7 @@ export class TaskStatusPage implements OnInit {
     private modalService: ModalService,
     private datePipe: DatePipe,
     private treeService: TreeService,
+    private tandanService: TandanService,
     private baggingService: BaggingService,
   ) { }
 
@@ -63,8 +65,8 @@ export class TaskStatusPage implements OnInit {
     this.name = this.accountService.getSessionDetails().nama;
     this.activatedRoute.params.subscribe(params => {
       if(params['taskId']!=null){
-        this._getTask(params['taskId']);
         this.taskId = params['taskId'];
+        this._getTask(params['taskId']);
       }
       if(params['viewOnly']!=null){
         this.viewOnly = params['viewOnly'];
@@ -91,8 +93,8 @@ export class TaskStatusPage implements OnInit {
     this.photo = null;
   }
 
-  _promptCompleted(){
-    this.modalService.successPrompt("Aktiviti anda telah dihantar kepada penyelia").then(
+  _promptCompleted(title:string = "Aktiviti anda telah dihantar kepada penyelia"){
+    this.modalService.successPrompt(title).then(
       (value)=>{
         setTimeout(() => {
             this.router.navigateByUrl(
@@ -154,27 +156,20 @@ export class TaskStatusPage implements OnInit {
   }
 
   async _getTask(taskId:String){
-    this.loadingModal= await this.showLoading();
-    this.taskService.getTask(taskId).subscribe(
-      (res:TaskResponseModel) => {
-        this.loadingModal.dismiss();
-        this.date = res.tarikh;
-        this.remark = res.catatan_petugas;
-        if(res.url_gambar!=null){
-          this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
-        }
-        this._getUserInfo(res.petugas_id.toString());
+    this.baggingService.getById(taskId,(res:BaggingTask)=>{
+      this.date = res.created_at.toString();
+      this.remark = res.catatan;
+      if(res.url_gambar!=null){
+        this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
+      }
+      this._getUserInfo(res.id_sv_balut);
         if(res.tandan_id != null){
           this._getTandanInfo(res.tandan_id.toString());
         }else{
           this.treeId = "-";
           this.regNo = "-";
         }
-      },
-      (err:HttpErrorResponse) => {
-        this.loadingModal.dismiss();
-      }
-    );
+    });
   }
 
   async _getUserInfo(userId:String){
@@ -191,16 +186,11 @@ export class TaskStatusPage implements OnInit {
   }
 
   async _getTandanInfo(tandanId:String){
-    this.taskService.getTandanById(tandanId).subscribe(
-      (res:TandanResponse) => {
-        this.loadingModal.dismiss();
-        this.treeId = res.pokok_id.toString();
-        this.regNo = res.no_daftar;
-      },
-      (err:HttpErrorResponse) => {
-        this.loadingModal.dismiss();
-      }
-    );
+    this.tandanService.getById(tandanId,(res:TandanResponse)=>{
+      this.regNo = res.no_daftar;
+      this.treeId = res.pokok_id.toString();
+      this._getTreeNumber();
+    });
   }
 
   async showLoading():Promise<HTMLIonLoadingElement> {
@@ -210,41 +200,24 @@ export class TaskStatusPage implements OnInit {
   }
 
   async accept(){
-    this.loadingModal= await this.showLoading();
-    this.taskService.acceptTask(this.taskId,this.accountService.getSessionDetails().id.toString(),this.svRemark).subscribe(
-      (res:TaskResponseModel) => {
-        this.loadingModal.dismiss();
-        this.router.navigateByUrl(
-          '/app/tabs/tab1',
-          {
-            replaceUrl : true
-          }
-        );
-      },
-      (err:HttpErrorResponse) => {
-        this.loadingModal.dismiss();
+    this.baggingService.verify(
+      this.taskId,
+      this.accountService.getSessionDetails().id.toString(),
+      this.svRemark+" (TERIMA)",
+      (res:BaggingTask)=>{
+        this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
       }
     );
   }
 
   async reject(){
-    this.loadingModal= await this.showLoading();
-    this.taskService.rejectTask(
+    this.baggingService.verify(
       this.taskId,
       this.accountService.getSessionDetails().id.toString(),
-      this.svRemark).subscribe(
-        (res:TaskResponseModel) => {
-          this.loadingModal.dismiss();
-          this.router.navigateByUrl(
-            '/app/tabs/tab1',
-            {
-              replaceUrl : true
-            }
-          );
-        },
-        (err:HttpErrorResponse) => {
-          this.loadingModal.dismiss();
-        }
+      this.svRemark+" (TOLAK)",
+      (res:BaggingTask)=>{
+        this._promptCompleted("Tugasan Telah Berjaya Di Tolak");
+      }
     );
   }
 
