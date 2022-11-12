@@ -1,20 +1,19 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
-import { TandanResponse } from 'src/app/model/tandan-response';
+import { PokokResponse } from 'src/app/model/pokok-respons';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TandanService {
+export class TreeService {
 
   loadingModal:any;
   constructor(
     private http: HttpClient,
     private loadingCtrl: LoadingController,
-  ) {
-  }
+  ) { }
 
   async showLoading():Promise<HTMLIonLoadingElement> {
     const loading = await this.loadingCtrl.create();
@@ -24,10 +23,10 @@ export class TandanService {
 
   getAll(callback){
     this.loadingModal = this.showLoading();
-    this.http.get<[TandanResponse]>(
-      `${environment.baseUrl}${environment.tandanInfo}`
+    this.http.get<[PokokResponse]>(
+      `${environment.baseUrl}${environment.treeInfo}`
     ).subscribe(
-      async (res:[TandanResponse]) => {
+      async (res:[PokokResponse]) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         callback(res);
@@ -44,31 +43,10 @@ export class TandanService {
     callback
   ){
     this.loadingModal = this.showLoading();
-    this.http.get<TandanResponse>(
-      `${environment.baseUrl}${environment.bagging}${tandanId}`
+    this.http.get<PokokResponse>(
+      `${environment.baseUrl}${environment.treeInfo}${tandanId}`
     ).subscribe(
-      async (res:TandanResponse) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
-        callback(res);
-      },
-      async (err:HttpErrorResponse) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
-      }
-    );
-  }
-
-  create(
-    formData:FormData,
-    callback
-  ){
-    this.loadingModal = this.showLoading();
-    this.http.post<TandanResponse>(
-      `${environment.baseUrl}${environment.tandanInfo}`,
-      formData
-    ).subscribe(
-      async (res:TandanResponse) => {
+      async (res:PokokResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         callback(res);

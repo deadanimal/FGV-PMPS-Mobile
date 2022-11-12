@@ -12,6 +12,7 @@ export const environment = {
   task:'/tugasan/',
   profileById:'/profil/',
   tandanInfo:'/tandan/',
+  treeInfo:'/pokok/',
   bagging:'/bagging/',
   storageUrl:'https://fgv.prototype.com.my/storage/',
 };
