@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-pollen-prep-main',
@@ -16,7 +17,9 @@ export class PollenPrepMainPage implements OnInit {
   numOfPosponedTask:number = 1;
   numOfNewTask:number = 1;
 
-  constructor() { }
+  constructor(
+    private router:Router
+  ) { }
 
   ngOnInit() {
     this._initButtons();
@@ -43,7 +46,7 @@ export class PollenPrepMainPage implements OnInit {
   }
 
   viewTask(taskStatus:String, id:String){
-
+    this.router.navigate(['app/tabs/tab1/pollen-prep-tandan-list',{status:taskStatus}]);
   }
 
 }

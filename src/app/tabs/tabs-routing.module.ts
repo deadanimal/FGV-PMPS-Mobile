@@ -57,6 +57,10 @@ const routes: Routes = [
         loadChildren: () => import('../page/pollen-prep-main/pollen-prep-main.module').then(m => m.PollenPrepMainPageModule)
       },
       {
+        path: 'tab1/pollen-prep-tandan-list',
+        loadChildren: () => import('../page/pollen-prep-tandan-list/pollen-prep-tandan-list.module').then(m => m.PollenPrepTandanListPageModule)
+      },
+      {
         path: '',
         redirectTo: 'tabs/tab1/',
         pathMatch: 'full'
