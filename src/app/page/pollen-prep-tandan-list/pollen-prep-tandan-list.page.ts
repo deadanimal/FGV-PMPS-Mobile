@@ -28,7 +28,16 @@ export class PollenPrepTandanListPage implements OnInit {
   }
 
   _verifyAndStartWork(){
-    this.router.navigate(['app/tabs/tab1/defect',{taskType:'pollen-prep',status:this.taskStatus}]);
+    this.router.navigate(
+      [
+        'app/tabs/tab1/defect',
+        {
+          taskType:'pollen-prep',
+          status:this.taskStatus,
+          taskStatus:this.taskStatus
+        }
+      ]
+    );
   }
 
 }

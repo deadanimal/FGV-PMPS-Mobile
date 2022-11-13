@@ -29,7 +29,7 @@
       <ion-icon name="remove-circle-outline"></ion-icon>
       Gagal
     </button>
-    <button [disabled]="defect != 'z'" class="mx-3 btn btn-success text-white">
+    <button (click)="continue()" [disabled]="defect != 'z'" class="mx-3 btn btn-success text-white">
       <ion-icon name="checkmark-circle-outline"></ion-icon>
       Lulus
     </button>
