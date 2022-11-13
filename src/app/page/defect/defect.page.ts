@@ -12,6 +12,7 @@ export class DefectPage implements OnInit {
   taskType:String;
   tandanId:String;
   taskStatus:String;
+  returnPage:String;
   constructor(
     private activatedRoute:ActivatedRoute,
     private router:Router,
@@ -22,6 +23,7 @@ export class DefectPage implements OnInit {
         this.taskType = params['taskType'];
         this.tandanId = params['tandanId'];
         this.taskStatus = params['taskStatus'];
+        this.returnPage = params['returnPage'];
     });
   }
 
@@ -33,20 +35,40 @@ export class DefectPage implements OnInit {
     let path = '';
     if(this.taskType == 'pollen-prep'){
       path = 'app/tabs/tab1/task-status';
+    }else{
+      path = 'app/tabs/tab1/task-status';
     }
     this.router.navigate(
-        [
-          path,
-          {
-            tandanId:this.tandanId,
-            taskType:this.taskType,
-          }
-        ]
-      );
+      [
+        path,
+        {
+          tandanId:this.tandanId,
+          taskType:'pollen-prep',
+          tandanStatus:'ok',
+          returnPage:this.returnPage,
+        }
+      ]
+    );
   }
 
   reject(){
-
+    let path = '';
+    if(this.taskType == 'pollen-prep'){
+      path = 'app/tabs/tab1/task-status';
+    }else{
+      path = 'app/tabs/tab1/task-status';
+    }
+    this.router.navigate(
+      [
+        path,
+        {
+          tandanId:this.tandanId,
+          taskType:'pollen-prep',
+          tandanStatus:'nok',
+          returnPage:this.returnPage,
+        }
+      ]
+    );
   }
 
 }

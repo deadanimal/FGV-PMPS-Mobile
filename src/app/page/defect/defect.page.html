@@ -25,7 +25,7 @@
     </ion-list>
   </div>
   <div class="d-flex flex-row text-center mx-auto w-75 mt-5 justify-content-around">
-    <button [disabled]="defect == 'z'" class="mx-3 btn btn-danger text-white">
+    <button (click)="reject()" [disabled]="defect == 'z'" class="mx-3 btn btn-danger text-white">
       <ion-icon name="remove-circle-outline"></ion-icon>
       Gagal
     </button>

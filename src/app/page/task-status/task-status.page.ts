@@ -46,6 +46,8 @@ export class TaskStatusPage implements OnInit {
   tandanId:String;
   flowerStatus:String;
   qcSv:String;
+  tandanStatus:String;
+  returnPage:String = '';
 
   constructor(
     private photoService:PhotoService,
@@ -86,10 +88,15 @@ export class TaskStatusPage implements OnInit {
       }
       if(params['taskType']!=null){
         this.taskType = params['taskType'].toLowerCase();
-        console.log(this.taskType)
       }
       if(params['tandanId']!=null){
         this.tandanId = params['tandanId'];
+      }
+      if(params['tandanStatus']!=null){
+        this.tandanStatus = params['tandanStatus'];
+      }
+      if(params['returnPage']!=undefined){
+        // this.returnPage = params['returnPage'];
       }
     });
     this.userRole = this.accountService.getUserRole();
@@ -120,12 +127,43 @@ export class TaskStatusPage implements OnInit {
   
   submitPollenPrep(){
     // todo: Add post data
-    this.router.navigateByUrl(
-      '/app/tabs/tab1',
-      {
-        replaceUrl : true
-      }
-    );
+    let url:string;
+    if(this.returnPage == null || this.returnPage == "" || this.returnPage == undefined){
+      url = '/app/tabs/tab1/pollen-prep-form';
+    }else{
+      url = '/app/tabs/tab1/'+this.returnPage.toString();
+    }
+    if(this.tandanStatus == "ok"){
+      this.modalService.successPrompt("QC telah berjaya dihantar kepada Penyelia").then(
+        (value)=>{
+          setTimeout(() => {
+            this.router.navigateByUrl(
+              url,
+              {
+                replaceUrl : true
+              }
+              );
+            },
+            500
+          );
+        }
+      );
+    }else{
+      this.modalService.successPrompt("Tandan yang rosak telah dihapuskan").then(
+        (value)=>{
+          setTimeout(() => {
+            this.router.navigateByUrl(
+              '/app/tabs/tab1',
+              {
+                replaceUrl : true
+              }
+              );
+            },
+            500
+          );
+        }
+      );
+    }
   }
 
   async submitTask(){
