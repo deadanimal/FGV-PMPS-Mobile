@@ -43,6 +43,9 @@ export class TaskStatusPage implements OnInit {
   taskType:String;
   time:String;
   posponedDay:String;
+  tandanId:String;
+  flowerStatus:String;
+  qcSv:String;
 
   constructor(
     private photoService:PhotoService,
@@ -60,6 +63,9 @@ export class TaskStatusPage implements OnInit {
   ) { }
 
   ngOnInit() {
+  }
+
+  ionViewDidEnter(){
     this.date = this.datePipe.transform(Date.now(),"dd/MM/yyyy");
     this.time = this.datePipe.transform(Date.now(),"HH:mm a");
     this.name = this.accountService.getSessionDetails().nama;
@@ -80,6 +86,10 @@ export class TaskStatusPage implements OnInit {
       }
       if(params['taskType']!=null){
         this.taskType = params['taskType'].toLowerCase();
+        console.log(this.taskType)
+      }
+      if(params['tandanId']!=null){
+        this.tandanId = params['tandanId'];
       }
     });
     this.userRole = this.accountService.getUserRole();
@@ -104,6 +114,16 @@ export class TaskStatusPage implements OnInit {
               }
             );
           },500);
+      }
+    );
+  }
+  
+  submitPollenPrep(){
+    // todo: Add post data
+    this.router.navigateByUrl(
+      '/app/tabs/tab1',
+      {
+        replaceUrl : true
       }
     );
   }
