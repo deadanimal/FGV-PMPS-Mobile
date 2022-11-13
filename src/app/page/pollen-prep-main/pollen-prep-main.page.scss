@@ -1,0 +1,28 @@
+.orangeBtn{
+    background-color: #F89521;
+}
+
+.greenBtn{
+    background-color: #22AF38;
+}
+
+.blueBtn{
+    background-color: #3CA1FF;
+}
+
+ion-badge {
+    position: absolute; 
+    font-size: 12pt;
+    right: 0px;
+    top: 0px; 
+}
+
+ion-button {
+    margin: 5px;
+    position: relative;
+}
+
+/* Setting Overflow Visible */
+ion-button.custom-class::part(native) {
+    overflow: visible;
+}

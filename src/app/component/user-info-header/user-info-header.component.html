@@ -1,5 +1,6 @@
  <div class="h-25">
-  <img src="../../../assets/header_bg_sm.png" style="width:100%; position: absolute; top: 0%; left: 0%; z-index: -1000;">
+  <img *ngIf="role == 'Petugas Am'" src="../../../assets/pollen-header-small.png" style="width:100%; position: absolute; top: 0%; left: 0%; z-index: -1000;">
+  <img *ngIf="role != 'Petugas Am'" src="../../../assets/header_bg_sm.png" style="width:100%; position: absolute; top: 0%; left: 0%; z-index: -1000;">
   <div class="mx-auto text-center">
     <div class="my-2" style="width: 304px; height: 59px; display: inline-flex; flex-direction: row; align-items: center; justify-content: flex-end;">
       <div style="width: 58px; height: 59px;">

@@ -68,8 +68,7 @@ export class DashboardPage implements OnInit {
   }
 
   async _getTasks(){
-    if( this.role == UserRole.general_worker || 
-        this.role == UserRole.petugas_balut || 
+    if( this.role == UserRole.petugas_balut || 
         this.role == UserRole.petugas_qa
       ){
       this.loadingModal= await this.showLoading();
@@ -95,6 +94,9 @@ export class DashboardPage implements OnInit {
           this.loadingModal.dismiss();
         }
       );
+    }else if(this.role == UserRole.general_worker){
+      this.pollenSupplyTask = true;
+      this.pollenUseTask = true;
     }else if(this.role == UserRole.penyelia_balut){
       this.wrapTask = true;
       this.debungTask = true;
@@ -119,6 +121,10 @@ export class DashboardPage implements OnInit {
 
   task(task:String){
     this.router.navigate(['app/tabs/tab1/main-task',{task:task}]);
+  }
+
+  pollenPrepTask(){
+    this.router.navigate(['app/tabs/tab1/pollen-preps',{task:"Penyediaan Pollen"}]);  
   }
 
   logout(){

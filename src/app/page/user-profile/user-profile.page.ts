@@ -25,7 +25,7 @@ export class UserProfilePage implements OnInit {
     this.name = loginDetails.nama;
     this.employeeId = loginDetails.no_kakitangan;
     this.email = loginDetails.email;
-    this.date = loginDetails.created_at.toString();
+    this.date = loginDetails.created_at?.toString();
     this.phone = loginDetails.no_telefon;
     this.role = loginDetails.peranan;
   }

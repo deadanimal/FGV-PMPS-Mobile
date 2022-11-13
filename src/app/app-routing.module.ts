@@ -58,6 +58,10 @@ const routes: Routes = [
     path: 'create-new-task',
     loadChildren: () => import('./page/create-new-task/create-new-task.module').then( m => m.CreateNewTaskPageModule)
   },
+  {
+    path: 'pollen-prep-main',
+    loadChildren: () => import('./page/pollen-prep-main/pollen-prep-main.module').then( m => m.PollenPrepMainPageModule)
+  },
   // {
   //   path: 'test-page',
   //   loadChildren: () => import('./page/test-page/test-page.module').then( m => m.TestPagePageModule)

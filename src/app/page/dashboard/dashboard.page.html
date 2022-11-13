@@ -26,7 +26,7 @@
   </div>
   <div style="position: relative; top: 0%;">
     <ion-grid class="mt-3">
-      <ion-row *ngIf="wrapTask" class="w-75 mx-auto ion-justify-content-between ion-align-items-center">
+      <ion-row *ngIf="wrapTask" class="w-75 mx-auto ion-justify-content-center ion-align-items-center">
         <button (click)="task('wrap')" style="width: 318px; height: 89px; padding-top: 16px; padding-bottom: 15px; padding-left: 17px; padding-right: 55px; background-color: rgba(236, 36, 39, 1); border-radius: 20px; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;">
           <ion-col>
             <div style="width: 58px; height: 58px;">
@@ -40,7 +40,7 @@
           </ion-col>
         </button>
       </ion-row>
-      <ion-row *ngIf="debungTask" class="w-75 my-3 mx-auto ion-justify-content-between ion-align-items-center">
+      <ion-row *ngIf="debungTask" class="w-75 my-3 mx-auto ion-justify-content-center ion-align-items-center">
         <button (click)="task('cp')" style="width: 318px; height: 89px; padding-top: 16px; padding-bottom: 15px; padding-left: 17px; padding-right: 55px; background-color: rgba(236, 36, 39, 1); border-radius: 20px; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;" >
           <ion-col>
             <div style="width: 58px; height: 58px;">
@@ -54,7 +54,7 @@
           </ion-col>
         </button>
       </ion-row>
-      <ion-row *ngIf="qcTask" class="w-75 my-3 mx-auto ion-justify-content-between ion-align-items-center">
+      <ion-row *ngIf="qcTask" class="w-75 my-3 mx-auto ion-justify-content-center ion-align-items-center">
         <button (click)="task('Kawalan Kualiti (QC)')" style="width: 318px; height: 89px; padding-top: 16px; padding-bottom: 15px; padding-left: 17px; padding-right: 55px; background-color: rgba(236, 36, 39, 1); border-radius: 20px; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;" >
           <ion-col>
             <div style="width: 58px; height: 58px;">
@@ -68,7 +68,7 @@
           </ion-col>
         </button>
       </ion-row>
-      <ion-row *ngIf="harvestTask" class="w-75 my-3 mx-auto ion-justify-content-between ion-align-items-center">
+      <ion-row *ngIf="harvestTask" class="w-75 my-3 mx-auto ion-justify-content-center ion-align-items-center">
         <button (click)="task('Tuai')" style="width: 318px; height: 89px; padding-top: 16px; padding-bottom: 15px; padding-left: 17px; padding-right: 55px; background-color: rgba(236, 36, 39, 1); border-radius: 20px; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;" >
           <ion-col>
             <div style="width: 58px; height: 58px;">
@@ -83,8 +83,8 @@
         </button>
       </ion-row>
 
-      <ion-row *ngIf="pollenSupplyTask" class="w-75 my-3 mx-auto ion-justify-content-between ion-align-items-center">
-        <button (click)="task('Penyediaan Pollen')" style="width: 318px; height: 89px; padding-top: 16px; padding-bottom: 15px; padding-left: 17px; padding-right: 55px; background-color: rgba(236, 36, 39, 1); border-radius: 20px; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;" >
+      <ion-row *ngIf="pollenSupplyTask" class="w-75 my-3 mx-auto ion-justify-content-center ion-align-items-center">
+        <button (click)="pollenPrepTask()" style="width: 318px; height: 89px; padding-top: 16px; padding-bottom: 15px; padding-left: 17px; padding-right: 55px; background-color: rgba(236, 36, 39, 1); border-radius: 20px; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;" >
           <ion-col>
             <div style="width: 58px; height: 58px;">
               <div style="width: 58px; height: 58px; padding-top: 14px; padding-bottom: 14px; padding-left: 13px; padding-right: 14px; background-color: white; border-radius: 10px; display: flex; flex-direction: row; align-items: center; justify-content: center;">
@@ -98,7 +98,7 @@
         </button>
       </ion-row>
 
-      <ion-row *ngIf="pollenUseTask" class="w-75 my-3 mx-auto ion-justify-content-between ion-align-items-center">
+      <ion-row *ngIf="pollenUseTask" class="w-75 my-3 mx-auto ion-justify-content-center ion-align-items-center">
         <button (click)="task('Penggunaan Pollen')" style="width: 318px; height: 89px; padding-top: 16px; padding-bottom: 15px; padding-left: 17px; padding-right: 55px; background-color: rgba(236, 36, 39, 1); border-radius: 20px; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;" >
           <ion-col>
             <div style="width: 58px; height: 58px;">
