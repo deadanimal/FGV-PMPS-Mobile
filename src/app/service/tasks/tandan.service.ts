@@ -1,8 +1,10 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
+import { PokokResponse } from 'src/app/model/pokok-respons';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { environment } from 'src/environments/environment';
+import { TreeService } from './tree.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +15,7 @@ export class TandanService {
   constructor(
     private http: HttpClient,
     private loadingCtrl: LoadingController,
+    private treeService: TreeService,
   ) {
   }
 
@@ -41,20 +44,27 @@ export class TandanService {
 
   getById(
     tandanId:String,
-    callback
+    callback,
+    loadingAnim = true
   ){
-    this.loadingModal = this.showLoading();
+    if(loadingAnim){
+      this.loadingModal = this.showLoading();
+    }
     this.http.get<TandanResponse>(
       `${environment.baseUrl}${environment.tandanInfo}${tandanId}`
     ).subscribe(
       async (res:TandanResponse) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
@@ -109,5 +119,40 @@ export class TandanService {
         }
       }
     );
+  }
+
+  _checkIfInTreeArray(treeArray:PokokResponse[],treeId:number){
+    let retVal = false;
+    treeArray.forEach(el => {
+      if(el.id == treeId){
+        retVal = true;
+      }
+    });
+    return retVal;
+  }
+
+  getByPokokInfo(
+    cycle:String,
+    block:String,
+    progeny:String,
+    callback,
+  ){
+    this.treeService.getAll((res:[PokokResponse])=>{
+      let treeArray:PokokResponse[] = [];
+      treeArray = res;
+      treeArray = this.treeService.filterByBlock(treeArray,block);
+      treeArray = this.treeService.filterByProgeny(treeArray,progeny);
+      this.getAll(async (res2:[TandanResponse])=>{
+        let retArray: TandanResponse[] = [];
+        res2.forEach(el => {
+          if(this._checkIfInTreeArray(treeArray,el.pokok_id)){
+            if(el.kitaran == cycle){
+              retArray.push(el);
+            }
+          }
+        });
+        callback(retArray);
+      });
+    });    
   }
 }

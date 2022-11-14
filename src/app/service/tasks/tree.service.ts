@@ -38,6 +38,26 @@ export class TreeService {
     );
   }
 
+  filterByProgeny(dataSet:PokokResponse[],progeny:String):PokokResponse[]{
+    let retval:PokokResponse[] = [];
+    dataSet.forEach(el => {
+      if(el.progeny == progeny){
+        retval.push(el);
+      }
+    });
+    return retval;
+  }
+
+  filterByBlock(dataSet:PokokResponse[],blockName:String):PokokResponse[]{
+    let retval:PokokResponse[] = [];
+    dataSet.forEach(el => {
+      if(el.blok == blockName){
+        retval.push(el);
+      }
+    });
+    return retval;
+  }
+
   getById(
     tandanId:String,
     callback

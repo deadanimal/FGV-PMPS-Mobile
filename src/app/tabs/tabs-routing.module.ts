@@ -69,6 +69,10 @@ const routes: Routes = [
         loadChildren: () => import('../page/control-pollination-form/control-pollination-form.module').then(m => m.ControlPollinationFormPageModule)
       },
       {
+        path: 'tab1/qc-search-form',
+        loadChildren: () => import('../page/qc-search-form/qc-search-form.module').then(m => m.QcSearchFormPageModule)
+      },
+      {
         path: '',
         redirectTo: 'tabs/tab1/',
         pathMatch: 'full'

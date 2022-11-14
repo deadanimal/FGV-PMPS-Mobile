@@ -1,0 +1,52 @@
+<ion-content>
+  <app-logout-button></app-logout-button>
+  <app-user-info-header></app-user-info-header>
+
+  <form #form="ngForm" class="mx-auto my-2" style="max-width: 300px;" (ngSubmit)="submit(form)">
+    <ion-item lines="full">
+      <ion-label position="floating">Blok:</ion-label>
+      <ion-input type="text" [(ngModel)]="block" name="block" required></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Progeny:</ion-label>
+      <ion-input type="text" [(ngModel)]="progeny" name="progeny" required></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Pembalut:</ion-label>
+      <ion-input type="text" [(ngModel)]="baggingWorker" name="baggingWorker" required></ion-input>
+    </ion-item>
+    <button type="submit" [disabled]="!form.valid" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-auto mt-4">
+      <p class="m-auto">Cari</p>
+    </button>
+  </form>
+
+  <p *ngIf="searchResult.length>0" style="font-size: 16.63px; font-weight: 600; text-align: center; color: rgba(57.37, 57.37, 57.37, 1);">
+    Jumlah : {{searchResult.length}}
+  </p>
+
+  <div class="text-center">
+    <button *ngFor="let item of searchResult" (click)="selectTask(item.taskId)" class="btn rounded btn-light shadow w-75 my-3 mx-auto d-flex flex-row justify-content-between align-items-center">
+      <div class="d-flex flex-column text-start">
+        <small style="font-size: 12.65px; font-weight: 600; line-height: 100%; color: rgba(98.81, 98.81, 98.81, 1);">
+          No. Daftar :
+        </small>
+        <small class="my-2" style="font-size: 21.08px; font-weight: 600; line-height: 100%; color: rgba(57.37, 57.37, 57.37, 1);">
+          {{item.regNo}}
+        </small>
+        <small style="font-size: 12.65px; font-weight: 600; color: rgba(98.81, 98.81, 98.81, 1);">
+          No. Pokok : 
+          <span style="font-size: 12.65px; font-weight: 600; color: rgba(57.37, 57.37, 57.37, 1);">
+            {{item.treeNumber}}
+          </span>
+        </small>
+        <small style="font-size: 12.65px; font-weight: 600; color: rgba(98.81, 98.81, 98.81, 1);">
+          Kitaran :
+          <span style="font-size: 12.65px; font-weight: 600; color: rgba(57.37, 57.37, 57.37, 1);">
+            {{item.cycle}}
+          </span>
+        </small>
+      </div>
+      <img src="../../../assets/qr_icon.png">
+    </button>    
+  </div>
+</ion-content>

@@ -490,6 +490,17 @@ export class MainTaskPage implements OnInit {
     return loading;
   }
 
-  newQCTask(){}
+  newQCTask(){
+    this.router.navigate(
+      [
+        '/app/tabs/tab1/qc-search-form',
+        {
+        }
+      ],
+      {
+        replaceUrl : true
+      }
+    );
+  }
 
 }
