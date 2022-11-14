@@ -1,14 +1,18 @@
+import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
+import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { TaskResponseModel } from 'src/app/model/task-response';
 import { AccountService } from 'src/app/service/account.service';
 import { ModalService } from 'src/app/service/modal.service';
 import { TaskService } from 'src/app/service/task.service';
+import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
+import { TandanService } from 'src/app/service/tasks/tandan.service';
 
 @Component({
   selector: 'app-register-status',
@@ -24,6 +28,7 @@ export class RegisterStatusPage implements OnInit {
   taskId:String;
   treeNumber:String;
   scanInput:String;
+  taskType:String;
   loadingModal:any;
 
   constructor(
@@ -32,6 +37,9 @@ export class RegisterStatusPage implements OnInit {
     private modalService:ModalService,
     private loadingCtrl: LoadingController,
     private router: Router,
+    private tandanService: TandanService,
+    private controlPollinationService: ControlPollinationService,
+    private datePipe: DatePipe,
   ) { }
 
   ngOnInit() {
@@ -43,13 +51,15 @@ export class RegisterStatusPage implements OnInit {
     this.activatedRoute.params.subscribe(params => {
       if(params['taskId']!=null){
         this.taskId = params['taskId'];
-        this._getTask();
       }
       if(params['treeNum']!=null){
         this.treeNumber = params['treeNum'];
       } 
       if(params['scanInput']!=null){
         this.scanInput = params['scanInput'];
+      }
+      if(params['taskType']!=null){
+        this.taskType = params['taskType'];
       }
 
       if(this.scanInput != null){
@@ -59,17 +69,47 @@ export class RegisterStatusPage implements OnInit {
     });
   }
 
+  ionViewDidEnter() {
+    if(this.taskId != null){
+      this._getTask();
+    }
+  }
+
+  _getCPTask(){
+    this.controlPollinationService.getById(this.taskId,(res:ControlPollinationTask)=>{
+      this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
+        this.regNumber = tandanRes.no_daftar;
+        this.cycle = tandanRes.kitaran;
+        this.status=tandanRes.status_tandan;
+        this.age=tandanRes.umur? tandanRes.umur.toString(): this._calculateAge(tandanRes.tarikh_daftar).toString();
+      });
+    });
+
+  }
+
+  _calculateAge(prvDate:string){
+    let currentDate = Date.parse(this.datePipe.transform(Date.now(),"yyyy-MM-dd"));
+    let rawStringArray = prvDate.split("/");
+    let prevDate = Date.parse(rawStringArray[2]+"-"+rawStringArray[1]+"-"+rawStringArray[0]);
+    let retVal = (currentDate - prevDate)/1000/60/60/24;
+    return retVal;
+  }
+
   async _getTask(){
-    this.loadingModal= await this.showLoading();
-    this.taskService.getTask(this.taskId).subscribe(
-      (res:TaskResponseModel) => {
-        this.loadingModal.dismiss();
-        this._getTandanInfo(res.tandan_id.toString());
-      },
-      (err:HttpErrorResponse) => {
-        this.loadingModal.dismiss();
-      }
-    );
+    if(this.taskType == "Pendebungaan Terkawal (CP)"){
+      this._getCPTask();
+    }else{
+      this.loadingModal= await this.showLoading();
+      this.taskService.getTask(this.taskId).subscribe(
+        (res:TaskResponseModel) => {
+          this.loadingModal.dismiss();
+          this._getTandanInfo(res.tandan_id.toString());
+        },
+        (err:HttpErrorResponse) => {
+          this.loadingModal.dismiss();
+        }
+      );
+    }
   }
 
   async _getTandanInfo(tandan_id:String){

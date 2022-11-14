@@ -26,9 +26,10 @@ export class QrScannerPage implements OnInit {
       }
       if(params['taskId']!=null){
         this.taskId = params['taskId'];
-      }if(params['returnUrl']!=null){
+      }
+      
+      if(params['returnUrl']!=null){
         this.returnUrl = params['returnUrl'];
-        console.log(this.returnUrl);
       }else{
         this.returnUrl = 'app/tabs/tab1/start-work-find';
       }

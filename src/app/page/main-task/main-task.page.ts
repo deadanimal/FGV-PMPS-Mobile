@@ -98,7 +98,7 @@ export class MainTaskPage implements OnInit {
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId,tandanId:id}]);
     }else if(status == "activeTaskSV"){
       if(taskId == "cp"){
-        this.router.navigate(['app/tabs/tab1/new-task',{taskId:id}]);
+        this.router.navigate(['app/tabs/tab1/new-task',{taskId:id,taskType:this.task}]);
       }else{
         this.router.navigate(['app/tabs/tab1/task-status',{taskId:id,
           taskType:taskId}]);

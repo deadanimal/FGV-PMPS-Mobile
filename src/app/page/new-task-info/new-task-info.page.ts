@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ActivatedRoute, Route, Router, RouteReuseStrategy } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
+import { BaggingTask } from 'src/app/model/bagging-task';
+import { PokokResponse } from 'src/app/model/pokok-respons';
 import { TaskResponseModel } from 'src/app/model/task-response';
-import { AccountService } from 'src/app/service/account.service';
+import { AccountService, UserRole } from 'src/app/service/account.service';
 import { ModalService } from 'src/app/service/modal.service';
+import { BaggingService } from 'src/app/service/tasks/bagging.service';
+import { TreeService } from 'src/app/service/tasks/tree.service';
 
 @Component({
   selector: 'app-new-task-info',
@@ -19,25 +23,22 @@ export class NewTaskInfoPage implements OnInit {
   status:String;
   block:String;
   breed:String;
-  userRole:String;
+  userRole:UserRole;
   scanInput:String;
   taskId:String;
+  taskType:String;
   tasks:[TaskResponseModel];
 
   constructor(
     private router:Router,
     private activatedRoute:ActivatedRoute,
     private modalService:ModalService,
+    private pokokService:TreeService,
+    private baggingService:BaggingService,
+    private accountService:AccountService,
   ) { }
 
   ngOnInit() {
-    this.treeNumber = "FJ2-35";
-    this.ancestor = "Fatherpalm";
-    this.breed = "Platinum";
-    this.progeny = "TK 46";
-    this.block = "25C1";
-    this.status = "Aktif";
-    this.userRole = "pekerja";
     this.activatedRoute.params.subscribe(params => {
       if(params['scanInput']!=null){
        this.scanInput = params['scanInput'];
@@ -45,11 +46,20 @@ export class NewTaskInfoPage implements OnInit {
       }
       if(params['taskId']!=null){
         this.taskId = params['taskId'];
+      }if(params['taskType']!=null){
+        this.taskType = params['taskType'];
+      }if(params['task']!=null){
+        this.taskType = params['task'];
       }
     });
     if(this.scanInput!=null && this.scanInput != ""){
       this._proceedToWork();
     }
+  }
+
+  ionViewDidEnter(){
+    this._getTreeInfo();
+    this.userRole = this.accountService.getUserRole();
   }
 
   submitTask(){
@@ -69,7 +79,8 @@ export class NewTaskInfoPage implements OnInit {
               '/app/tabs/tab2',
               {
                 taskId:this.taskId,
-                returnUrl:"app/tabs/tab1/new-task"
+                returnUrl:"app/tabs/tab1/new-task",
+                task:this.taskType,
               }
             ],
             {
@@ -87,6 +98,7 @@ export class NewTaskInfoPage implements OnInit {
         {
           taskId:this.taskId,
           treeNum:this.treeNumber,
+          taskType:this.taskType,
         }
       ],
       {
@@ -106,6 +118,21 @@ export class NewTaskInfoPage implements OnInit {
         }
       }
     );
+  }
+
+  _getTreeInfo(){
+    if("Pendebungaan Terkawal (CP)" == this.taskType){
+      this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
+        this.pokokService.getById(res.pokok_id.toString(),(res:PokokResponse)=>{
+          this.treeNumber = res.no_pokok;
+          this.ancestor = res.induk;
+          this.breed = res.baka;
+          this.progeny = res.progeny;
+          this.block = res.progeny;
+          this.status = res.status_pokok;
+        })
+      });
+    }
   }
 
 }
