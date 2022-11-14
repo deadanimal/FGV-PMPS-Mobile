@@ -7,12 +7,14 @@ import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.c
 import { BaggingTask } from 'src/app/model/bagging-task';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 import { LoginResponseModel } from 'src/app/model/login-response';
+import { QualityControlTask } from 'src/app/model/quality-control-task';
 import { TaskResponseModel } from 'src/app/model/task-response';
 import { AccountService, UserRole } from 'src/app/service/account.service';
 import { ModalService } from 'src/app/service/modal.service';
 import { TaskService } from 'src/app/service/task.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
+import { QualityControlService } from 'src/app/service/tasks/quality-control.service';
 
 @Component({
   selector: 'app-main-task',
@@ -50,6 +52,7 @@ export class MainTaskPage implements OnInit {
     private modalService: ModalService,
     private baggingService:BaggingService,
     private controlPollinationService:ControlPollinationService,
+    private qcService:QualityControlService,
   ) { }
 
   ngOnInit() {
@@ -400,6 +403,42 @@ export class MainTaskPage implements OnInit {
     }
   }
 
+  _getQCTask(){
+    if(
+      this.role == UserRole.general_worker || 
+      this.role == UserRole.petugas_balut || 
+      this.role == UserRole.petugas_qa
+    ){
+      this.qcService.getByUserId(this.employeeId,(res:[QualityControlTask])=>{
+        res.forEach(el => {
+          if(el.pengesah_id == null){
+            this.numOfActiveTask++;
+            this.activeTaskList.push(el);
+          }else{
+            this.numOfFinishTask++;
+            this.finishedTaskList.push(el);
+          }
+        });
+        // this.controlPollinationService.getNewlyCreatedTask(this.employeeId,(res1:[ControlPollinationTask])=>{
+        //   this.numOfNewTask = res1.length;
+        //   this.newTaskList = res1;
+        // },false);
+      });
+    }else{
+      this.qcService.getAll((res:[QualityControlTask])=>{
+        res.forEach(el => {
+          if(el.pengesah_id == null && el.catatan != null){
+            this.numOfNewTask++;
+            this.newTaskList.push(el);
+          }else if(el.pengesah_id != null){
+            this.numOfFinishTask++;
+            this.finishedTaskList.push(el);
+          }
+        });
+      });
+    }
+  }
+
   _getTask(){
     this.activeTaskList = [];
     this.finishedTaskList = [];
@@ -408,6 +447,8 @@ export class MainTaskPage implements OnInit {
       this._getBaggingTask();
     }else if(this.task == 'Pendebungaan Terkawal (CP)'){
       this._getCPTask();
+    }else if(this.task == 'Kawalan Kualiti (QC)'){
+      this._getQCTask();
     }
   }
 
@@ -448,5 +489,7 @@ export class MainTaskPage implements OnInit {
     loading.present();
     return loading;
   }
+
+  newQCTask(){}
 
 }
