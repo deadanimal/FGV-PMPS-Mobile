@@ -72,20 +72,27 @@ export class BaggingService {
 
   getById(
     taskId:String,
-    callback
+    callback,
+    loadingAnim = true,
   ){
-    this.loadingModal = this.showLoading();
+    if(loadingAnim){
+      this.loadingModal = this.showLoading();
+    }
     this.http.get<BaggingTask>(
       `${environment.baseUrl}${environment.bagging}${taskId}`
     ).subscribe(
       async (res:BaggingTask) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          this.loadingModal.dismiss();
+        }
       }
     );
   }

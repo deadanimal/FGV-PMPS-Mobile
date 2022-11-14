@@ -5,12 +5,14 @@ import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
+import { BaggingTask } from 'src/app/model/bagging-task';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { TaskResponseModel } from 'src/app/model/task-response';
 import { AccountService } from 'src/app/service/account.service';
 import { ModalService } from 'src/app/service/modal.service';
 import { TaskService } from 'src/app/service/task.service';
+import { BaggingService } from 'src/app/service/tasks/bagging.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
 import { TandanService } from 'src/app/service/tasks/tandan.service';
 
@@ -39,6 +41,7 @@ export class RegisterStatusPage implements OnInit {
     private router: Router,
     private tandanService: TandanService,
     private controlPollinationService: ControlPollinationService,
+    private baggingService: BaggingService,
     private datePipe: DatePipe,
   ) { }
 
@@ -61,6 +64,9 @@ export class RegisterStatusPage implements OnInit {
       if(params['taskType']!=null){
         this.taskType = params['taskType'];
       }
+      if(params['task']!=null){
+        this.taskType = params['task'];
+      }
 
       if(this.scanInput != null){
         this.regNumber = this.scanInput;
@@ -76,14 +82,14 @@ export class RegisterStatusPage implements OnInit {
   }
 
   _getCPTask(){
-    this.controlPollinationService.getById(this.taskId,(res:ControlPollinationTask)=>{
+    this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
       this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
         this.regNumber = tandanRes.no_daftar;
         this.cycle = tandanRes.kitaran;
         this.status=tandanRes.status_tandan;
         this.age=tandanRes.umur? tandanRes.umur.toString(): this._calculateAge(tandanRes.tarikh_daftar).toString();
       });
-    });
+    },false);
 
   }
 
@@ -141,7 +147,7 @@ export class RegisterStatusPage implements OnInit {
         sel = value['data'];
         if(sel == UserSelection.manual){
           this._manualInput();
-        }else{
+        }else if(sel == UserSelection.qr_scan){
           this.router.navigate(
             [
               '/app/tabs/tab2',
@@ -149,6 +155,7 @@ export class RegisterStatusPage implements OnInit {
                 taskId:this.taskId,
                 returnUrl:"/app/tabs/tab1/reg-status",
                 treeNum:this.treeNumber,
+                task:this.taskType,
               }
             ],
             {
@@ -172,16 +179,28 @@ export class RegisterStatusPage implements OnInit {
   }
 
   _proceedToWork(){
-    this.router.navigate(
-      [
-        'app/tabs/tab1/task-status',
-        {
-          regNumber:this.regNumber,
-          treeNumber:this.treeNumber,
-          taskType:"debung",
-        }
-      ]
-    );
+    if(this.taskType == "Pendebungaan Terkawal (CP)"){
+      this.router.navigate(
+        [
+          'app/tabs/tab1/defect',
+          {
+            taskId:this.taskId,
+            taskType:"debung",
+          }
+        ]
+      );
+    }else{
+      this.router.navigate(
+        [
+          'app/tabs/tab1/task-status',
+          {
+            regNumber:this.regNumber,
+            treeNumber:this.treeNumber,
+            taskType:"debung",
+          }
+        ]
+      );
+    }
   }
 
 }

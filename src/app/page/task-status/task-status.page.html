@@ -76,7 +76,7 @@
       <p class="m-auto">Anjak</p>
     </button>
 
-    <button [disabled]="!form.valid || photo ==null" (click)="submitTask()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' ) && taskType == 'debung'" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="!form.valid || photo ==null" (click)="submitCP()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' ) && taskType == 'debung'" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="checkmark-circle-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>

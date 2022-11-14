@@ -98,20 +98,27 @@ export class ControlPollinationService {
 
   getById(
     cpId:String,
-    callback
+    callback,
+    loadingAnim = true,
   ){
-    this.loadingModal = this.showLoading();
+    if(loadingAnim){
+      this.loadingModal = this.showLoading();
+    }
     this.http.get<ControlPollinationTask>(
       `${environment.baseUrl}${environment.crossPolination}${cpId}`
     ).subscribe(
       async (res:ControlPollinationTask) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          this.loadingModal.dismiss();
+        }
       }
     );
   }

@@ -10,6 +10,7 @@ export class DefectPage implements OnInit {
 
   defect:string = "z";
   taskType:String;
+  taskId:String;
   tandanId:String;
   taskStatus:String;
   returnPage:String;
@@ -21,6 +22,7 @@ export class DefectPage implements OnInit {
   ngOnInit() {
     this.activatedRoute.params.subscribe(params => {
         this.taskType = params['taskType'];
+        this.taskId = params['taskId'];
         this.tandanId = params['tandanId'];
         this.taskStatus = params['taskStatus'];
         this.returnPage = params['returnPage'];
@@ -43,7 +45,8 @@ export class DefectPage implements OnInit {
         path,
         {
           tandanId:this.tandanId,
-          taskType:'pollen-prep',
+          taskId:this.taskId,
+          taskType:this.taskType,
           tandanStatus:'ok',
           returnPage:this.returnPage,
         }
@@ -63,7 +66,8 @@ export class DefectPage implements OnInit {
         path,
         {
           tandanId:this.tandanId,
-          taskType:'pollen-prep',
+          taskId:this.taskId,
+          taskType:this.taskType,
           tandanStatus:'nok',
           returnPage:this.returnPage,
         }

@@ -19,6 +19,8 @@ import { PokokResponse } from 'src/app/model/pokok-respons';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
 import { BaggingTask } from 'src/app/model/bagging-task';
 import { TandanService } from 'src/app/service/tasks/tandan.service';
+import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
+import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 
 @Component({
   selector: 'app-task-status',
@@ -62,6 +64,7 @@ export class TaskStatusPage implements OnInit {
     private treeService: TreeService,
     private tandanService: TandanService,
     private baggingService: BaggingService,
+    private controlPollinationService: ControlPollinationService,
   ) { }
 
   ngOnInit() {
@@ -72,10 +75,6 @@ export class TaskStatusPage implements OnInit {
     this.time = this.datePipe.transform(Date.now(),"HH:mm a");
     this.name = this.accountService.getSessionDetails().nama;
     this.activatedRoute.params.subscribe(params => {
-      if(params['taskId']!=null){
-        this.taskId = params['taskId'];
-        this._getTask(params['taskId']);
-      }
       if(params['viewOnly']!=null){
         this.viewOnly = params['viewOnly'];
       }
@@ -94,6 +93,10 @@ export class TaskStatusPage implements OnInit {
       }
       if(params['tandanStatus']!=null){
         this.tandanStatus = params['tandanStatus'];
+      }
+      if(params['taskId']!=null){
+        this.taskId = params['taskId'];
+        this._getTask(params['taskId']);
       }
       if(params['returnPage']!=undefined){
         // this.returnPage = params['returnPage'];
@@ -166,6 +169,21 @@ export class TaskStatusPage implements OnInit {
     }
   }
 
+  async submitCP(){
+    const formData = new FormData();
+    const response = await fetch(this.photo.dataUrl);
+    const blob = await response.blob();
+    formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
+    this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
+      formData.append('tandan_id',res.tandan_id.toString());
+      formData.append('pokok_id',res.pokok_id.toString());
+      formData.append('id_sv_cp',this.accountService.getSessionDetails().no_kakitangan);
+      this.controlPollinationService.create(formData,(resCP:ControlPollinationTask)=>{
+        console.log(resCP);
+      });
+    });
+  }
+
   async submitTask(){
     const formData = new FormData();
     const response = await fetch(this.photo.dataUrl);
@@ -214,20 +232,24 @@ export class TaskStatusPage implements OnInit {
   }
 
   async _getTask(taskId:String){
-    this.baggingService.getById(taskId,(res:BaggingTask)=>{
-      this.date = res.created_at.toString();
-      this.remark = res.catatan;
-      if(res.url_gambar!=null){
-        this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
-      }
-      this._getUserInfo(res.id_sv_balut);
+    if(this.taskType == 'debung'){
+
+    }else{
+      this.baggingService.getById(taskId,(res:BaggingTask)=>{
+        this.date = res.created_at.toString();
+        this.remark = res.catatan;
+        if(res.url_gambar!=null){
+          this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
+        }
+        this._getUserInfo(res.id_sv_balut);
         if(res.tandan_id != null){
           this._getTandanInfo(res.tandan_id.toString());
         }else{
           this.treeId = "-";
           this.regNo = "-";
         }
-    });
+      });
+    }
   }
 
   async _getUserInfo(userId:String){
