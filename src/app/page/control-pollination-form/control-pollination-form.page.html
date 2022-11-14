@@ -1,0 +1,21 @@
+<ion-content>
+  <app-logout-button></app-logout-button>
+  <app-user-info-header></app-user-info-header>
+
+  <form #form="ngForm" class="mx-auto my-2" style="max-width: 300px;" (ngSubmit)="btnClick(form)">
+    <ion-item lines="full">
+      <ion-label position="floating">No Pollen</ion-label>
+      <ion-input type="number" [(ngModel)]="pollenNumber" name="pollenNumber" required></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Peratus Viabiliti Pollen(%)</ion-label>
+      <ion-input type="number" [(ngModel)]="percentage" name="percentage" required></ion-input>
+    </ion-item>
+    <div class="text-center mx-auto mt-4 w-100">
+      <button [disabled]="!form.valid" type="submit" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-auto">
+        <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
+        <p class="m-auto">Hantar</p>
+      </button>
+    </div>
+  </form>
+</ion-content>

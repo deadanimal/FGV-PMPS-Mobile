@@ -65,6 +65,10 @@ const routes: Routes = [
         loadChildren: () => import('../page/pollen-prep-form/pollen-prep-form.module').then(m => m.PollenPrepFormPageModule)
       },
       {
+        path: 'tab1/control-pollen-form',
+        loadChildren: () => import('../page/control-pollination-form/control-pollination-form.module').then(m => m.ControlPollinationFormPageModule)
+      },
+      {
         path: '',
         redirectTo: 'tabs/tab1/',
         pathMatch: 'full'

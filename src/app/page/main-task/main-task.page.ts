@@ -372,11 +372,11 @@ export class MainTaskPage implements OnInit {
             this.numOfFinishTask++;
             this.finishedTaskList.push(el);
           }
-          this.controlPollinationService.getNewlyCreatedTask(this.employeeId,(res1:[ControlPollinationTask])=>{
-            this.numOfNewTask = res1.length;
-            this.newTaskList = res1;
-          });
         });
+        this.controlPollinationService.getNewlyCreatedTask(this.employeeId,(res1:[ControlPollinationTask])=>{
+          this.numOfNewTask = res1.length;
+          this.newTaskList = res1;
+        },false);
       });
     }else{
       this.controlPollinationService.getAll((res:[ControlPollinationTask])=>{

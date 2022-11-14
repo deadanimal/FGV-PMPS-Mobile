@@ -145,24 +145,62 @@ export class ControlPollinationService {
     );
   }
 
-  getNewlyCreatedTask(
-    userId:String,
+  updatePollenNumber(
+    cpId:String,
+    noPollen:String,
+    percentage:String,
     callback
   ){
     this.loadingModal = this.showLoading();
+    this.http.put<ControlPollinationTask>(
+      `${environment.baseUrl}${environment.crossPolination}${cpId}`,
+      {
+        no_pollen:noPollen,
+        peratus_pollen:percentage,
+      }
+    ).subscribe(
+      async (res:ControlPollinationTask) => {
+        this.loadingModal = await this.loadingCtrl.getTop()
+        this.loadingModal.dismiss();
+        callback(res);
+      },
+      async (err:HttpErrorResponse) => {
+        this.loadingModal = await this.loadingCtrl.getTop()
+        this.loadingModal.dismiss();
+      }
+    );
+  }
+
+  _hasCPTask(tandanId:String,cpTasks:[ControlPollinationTask]){
+    let retVal = false;
+    cpTasks.forEach(el => {
+      if(el.tandan_id.toString() == tandanId){
+        retVal = true;
+      }
+    });
+    return retVal;
+  }
+
+  getNewlyCreatedTask(
+    userId:String,
+    callback,
+    loadingAnim = true,
+  ){
+    if(loadingAnim){
+      this.loadingModal = this.showLoading();
+    }
     this.baggingService.getFinishedTask(userId,(res:[BaggingTask])=>{
       let tempArray:BaggingTask[] = [];
       this.getByUserId(userId,async (res1:[ControlPollinationTask])=>{
-        res1.forEach(el => {
-          res.forEach(baggingEl => {
-            if(el.pokok_id == baggingEl.pokok_id && el.tandan_id == baggingEl.tandan_id){
-            }else{
-              tempArray.push(baggingEl);
-            }
-          });
+        res.forEach(el => {
+          if(!this._hasCPTask(el.tandan_id.toString(),res1)){
+            tempArray.push(el);
+          }
         });
-        this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          this.loadingModal.dismiss();
+        }
         callback(tempArray);
       },false);
     },false);

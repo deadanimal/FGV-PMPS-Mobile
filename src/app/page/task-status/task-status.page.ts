@@ -177,9 +177,17 @@ export class TaskStatusPage implements OnInit {
     this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
       formData.append('tandan_id',res.tandan_id.toString());
       formData.append('pokok_id',res.pokok_id.toString());
+      formData.append('catatan',this.remark.toString());
       formData.append('id_sv_cp',this.accountService.getSessionDetails().no_kakitangan);
       this.controlPollinationService.create(formData,(resCP:ControlPollinationTask)=>{
-        console.log(resCP);
+        this.router.navigate(
+          [
+            '/app/tabs/tab1/control-pollen-form',
+            {
+              taskId:resCP.id,
+            }
+          ]
+        );
       });
     });
   }
