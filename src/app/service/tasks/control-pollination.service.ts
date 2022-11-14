@@ -1,8 +1,10 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
+import { BaggingTask } from 'src/app/model/bagging-task';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 import { environment } from 'src/environments/environment';
+import { BaggingService } from './bagging.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +15,7 @@ export class ControlPollinationService {
   constructor(
     private http: HttpClient,
     private loadingCtrl: LoadingController,
+    private baggingService: BaggingService,
   ) { }
 
   async showLoading():Promise<HTMLIonLoadingElement> {
@@ -87,12 +90,12 @@ export class ControlPollinationService {
   }
 
   getById(
-    tandanId:String,
+    cpId:String,
     callback
   ){
     this.loadingModal = this.showLoading();
     this.http.get<ControlPollinationTask>(
-      `${environment.baseUrl}${environment.crossPolination}${tandanId}`
+      `${environment.baseUrl}${environment.crossPolination}${cpId}`
     ).subscribe(
       async (res:ControlPollinationTask) => {
         this.loadingModal = await this.loadingCtrl.getTop()
@@ -104,5 +107,49 @@ export class ControlPollinationService {
         this.loadingModal.dismiss();
       }
     );
+  }
+
+  update(
+    cpId:String,
+    formData:FormData,
+    callback
+  ){
+    this.loadingModal = this.showLoading();
+    this.http.put<ControlPollinationTask>(
+      `${environment.baseUrl}${environment.crossPolination}${cpId}`,
+      formData
+    ).subscribe(
+      async (res:ControlPollinationTask) => {
+        this.loadingModal = await this.loadingCtrl.getTop()
+        this.loadingModal.dismiss();
+        callback(res);
+      },
+      async (err:HttpErrorResponse) => {
+        this.loadingModal = await this.loadingCtrl.getTop()
+        this.loadingModal.dismiss();
+      }
+    );
+  }
+
+  getNewlyCreatedTask(
+    userId:string,
+    callback
+  ){
+    this.loadingModal = this.showLoading();
+    this.baggingService.getFinishedTask(userId,(res:[BaggingTask])=>{
+      let tempArray:BaggingTask[];
+      this.getById(userId,(res1:[ControlPollinationTask])=>{
+        res1.forEach(el => {
+          res.forEach(baggingEl => {
+            if(el.pokok_id == baggingEl.pokok_id && el.tandan_id == baggingEl.tandan_id){
+            }else{
+              tempArray.push(baggingEl);
+            }
+          });
+        });
+        this.loadingModal.dismiss();
+        callback(tempArray);
+      });
+    });
   }
 }

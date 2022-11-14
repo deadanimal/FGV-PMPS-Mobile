@@ -1,11 +1,9 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
-import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { environment } from 'src/environments/environment';
 import { BaggingTask } from '../../model/bagging-task';
-import { ControlPollinationService } from './control-pollination.service';
 import { TandanService } from './tandan.service';
 
 @Injectable({
@@ -19,7 +17,6 @@ export class BaggingService {
     private http: HttpClient,
     private loadingCtrl: LoadingController,
     private tandanService: TandanService,
-    private controlPollinationService: ControlPollinationService,
   ) {
   }
 
@@ -142,21 +139,29 @@ export class BaggingService {
       async (res:BaggingTask) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
-        let tandanForm:FormData = new FormData();
-        tandanForm.append('pokok_id',res.pokok_id.toString());
-        tandanForm.append('tandan_id',res.tandan_id.toString());
-        tandanForm.append('id_sv_cp',res.id_sv_balut);
-        this.controlPollinationService.create(
-          tandanForm,
-          (res1:ControlPollinationTask)=>{
-            callback(res);
-          }
-        );
+        callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
       }
     );
+  }
+
+  getFinishedTask(
+    userId:string,
+    callback
+  ){
+    this.loadingModal = this.showLoading();
+    this.getByUserId(userId, (res:[BaggingTask])=>{
+      let retVal:BaggingTask[];
+      res.forEach(el => {
+        if(el.pengesah_id != null){
+          retVal.push(el);
+        }
+      });
+      this.loadingModal.dismiss();
+      callback(retVal);
+    });
   }
 }
