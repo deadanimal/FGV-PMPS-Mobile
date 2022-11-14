@@ -149,18 +149,24 @@ export class BaggingService {
   }
 
   getFinishedTask(
-    userId:string,
-    callback
+    userId:String,
+    callback,
+    loadingAnim = true
   ){
-    this.loadingModal = this.showLoading();
-    this.getByUserId(userId, (res:[BaggingTask])=>{
-      let retVal:BaggingTask[];
+    if(loadingAnim){
+      this.loadingModal = this.showLoading();
+    }
+    this.getByUserId(userId, async (res:[BaggingTask])=>{
+      let retVal:BaggingTask[] = [];
       res.forEach(el => {
         if(el.pengesah_id != null){
           retVal.push(el);
         }
       });
-      this.loadingModal.dismiss();
+      if(loadingAnim){
+        this.loadingModal = await this.loadingCtrl.getTop()
+        this.loadingModal.dismiss();
+      }
       callback(retVal);
     });
   }

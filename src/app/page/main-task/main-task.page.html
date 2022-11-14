@@ -87,7 +87,7 @@
         </ion-col>
         <ion-col size="6" size-md="4" size-lg="2">
           <div>
-            <button (click)="viewTask('9','overdueTask',9)" [disabled]="disableNewRecord" class="btn w-100 mx-auto rounded btn-danger text-center text-white p-2">
+            <button (click)="viewTask('9','overdueTask',9)" class="btn w-100 mx-auto rounded btn-danger text-center text-white p-2">
               <ion-badge *ngIf="numOfActiveTask > 0" color="danger">{{numOfActiveTask}}</ion-badge>
               <img height="56px" src="../../../assets/posponed_task_icon.png">
               <h5>Tugas Tertunggak</h5>

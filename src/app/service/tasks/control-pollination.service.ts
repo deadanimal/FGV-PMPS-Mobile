@@ -43,11 +43,14 @@ export class ControlPollinationService {
 
   getByUserId(
     userId:String,
-    callback
+    callback,
+    loadingAnim = true
   ){
-    this.loadingModal = this.showLoading();
+    if(loadingAnim){
+      this.loadingModal = this.showLoading();
+    }
     this.http.get<[ControlPollinationTask]>(
-      `${environment.baseUrl}${environment.bagging}` // get all id first
+      `${environment.baseUrl}${environment.crossPolination}` // get all id first
       // `${environment.baseUrl}${environment.bagging}${userId}`
     ).subscribe(
       async (res:[ControlPollinationTask]) => {
@@ -57,13 +60,17 @@ export class ControlPollinationService {
             callbackParam.push(el);
           }
         });
-        this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()  
+          this.loadingModal.dismiss();
+        }
         callback(callbackParam);
       },
       async (err:HttpErrorResponse) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
@@ -132,13 +139,13 @@ export class ControlPollinationService {
   }
 
   getNewlyCreatedTask(
-    userId:string,
+    userId:String,
     callback
   ){
     this.loadingModal = this.showLoading();
     this.baggingService.getFinishedTask(userId,(res:[BaggingTask])=>{
-      let tempArray:BaggingTask[];
-      this.getById(userId,(res1:[ControlPollinationTask])=>{
+      let tempArray:BaggingTask[] = [];
+      this.getByUserId(userId,async (res1:[ControlPollinationTask])=>{
         res1.forEach(el => {
           res.forEach(baggingEl => {
             if(el.pokok_id == baggingEl.pokok_id && el.tandan_id == baggingEl.tandan_id){
@@ -147,9 +154,10 @@ export class ControlPollinationService {
             }
           });
         });
+        this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         callback(tempArray);
-      });
-    });
+      },false);
+    },false);
   }
 }

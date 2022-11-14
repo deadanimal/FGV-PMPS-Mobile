@@ -5,12 +5,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
 import { BaggingTask } from 'src/app/model/bagging-task';
+import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { TaskResponseModel } from 'src/app/model/task-response';
 import { AccountService, UserRole } from 'src/app/service/account.service';
 import { ModalService } from 'src/app/service/modal.service';
 import { TaskService } from 'src/app/service/task.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
+import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
 
 @Component({
   selector: 'app-main-task',
@@ -47,6 +49,7 @@ export class MainTaskPage implements OnInit {
     private loadingCtrl: LoadingController,
     private modalService: ModalService,
     private baggingService:BaggingService,
+    private controlPollinationService:ControlPollinationService,
   ) { }
 
   ngOnInit() {
@@ -354,12 +357,50 @@ export class MainTaskPage implements OnInit {
     }
   }
 
+  _getCPTask(){
+    if(
+      this.role == UserRole.general_worker || 
+      this.role == UserRole.petugas_balut || 
+      this.role == UserRole.petugas_qa
+    ){
+      this.controlPollinationService.getByUserId(this.employeeId,(res:[ControlPollinationTask])=>{
+        res.forEach(el => {
+          if(el.pengesah_id == null){
+            this.numOfActiveTask++;
+            this.activeTaskList.push(el);
+          }else{
+            this.numOfFinishTask++;
+            this.finishedTaskList.push(el);
+          }
+          this.controlPollinationService.getNewlyCreatedTask(this.employeeId,(res1:[ControlPollinationTask])=>{
+            this.numOfNewTask = res1.length;
+            this.newTaskList = res1;
+          });
+        });
+      });
+    }else{
+      this.controlPollinationService.getAll((res:[ControlPollinationTask])=>{
+        res.forEach(el => {
+          if(el.pengesah_id == null){
+            this.numOfActiveTask++;
+            this.activeTaskList.push(el);
+          }else{
+            this.numOfFinishTask++;
+            this.finishedTaskList.push(el);
+          }
+        });
+      })
+    }
+  }
+
   _getTask(){
     this.activeTaskList = [];
     this.finishedTaskList = [];
     this.newTaskList = [];
     if(this.task == 'Balut'){
       this._getBaggingTask();
+    }else if(this.task == 'Pendebungaan Terkawal (CP)'){
+      this._getCPTask();
     }
   }
 
