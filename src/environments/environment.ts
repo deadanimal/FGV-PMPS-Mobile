@@ -15,6 +15,7 @@ export const environment = {
   treeInfo:'/pokok/',
   bagging:'/bagging/',
   crossPolination:'/control_pollination/',
+  qualityControl:'/quality_control/',
   storageUrl:'https://fgv.prototype.com.my/storage/',
 };
 
