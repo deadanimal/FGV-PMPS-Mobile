@@ -51,7 +51,8 @@ export class FinishedTaskPage implements OnInit {
     let currentDate = Date.parse(this.datePipe.transform(Date.now(),"yyyy-MM-dd"));
     let rawStringArray = prvDate.split("/");
     let prevDate = Date.parse(rawStringArray[2]+"-"+rawStringArray[1]+"-"+rawStringArray[0]);
-    return currentDate - prevDate;
+    let retVal = (currentDate - prevDate)/1000/60/60/24;
+    return retVal;
   }
 
 }
