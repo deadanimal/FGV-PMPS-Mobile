@@ -100,8 +100,15 @@ export class MainTaskPage implements OnInit {
       if(taskId == "cp"){
         this.router.navigate(['app/tabs/tab1/new-task',{taskId:id,taskType:this.task}]);
       }else{
-        this.router.navigate(['app/tabs/tab1/task-status',{taskId:id,
-          taskType:taskId}]);
+        this.router.navigate(
+          [
+            'app/tabs/tab1/task-status',
+            {
+              taskId:id,
+              taskType:this.task == 'Pendebungaan Terkawal (CP)'? 'debung' : this.task
+            }
+          ]
+        );
       }
     }else if(status == "createNewTask"){
       this.router.navigate(['app/tabs/tab1/create-new-task',{taskType:this.task}]);
@@ -382,8 +389,8 @@ export class MainTaskPage implements OnInit {
       this.controlPollinationService.getAll((res:[ControlPollinationTask])=>{
         res.forEach(el => {
           if(el.pengesah_id == null){
-            this.numOfActiveTask++;
-            this.activeTaskList.push(el);
+            this.numOfNewTask++;
+            this.newTaskList.push(el);
           }else{
             this.numOfFinishTask++;
             this.finishedTaskList.push(el);

@@ -171,6 +171,32 @@ export class ControlPollinationService {
     );
   }
 
+  updateVerify(
+    cpId:String,
+    pengesah_id:String,
+    catatan_pengesah:String,
+    callback
+  ){
+    this.loadingModal = this.showLoading();
+    this.http.put<ControlPollinationTask>(
+      `${environment.baseUrl}${environment.crossPolination}${cpId}`,
+      {
+        pengesah_id:pengesah_id,
+        catatan_pengesah:catatan_pengesah,
+      }
+    ).subscribe(
+      async (res:ControlPollinationTask) => {
+        this.loadingModal = await this.loadingCtrl.getTop()
+        this.loadingModal.dismiss();
+        callback(res);
+      },
+      async (err:HttpErrorResponse) => {
+        this.loadingModal = await this.loadingCtrl.getTop()
+        this.loadingModal.dismiss();
+      }
+    );
+  }
+
   _hasCPTask(tandanId:String,cpTasks:[ControlPollinationTask]){
     let retVal = false;
     cpTasks.forEach(el => {

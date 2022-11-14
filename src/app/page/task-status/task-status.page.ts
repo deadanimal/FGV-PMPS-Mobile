@@ -74,6 +74,7 @@ export class TaskStatusPage implements OnInit {
     this.date = this.datePipe.transform(Date.now(),"dd/MM/yyyy");
     this.time = this.datePipe.transform(Date.now(),"HH:mm a");
     this.name = this.accountService.getSessionDetails().nama;
+    this.userRole = this.accountService.getUserRole();
     this.activatedRoute.params.subscribe(params => {
       if(params['viewOnly']!=null){
         this.viewOnly = params['viewOnly'];
@@ -102,7 +103,6 @@ export class TaskStatusPage implements OnInit {
         // this.returnPage = params['returnPage'];
       }
     });
-    this.userRole = this.accountService.getUserRole();
   }
 
   async takePicture() {
@@ -239,9 +239,18 @@ export class TaskStatusPage implements OnInit {
     });
   }
 
+  _getCPTask(taskId:String){
+    if(this.userRole == UserRole.penyelia_balut){
+      this.controlPollinationService.getById(taskId,(res:ControlPollinationTask)=>{
+        this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
+        this.remark = res.catatan;
+      });
+    }
+  }
+
   async _getTask(taskId:String){
     if(this.taskType == 'debung'){
-
+      this._getCPTask(taskId);
     }else{
       this.baggingService.getById(taskId,(res:BaggingTask)=>{
         this.date = res.created_at.toString();
@@ -288,25 +297,47 @@ export class TaskStatusPage implements OnInit {
   }
 
   async accept(){
-    this.baggingService.verify(
-      this.taskId,
-      this.accountService.getSessionDetails().id.toString(),
-      this.svRemark+" (TERIMA)",
-      (res:BaggingTask)=>{
-        this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
-      }
-    );
+    if(this.taskType == 'debung'){
+      this.controlPollinationService.updateVerify(
+        this.taskId,
+        this.accountService.getSessionDetails().no_kakitangan.toString(),
+        this.svRemark+" (TERIMA)",
+        (res:ControlPollinationTask)=>{
+          this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
+        }
+      );
+    }else{
+      this.baggingService.verify(
+        this.taskId,
+        this.accountService.getSessionDetails().no_kakitangan.toString(),
+        this.svRemark+" (TERIMA)",
+        (res:BaggingTask)=>{
+          this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
+        }
+      );
+    }
   }
 
   async reject(){
-    this.baggingService.verify(
-      this.taskId,
-      this.accountService.getSessionDetails().id.toString(),
-      this.svRemark+" (TOLAK)",
-      (res:BaggingTask)=>{
-        this._promptCompleted("Tugasan Telah Berjaya Di Tolak");
-      }
-    );
+    if(this.taskType == 'debung'){
+      this.controlPollinationService.updateVerify(
+        this.taskId,
+        this.accountService.getSessionDetails().no_kakitangan.toString(),
+        this.svRemark+" (TERIMA)",
+        (res:ControlPollinationTask)=>{
+          this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
+        }
+      );
+    }else{
+      this.baggingService.verify(
+        this.taskId,
+        this.accountService.getSessionDetails().no_kakitangan.toString(),
+        this.svRemark+" (TOLAK)",
+        (res:BaggingTask)=>{
+          this._promptCompleted("Tugasan Telah Berjaya Di Tolak");
+        }
+      );
+    }
   }
 
   pospone(){
