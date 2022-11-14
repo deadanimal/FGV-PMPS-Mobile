@@ -14,6 +14,7 @@ export const environment = {
   tandanInfo:'/tandan/',
   treeInfo:'/pokok/',
   bagging:'/bagging/',
+  crossPolination:'/control_pollination/',
   storageUrl:'https://fgv.prototype.com.my/storage/',
 };
 

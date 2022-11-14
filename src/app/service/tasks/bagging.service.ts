@@ -1,9 +1,11 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
+import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { environment } from 'src/environments/environment';
 import { BaggingTask } from '../../model/bagging-task';
+import { ControlPollinationService } from './control-pollination.service';
 import { TandanService } from './tandan.service';
 
 @Injectable({
@@ -17,6 +19,7 @@ export class BaggingService {
     private http: HttpClient,
     private loadingCtrl: LoadingController,
     private tandanService: TandanService,
+    private controlPollinationService: ControlPollinationService,
   ) {
   }
 
@@ -139,7 +142,16 @@ export class BaggingService {
       async (res:BaggingTask) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
-        callback(res);
+        let tandanForm:FormData = new FormData();
+        tandanForm.append('pokok_id',res.pokok_id.toString());
+        tandanForm.append('tandan_id',res.tandan_id.toString());
+        tandanForm.append('id_sv_cp',res.id_sv_balut);
+        this.controlPollinationService.create(
+          tandanForm,
+          (res1:ControlPollinationTask)=>{
+            callback(res);
+          }
+        );
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
