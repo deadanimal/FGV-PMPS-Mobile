@@ -3,8 +3,10 @@ import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { BaggingTask } from 'src/app/model/bagging-task';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
+import { TandanResponse } from 'src/app/model/tandan-response';
 import { environment } from 'src/environments/environment';
 import { BaggingService } from './bagging.service';
+import { TandanService } from './tandan.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +18,7 @@ export class ControlPollinationService {
     private http: HttpClient,
     private loadingCtrl: LoadingController,
     private baggingService: BaggingService,
+    private tandanService: TandanService,
   ) { }
 
   async showLoading():Promise<HTMLIonLoadingElement> {
@@ -188,7 +191,9 @@ export class ControlPollinationService {
       async (res:ControlPollinationTask) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
-        callback(res);
+        this.tandanService.updateCycle(res.tandan_id.toString(),"debung",async (resTandan:TandanResponse)=>{
+          callback(res);
+        },false);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()

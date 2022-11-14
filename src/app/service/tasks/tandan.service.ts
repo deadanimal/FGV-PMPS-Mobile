@@ -79,4 +79,35 @@ export class TandanService {
       }
     );
   }
+
+  updateCycle(
+    tandanId:String,
+    kitaran:String,
+    callback,
+    loadingAnim = true
+  ){
+    if(loadingAnim){
+      this.loadingModal = this.showLoading();
+    }
+    this.http.put<TandanResponse>(
+      `${environment.baseUrl}${environment.tandanInfo}${tandanId}`,
+      {
+        kitaran:kitaran,
+      }
+    ).subscribe(
+      async (res:TandanResponse) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          this.loadingModal.dismiss();
+        }
+        callback(res);
+      },
+      async (err:HttpErrorResponse) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          this.loadingModal.dismiss();
+        }
+      }
+    );
+  }
 }
