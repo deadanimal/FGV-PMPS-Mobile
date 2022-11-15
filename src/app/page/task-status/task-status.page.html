@@ -41,7 +41,7 @@
       <ion-label position="floating">Tarikh</ion-label>
       <ion-input type="text" [(ngModel)]="date" name="date" required [readonly]="true"></ion-input>
     </ion-item>
-    <ion-item *ngIf="taskType == 'debung' || taskType == 'pollen-prep'" lines="full">
+    <ion-item *ngIf="taskType == 'debung' || taskType == 'pollen-prep' || taskType == 'debungposponed'" lines="full">
       <ion-label position="floating">Masa</ion-label>
       <ion-input type="text" [(ngModel)]="time" name="time" required [readonly]="true"></ion-input>
     </ion-item>
@@ -71,12 +71,12 @@
       <p class="m-auto">Hantar</p>
     </button>
 
-    <button (click)="pospone()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' ) && taskType == 'debung'" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="photo ==null && serverImage == null" (click)="pospone()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' ) && (taskType == 'debung' || taskType == 'debungposponed')" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="add-circle-outline"></ion-icon>
       <p class="m-auto">Anjak</p>
     </button>
 
-    <button [disabled]="!form.valid || photo ==null" (click)="submitCP()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' ) && taskType == 'debung'" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="!form.valid || (photo ==null&& serverImage == null)" (click)="submitCP()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' ) && (taskType == 'debung' || taskType == 'debungposponed')" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="checkmark-circle-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>

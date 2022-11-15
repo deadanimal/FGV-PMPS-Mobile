@@ -90,7 +90,9 @@ export class ControlPollinationService {
       async (res:ControlPollinationTask) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
-        callback(res);
+        this.tandanService.updateCycle(res.tandan_id.toString(),"debung",async (resTandan:TandanResponse)=>{
+          callback(res);
+        });
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
@@ -200,6 +202,30 @@ export class ControlPollinationService {
     );
   }
 
+  updateRemarksNumber(
+    cpId:String,
+    remark:String,
+    callback
+  ){
+    this.loadingModal = this.showLoading();
+    this.http.put<ControlPollinationTask>(
+      `${environment.baseUrl}${environment.crossPolination}${cpId}`,
+      {
+        catatan:remark,
+      }
+    ).subscribe(
+      async (res:ControlPollinationTask) => {
+        this.loadingModal = await this.loadingCtrl.getTop()
+        this.loadingModal.dismiss();
+        callback(res);
+      },
+      async (err:HttpErrorResponse) => {
+        this.loadingModal = await this.loadingCtrl.getTop()
+        this.loadingModal.dismiss();
+      }
+    );
+  }
+
   updateVerify(
     cpId:String,
     tandanId:String,
@@ -219,9 +245,7 @@ export class ControlPollinationService {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         this.tandanService.updateCycle(res.tandan_id.toString(),"debung",async (resTandan:TandanResponse)=>{
-          this.tandanService.updateCycle(tandanId,"debung",(res)=>{
             callback(res);
-          },false);
         },false);
       },
       async (err:HttpErrorResponse) => {

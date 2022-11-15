@@ -90,7 +90,17 @@ export class RegisterStatusPage implements OnInit {
         this.age=tandanRes.umur? tandanRes.umur.toString(): this._calculateAge(tandanRes.tarikh_daftar).toString();
       });
     },false);
+  }
 
+  _getPostponedCPTask(){
+    this.controlPollinationService.getById(this.taskId,(res:BaggingTask)=>{
+      this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
+        this.regNumber = tandanRes.no_daftar;
+        this.cycle = tandanRes.kitaran;
+        this.status=tandanRes.status_tandan;
+        this.age=tandanRes.umur? tandanRes.umur.toString(): this._calculateAge(tandanRes.tarikh_daftar).toString();
+      });
+    },false);
   }
 
   _calculateAge(prvDate:string){
@@ -103,6 +113,8 @@ export class RegisterStatusPage implements OnInit {
   async _getTask(){
     if(this.taskType == "Pendebungaan Terkawal (CP)"){
       this._getCPTask();
+    }else if(this.taskType == "Pendebungaan Terkawal (CP)posponed"){
+      this._getPostponedCPTask();
     }else{
       this.loadingModal= await this.showLoading();
       this.taskService.getTask(this.taskId).subscribe(
@@ -185,6 +197,16 @@ export class RegisterStatusPage implements OnInit {
           {
             taskId:this.taskId,
             taskType:"debung",
+          }
+        ]
+      );
+    }else if(this.taskType == "Pendebungaan Terkawal (CP)posponed"){
+      this.router.navigate(
+        [
+          'app/tabs/tab1/defect',
+          {
+            taskId:this.taskId,
+            taskType:"debungposponed",
           }
         ]
       );

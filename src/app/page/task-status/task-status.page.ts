@@ -44,7 +44,8 @@ export class TaskStatusPage implements OnInit {
   taskId:String;
   taskType:String;
   time:String;
-  posponedDay:String;
+  posponedDay:number;
+  numOfCheck:number;
   tandanId:String;
   flowerStatus:String;
   qcSv:String;
@@ -172,26 +173,43 @@ export class TaskStatusPage implements OnInit {
   }
 
   async submitCP(){
-    const formData = new FormData();
-    const response = await fetch(this.photo.dataUrl);
-    const blob = await response.blob();
-    formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
-    this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
-      formData.append('tandan_id',res.tandan_id.toString());
-      formData.append('pokok_id',res.pokok_id.toString());
-      formData.append('catatan',this.remark.toString());
-      formData.append('id_sv_cp',this.accountService.getSessionDetails().no_kakitangan);
-      this.controlPollinationService.create(formData,(resCP:ControlPollinationTask)=>{
-        this.router.navigate(
-          [
-            '/app/tabs/tab1/control-pollen-form',
-            {
-              taskId:resCP.id,
-            }
-          ]
-        );
+    if(this.taskType == 'debungposponed'){
+      this.controlPollinationService.updateRemarksNumber(
+        this.taskId,
+        this.remark,
+        (resCP:ControlPollinationTask)=>{
+          this.router.navigate(
+            [
+              '/app/tabs/tab1/control-pollen-form',
+              {
+                taskId:resCP.id,
+              }
+            ]
+          );
+        }
+      );
+    }else{
+      const formData = new FormData();
+      const response = await fetch(this.photo.dataUrl);
+      const blob = await response.blob();
+      formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
+      this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
+        formData.append('tandan_id',res.tandan_id.toString());
+        formData.append('pokok_id',res.pokok_id.toString());
+        formData.append('catatan',this.remark.toString());
+        formData.append('id_sv_cp',this.accountService.getSessionDetails().no_kakitangan);
+        this.controlPollinationService.create(formData,(resCP:ControlPollinationTask)=>{
+          this.router.navigate(
+            [
+              '/app/tabs/tab1/control-pollen-form',
+              {
+                taskId:resCP.id,
+              }
+            ]
+          );
+        });
       });
-    });
+    }
   }
 
   async submitTask(){
@@ -251,9 +269,22 @@ export class TaskStatusPage implements OnInit {
     }
   }
 
+  _getPosponedCPTask(taskId:String){
+    this.controlPollinationService.getById(taskId,(res:ControlPollinationTask)=>{
+      this.tandanId = res.tandan_id.toString();
+      this.posponedDay = parseInt(res.tambahan_hari);
+      this.numOfCheck = parseInt(res.bil_pemeriksaan);
+      if(res.url_gambar!=null){
+        this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
+      }
+    });
+  }
+
   async _getTask(taskId:String){
     if(this.taskType == 'debung'){
       this._getCPTask(taskId);
+    }else if(this.taskType == 'debungposponed'){
+      this._getPosponedCPTask(taskId);
     }else{
       this.baggingService.getById(taskId,(res:BaggingTask)=>{
         this.date = res.created_at.toString();
@@ -345,8 +376,11 @@ export class TaskStatusPage implements OnInit {
     }
   }
 
-  _createCPPosponed(){
+  async _createCPPosponed(){
     const formData = new FormData();
+    const response = await fetch(this.photo.dataUrl);
+    const blob = await response.blob();
+    formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
     this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
       formData.append('tambahan_hari',this.posponedDay.toString());
       formData.append('bil_pemeriksaan',"1");
@@ -366,6 +400,24 @@ export class TaskStatusPage implements OnInit {
     });
   }
 
+  _updateCPPosponed(){
+    this.controlPollinationService.updateAdditionalDaysNumber(
+      this.taskId,
+      this.posponedDay.toString(),
+      this.numOfCheck.toString(),
+      (resCP:ControlPollinationTask)=>{
+        this.modalService.successPrompt("Proses telah berjaya dianjakkan kepada +"+this.posponedDay+" hari").then((value1)=>{
+            this.router.navigateByUrl(
+              '/app/tabs/tab1',
+              {
+                replaceUrl : true
+              }
+            );
+          }
+        );
+    });
+  }
+
   pospone(){
     this.modalService.yesNoPrompt("Anjak hari?").then((value)=>{
       let user_selection:UserContinueSelection = value['data'];
@@ -376,7 +428,9 @@ export class TaskStatusPage implements OnInit {
               this.posponedDay = value1['data'];
               this._createCPPosponed();
             }else{
-              this.posponedDay = this.posponedDay+value1['data'];
+              this.posponedDay = this.posponedDay+parseInt(value1['data']);
+              this.numOfCheck++;
+              this._updateCPPosponed();
             }
           }
         });

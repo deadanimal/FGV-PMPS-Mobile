@@ -3,11 +3,13 @@ import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
 import { BaggingTask } from 'src/app/model/bagging-task';
+import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 import { PokokResponse } from 'src/app/model/pokok-respons';
 import { TaskResponseModel } from 'src/app/model/task-response';
 import { AccountService, UserRole } from 'src/app/service/account.service';
 import { ModalService } from 'src/app/service/modal.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
+import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
 import { TreeService } from 'src/app/service/tasks/tree.service';
 
 @Component({
@@ -36,6 +38,7 @@ export class NewTaskInfoPage implements OnInit {
     private pokokService:TreeService,
     private baggingService:BaggingService,
     private accountService:AccountService,
+    private cpService:ControlPollinationService,
   ) { }
 
   ngOnInit() {
@@ -123,6 +126,17 @@ export class NewTaskInfoPage implements OnInit {
   _getTreeInfo(){
     if("Pendebungaan Terkawal (CP)" == this.taskType){
       this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
+        this.pokokService.getById(res.pokok_id.toString(),(res:PokokResponse)=>{
+          this.treeNumber = res.no_pokok;
+          this.ancestor = res.induk;
+          this.breed = res.baka;
+          this.progeny = res.progeny;
+          this.block = res.progeny;
+          this.status = res.status_pokok;
+        })
+      });
+    }else if("Pendebungaan Terkawal (CP)posponed" == this.taskType){
+      this.cpService.getById(this.taskId,(res:ControlPollinationTask)=>{
         this.pokokService.getById(res.pokok_id.toString(),(res:PokokResponse)=>{
           this.treeNumber = res.no_pokok;
           this.ancestor = res.induk;

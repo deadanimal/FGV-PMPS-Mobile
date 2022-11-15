@@ -103,7 +103,7 @@ export class MainTaskPage implements OnInit {
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId,tandanId:id}]);
     }else if( status == 'posponed'){
       if(taskId == 'cp'){
-        this.router.navigate(['app/tabs/tab1/new-task',{cpTaskId:id,taskType:this.task}]);
+        this.router.navigate(['app/tabs/tab1/new-task',{taskId:id,taskType:this.task+"posponed"}]);
       }
     }else if(status == "activeTask"){
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId,tandanId:id}]);
