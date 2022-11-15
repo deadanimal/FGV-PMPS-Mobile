@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { PopoverController } from '@ionic/angular';
+import { ModalService } from 'src/app/service/modal.service';
 import { StorageService } from 'src/app/service/storage.service';
 
 @Component({
@@ -13,19 +13,25 @@ export class LogoutButtonComponent implements OnInit {
   constructor(
     private storageService:StorageService,
     private router:Router,
-    private popoverController:PopoverController,
+    private modalService:ModalService,
   ) { }
 
   ngOnInit() {
   }
 
-  async logout(){
-    this.storageService.eraseAll();
-    let popoverCtrl = await this.popoverController.getTop();
-    popoverCtrl.dismiss();
-    this.router.navigateByUrl('/login',{
-      replaceUrl : true
-    });
+  async promptMenu(){
+    this.modalService.menuPrompt().then(
+      async (value)=>{
+        if(value['data'] == 'logOut'){
+          this.storageService.eraseAll();
+          this.router.navigateByUrl('/login',{
+            replaceUrl : true
+          });
+        }
+      }
+    );
   }
+
+
 
 }
