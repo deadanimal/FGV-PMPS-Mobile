@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 import { TandanResponse } from 'src/app/model/tandan-response';
-import { AccountService } from 'src/app/service/account.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
 import { TandanService } from 'src/app/service/tasks/tandan.service';
-import { TreeService } from 'src/app/service/tasks/tree.service';
 
 @Component({
   selector: 'app-qc-search-form',
@@ -21,6 +20,7 @@ export class QcSearchFormPage implements OnInit {
   constructor(
     private tandanService:TandanService,
     private cpService:ControlPollinationService,
+    private router:Router,
   ) { }
 
   ngOnInit() {
@@ -45,7 +45,17 @@ export class QcSearchFormPage implements OnInit {
   }
 
   selectTask(taskId:String){
-    console.log(taskId);
+    this.router.navigate(
+      [
+        '/app/tabs/tab1/qc-task-distribution',
+        {
+          taskId:taskId,
+        }
+      ],
+      {
+        replaceUrl : true
+      }
+    );
   }
 }
 

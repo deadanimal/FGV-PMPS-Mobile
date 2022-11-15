@@ -73,6 +73,10 @@ const routes: Routes = [
         loadChildren: () => import('../page/qc-search-form/qc-search-form.module').then(m => m.QcSearchFormPageModule)
       },
       {
+        path: 'tab1/qc-task-distribution',
+        loadChildren: () => import('../page/qc-task-distribution/qc-task-distribution.module').then(m => m.QcTaskDistributionPageModule)
+      },
+      {
         path: '',
         redirectTo: 'tabs/tab1/',
         pathMatch: 'full'
