@@ -95,8 +95,7 @@ export class RegisterStatusPage implements OnInit {
 
   _calculateAge(prvDate:string){
     let currentDate = Date.parse(this.datePipe.transform(Date.now(),"yyyy-MM-dd"));
-    let rawStringArray = prvDate.split("/");
-    let prevDate = Date.parse(rawStringArray[2]+"-"+rawStringArray[1]+"-"+rawStringArray[0]);
+    let prevDate = Date.parse(prvDate);
     let retVal = (currentDate - prevDate)/1000/60/60/24;
     return retVal;
   }

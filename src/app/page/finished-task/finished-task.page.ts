@@ -40,7 +40,7 @@ export class FinishedTaskPage implements OnInit {
       this.regNo = res.no_daftar;
       this.age = res.umur? res.umur.toString(): this._calculateAge(res.tarikh_daftar).toString();
       this.cycle = res.kitaran.toUpperCase();
-      this.status = res.status_tandan? res.status_tandan:"-";
+      this.status = res.status_tandan? res.status_tandan.toUpperCase():"-";
       this.treeService.getById(res.pokok_id.toString(),(treeRes:PokokResponse)=>{
         this.treeNumber = treeRes.no_pokok;
       });
@@ -49,8 +49,7 @@ export class FinishedTaskPage implements OnInit {
 
   _calculateAge(prvDate:string){
     let currentDate = Date.parse(this.datePipe.transform(Date.now(),"yyyy-MM-dd"));
-    let rawStringArray = prvDate.split("/");
-    let prevDate = Date.parse(rawStringArray[2]+"-"+rawStringArray[1]+"-"+rawStringArray[0]);
+    let prevDate = Date.parse(prvDate);
     let retVal = (currentDate - prevDate)/1000/60/60/24;
     return retVal;
   }

@@ -29,12 +29,14 @@ export class MainTaskPage implements OnInit {
   disableNewTaskBtn:boolean;
   disableTaskBtn:boolean;
   disableActiveTaskBtn:boolean;
+  disablePostponedTaskBtn:boolean;
   role:UserRole;
   taskIconPath:String;
   taskBtnName:String;
   numOfActiveTask:number = 0;
   numOfFinishTask:number = 0;
   numOfNewTask:number = 0;
+  numOfPosponedTask:number = 0;
   employeeId:String;
   scanInput:String;
   loadingModal:any;
@@ -42,6 +44,7 @@ export class MainTaskPage implements OnInit {
   activeTaskList:any[];
   finishedTaskList:any[];
   newTaskList:any[];
+  posponedTaskList:any[];
 
   constructor(
     private activatedRoute:ActivatedRoute,
@@ -91,12 +94,17 @@ export class MainTaskPage implements OnInit {
     this.numOfActiveTask = 0;
     this.numOfFinishTask = 0;
     this.numOfNewTask = 0;
+    this.numOfPosponedTask = 0;
     this._getTask();
   }
 
   viewTask(taskId:String,status:String,id:number){
     if(status == "completed"){
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId,tandanId:id}]);
+    }else if( status == 'posponed'){
+      if(taskId == 'cp'){
+        this.router.navigate(['app/tabs/tab1/new-task',{cpTaskId:id,taskType:this.task}]);
+      }
     }else if(status == "activeTask"){
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId,tandanId:id}]);
     }else if(status == "activeTaskSV"){
@@ -123,6 +131,11 @@ export class MainTaskPage implements OnInit {
   activeTask(){
     this._enableAllBtn();
     this.disableActiveTaskBtn = true;
+  }
+  
+  posponedTask(){
+    this._enableAllBtn();
+    this.disablePostponedTaskBtn = true;
   }
 
   newRecord(){
@@ -210,12 +223,14 @@ export class MainTaskPage implements OnInit {
     this.disableNewRecord = false;
     this.disableTaskBtn = false;
     this.disableActiveTaskBtn = false;
+    this.disablePostponedTaskBtn = false;
   }
 
   _populateData(res:[TaskResponseModel]){
     this.activeTaskList = [];
     this.finishedTaskList = [];
     this.newTaskList = [];
+    this.posponedTaskList = [];
     if(this.task == "Balut"){
       if(this.role == UserRole.penyelia_balut){
         this._populateDataForBalutSvTask(res);
@@ -375,9 +390,12 @@ export class MainTaskPage implements OnInit {
     ){
       this.controlPollinationService.getByUserId(this.employeeId,(res:[ControlPollinationTask])=>{
         res.forEach(el => {
-          if(el.pengesah_id == null){
+          if(el.pengesah_id == null && el.catatan != null){
             this.numOfActiveTask++;
             this.activeTaskList.push(el);
+          }else if(el.catatan == null && el.tambahan_hari != null){
+            this.numOfPosponedTask++;
+            this.posponedTaskList.push(el);
           }else{
             this.numOfFinishTask++;
             this.finishedTaskList.push(el);
@@ -391,10 +409,10 @@ export class MainTaskPage implements OnInit {
     }else{
       this.controlPollinationService.getAll((res:[ControlPollinationTask])=>{
         res.forEach(el => {
-          if(el.pengesah_id == null){
+          if(el.pengesah_id == null && el.catatan != null){
             this.numOfNewTask++;
             this.newTaskList.push(el);
-          }else{
+          }else if(el.pengesah_id != null){
             this.numOfFinishTask++;
             this.finishedTaskList.push(el);
           }
@@ -443,6 +461,7 @@ export class MainTaskPage implements OnInit {
     this.activeTaskList = [];
     this.finishedTaskList = [];
     this.newTaskList = [];
+    this.posponedTaskList = [];
     if(this.task == 'Balut'){
       this._getBaggingTask();
     }else if(this.task == 'Pendebungaan Terkawal (CP)'){

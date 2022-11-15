@@ -174,8 +174,35 @@ export class ControlPollinationService {
     );
   }
 
+  updateAdditionalDaysNumber(
+    cpId:String,
+    tambahan_hari:String,
+    bil_pemeriksaan:String,
+    callback
+  ){
+    this.loadingModal = this.showLoading();
+    this.http.put<ControlPollinationTask>(
+      `${environment.baseUrl}${environment.crossPolination}${cpId}`,
+      {
+        tambahan_hari:tambahan_hari,
+        bil_pemeriksaan:bil_pemeriksaan,
+      }
+    ).subscribe(
+      async (res:ControlPollinationTask) => {
+        this.loadingModal = await this.loadingCtrl.getTop()
+        this.loadingModal.dismiss();
+        callback(res);
+      },
+      async (err:HttpErrorResponse) => {
+        this.loadingModal = await this.loadingCtrl.getTop()
+        this.loadingModal.dismiss();
+      }
+    );
+  }
+
   updateVerify(
     cpId:String,
+    tandanId:String,
     pengesah_id:String,
     catatan_pengesah:String,
     callback
@@ -192,7 +219,9 @@ export class ControlPollinationService {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         this.tandanService.updateCycle(res.tandan_id.toString(),"debung",async (resTandan:TandanResponse)=>{
-          callback(res);
+          this.tandanService.updateCycle(tandanId,"debung",(res)=>{
+            callback(res);
+          },false);
         },false);
       },
       async (err:HttpErrorResponse) => {

@@ -67,6 +67,7 @@ export class QrScannerPage implements OnInit {
     if (result.hasContent) {
       // console.log(result.content); // log the raw scanned content
       let scanResult = result.content.replace('http://fgv.prototype.com.my/pengurusan-pokok-induk/pokok/edit/',""); // for pokok
+      scanResult = scanResult.replace('http://fgv.prototype.com.my/pengurusan-pokok-induk/tandan/edit/',""); // for pokok
       if(this.treeNum!=null){
         this.router.navigate([this.returnUrl,{task:this.task,treeNum:this.treeNum,regNo:scanResult,taskId:this.taskId,scanInput:scanResult}]);
       }else if(this.task != null){

@@ -71,7 +71,7 @@ export class TaskStatusPage implements OnInit {
   }
 
   ionViewDidEnter(){
-    this.date = this.datePipe.transform(Date.now(),"dd/MM/yyyy");
+    this.date = this.datePipe.transform(Date.now(),"yyyy-MM-dd");
     this.time = this.datePipe.transform(Date.now(),"HH:mm a");
     this.name = this.accountService.getSessionDetails().nama;
     this.userRole = this.accountService.getUserRole();
@@ -97,7 +97,9 @@ export class TaskStatusPage implements OnInit {
       }
       if(params['taskId']!=null){
         this.taskId = params['taskId'];
-        this._getTask(params['taskId']);
+        if(this.taskId != undefined){
+          this._getTask(params['taskId']);
+        }
       }
       if(params['returnPage']!=undefined){
         // this.returnPage = params['returnPage'];
@@ -244,6 +246,7 @@ export class TaskStatusPage implements OnInit {
       this.controlPollinationService.getById(taskId,(res:ControlPollinationTask)=>{
         this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
         this.remark = res.catatan;
+        this.tandanId = res.tandan_id.toString();
       });
     }
   }
@@ -265,7 +268,7 @@ export class TaskStatusPage implements OnInit {
           this.treeId = "-";
           this.regNo = "-";
         }
-      });
+      },false);
     }
   }
 
@@ -300,6 +303,7 @@ export class TaskStatusPage implements OnInit {
     if(this.taskType == 'debung'){
       this.controlPollinationService.updateVerify(
         this.taskId,
+        this.tandanId,
         this.accountService.getSessionDetails().no_kakitangan.toString(),
         this.svRemark+" (TERIMA)",
         (res:ControlPollinationTask)=>{
@@ -322,6 +326,7 @@ export class TaskStatusPage implements OnInit {
     if(this.taskType == 'debung'){
       this.controlPollinationService.updateVerify(
         this.taskId,
+        this.tandanId,
         this.accountService.getSessionDetails().no_kakitangan.toString(),
         this.svRemark+" (TERIMA)",
         (res:ControlPollinationTask)=>{
@@ -340,21 +345,39 @@ export class TaskStatusPage implements OnInit {
     }
   }
 
+  _createCPPosponed(){
+    const formData = new FormData();
+    this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
+      formData.append('tambahan_hari',this.posponedDay.toString());
+      formData.append('bil_pemeriksaan',"1");
+      formData.append('id_sv_cp',this.accountService.getSessionDetails().no_kakitangan);
+      formData.append('tandan_id',res.tandan_id.toString());
+      formData.append('pokok_id',res.pokok_id.toString());
+      this.controlPollinationService.create(formData,(resCP:ControlPollinationTask)=>{
+        this.modalService.successPrompt("Proses telah berjaya dianjakkan kepada +"+this.posponedDay+" hari").then((value1)=>{
+            this.router.navigateByUrl(
+              '/app/tabs/tab1',
+              {
+                replaceUrl : true
+              }
+            );
+          });
+      });
+    });
+  }
+
   pospone(){
     this.modalService.yesNoPrompt("Anjak hari?").then((value)=>{
       let user_selection:UserContinueSelection = value['data'];
       if(user_selection == UserContinueSelection.yes){
-        this.modalService.posponePrompt().then((value1)=>{
-          this.posponedDay = value1['data'];
-          if(this.posponedDay!= null){
-            this.modalService.successPrompt("Proses telah berjaya dianjakkan kepada +"+this.posponedDay+" hari").then((value1)=>{
-              this.router.navigateByUrl(
-                '/app/tabs/tab1',
-                {
-                  replaceUrl : true
-                }
-              );
-            });
+        this.modalService.posponePrompt().then(async (value1)=>{
+          if(value1['data'] != null){
+            if(this.posponedDay== null){
+              this.posponedDay = value1['data'];
+              this._createCPPosponed();
+            }else{
+              this.posponedDay = this.posponedDay+value1['data'];
+            }
           }
         });
       }else if(user_selection == UserContinueSelection.no){
