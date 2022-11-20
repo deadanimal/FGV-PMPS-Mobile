@@ -31,6 +31,7 @@ export class RegisterStatusPage implements OnInit {
   treeNumber:String;
   scanInput:String;
   taskType:String;
+  tandanId:String;
   loadingModal:any;
 
   constructor(
@@ -69,7 +70,7 @@ export class RegisterStatusPage implements OnInit {
       }
 
       if(this.scanInput != null){
-        this.regNumber = this.scanInput;
+        this.tandanId = this.scanInput;
         this._proceedToWork();
       }
     });
@@ -215,7 +216,7 @@ export class RegisterStatusPage implements OnInit {
         [
           'app/tabs/tab1/task-status',
           {
-            regNumber:this.regNumber,
+            tandanId:this.tandanId,
             treeNumber:this.treeNumber,
             taskType:"debung",
           }

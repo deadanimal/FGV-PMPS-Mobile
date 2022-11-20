@@ -42,7 +42,7 @@ export class FinishedTaskPage implements OnInit {
       this.cycle = res.kitaran.toUpperCase();
       this.status = res.status_tandan? res.status_tandan.toUpperCase():"-";
       this.treeService.getById(res.pokok_id.toString(),(treeRes:PokokResponse)=>{
-        this.treeNumber = treeRes.no_pokok;
+        this.treeNumber = treeRes.progeny+"-"+treeRes.no_pokok;
       });
     });
   }

@@ -449,7 +449,7 @@ export class TaskStatusPage implements OnInit {
 
   _getTreeNumber(){
     this.treeService.getById(this.treeId,(res:PokokResponse)=>{
-      this.treeNum = res.no_pokok;
+      this.treeNum = res.progeny+'-'+res.no_pokok;
       this.treeBlock = res.blok;
       this._getSupervisors();
     })

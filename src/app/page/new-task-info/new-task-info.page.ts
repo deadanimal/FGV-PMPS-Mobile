@@ -124,7 +124,7 @@ export class NewTaskInfoPage implements OnInit {
   }
 
   _populateTreeInfo(res:PokokResponse){
-    this.treeNumber = res.no_pokok;
+    this.treeNumber = res.progeny+"-"+res.no_pokok;
     this.ancestor = res.jantina;
     this.breed = res.baka;
     this.progeny = res.progeny;
