@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 
 @Component({
@@ -10,13 +11,17 @@ export class MenuPromptComponent implements OnInit {
 
   constructor(
     private modalCtrl:ModalController,
+    private router:Router,
   ) { }
 
   ngOnInit() {}
 
   logOut(){
-    console.log("logOut");
     this.modalCtrl.dismiss('logOut');
+  }
+
+  dashboard(){
+    this.modalCtrl.dismiss('dashboard');
   }
 
 }
