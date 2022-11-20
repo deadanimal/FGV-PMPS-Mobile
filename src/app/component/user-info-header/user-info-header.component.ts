@@ -24,6 +24,9 @@ export class UserInfoHeaderComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+  }
+
+  ngAfterViewInit(){
     if(this.accountService.getSessionDetails() == null){
       setTimeout(() => {
         this._getFromStorage();

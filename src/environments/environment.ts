@@ -16,6 +16,7 @@ export const environment = {
   bagging:'/bagging/',
   crossPolination:'/control_pollination/',
   qualityControl:'/quality_control/',
+  userByRole:'/users/peranan/',
   storageUrl:'https://fgv.prototype.com.my/storage/',
 };
 

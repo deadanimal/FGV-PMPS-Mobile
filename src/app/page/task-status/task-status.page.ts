@@ -1,8 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Photo } from '@capacitor/camera';
-import { LoadingController, ModalController } from '@ionic/angular';
+import { IonSelect, LoadingController, ModalController } from '@ionic/angular';
 import { GenericTextModalComponent } from 'src/app/component/generic-text-modal/generic-text-modal.component';
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { TandanResponse } from 'src/app/model/tandan-response';
@@ -21,6 +21,8 @@ import { BaggingTask } from 'src/app/model/bagging-task';
 import { TandanService } from 'src/app/service/tasks/tandan.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
+import { UserService } from 'src/app/service/user.service';
+import { User } from 'src/app/model/user';
 
 @Component({
   selector: 'app-task-status',
@@ -28,7 +30,7 @@ import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
   styleUrls: ['./task-status.page.scss'],
 })
 export class TaskStatusPage implements OnInit {
-
+  @ViewChild("id1") id1!: IonSelect;
   name:String;
   treeId:String;
   treeNum:String;
@@ -51,6 +53,8 @@ export class TaskStatusPage implements OnInit {
   qcSv:String;
   tandanStatus:String;
   returnPage:String = '';
+  treeBlock:String;
+  userList:User[] = [];
 
   constructor(
     private photoService:PhotoService,
@@ -66,6 +70,7 @@ export class TaskStatusPage implements OnInit {
     private tandanService: TandanService,
     private baggingService: BaggingService,
     private controlPollinationService: ControlPollinationService,
+    private userServices: UserService,
   ) { }
 
   ngOnInit() {
@@ -225,6 +230,7 @@ export class TaskStatusPage implements OnInit {
     formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
     formData.append('id_sv_balut',this.accountService.getSessionDetails().no_kakitangan);
     formData.append('catatan',this.remark.toString());
+    formData.append('pengesah_id',this.id1.value.toString());
 
     this.baggingService.createTask(formData,async (res:BaggingTask)=>{
       if(res==null){
@@ -277,6 +283,7 @@ export class TaskStatusPage implements OnInit {
       if(res.url_gambar!=null){
         this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
       }
+      this._getSupervisors();
     });
   }
 
@@ -443,7 +450,28 @@ export class TaskStatusPage implements OnInit {
   _getTreeNumber(){
     this.treeService.getById(this.treeId,(res:PokokResponse)=>{
       this.treeNum = res.no_pokok;
+      this.treeBlock = res.blok;
+      this._getSupervisors();
     })
+  }
+
+  _getSupervisors(){
+    if(this.userRole == UserRole.petugas_balut){
+      this.userServices.getByRole(UserRole.penyelia_balut.toString(),(res:[User])=>{
+        if(this.treeBlock != null){
+          res.forEach(el => {
+            if(el.blok == this.treeBlock){
+              this.userList.push(el);
+            }
+          });
+        }else{
+          this.userList = res;
+        }
+        if(this.userList.length == 0){
+          this.userList = res;
+        }
+      });
+    }
   }
 
 }

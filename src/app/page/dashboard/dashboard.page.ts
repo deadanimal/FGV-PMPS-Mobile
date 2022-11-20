@@ -68,32 +68,12 @@ export class DashboardPage implements OnInit {
   }
 
   async _getTasks(){
-    if( this.role == UserRole.petugas_balut || 
-        this.role == UserRole.petugas_qa
+    if( this.role == UserRole.petugas_balut){
+      this.wrapTask = true;
+      this.debungTask = true;
+    }else if(this.role == UserRole.petugas_qa
       ){
-      this.loadingModal= await this.showLoading();
-      this.taskService.getTaskById(this.employeeId).subscribe(
-        (res:[TaskResponseModel]) => {
-          this.loadingModal.dismiss();
-          if(res.length > 0){
-            res.forEach(element => {
-              if(element.jenis == "balut" && this.role == UserRole.petugas_balut){
-                this.wrapTask = true;
-              }else if(element.jenis == "debung" && this.role == UserRole.petugas_balut){
-                this.debungTask = true;
-              }else if(element.jenis == "kawal" && this.role == UserRole.petugas_qa){
-                this.qcTask = true;
-              }else if(element.jenis == "tuai"){
-                this.harvestTask = true;
-              }
-            });
-          }else{
-          }
-        },
-        (err:HttpErrorResponse) => {
-          this.loadingModal.dismiss();
-        }
-      );
+      this.qcTask = true;
     }else if(this.role == UserRole.general_worker){
       this.pollenSupplyTask = true;
       this.pollenUseTask = true;

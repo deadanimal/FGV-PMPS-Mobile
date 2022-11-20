@@ -49,6 +49,11 @@
       <ion-label position="floating">Catatan</ion-label>
       <ion-input type="text" [(ngModel)]="remark" name="remark" required [readonly]="userRole!='Petugas Balut & Pendebungaan Terkawal' && userRole!='Petugas Kawalan Kualiti'"></ion-input>
     </ion-item>
+    <ion-item  lines="full" class="my-4" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Kawalan Kualiti')">
+      <ion-select placeholder="Pilih Penyelia" id= "id1" #id1 >
+        <ion-select-option *ngFor="let sv of userList" value={{sv.no_kakitangan}}>{{sv.nama}}</ion-select-option>
+      </ion-select>
+    </ion-item>
     <ion-item *ngIf="userRole=='Penyelia Balut' || userRole=='Penyelia Kawalan Kualiti'" lines="full">
       <ion-label position="floating">Catatan Penyelia</ion-label>
       <ion-input type="text" [(ngModel)]="svRemark" name="svRemark" required></ion-input>
@@ -66,7 +71,7 @@
       <p class="m-auto">TERIMA</p>
     </button>
 
-    <button [disabled]="!form.valid || photo ==null" (click)="submitTask()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Kawalan Kualiti') && taskType == 'balut'" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="!form.valid || photo ==null || id1==null && id1.value==null" (click)="submitTask()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Kawalan Kualiti') && taskType == 'balut'" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>

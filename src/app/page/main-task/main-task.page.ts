@@ -358,7 +358,7 @@ export class MainTaskPage implements OnInit {
     ){
       this.baggingService.getByUserId(this.employeeId,(res:[BaggingTask])=>{
         res.forEach(el => {
-          if(el.pengesah_id == null){
+          if(el.catatan_pengesah == null){
             this.numOfActiveTask++;
             this.activeTaskList.push(el);
           }else{
@@ -370,12 +370,14 @@ export class MainTaskPage implements OnInit {
     }else{
       this.baggingService.getAll((res:[BaggingTask])=>{
         res.forEach(el => {
-          if(el.pengesah_id == null){
-            this.numOfNewTask++;
-            this.newTaskList.push(el);
-          }else{
-            this.numOfFinishTask++;
-            this.finishedTaskList.push(el);
+          if(el.pengesah_id == this.accountService.getSessionDetails().no_kakitangan){
+            if(el.catatan_pengesah == null){
+              this.numOfNewTask++;
+              this.newTaskList.push(el);
+            }else{
+              this.numOfFinishTask++;
+              this.finishedTaskList.push(el);
+            }
           }
         });
       });
@@ -390,7 +392,7 @@ export class MainTaskPage implements OnInit {
     ){
       this.controlPollinationService.getByUserId(this.employeeId,(res:[ControlPollinationTask])=>{
         res.forEach(el => {
-          if(el.pengesah_id == null && el.catatan != null){
+          if(el.catatan_pengesah == null && el.catatan != null){
             this.numOfActiveTask++;
             this.activeTaskList.push(el);
           }else if(el.catatan == null && el.tambahan_hari != null){
@@ -409,10 +411,10 @@ export class MainTaskPage implements OnInit {
     }else{
       this.controlPollinationService.getAll((res:[ControlPollinationTask])=>{
         res.forEach(el => {
-          if(el.pengesah_id == null && el.catatan != null){
+          if(el.catatan_pengesah == null && el.catatan != null){
             this.numOfNewTask++;
             this.newTaskList.push(el);
-          }else if(el.pengesah_id != null){
+          }else if(el.catatan_pengesah != null){
             this.numOfFinishTask++;
             this.finishedTaskList.push(el);
           }
@@ -429,7 +431,7 @@ export class MainTaskPage implements OnInit {
     ){
       this.qcService.getByUserId(this.employeeId,(res:[QualityControlTask])=>{
         res.forEach(el => {
-          if(el.pengesah_id == null){
+          if(el.catatan_pengesah == null){
             this.numOfActiveTask++;
             this.activeTaskList.push(el);
           }else{
@@ -445,10 +447,10 @@ export class MainTaskPage implements OnInit {
     }else{
       this.qcService.getAll((res:[QualityControlTask])=>{
         res.forEach(el => {
-          if(el.pengesah_id == null && el.catatan != null){
+          if(el.catatan_pengesah == null && el.catatan != null){
             this.numOfNewTask++;
             this.newTaskList.push(el);
-          }else if(el.pengesah_id != null){
+          }else if(el.catatan_pengesah != null){
             this.numOfFinishTask++;
             this.finishedTaskList.push(el);
           }
