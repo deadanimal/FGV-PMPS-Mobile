@@ -229,8 +229,9 @@ export class TaskStatusPage implements OnInit {
     // for bagging
     formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
     formData.append('id_sv_balut',this.accountService.getSessionDetails().no_kakitangan);
-    formData.append('catatan',this.remark.toString());
-    formData.append('pengesah_id',this.id1.value.toString());
+    formData.append('catatan',this.remark?.toString());
+    formData.append('pengesah_id',this.id1.value?.toString());
+    formData.append('tandan_id',this.tandanId.toString());
 
     this.baggingService.createTask(formData,async (res:BaggingTask)=>{
       if(res==null){
@@ -483,7 +484,6 @@ export class TaskStatusPage implements OnInit {
             this.tandanId = el.id.toString();
           }
         });
-        console.log(this.tandanId);
       });
     }
   }

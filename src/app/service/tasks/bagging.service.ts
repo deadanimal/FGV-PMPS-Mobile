@@ -102,16 +102,12 @@ export class BaggingService {
     callback
   ){
     this.loadingModal = this.showLoading();
-    let tandanForm:FormData = new FormData();
-    tandanForm.append('no_daftar',formData.get("no_daftar"));
-    tandanForm.append('tarikh_daftar',formData.get("tarikh_daftar"));
-    tandanForm.append('pokok_id',formData.get("pokok_id"));
-    tandanForm.append('kitaran',formData.get("kitaran"));
-    tandanForm.append('status_tandan',"aktif");
-    this.tandanService.create(
-      tandanForm,
+    this.tandanService.updateTreeAndCycle(
+      formData.get("tandan_id").toString(),
+      formData.get("kitaran").toString(),
+      formData.get("pokok_id").toString(),
+      formData.get("tarikh_daftar").toString(),
       (tandanRes:TandanResponse)=>{
-        formData.append('tandan_id',tandanRes.id.toString());
         this.http.post<BaggingTask>(
           `${environment.baseUrl}${environment.bagging}`,
           formData

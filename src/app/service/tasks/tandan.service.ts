@@ -127,6 +127,42 @@ export class TandanService {
     );
   }
 
+  updateTreeAndCycle(
+    tandanId:String,
+    kitaran:String,
+    treeId:String,
+    tarikh_daftar:String,
+    callback,
+    loadingAnim = true
+  ){
+    if(loadingAnim){
+      this.loadingModal = this.showLoading();
+    }
+    this.http.put<TandanResponse>(
+      `${environment.baseUrl}${environment.tandanInfo}${tandanId}`,
+      {
+        kitaran:kitaran,
+        pokok_id:treeId,
+        tarikh_daftar:tarikh_daftar,
+        status_tandan:"aktif"
+      }
+    ).subscribe(
+      async (res:TandanResponse) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          this.loadingModal.dismiss();
+        }
+        callback(res);
+      },
+      async (err:HttpErrorResponse) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          this.loadingModal.dismiss();
+        }
+      }
+    );
+  }
+
   _checkIfInTreeArray(treeArray:PokokResponse[],treeId:number){
     let retVal = false;
     treeArray.forEach(el => {
