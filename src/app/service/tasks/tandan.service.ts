@@ -25,19 +25,25 @@ export class TandanService {
     return loading;
   }
 
-  getAll(callback){
-    this.loadingModal = this.showLoading();
+  getAll(callback,loadingAnim = true){
+    if(loadingAnim){
+      this.loadingModal = this.showLoading();
+    }
     this.http.get<[TandanResponse]>(
       `${environment.baseUrl}${environment.tandanInfo}`
     ).subscribe(
       async (res:[TandanResponse]) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          this.loadingModal.dismiss();
+        }
       }
     );
   }

@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
+import { TandanResponse } from 'src/app/model/tandan-response';
 import { ModalService } from 'src/app/service/modal.service';
+import { TandanService } from 'src/app/service/tasks/tandan.service';
 
 @Component({
   selector: 'app-start-work-find',
@@ -13,6 +15,7 @@ export class StartWorkFindPage implements OnInit {
 
   treeNumber:String;
   regNumber:String;
+  tandanId:String;
   taskId:String;
   taskType:String;
 
@@ -20,6 +23,7 @@ export class StartWorkFindPage implements OnInit {
     private activatedRoute:ActivatedRoute,
     private router:Router,
     private modalService:ModalService,
+    private tandanService:TandanService,
   ) { }
 
   ngOnInit() {
@@ -27,8 +31,9 @@ export class StartWorkFindPage implements OnInit {
       if(params['treeNum']!=null){
        this.treeNumber = params['treeNum'];
       }
-      if(params['regNo']!=null){
-        this.regNumber = params['regNo'];
+      if(params['scanInput']!=null){
+        this.tandanId = params['scanInput'];
+        this._getRegNumber();
       }
       if(params['taskId']!=null){
         this.taskId = params['taskId'];
@@ -92,6 +97,12 @@ export class StartWorkFindPage implements OnInit {
         this.regNumber = form.value.value;
       }
     );
+  }
+
+  _getRegNumber(){
+    this.tandanService.getById(this.tandanId,(res:TandanResponse)=>{
+      this.regNumber = res.no_daftar;
+    });
   }
 
   scanQr(){

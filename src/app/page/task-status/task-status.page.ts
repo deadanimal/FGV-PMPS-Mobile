@@ -470,6 +470,20 @@ export class TaskStatusPage implements OnInit {
         if(this.userList.length == 0){
           this.userList = res;
         }
+        this._getTandanId();
+      });
+    }
+  }
+
+  _getTandanId(){
+    if(this.tandanId == null){
+      this.tandanService.getAll((res:[TandanResponse])=>{
+        res.forEach(el => {
+          if(el.no_daftar == this.regNo){
+            this.tandanId = el.id.toString();
+          }
+        });
+        console.log(this.tandanId);
       });
     }
   }

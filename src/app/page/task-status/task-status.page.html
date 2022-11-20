@@ -47,7 +47,7 @@
     </ion-item>
     <ion-item lines="full">
       <ion-label position="floating">Catatan</ion-label>
-      <ion-input type="text" [(ngModel)]="remark" name="remark" required [readonly]="userRole!='Petugas Balut & Pendebungaan Terkawal' && userRole!='Petugas Kawalan Kualiti'"></ion-input>
+      <ion-input type="text" [(ngModel)]="remark" name="remark" [readonly]="userRole!='Petugas Balut & Pendebungaan Terkawal' && userRole!='Petugas Kawalan Kualiti'"></ion-input>
     </ion-item>
     <ion-item  lines="full" class="my-4" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Kawalan Kualiti')">
       <ion-select placeholder="Pilih Penyelia" id= "id1" #id1 >
@@ -56,7 +56,7 @@
     </ion-item>
     <ion-item *ngIf="userRole=='Penyelia Balut' || userRole=='Penyelia Kawalan Kualiti'" lines="full">
       <ion-label position="floating">Catatan Penyelia</ion-label>
-      <ion-input type="text" [(ngModel)]="svRemark" name="svRemark" required></ion-input>
+      <ion-input type="text" [(ngModel)]="svRemark" name="svRemark"></ion-input>
     </ion-item>
   </form>
 
