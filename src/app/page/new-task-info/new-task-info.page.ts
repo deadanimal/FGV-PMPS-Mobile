@@ -123,27 +123,26 @@ export class NewTaskInfoPage implements OnInit {
     );
   }
 
+  _populateTreeInfo(res:PokokResponse){
+    this.treeNumber = res.no_pokok;
+    this.ancestor = res.jantina;
+    this.breed = res.baka;
+    this.progeny = res.progeny;
+    this.block = res.progeny;
+    this.status = res.status_pokok?.toUpperCase();
+  }
+
   _getTreeInfo(){
     if("Pendebungaan Terkawal (CP)" == this.taskType){
       this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
         this.pokokService.getById(res.pokok_id.toString(),(res:PokokResponse)=>{
-          this.treeNumber = res.no_pokok;
-          this.ancestor = res.induk;
-          this.breed = res.baka;
-          this.progeny = res.progeny;
-          this.block = res.progeny;
-          this.status = res.status_pokok;
+          this._populateTreeInfo(res);
         })
       });
     }else if("Pendebungaan Terkawal (CP)posponed" == this.taskType){
       this.cpService.getById(this.taskId,(res:ControlPollinationTask)=>{
         this.pokokService.getById(res.pokok_id.toString(),(res:PokokResponse)=>{
-          this.treeNumber = res.no_pokok;
-          this.ancestor = res.induk;
-          this.breed = res.baka;
-          this.progeny = res.progeny;
-          this.block = res.progeny;
-          this.status = res.status_pokok;
+          this._populateTreeInfo(res);
         })
       });
     }
