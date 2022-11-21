@@ -24,4 +24,8 @@ export class MenuPromptComponent implements OnInit {
     this.modalCtrl.dismiss('dashboard');
   }
 
+  exit(){
+    this.modalCtrl.dismiss('exit');
+  }
+
 }

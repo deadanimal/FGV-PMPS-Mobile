@@ -31,6 +31,8 @@ export class LogoutButtonComponent implements OnInit {
           this.router.navigate(['app/tabs/tab1/'],{
             replaceUrl : true
           });
+        }else if(value['data'] == 'exit'){
+          navigator['app'].exitApp();
         }
       }
     );

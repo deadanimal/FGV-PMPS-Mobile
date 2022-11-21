@@ -6,7 +6,7 @@ import { LoginResponseModel } from '../model/login-response';
 import { StorageService } from './storage.service';
 
 export enum UserRole {
-  penyelia_balut  = "Penyelia Balut",
+  penyelia_balut  = "Penyelia Balut & Pendebungaan Terkawal",
   petugas_balut   = "Petugas Balut & Pendebungaan Terkawal",
   penyelia_qa     = "Penyelia Kawalan Kualiti",
   petugas_qa      = "Petugas Kawalan Kualiti",
