@@ -86,8 +86,8 @@ export class RegisterStatusPage implements OnInit {
     this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
       this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
         this.regNumber = tandanRes.no_daftar;
-        this.cycle = tandanRes.kitaran;
-        this.status=tandanRes.status_tandan;
+        this.cycle = tandanRes.kitaran?.toUpperCase();
+        this.status=tandanRes.status_tandan?.toUpperCase();
         this.age=tandanRes.umur? tandanRes.umur.toString(): this._calculateAge(tandanRes.tarikh_daftar).toString();
       });
     },false);
@@ -97,8 +97,8 @@ export class RegisterStatusPage implements OnInit {
     this.controlPollinationService.getById(this.taskId,(res:BaggingTask)=>{
       this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
         this.regNumber = tandanRes.no_daftar;
-        this.cycle = tandanRes.kitaran;
-        this.status=tandanRes.status_tandan;
+        this.cycle = tandanRes.kitaran?.toUpperCase();
+        this.status=tandanRes.status_tandan?.toUpperCase();
         this.age=tandanRes.umur? tandanRes.umur.toString(): this._calculateAge(tandanRes.tarikh_daftar).toString();
       });
     },false);
@@ -136,8 +136,8 @@ export class RegisterStatusPage implements OnInit {
       (res:TandanResponse) => {
         this.loadingModal.dismiss();
         this.regNumber = res.no_daftar;
-        this.cycle = res.kitaran;
-        this.status=res.status_tandan;
+        this.cycle = res.kitaran?.toUpperCase();
+        this.status=res.status_tandan?.toUpperCase();
         this.age=res.umur+" Hari";
       },
       (err:HttpErrorResponse) => {

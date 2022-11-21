@@ -98,7 +98,7 @@ export class MainTaskPage implements OnInit {
     this._getTask();
   }
 
-  viewTask(taskId:String,status:String,id:number){
+  viewTask(taskId:String,status:String,id:number,param1:string = ""){
     if(status == "completed"){
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId,tandanId:id}]);
     }else if( status == 'posponed'){
@@ -109,7 +109,13 @@ export class MainTaskPage implements OnInit {
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId,tandanId:id}]);
     }else if(status == "activeTaskSV"){
       if(taskId == "cp"){
-        this.router.navigate(['app/tabs/tab1/new-task',{taskId:id,taskType:this.task}]);
+        // this.router.navigate(['app/tabs/tab1/new-task',{taskId:id,taskType:this.task}]);
+        this.router.navigate(['/app/tabs/tab1/reg-status',
+        {
+          taskId:id,
+          treeNum:param1,
+          taskType:this.task,
+        }]);
       }else{
         this.router.navigate(
           [
