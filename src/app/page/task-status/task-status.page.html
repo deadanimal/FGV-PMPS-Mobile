@@ -45,11 +45,15 @@
       <ion-label position="floating">Masa</ion-label>
       <ion-input type="text" [(ngModel)]="time" name="time" required [readonly]="true"></ion-input>
     </ion-item>
+    <ion-item *ngIf="defect != null" lines="full">
+      <ion-label position="floating">Kerosakan</ion-label>
+      <ion-input type="text" [(ngModel)]="defect" name="defect" required [readonly]="true"></ion-input>
+    </ion-item>
     <ion-item lines="full">
       <ion-label position="floating">Catatan</ion-label>
       <ion-input type="text" [(ngModel)]="remark" name="remark" [readonly]="userRole!='Petugas Balut & Pendebungaan Terkawal' && userRole!='Petugas Kawalan Kualiti'"></ion-input>
     </ion-item>
-    <ion-item  lines="full" class="my-4" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Kawalan Kualiti')">
+    <ion-item  lines="full" class="my-4" *ngIf="((userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Kawalan Kualiti') && defect == null)">
       <ion-select placeholder="Pilih Penyelia" id= "id1" #id1 >
         <ion-select-option *ngFor="let sv of userList" value={{sv.no_kakitangan}}>{{sv.nama}}</ion-select-option>
       </ion-select>
@@ -76,7 +80,7 @@
       <p class="m-auto">Hantar</p>
     </button>
 
-    <button [disabled]="photo ==null && serverImage == null" (click)="pospone()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' ) && (taskType == 'debung' || taskType == 'debungposponed')" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="photo ==null && serverImage == null" (click)="pospone()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' ) && (taskType == 'debung' || taskType == 'debungposponed') && defect == null" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="add-circle-outline"></ion-icon>
       <p class="m-auto">Anjak</p>
     </button>

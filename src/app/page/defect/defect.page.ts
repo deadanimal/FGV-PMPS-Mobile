@@ -70,6 +70,7 @@ export class DefectPage implements OnInit {
           taskType:this.taskType,
           tandanStatus:'nok',
           returnPage:this.returnPage,
+          defect:this.defect,
         }
       ]
     );

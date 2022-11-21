@@ -6,7 +6,6 @@ import { IonSelect, LoadingController, ModalController } from '@ionic/angular';
 import { GenericTextModalComponent } from 'src/app/component/generic-text-modal/generic-text-modal.component';
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { TandanResponse } from 'src/app/model/tandan-response';
-import { TaskResponseModel } from 'src/app/model/task-response';
 import { AccountService, UserRole } from 'src/app/service/account.service';
 import { TaskService } from 'src/app/service/task.service';
 import { PhotoService } from 'src/app/service/photo.service';
@@ -54,6 +53,7 @@ export class TaskStatusPage implements OnInit {
   tandanStatus:String;
   returnPage:String = '';
   treeBlock:String;
+  defect:String;
   userList:User[] = [];
 
   constructor(
@@ -101,6 +101,9 @@ export class TaskStatusPage implements OnInit {
       if(params['tandanStatus']!=null){
         this.tandanStatus = params['tandanStatus'];
       }
+      if(params['defect']!=null){
+        this.defect = this._getDefectName(params['defect']);
+      }
       if(params['taskId']!=null){
         this.taskId = params['taskId'];
         if(this.taskId != undefined){
@@ -110,7 +113,45 @@ export class TaskStatusPage implements OnInit {
       if(params['returnPage']!=undefined){
         // this.returnPage = params['returnPage'];
       }
+
+      console.log(this.defect);
     });
+  }
+
+  _getDefectName(code){
+    let retVal = "NA";
+    if(code == "a")
+    retVal = "A: Anai-anai";
+    else if(code == "b")
+    retVal = "B: Tikus";
+    else if(code == "c")
+    retVal = "C: Beg Pecah";
+    else if(code == "d")
+    retVal = "D: Ikatan Bawah Tidak Kemas";
+    else if(code == "e")
+    retVal = "E: Ikatan Atas Tidak Kemas";
+    else if(code == "f")
+    retVal = "F: Bunga Mati";
+    else if(code == "g")
+    retVal = "G: Ikatan Atas Bunga";
+    else if(code == "h")
+    retVal = "H: Patah";
+    else if(code == "i")
+    retVal = "I: Weevil semasa CP";
+    else if(code == "j")
+    retVal = "J: Kembang tidak Sekata";
+    else if(code == "k")
+    retVal = "K: Bunga Tidak CP";
+    else if(code == "l")
+    retVal = "L: Serangan Haiwan";
+    else if(code == "m")
+    retVal = "M: Sambang";
+    else if(code == "n")
+    retVal = "N: Tenggelam Banjir";
+    else if(code == "o")
+    retVal = "O: Lain-lain";
+
+    return retVal;
   }
 
   async takePicture() {
@@ -177,20 +218,34 @@ export class TaskStatusPage implements OnInit {
     }
   }
 
+  _updateDefect(resCP:ControlPollinationTask){
+    this.tandanService.updateDefect(resCP.tandan_id.toString(),this.defect,(resDefect:TandanResponse)=>{
+      this.router.navigate(
+        [
+          '/app/tabs/tab1/'
+        ]
+      );
+    });
+  }
+
   async submitCP(){
     if(this.taskType == 'debungposponed'){
       this.controlPollinationService.updateRemarksNumber(
         this.taskId,
         this.remark,
         (resCP:ControlPollinationTask)=>{
-          this.router.navigate(
-            [
-              '/app/tabs/tab1/control-pollen-form',
-              {
-                taskId:resCP.id,
-              }
-            ]
-          );
+          if(this.defect == null){
+            this.router.navigate(
+              [
+                '/app/tabs/tab1/control-pollen-form',
+                {
+                  taskId:resCP.id,
+                }
+              ]
+            );
+          }else{
+            this._updateDefect(resCP);
+          }
         }
       );
     }else{
@@ -201,17 +256,21 @@ export class TaskStatusPage implements OnInit {
       this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
         formData.append('tandan_id',res.tandan_id.toString());
         formData.append('pokok_id',res.pokok_id.toString());
-        formData.append('catatan',this.remark.toString());
+        formData.append('catatan',this.remark?.toString());
         formData.append('id_sv_cp',this.accountService.getSessionDetails().no_kakitangan);
         this.controlPollinationService.create(formData,(resCP:ControlPollinationTask)=>{
-          this.router.navigate(
-            [
-              '/app/tabs/tab1/control-pollen-form',
-              {
-                taskId:resCP.id,
-              }
-            ]
-          );
+          if(this.defect == null){
+            this.router.navigate(
+              [
+                '/app/tabs/tab1/control-pollen-form',
+                {
+                  taskId:resCP.id,
+                }
+              ]
+            );
+          }else{
+            this._updateDefect(resCP);
+          }
         });
       });
     }

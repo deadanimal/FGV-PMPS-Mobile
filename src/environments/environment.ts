@@ -14,6 +14,7 @@ export const environment = {
   tandanInfo:'/tandan/',
   treeInfo:'/pokok/',
   bagging:'/bagging/',
+  defect:'/kerosakan/',
   crossPolination:'/control_pollination/',
   qualityControl:'/quality_control/',
   userByRole:'/users/peranan/',

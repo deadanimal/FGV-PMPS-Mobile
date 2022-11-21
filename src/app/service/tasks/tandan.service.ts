@@ -1,9 +1,11 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
+import { DefectResponse } from 'src/app/model/defect-response';
 import { PokokResponse } from 'src/app/model/pokok-respons';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { environment } from 'src/environments/environment';
+import { DefectService } from './defect.service';
 import { TreeService } from './tree.service';
 
 @Injectable({
@@ -16,6 +18,7 @@ export class TandanService {
     private http: HttpClient,
     private loadingCtrl: LoadingController,
     private treeService: TreeService,
+    private defectService: DefectService,
   ) {
   }
 
@@ -125,6 +128,42 @@ export class TandanService {
         }
       }
     );
+  }
+
+  updateDefect(
+    tandanId:String,
+    defect:String,
+    callback,
+    loadingAnim = true
+  ){
+    if(loadingAnim){
+      this.loadingModal = this.showLoading();
+    }
+    let submitForm:FormData = new FormData();
+    submitForm.append('nama',defect.toString());
+    submitForm.append('tandan_id',tandanId.toString());
+    this.defectService.create(submitForm,(res1:DefectResponse)=>{
+      this.http.put<TandanResponse>(
+        `${environment.baseUrl}${environment.tandanInfo}${tandanId}`,
+        {
+          status_tandan:"tidak aktif",
+        },
+      ).subscribe(
+        async (res:TandanResponse) => {
+          if(loadingAnim){
+            this.loadingModal = await this.loadingCtrl.getTop()
+            this.loadingModal.dismiss();
+          }
+          callback(res);
+        },
+        async (err:HttpErrorResponse) => {
+          if(loadingAnim){
+            this.loadingModal = await this.loadingCtrl.getTop()
+            this.loadingModal.dismiss();
+          }
+        }
+      );
+    },loadingAnim? false:true);
   }
 
   updateTreeAndCycle(
