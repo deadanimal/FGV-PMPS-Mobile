@@ -163,7 +163,7 @@ export class BaggingService {
     this.getByUserId(userId, async (res:[BaggingTask])=>{
       let retVal:BaggingTask[] = [];
       res.forEach(el => {
-        if(el.pengesah_id != null){
+        if(el.catatan_pengesah != null){
           retVal.push(el);
         }
       });

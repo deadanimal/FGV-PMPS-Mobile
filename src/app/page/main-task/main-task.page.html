@@ -8,7 +8,7 @@
 
   <div>
     <ion-grid class="my-5">
-      <ion-row *ngIf="((task == 'Balut' || task == 'Pendebungaan Terkawal (CP)') && role == 'Penyelia Balut')" class="ion-justify-content-center">
+      <ion-row *ngIf="((task == 'Balut' || task == 'Pendebungaan Terkawal (CP)') && role == 'Penyelia Balut & Pendebungaan Terkawal')" class="ion-justify-content-center">
         <ion-col *ngIf="numOfNewTask > 0" size="6" size-md="4" size-lg="2">
           <div>
             <button (click)="newRecord()" [disabled]="disableNewRecord" class="btn w-100 mx-auto rounded orangeBtn text-center text-white p-2">
@@ -66,7 +66,7 @@
             </button>
           </div>
         </ion-col>
-        <!-- <ion-col *ngIf="( role == 'Penyelia Kawalan Kualiti' || role == 'Penyelia Balut' ) && task != 'Balut'" size="6" size-md="4" size-lg="2">
+        <!-- <ion-col *ngIf="( role == 'Penyelia Kawalan Kualiti' || role == 'Penyelia Balut & Pendebungaan Terkawal' ) && task != 'Balut'" size="6" size-md="4" size-lg="2">
           <div>
             <button (click)="newTask()" [disabled]="disableNewTaskBtn" class="btn w-100 mx-auto rounded blueBtn text-center text-white p-2">
               <img height="56px" src="../../../assets/active_task_icon.png">
