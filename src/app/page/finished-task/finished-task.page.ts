@@ -40,7 +40,7 @@ export class FinishedTaskPage implements OnInit {
       this.regNo = res.no_daftar;
       this.regNo = res.no_daftar;
       this.age = res.umur? res.umur.toString(): this._calculateAge(res.tarikh_daftar).toString();
-      this.cycle = this._getCycleName(res).toUpperCase();
+      this.cycle = this._getCycleName(res)?.toUpperCase();
       this.status = res.status_tandan? res.status_tandan.toUpperCase():"-";
       this.indicator = this._getStage(res);
       this.treeService.getById(res.pokok_id.toString(),(treeRes:PokokResponse)=>{

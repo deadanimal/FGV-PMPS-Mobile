@@ -128,6 +128,16 @@ export class MainTaskPage implements OnInit {
           treeNum:param1,
           taskType:this.task,
         }]);
+      }else if(taskId == "qcSv"){
+        this.router.navigate(
+          [
+            'app/tabs/tab1/task-status',
+            {
+              taskId:id,
+              taskType:'qcSv'
+            }
+          ]
+        );
       }else{
         this.router.navigate(
           [
@@ -460,20 +470,16 @@ export class MainTaskPage implements OnInit {
             this.finishedTaskList.push(el);
           }
         });
-        console.log(res);
-        console.log(this.numOfActiveTask);
-        // this.controlPollinationService.getNewlyCreatedTask(this.employeeId,(res1:[ControlPollinationTask])=>{
-        //   this.numOfNewTask = res1.length;
-        //   this.newTaskList = res1;
-        // },false);
       });
     }else{
       this.qcService.getAll((res:[QualityControlTask])=>{
         res.forEach(el => {
-          if(el.catatan_pengesah == null && el.catatan != null){
+          if(el.status == TaskStatus.done){
             this.numOfNewTask++;
             this.newTaskList.push(el);
-          }else if(el.catatan_pengesah != null){
+          }else if(el.status == TaskStatus.created){
+
+          }else{
             this.numOfFinishTask++;
             this.finishedTaskList.push(el);
           }

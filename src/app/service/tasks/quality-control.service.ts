@@ -154,24 +154,22 @@ export class QualityControlService {
 
   updateVerify(
     qcId:String,
-    pengesah_id:String,
     catatan_pengesah:String,
+    status:String,
     callback
   ){
     this.loadingModal = this.showLoading();
     this.http.put<QualityControlTask>(
       `${environment.baseUrl}${environment.qualityControl}${qcId}`,
       {
-        pengesah_id:pengesah_id,
         catatan_pengesah:catatan_pengesah,
+        status:status,
       }
     ).subscribe(
       async (res:QualityControlTask) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
-        this.tandanService.updateCycle(res.tandan_id.toString(),"qc",async (resTandan:TandanResponse)=>{
-          callback(res);
-        },false);
+        callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()

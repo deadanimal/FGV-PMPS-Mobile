@@ -368,11 +368,19 @@ export class TaskStatusPage implements OnInit {
   }
 
   _getQCTask(taskId:String){
-    this.qualityControlService.getById(taskId,(res:QualityControlTask)=>{
-      this.qcSvId = res.pengesah_id;
-      this.tandanId = res.tandan_id.toString();
-      this._getTandanInfo(this.tandanId);
-    });
+    if(this.userRole == UserRole.penyelia_qa){
+      this.qualityControlService.getById(taskId,(res:QualityControlTask)=>{
+        this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
+        this.remark = res.catatan;
+        this.tandanId = res.tandan_id.toString();
+      });
+    }else{
+      this.qualityControlService.getById(taskId,(res:QualityControlTask)=>{
+        this.qcSvId = res.pengesah_id;
+        this.tandanId = res.tandan_id.toString();
+        this._getTandanInfo(this.tandanId);
+      });
+    }
   }
 
   async _getTask(taskId:String){
@@ -381,6 +389,8 @@ export class TaskStatusPage implements OnInit {
     }else if(this.taskType == 'debungposponed'){
       this._getPosponedCPTask(taskId);
     }else if(this.taskType == 'qc'){
+      this._getQCTask(taskId);
+    }else if(this.taskType == 'qcsv'){
       this._getQCTask(taskId);
     }else{
       this.baggingService.getById(taskId,(res:BaggingTask)=>{
@@ -439,6 +449,15 @@ export class TaskStatusPage implements OnInit {
           this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
         }
       );
+    }else if(this.taskType == 'qcsv'){
+      this.qualityControlService.updateVerify(
+        this.taskId,
+        this.svRemark,
+        TaskStatus.verified,
+        (res:QualityControlTask)=>{
+          this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
+        }
+      );
     }else{
       this.baggingService.verify(
         this.taskId,
@@ -461,7 +480,16 @@ export class TaskStatusPage implements OnInit {
         this.svRemark,
         TaskStatus.rejected,
         (res:ControlPollinationTask)=>{
-          this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
+          this._promptCompleted("Tugasan Telah Berjaya Di Tolak");
+        }
+      );
+    }else if(this.taskType == 'qcsv'){
+      this.qualityControlService.updateVerify(
+        this.taskId,
+        this.svRemark,
+        TaskStatus.rejected,
+        (res:QualityControlTask)=>{
+          this._promptCompleted("Tugasan Telah Berjaya Di Tolak");
         }
       );
     }else{
