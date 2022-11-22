@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
-import { TandanResponse } from 'src/app/model/tandan-response';
-import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
-import { TandanService } from 'src/app/service/tasks/tandan.service';
+import { QcSearchResponse } from 'src/app/model/qc-search-response';
+import { BaggingService } from 'src/app/service/tasks/bagging.service';
 
 @Component({
   selector: 'app-qc-search-form',
@@ -16,10 +14,9 @@ export class QcSearchFormPage implements OnInit {
   block:String;
   progeny:String;
   baggingWorker:String;
-  searchResult:SearchResult[] = [];
+  searchResult:QcSearchResponse[] = [];
   constructor(
-    private tandanService:TandanService,
-    private cpService:ControlPollinationService,
+    private baggingService:BaggingService,
     private router:Router,
   ) { }
 
@@ -27,24 +24,21 @@ export class QcSearchFormPage implements OnInit {
   }
 
   submit(form:NgForm){
-    this.cpService.getByUserId(this.baggingWorker,(res:ControlPollinationTask[])=>{
-      for(let i=0;i<res.length;i++){
-        let el = res[i];
-        this.tandanService.getById(el.tandan_id.toString(),(resTandan:TandanResponse)=>{
-          if(resTandan.kitaran == 'debung'){
-            this.searchResult.push({
-              cycle:'Control Pollination',
-              regNo:resTandan.no_daftar,
-              taskId:el.id.toString(),
-              treeNumber:resTandan.pokok_id.toString(),
-            });
+    this.baggingService.searchByTreeInfo(
+      this.block,
+      this.progeny,
+      this.baggingWorker,
+      (res:[QcSearchResponse])=>{
+        res.forEach(el => {
+          if(el.tandan.kitaran == 'debung'){
+            this.searchResult.push(el);
           }
-        },false);
+        });
       }
-    });
+    );
   }
 
-  selectTask(taskId:String){
+  selectTask(taskId:number){
     this.router.navigate(
       [
         '/app/tabs/tab1/qc-task-distribution',
@@ -57,11 +51,4 @@ export class QcSearchFormPage implements OnInit {
       }
     );
   }
-}
-
-interface SearchResult{
-  regNo:String,
-  treeNumber:String,
-  cycle:String,
-  taskId:String,
 }

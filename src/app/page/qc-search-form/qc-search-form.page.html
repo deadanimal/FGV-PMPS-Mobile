@@ -25,24 +25,24 @@
   </p>
 
   <div class="text-center">
-    <button *ngFor="let item of searchResult" (click)="selectTask(item.taskId)" class="btn rounded btn-light shadow w-75 my-3 mx-auto d-flex flex-row justify-content-between align-items-center">
+    <button *ngFor="let item of searchResult" (click)="selectTask(item.id)" class="btn rounded btn-light shadow w-75 my-3 mx-auto d-flex flex-row justify-content-between align-items-center">
       <div class="d-flex flex-column text-start">
         <small style="font-size: 12.65px; font-weight: 600; line-height: 100%; color: rgba(98.81, 98.81, 98.81, 1);">
           No. Daftar :
         </small>
         <small class="my-2" style="font-size: 21.08px; font-weight: 600; line-height: 100%; color: rgba(57.37, 57.37, 57.37, 1);">
-          {{item.regNo}}
+          {{item.tandan.no_daftar}}
         </small>
         <small style="font-size: 12.65px; font-weight: 600; color: rgba(98.81, 98.81, 98.81, 1);">
           No. Pokok : 
           <span style="font-size: 12.65px; font-weight: 600; color: rgba(57.37, 57.37, 57.37, 1);">
-            {{item.treeNumber}}
+            {{item.pokok.progeny}} - {{item.pokok.no_pokok}}
           </span>
         </small>
         <small style="font-size: 12.65px; font-weight: 600; color: rgba(98.81, 98.81, 98.81, 1);">
           Kitaran :
           <span style="font-size: 12.65px; font-weight: 600; color: rgba(57.37, 57.37, 57.37, 1);">
-            {{item.cycle}}
+            {{item.tandan.kitaran}}
           </span>
         </small>
       </div>

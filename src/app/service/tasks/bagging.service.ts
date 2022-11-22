@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
+import { QcSearchResponse } from 'src/app/model/qc-search-response';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { environment } from 'src/environments/environment';
 import { BaggingTask } from '../../model/bagging-task';
@@ -173,5 +174,39 @@ export class BaggingService {
       }
       callback(retVal);
     });
+  }
+
+  searchByTreeInfo(
+    blok:String,
+    progeny:String,
+    pembalut:String,
+    callback,
+    loadingAnim = true
+  ){
+    if(loadingAnim){
+      this.loadingModal = this.showLoading();
+    }
+    this.http.post<[QcSearchResponse]>(
+      `${environment.baseUrl}${environment.qcSearch}`,
+      {
+        blok:blok,
+        progeny:progeny,
+        pembalut:pembalut,
+      }
+    ).subscribe(
+      async (res:[QcSearchResponse]) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          this.loadingModal.dismiss();
+        }
+        callback(res);
+      },
+      async (err:HttpErrorResponse) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          this.loadingModal.dismiss();
+        }
+      }
+    );
   }
 }

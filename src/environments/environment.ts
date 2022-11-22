@@ -18,6 +18,7 @@ export const environment = {
   crossPolination:'/control_pollination/',
   qualityControl:'/quality_control/',
   userByRole:'/users/peranan/',
+  qcSearch:'/search/qc/',
   storageUrl:'https://fgv.prototype.com.my/storage/',
 };
 
