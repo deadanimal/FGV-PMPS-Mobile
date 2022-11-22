@@ -392,6 +392,7 @@ export class TaskStatusPage implements OnInit {
       this.harvestService.getById(taskId,(res:HarvestTask)=>{
         this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
         this.remark = res.catatan;
+        this.weight = res.berat_tandan?.toString();
         this.tandanId = res.tandan_id.toString();
       });
     }else{
@@ -413,6 +414,8 @@ export class TaskStatusPage implements OnInit {
     }else if(this.taskType == 'qcsv'){
       this._getQCTask(taskId);
     }else if(this.taskType == 'tuai'){
+      this._getHarvestTask(taskId);
+    }else if(this.taskType == 'harvestsv'){
       this._getHarvestTask(taskId);
     }else{
       this.baggingService.getById(taskId,(res:BaggingTask)=>{
@@ -480,6 +483,15 @@ export class TaskStatusPage implements OnInit {
           this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
         }
       );
+    }else if(this.taskType == 'harvestsv'){
+      this.harvestService.updateVerify(
+        this.taskId,
+        this.svRemark,
+        TaskStatus.verified,
+        (res:QualityControlTask)=>{
+          this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
+        }
+      );
     }else{
       this.baggingService.verify(
         this.taskId,
@@ -507,6 +519,15 @@ export class TaskStatusPage implements OnInit {
       );
     }else if(this.taskType == 'qcsv'){
       this.qualityControlService.updateVerify(
+        this.taskId,
+        this.svRemark,
+        TaskStatus.rejected,
+        (res:QualityControlTask)=>{
+          this._promptCompleted("Tugasan Telah Berjaya Di Tolak");
+        }
+      );
+    }else if(this.taskType == 'harvestsv'){
+      this.harvestService.updateVerify(
         this.taskId,
         this.svRemark,
         TaskStatus.rejected,

@@ -141,6 +141,16 @@ export class MainTaskPage implements OnInit {
             }
           ]
         );
+      }else if(taskId == "harvestSv"){
+        this.router.navigate(
+          [
+            'app/tabs/tab1/task-status',
+            {
+              taskId:id,
+              taskType:'harvestsv'
+            }
+          ]
+        );
       }else if(taskId == "harvest"){
         this.router.navigate(['/app/tabs/tab1/reg-status',
         {

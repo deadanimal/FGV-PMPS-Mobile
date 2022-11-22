@@ -49,7 +49,7 @@
       <ion-label position="floating">Kerosakan</ion-label>
       <ion-input type="text" [(ngModel)]="defect" name="defect" required [readonly]="true"></ion-input>
     </ion-item>
-    <ion-item *ngIf="taskType == 'tuai' && defect == null" lines="full">
+    <ion-item *ngIf="taskType == 'tuai' || taskType == 'harvestsv' && defect == null" lines="full">
       <ion-label position="floating">Berat Tandan</ion-label>
       <ion-input type="text" [(ngModel)]="weight" name="weight" required></ion-input>
     </ion-item>
@@ -69,12 +69,12 @@
   </form>
 
   <div *ngIf="!viewOnly" class="d-flex flex-row mx-3 justify-content-center my-4">
-    <button (click)="reject()" [disabled]="!form.valid" *ngIf="userRole=='Penyelia Balut & Pendebungaan Terkawal' || userRole=='Penyelia Kawalan Kualiti'" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+    <button (click)="reject()" [disabled]="!form.valid" *ngIf="userRole=='Penyelia Balut & Pendebungaan Terkawal' || userRole=='Penyelia Kawalan Kualiti' || userRole=='Penyelia Tuai'" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="close-circle-outline"></ion-icon>
       <p class="m-auto">TOLAK</p>
     </button>
 
-    <button (click)="accept()" [disabled]="!form.valid" *ngIf="userRole=='Penyelia Balut & Pendebungaan Terkawal' || userRole=='Penyelia Kawalan Kualiti'" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
+    <button (click)="accept()" [disabled]="!form.valid" *ngIf="userRole=='Penyelia Balut & Pendebungaan Terkawal' || userRole=='Penyelia Kawalan Kualiti' || userRole=='Penyelia Tuai'" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="checkmark-circle-outline"></ion-icon>
       <p class="m-auto">TERIMA</p>
     </button>
