@@ -49,6 +49,10 @@
       <ion-label position="floating">Kerosakan</ion-label>
       <ion-input type="text" [(ngModel)]="defect" name="defect" required [readonly]="true"></ion-input>
     </ion-item>
+    <ion-item *ngIf="taskType == 'tuai' && defect == null" lines="full">
+      <ion-label position="floating">Berat Tandan</ion-label>
+      <ion-input type="text" [(ngModel)]="weight" name="weight" required></ion-input>
+    </ion-item>
     <ion-item lines="full">
       <ion-label position="floating">Catatan</ion-label>
       <ion-input type="text" [(ngModel)]="remark" name="remark" [readonly]="userRole!='Petugas Balut & Pendebungaan Terkawal' && userRole!='Petugas Kawalan Kualiti'"></ion-input>
@@ -106,6 +110,15 @@
     </button>
 
     <button (click)="submitPollenPrep()" *ngIf="(userRole=='Petugas Am') && taskType == 'pollen-prep'" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+      <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
+      <p class="m-auto">Hantar</p>
+    </button>
+
+    <button [disabled]="!form.valid || (photo ==null&& serverImage == null)" (click)="submitHarvestDefect()" *ngIf="(userRole=='Petugas Tuai') && taskType == 'tuai' && defect != null" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+      <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
+      <p class="m-auto">Hantar</p>
+    </button>
+    <button [disabled]="!form.valid || (photo ==null&& serverImage == null)" (click)="submitHarvestNormal()" *ngIf="(userRole=='Petugas Tuai') && taskType == 'tuai' && defect == null" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>

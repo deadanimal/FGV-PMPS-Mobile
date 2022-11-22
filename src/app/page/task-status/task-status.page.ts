@@ -25,6 +25,8 @@ import { User } from 'src/app/model/user';
 import { TaskStatus } from 'src/app/common/task-status';
 import { QualityControlService } from 'src/app/service/tasks/quality-control.service';
 import { QualityControlTask } from 'src/app/model/quality-control-task';
+import { HarvestTask } from 'src/app/model/harvest-task';
+import { HarvestService } from 'src/app/service/tasks/harvest.service';
 
 @Component({
   selector: 'app-task-status',
@@ -58,6 +60,7 @@ export class TaskStatusPage implements OnInit {
   returnPage:String = '';
   treeBlock:String;
   defect:String;
+  weight:String;
   userList:User[] = [];
 
   constructor(
@@ -75,6 +78,7 @@ export class TaskStatusPage implements OnInit {
     private baggingService: BaggingService,
     private controlPollinationService: ControlPollinationService,
     private qualityControlService: QualityControlService,
+    private harvestService: HarvestService,
     private userServices: UserService,
   ) { }
 
@@ -383,6 +387,22 @@ export class TaskStatusPage implements OnInit {
     }
   }
 
+  _getHarvestTask(taskId:String){
+    if(this.userRole == UserRole.penyelia_tuai){
+      this.harvestService.getById(taskId,(res:HarvestTask)=>{
+        this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
+        this.remark = res.catatan;
+        this.tandanId = res.tandan_id.toString();
+      });
+    }else{
+      this.harvestService.getById(taskId,(res:HarvestTask)=>{
+        this.qcSvId = res.pengesah_id;
+        this.tandanId = res.tandan_id.toString();
+        this._getTandanInfo(this.tandanId);
+      });
+    }
+  }
+
   async _getTask(taskId:String){
     if(this.taskType == 'debung'){
       this._getCPTask(taskId);
@@ -392,6 +412,8 @@ export class TaskStatusPage implements OnInit {
       this._getQCTask(taskId);
     }else if(this.taskType == 'qcsv'){
       this._getQCTask(taskId);
+    }else if(this.taskType == 'tuai'){
+      this._getHarvestTask(taskId);
     }else{
       this.baggingService.getById(taskId,(res:BaggingTask)=>{
         this.date = res.created_at.toString();
@@ -634,6 +656,36 @@ export class TaskStatusPage implements OnInit {
     formData.append('catatan',this.remark?.toString());
     formData.append('status',status);
     this.qualityControlService.update(this.taskId,formData,(res:QualityControlTask)=>{
+      if(this.defect == null){
+        this.router.navigate(
+          [
+            '/app/tabs/tab1'
+          ]
+        );
+      }else{
+        this._updateDefect(res.tandan_id);
+      }
+    });
+  }
+
+  submitHarvestDefect(){
+    this._submitHarvest(TaskStatus.defect);
+  }
+
+  submitHarvestNormal(){
+    this._submitHarvest(TaskStatus.done);
+  }
+
+  async _submitHarvest(status:TaskStatus){
+    const formData = new FormData();
+    const response = await fetch(this.photo.dataUrl);
+    const blob = await response.blob();
+    formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
+    formData.append('_method','put');
+    formData.append('catatan',this.remark?.toString());
+    formData.append('berat_tandan',this.weight?.toString());
+    formData.append('status',status);
+    this.harvestService.update(this.taskId,formData,(res:HarvestTask)=>{
       if(this.defect == null){
         this.router.navigate(
           [

@@ -8,6 +8,7 @@ import { TandanCycle } from 'src/app/common/tandan-cycle';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
 import { BaggingTask } from 'src/app/model/bagging-task';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
+import { HarvestTask } from 'src/app/model/harvest-task';
 import { QualityControlTask } from 'src/app/model/quality-control-task';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { TaskResponseModel } from 'src/app/model/task-response';
@@ -16,6 +17,7 @@ import { ModalService } from 'src/app/service/modal.service';
 import { TaskService } from 'src/app/service/task.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
+import { HarvestService } from 'src/app/service/tasks/harvest.service';
 import { QualityControlService } from 'src/app/service/tasks/quality-control.service';
 import { TandanService } from 'src/app/service/tasks/tandan.service';
 
@@ -47,6 +49,7 @@ export class RegisterStatusPage implements OnInit {
     private controlPollinationService: ControlPollinationService,
     private baggingService: BaggingService,
     private qualityControlService: QualityControlService,
+    private harvestService: HarvestService,
     private datePipe: DatePipe,
   ) { }
 
@@ -92,6 +95,12 @@ export class RegisterStatusPage implements OnInit {
     });
   }
 
+  _getHarvestTask(){
+    this.harvestService.getById(this.taskId,(res:HarvestTask)=>{
+      this._getTandanInfo(res.tandan_id.toString());
+    });
+  }
+
   _getCPTask(){
     this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
       this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
@@ -128,6 +137,8 @@ export class RegisterStatusPage implements OnInit {
       this._getPostponedCPTask();
     }else if(this.taskType == "Kawalan Kualiti (QC)"){
       this._getQcTask();
+    }else if(this.taskType == "Tuai"){
+      this._getHarvestTask();
     }else{
       this.loadingModal= await this.showLoading();
       this.taskService.getTask(this.taskId).subscribe(
@@ -248,6 +259,17 @@ export class RegisterStatusPage implements OnInit {
             taskId:this.taskId,
             treeNum:this.treeNumber,
             taskType:"qc",
+          }
+        ]
+      );
+    }else if(this.taskType == "Tuai"){
+      this.router.navigate(
+        [
+          'app/tabs/tab1/defect',
+          {
+            taskId:this.taskId,
+            treeNum:this.treeNumber,
+            taskType:"tuai",
           }
         ]
       );

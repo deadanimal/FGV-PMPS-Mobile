@@ -7,6 +7,7 @@ import { TaskStatus } from 'src/app/common/task-status';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
 import { BaggingTask } from 'src/app/model/bagging-task';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
+import { HarvestTask } from 'src/app/model/harvest-task';
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { QualityControlTask } from 'src/app/model/quality-control-task';
 import { TaskResponseModel } from 'src/app/model/task-response';
@@ -15,6 +16,7 @@ import { ModalService } from 'src/app/service/modal.service';
 import { TaskService } from 'src/app/service/task.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
+import { HarvestService } from 'src/app/service/tasks/harvest.service';
 import { QualityControlService } from 'src/app/service/tasks/quality-control.service';
 
 @Component({
@@ -57,6 +59,7 @@ export class MainTaskPage implements OnInit {
     private baggingService:BaggingService,
     private controlPollinationService:ControlPollinationService,
     private qcService:QualityControlService,
+    private harvestService:HarvestService,
   ) { }
 
   ngOnInit() {
@@ -138,6 +141,13 @@ export class MainTaskPage implements OnInit {
             }
           ]
         );
+      }else if(taskId == "harvest"){
+        this.router.navigate(['/app/tabs/tab1/reg-status',
+        {
+          taskId:id,
+          treeNum:param1,
+          taskType:this.task,
+        }]);
       }else{
         this.router.navigate(
           [
@@ -439,12 +449,14 @@ export class MainTaskPage implements OnInit {
     }else{
       this.controlPollinationService.getAll((res:[ControlPollinationTask])=>{
         res.forEach(el => {
-          if(el.status == TaskStatus.done){
-            this.numOfNewTask++;
-            this.newTaskList.push(el);
-          }else if(el.catatan_pengesah != null){
-            this.numOfFinishTask++;
-            this.finishedTaskList.push(el);
+          if(el.pengesah_id == this.accountService.getSessionDetails().no_kakitangan){
+            if(el.status == TaskStatus.done){
+              this.numOfNewTask++;
+              this.newTaskList.push(el);
+            }else if(el.catatan_pengesah != null){
+              this.numOfFinishTask++;
+              this.finishedTaskList.push(el);
+            }
           }
         });
       })
@@ -474,14 +486,16 @@ export class MainTaskPage implements OnInit {
     }else{
       this.qcService.getAll((res:[QualityControlTask])=>{
         res.forEach(el => {
-          if(el.status == TaskStatus.done){
-            this.numOfNewTask++;
-            this.newTaskList.push(el);
-          }else if(el.status == TaskStatus.created){
+          if(el.pengesah_id == this.accountService.getSessionDetails().no_kakitangan){
+            if(el.status == TaskStatus.done){
+              this.numOfNewTask++;
+              this.newTaskList.push(el);
+            }else if(el.status == TaskStatus.created){
 
-          }else{
-            this.numOfFinishTask++;
-            this.finishedTaskList.push(el);
+            }else{
+              this.numOfFinishTask++;
+              this.finishedTaskList.push(el);
+            }
           }
         });
       });
@@ -492,7 +506,36 @@ export class MainTaskPage implements OnInit {
     if(
       this.role == UserRole.petugas_tuai
     ){
+      this.harvestService.getByUserId(this.accountService.getSessionDetails().id.toString(),(res:[HarvestTask])=>{
+        res.forEach(el => {
+          if(el.status == TaskStatus.created){
+            this.numOfNewTask++;
+            this.newTaskList.push(el);
+          }else if(el.status == TaskStatus.done){
+            this.numOfActiveTask++;
+            this.activeTaskList.push(el);
+          }else{
+            this.numOfFinishTask++;
+            this.finishedTaskList.push(el);
+          }
+        });
+      });
+    }else{
+      this.harvestService.getAll((res:[HarvestTask])=>{
+        res.forEach(el => {
+          if(el.pengesah_id == this.accountService.getSessionDetails().no_kakitangan){
+            if(el.status == TaskStatus.done){
+              this.numOfNewTask++;
+              this.newTaskList.push(el);
+            }else if(el.status == TaskStatus.created){
 
+            }else{
+              this.numOfFinishTask++;
+              this.finishedTaskList.push(el);
+            }
+          }
+        });
+      });
     }
   }
 

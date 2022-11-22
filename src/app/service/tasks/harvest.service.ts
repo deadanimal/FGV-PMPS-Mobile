@@ -150,4 +150,38 @@ export class HarvestService {
     });
   }
 
+  getByUserId(
+    userId:String,
+    callback,
+    loadingAnim = true
+  ){
+    if(loadingAnim){
+      this.loadingModal = this.showLoading();
+    }
+    this.http.get<[HarvestTask]>(
+      `${environment.baseUrl}${environment.harvest}` // get all id first
+      // `${environment.baseUrl}${environment.bagging}${userId}`
+    ).subscribe(
+      async (res:[HarvestTask]) => {
+        let callbackParam:HarvestTask[] = [];
+        res.forEach(el => {
+          if(el.id_sv_harvest == userId){
+            callbackParam.push(el);
+          }
+        });
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()  
+          this.loadingModal.dismiss();
+        }
+        callback(callbackParam);
+      },
+      async (err:HttpErrorResponse) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          this.loadingModal.dismiss();
+        }
+      }
+    );
+  }
+
 }
