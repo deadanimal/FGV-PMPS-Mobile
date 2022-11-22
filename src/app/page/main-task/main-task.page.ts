@@ -488,6 +488,14 @@ export class MainTaskPage implements OnInit {
     }
   }
 
+  _getHarvestTask(){
+    if(
+      this.role == UserRole.petugas_tuai
+    ){
+
+    }
+  }
+
   _getTask(){
     this.activeTaskList = [];
     this.finishedTaskList = [];
@@ -499,6 +507,8 @@ export class MainTaskPage implements OnInit {
       this._getCPTask();
     }else if(this.task == 'Kawalan Kualiti (QC)'){
       this._getQCTask();
+    }else if(this.task == 'Tuai'){
+      this._getHarvestTask();
     }
   }
 
@@ -546,6 +556,17 @@ export class MainTaskPage implements OnInit {
         '/app/tabs/tab1/qc-search-form',
         {
         }
+      ],
+      {
+        replaceUrl : true
+      }
+    );
+  }
+
+  newHarvestTask(){
+    this.router.navigate(
+      [
+        '/app/tabs/tab1/harvest-search-form'
       ],
       {
         replaceUrl : true

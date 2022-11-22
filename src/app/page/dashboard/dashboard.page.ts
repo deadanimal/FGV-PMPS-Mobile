@@ -82,6 +82,10 @@ export class DashboardPage implements OnInit {
       this.debungTask = true;
     }else if(this.role == UserRole.penyelia_qa){
       this.qcTask = true;
+    }else if(this.role == UserRole.penyelia_tuai){
+      this.harvestTask = true;
+    }else if(this.role == UserRole.petugas_tuai){
+      this.harvestTask = true;
     }
     else{
       this.wrapTask = true;
