@@ -81,6 +81,10 @@ const routes: Routes = [
         loadChildren: () => import('../page/harvest-search-form/harvest-search-form.module').then(m => m.HarvestSearchFormPageModule)
       },
       {
+        path: 'tab1/harvest-task-distribution',
+        loadChildren: () => import('../page/harvest-task-distribution/harvest-task-distribution.module').then(m => m.HarvestTaskDistributionPageModule)
+      },
+      {
         path: '',
         redirectTo: 'tabs/tab1/',
         pathMatch: 'full'

@@ -42,7 +42,7 @@ export class HarvestSearchFormPage implements OnInit {
   selectTask(taskId:number){
     this.router.navigate(
       [
-        '/app/tabs/tab1/qc-task-distribution',
+        '/app/tabs/tab1/harvest-task-distribution',
         {
           taskId:taskId,
           taskIdCycle:'debung',

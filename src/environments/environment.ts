@@ -15,6 +15,7 @@ export const environment = {
   treeInfo:'/pokok/',
   bagging:'/bagging/',
   defect:'/kerosakan/',
+  harvest:'/harvest/',
   crossPolination:'/control_pollination/',
   qualityControl:'/quality_control/',
   userByRole:'/users/peranan/',
