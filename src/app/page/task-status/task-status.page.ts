@@ -221,8 +221,8 @@ export class TaskStatusPage implements OnInit {
     }
   }
 
-  _updateDefect(resCP:ControlPollinationTask){
-    this.tandanService.updateDefect(resCP.tandan_id.toString(),this.defect,(resDefect:TandanResponse)=>{
+  _updateDefect(tandan_id:number){
+    this.tandanService.updateDefect(tandan_id.toString(),this.defect,(resDefect:TandanResponse)=>{
       this.router.navigate(
         [
           '/app/tabs/tab1/'
@@ -257,7 +257,7 @@ export class TaskStatusPage implements OnInit {
               ]
             );
           }else{
-            this._updateDefect(resCP);
+            this._updateDefect(resCP.tandan_id);
           }
         }
       );
@@ -283,7 +283,7 @@ export class TaskStatusPage implements OnInit {
               ]
             );
           }else{
-            this._updateDefect(resCP);
+            this._updateDefect(resCP.tandan_id);
           }
         });
       });
@@ -590,13 +590,32 @@ export class TaskStatusPage implements OnInit {
   }
 
   submitQcDefect(){
-    console.log("submitQcDefect")
-    console.log(this.defect)
+    this._submitQc(TaskStatus.defect);
   }
 
   submitNormalQc(){
-    console.log("submitNormalQc")
-    console.log(this.defect)
+    this._submitQc(TaskStatus.done);
+  }
+
+  async _submitQc(status:TaskStatus){
+    const formData = new FormData();
+    const response = await fetch(this.photo.dataUrl);
+    const blob = await response.blob();
+    formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
+    formData.append('_method','put');
+    formData.append('catatan',this.remark?.toString());
+    formData.append('status',status);
+    this.qualityControlService.update(this.taskId,formData,(res:QualityControlTask)=>{
+      if(this.defect == null){
+        this.router.navigate(
+          [
+            '/app/tabs/tab1'
+          ]
+        );
+      }else{
+        this._updateDefect(res.tandan_id);
+      }
+    });
   }
 
 }

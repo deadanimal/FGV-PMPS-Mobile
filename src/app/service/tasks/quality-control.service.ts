@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
+import { TandanCycle } from 'src/app/common/tandan-cycle';
 import { QualityControlTask } from 'src/app/model/quality-control-task';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { User } from 'src/app/model/user';
@@ -118,7 +119,9 @@ export class QualityControlService {
       async (res:QualityControlTask) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
-        callback(res);
+        this.tandanService.updateCycle(res.tandan_id.toString(),TandanCycle.qc,async (resTandan:TandanResponse)=>{
+          callback(res);
+        });
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
@@ -133,7 +136,7 @@ export class QualityControlService {
     callback,
   ){
     this.loadingModal = this.showLoading();
-    this.http.put<QualityControlTask>(
+    this.http.post<QualityControlTask>(
       `${environment.baseUrl}${environment.qualityControl}${qcId}`,
       updateObject
     ).subscribe(

@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
+import { TandanCycle } from 'src/app/common/tandan-cycle';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
 import { BaggingTask } from 'src/app/model/bagging-task';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
@@ -147,7 +148,7 @@ export class RegisterStatusPage implements OnInit {
       (res:TandanResponse) => {
         this.loadingModal.dismiss();
         this.regNumber = res.no_daftar;
-        this.cycle = res.kitaran?.toUpperCase();
+        this.cycle = this._getCycleName(res)?.toUpperCase();
         this.status=res.status_tandan?.toUpperCase();
         this.age=res.umur? res.umur.toString(): this._calculateAge(res.tarikh_daftar).toString();
       },
@@ -155,6 +156,21 @@ export class RegisterStatusPage implements OnInit {
         this.loadingModal.dismiss();
       }
     );
+  }
+
+  _getCycleName(res:TandanResponse):String{
+    let retVal:String;
+    if(res.kitaran == TandanCycle.bagging){
+      retVal = "Balut"
+    }else if(res.kitaran == TandanCycle.cp){
+      retVal = "Pendebungaan Terkawal"
+    }else if(res.kitaran == TandanCycle.qc){
+      retVal = "Kawalan Kualiti"
+    }else if(res.kitaran == TandanCycle.harvest){
+      retVal = "Tuai"
+    }
+
+    return retVal;
   }
 
   async showLoading():Promise<HTMLIonLoadingElement> {
