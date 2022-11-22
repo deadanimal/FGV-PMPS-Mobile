@@ -12,6 +12,7 @@ export interface ControlPollinationTask {
     catatan?: string;
     pengesah_id?: string;
     catatan_pengesah?: string;
+    status?: string;
     created_at: Date;
     updated_at: Date;
 }

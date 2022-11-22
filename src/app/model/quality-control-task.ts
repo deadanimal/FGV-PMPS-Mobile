@@ -14,6 +14,7 @@ export interface QualityControlTask {
     peratus_rosak?: string;
     pengesah_id?: string;
     catatan_pengesah?: string;
+    status?: string;
     created_at: Date;
     updated_at: Date;
 }
