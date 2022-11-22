@@ -7,40 +7,25 @@
       <div class="col-5">
         Nama
       </div>
-      <div class="col-5">
+      <div class="col-5 text-end">
         Jumlah Tugasan
       </div>
       <div class="col-2">
       </div>
     </div>
-    <div class="row my-3">
-      <div class="col-10 rounded bg-light shadow">
+    <div *ngFor="let worker of qcWorker"  class="row my-3 align-items-center">
+      <div class="col-10 rounded bg-light shadow p-3">
         <div class="row">
-          <small class="col-5" style="font-size: 15px; font-weight: 600; color: rgba(57.37, 57.37, 57.37, 1);">
-            Ali bin Abu<br/>P01101
+          <small class="col-9" style="font-size: 15px; font-weight: 600; color: rgba(57.37, 57.37, 57.37, 1);">
+            {{worker.nama}}<br/>{{worker.no_kakitangan}}
           </small>
-          <small class="col-5 text-center my-auto" style="font-size: 15px; font-weight: 600; color: rgba(57.37, 57.37, 57.37, 1);">
-            2
+          <small class="col-3 text-center my-auto" style="font-size: 15px; font-weight: 600; color: rgba(57.37, 57.37, 57.37, 1);">
+            {{worker.quality_control?.length}}
           </small>
         </div>
       </div>
       <div class="col-2">
-        <button (click)="select()" class="btn btn-danger shadow">Pilih</button>
-      </div>
-    </div>
-    <div class="row my-3">
-      <div class="col-10 rounded bg-light shadow">
-        <div class="row">
-          <small class="col-5" style="font-size: 15px; font-weight: 600; color: rgba(57.37, 57.37, 57.37, 1);">
-            Ali bin Abu<br/>P01101
-          </small>
-          <small class="col-5 text-center my-auto" style="font-size: 15px; font-weight: 600; color: rgba(57.37, 57.37, 57.37, 1);">
-            2
-          </small>
-        </div>
-      </div>
-      <div class="col-2">
-        <button (click)="select()" class="btn btn-danger shadow">Pilih</button>
+        <button (click)="select(worker.id)" class="btn btn-danger shadow">Pilih</button>
       </div>
     </div>
   </div>

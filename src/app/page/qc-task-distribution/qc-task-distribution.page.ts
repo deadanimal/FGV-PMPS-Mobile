@@ -1,6 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
+import { QualityControlTask } from 'src/app/model/quality-control-task';
+import { User } from 'src/app/model/user';
 import { ModalService } from 'src/app/service/modal.service';
+import { BaggingService } from 'src/app/service/tasks/bagging.service';
+import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
+import { QualityControlService } from 'src/app/service/tasks/quality-control.service';
 
 @Component({
   selector: 'app-qc-task-distribution',
@@ -10,15 +16,22 @@ import { ModalService } from 'src/app/service/modal.service';
 export class QcTaskDistributionPage implements OnInit {
 
   taskId:String;
+  taskIdCycle:String;
+  treeId:number;
+  tandanId:number;
+  qcWorker:User[] = [];
   constructor(
     private activatedRoute:ActivatedRoute,
     private modalService:ModalService,
     private router:Router,
+    private qualityControlService:QualityControlService,
+    private baggingService:BaggingService,
   ) { }
 
   ngOnInit() {
     this.activatedRoute.params.subscribe(params => {
       this.taskId = params['taskId'];
+      this.taskIdCycle = params['taskIdCycle'];
     });
   }
 
@@ -26,20 +39,34 @@ export class QcTaskDistributionPage implements OnInit {
     this._getTask();
   }
 
-  _getTask(){}
+  _getTask(){
+    this.qualityControlService.getAllQcWorker((res:[User])=>{
+      this.qcWorker = res;
+      this.baggingService.getById(this.taskId,(resCP:ControlPollinationTask)=>{
+        this.tandanId = resCP.tandan_id;
+        this.treeId = resCP.pokok_id;
+      });
+    });
+  }
 
-  select(){
-    this.modalService.successPrompt("Anda telah mengagihkan tugas kepada pekerja yang dipilih").then(()=>{
-      this.router.navigate(
-        [
-          '/app/tabs/tab1',
+  select(userId:number){
+    const formData = new FormData();
+    formData.append('pokok_id',this.treeId.toString());
+    formData.append('tandan_id',this.tandanId.toString());
+    formData.append('id_sv_qc',userId.toString());
+    this.qualityControlService.create(formData,(res:QualityControlTask)=>{
+      this.modalService.successPrompt("Anda telah mengagihkan tugas kepada pekerja yang dipilih").then(()=>{
+        this.router.navigate(
+          [
+            '/app/tabs/tab1',
+            {
+            }
+          ],
           {
+            replaceUrl : true
           }
-        ],
-        {
-          replaceUrl : true
-        }
-      );
+        );
+      });
     });
   }
 }

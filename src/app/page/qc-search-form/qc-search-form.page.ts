@@ -30,7 +30,8 @@ export class QcSearchFormPage implements OnInit {
       this.baggingWorker,
       (res:[QcSearchResponse])=>{
         res.forEach(el => {
-          if(el.tandan.kitaran == 'debung'){
+          if(el.tandan.kitaran == 'debung' && el.tandan.status_tandan == 'aktif'){
+            el.tandan.kitaran = "Pendebungaan Terkawal";
             this.searchResult.push(el);
           }
         });
@@ -44,6 +45,7 @@ export class QcSearchFormPage implements OnInit {
         '/app/tabs/tab1/qc-task-distribution',
         {
           taskId:taskId,
+          taskIdCycle:'debung',
         }
       ],
       {

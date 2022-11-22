@@ -3,7 +3,10 @@ import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { QualityControlTask } from 'src/app/model/quality-control-task';
 import { TandanResponse } from 'src/app/model/tandan-response';
+import { User } from 'src/app/model/user';
 import { environment } from 'src/environments/environment';
+import { UserRole } from '../account.service';
+import { UserService } from '../user.service';
 import { TandanService } from './tandan.service';
 
 @Injectable({
@@ -16,6 +19,7 @@ export class QualityControlService {
     private http: HttpClient,
     private loadingCtrl: LoadingController,
     private tandanService: TandanService,
+    private userService: UserService,
   ) { }
 
   async showLoading():Promise<HTMLIonLoadingElement> {
@@ -125,7 +129,7 @@ export class QualityControlService {
 
   update(
     qcId:String,
-    updateObject:QualityControlTask,
+    updateObject:any,
     callback,
   ){
     this.loadingModal = this.showLoading();
@@ -173,4 +177,9 @@ export class QualityControlService {
     );
   }
 
+  getAllQcWorker(callback){
+    this.userService.getByRole(UserRole.petugas_qa,(res:[User])=>{
+      callback(res);
+    });
+  }
 }
