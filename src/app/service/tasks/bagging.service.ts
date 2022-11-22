@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
+import { TaskStatus } from 'src/app/common/task-status';
 import { QcSearchResponse } from 'src/app/model/qc-search-response';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { environment } from 'src/environments/environment';
@@ -103,6 +104,7 @@ export class BaggingService {
     callback
   ){
     this.loadingModal = this.showLoading();
+    formData.append('status',TaskStatus.done);
     this.tandanService.updateTreeAndCycle(
       formData.get("tandan_id").toString(),
       formData.get("kitaran").toString(),
@@ -131,14 +133,17 @@ export class BaggingService {
     taskId:String,
     userId:String,
     comments:String,
+    status:String,
     callback
   ){
+    //todo: if status == tolak, update tandan to rejected
     this.loadingModal = this.showLoading();
     this.http.put<BaggingTask>(
       `${environment.baseUrl}${environment.bagging}${taskId}`,
       {
         pengesah_id:userId,
         catatan_pengesah:comments,
+        status:status
       }
     ).subscribe(
       async (res:BaggingTask) => {

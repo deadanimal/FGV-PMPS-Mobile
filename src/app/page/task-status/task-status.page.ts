@@ -22,6 +22,7 @@ import { ControlPollinationService } from 'src/app/service/tasks/control-pollina
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 import { UserService } from 'src/app/service/user.service';
 import { User } from 'src/app/model/user';
+import { TaskStatus } from 'src/app/common/task-status';
 
 @Component({
   selector: 'app-task-status',
@@ -412,7 +413,8 @@ export class TaskStatusPage implements OnInit {
       this.baggingService.verify(
         this.taskId,
         this.accountService.getSessionDetails().no_kakitangan.toString(),
-        this.svRemark+" (TERIMA)",
+        this.svRemark,
+        TaskStatus.verified,
         (res:BaggingTask)=>{
           this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
         }
@@ -426,7 +428,7 @@ export class TaskStatusPage implements OnInit {
         this.taskId,
         this.tandanId,
         this.accountService.getSessionDetails().no_kakitangan.toString(),
-        this.svRemark+" (TERIMA)",
+        this.svRemark+" (TOLAK)",
         (res:ControlPollinationTask)=>{
           this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
         }
@@ -435,7 +437,8 @@ export class TaskStatusPage implements OnInit {
       this.baggingService.verify(
         this.taskId,
         this.accountService.getSessionDetails().no_kakitangan.toString(),
-        this.svRemark+" (TOLAK)",
+        this.svRemark,
+        TaskStatus.rejected,
         (res:BaggingTask)=>{
           this._promptCompleted("Tugasan Telah Berjaya Di Tolak");
         }
