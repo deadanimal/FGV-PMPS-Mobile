@@ -31,7 +31,7 @@ export class ControlPollinationFormPage implements OnInit {
   }
 
   btnClick(form:NgForm){
-    this.controlPollinationService.updatePollenNumber(this.taskId,this.percentage,this.pollenNumber,(res:ControlPollinationTask)=>{
+    this.controlPollinationService.updatePollenNumber(this.taskId,this.pollenNumber,this.percentage,(res:ControlPollinationTask)=>{
       this.modalService.successPrompt("Borang Anda Telah Berjaya Dihantar Ke Penyelia").then(()=>{
         this.router.navigateByUrl(
           '/app/tabs/tab1',

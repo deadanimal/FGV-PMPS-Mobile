@@ -229,11 +229,21 @@ export class TaskStatusPage implements OnInit {
     });
   }
 
-  async submitCP(){
+  submitCPDefect(){
+    this.submitCP(TaskStatus.defect);
+  }
+
+  submitNormalCp(){
+    this.submitCP(TaskStatus.created);
+  }
+
+  async submitCP(status:TaskStatus){
     if(this.taskType == 'debungposponed'){
       this.controlPollinationService.updateRemarksNumber(
         this.taskId,
         this.remark,
+        this.id1?.value?.toString(),
+        status,
         (resCP:ControlPollinationTask)=>{
           if(this.defect == null){
             this.router.navigate(
@@ -259,7 +269,8 @@ export class TaskStatusPage implements OnInit {
         formData.append('pokok_id',res.pokok_id.toString());
         formData.append('catatan',this.remark?.toString());
         formData.append('id_sv_cp',this.accountService.getSessionDetails().no_kakitangan);
-        this.controlPollinationService.create(formData,(resCP:ControlPollinationTask)=>{
+        formData.append('pengesah_id',this.id1?.value?.toString());
+        this.controlPollinationService.create(formData,status,(resCP:ControlPollinationTask)=>{
           if(this.defect == null){
             this.router.navigate(
               [
@@ -333,6 +344,11 @@ export class TaskStatusPage implements OnInit {
         this.remark = res.catatan;
         this.tandanId = res.tandan_id.toString();
       });
+    }else{
+      this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
+        this.tandanId = res.tandan_id.toString();
+        this._getTandanInfo(this.tandanId);
+      });
     }
   }
 
@@ -341,10 +357,11 @@ export class TaskStatusPage implements OnInit {
       this.tandanId = res.tandan_id.toString();
       this.posponedDay = parseInt(res.tambahan_hari);
       this.numOfCheck = parseInt(res.bil_pemeriksaan);
+      this.treeId = res.pokok_id.toString();
       if(res.url_gambar!=null){
         this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
       }
-      this._getSupervisors();
+      this._getTreeNumber();
     });
   }
 
@@ -404,7 +421,8 @@ export class TaskStatusPage implements OnInit {
         this.taskId,
         this.tandanId,
         this.accountService.getSessionDetails().no_kakitangan.toString(),
-        this.svRemark+" (TERIMA)",
+        this.svRemark,
+        TaskStatus.verified,
         (res:ControlPollinationTask)=>{
           this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
         }
@@ -428,7 +446,8 @@ export class TaskStatusPage implements OnInit {
         this.taskId,
         this.tandanId,
         this.accountService.getSessionDetails().no_kakitangan.toString(),
-        this.svRemark+" (TOLAK)",
+        this.svRemark,
+        TaskStatus.rejected,
         (res:ControlPollinationTask)=>{
           this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
         }
@@ -457,7 +476,7 @@ export class TaskStatusPage implements OnInit {
       formData.append('id_sv_cp',this.accountService.getSessionDetails().no_kakitangan);
       formData.append('tandan_id',res.tandan_id.toString());
       formData.append('pokok_id',res.pokok_id.toString());
-      this.controlPollinationService.create(formData,(resCP:ControlPollinationTask)=>{
+      this.controlPollinationService.create(formData,TaskStatus.postpone,(resCP:ControlPollinationTask)=>{
         this.modalService.successPrompt("Proses telah berjaya dianjakkan kepada +"+this.posponedDay+" hari").then((value1)=>{
             this.router.navigateByUrl(
               '/app/tabs/tab1',

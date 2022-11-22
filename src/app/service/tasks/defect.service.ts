@@ -53,7 +53,7 @@ export class DefectService {
       this.loadingModal = this.showLoading();
     }
     this.http.post<DefectResponse>(
-      `${environment.baseUrl}${environment.tandanInfo}`,
+      `${environment.baseUrl}${environment.defect}`,
       formData
     ).subscribe(
       async (res:DefectResponse) => {

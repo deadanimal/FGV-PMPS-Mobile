@@ -197,6 +197,7 @@ export class RegisterStatusPage implements OnInit {
           'app/tabs/tab1/defect',
           {
             taskId:this.taskId,
+            treeNum:this.treeNumber,
             taskType:"debung",
           }
         ]
@@ -207,6 +208,7 @@ export class RegisterStatusPage implements OnInit {
           'app/tabs/tab1/defect',
           {
             taskId:this.taskId,
+            treeNum:this.treeNumber,
             taskType:"debungposponed",
           }
         ]

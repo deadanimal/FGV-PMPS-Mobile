@@ -104,13 +104,17 @@ export class MainTaskPage implements OnInit {
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId,tandanId:id}]);
     }else if( status == 'posponed'){
       if(taskId == 'cp'){
-        this.router.navigate(['app/tabs/tab1/new-task',{taskId:id,taskType:this.task+"posponed"}]);
+        this.router.navigate(['/app/tabs/tab1/reg-status',
+        {
+          taskId:id,
+          treeNum:param1,
+          taskType:this.task+"posponed",
+        }]);
       }
     }else if(status == "activeTask"){
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId,tandanId:id}]);
     }else if(status == "activeTaskSV"){
       if(taskId == "cp"){
-        // this.router.navigate(['app/tabs/tab1/new-task',{taskId:id,taskType:this.task}]);
         this.router.navigate(['/app/tabs/tab1/reg-status',
         {
           taskId:id,
@@ -399,10 +403,10 @@ export class MainTaskPage implements OnInit {
     ){
       this.controlPollinationService.getByUserId(this.employeeId,(res:[ControlPollinationTask])=>{
         res.forEach(el => {
-          if(el.catatan_pengesah == null && el.catatan != null){
+          if(el.status == TaskStatus.done){
             this.numOfActiveTask++;
             this.activeTaskList.push(el);
-          }else if(el.catatan == null && el.tambahan_hari != null){
+          }else if(el.status == TaskStatus.postpone){
             this.numOfPosponedTask++;
             this.posponedTaskList.push(el);
           }else{
@@ -418,7 +422,7 @@ export class MainTaskPage implements OnInit {
     }else{
       this.controlPollinationService.getAll((res:[ControlPollinationTask])=>{
         res.forEach(el => {
-          if(el.catatan_pengesah == null && el.catatan != null){
+          if(el.status == TaskStatus.done){
             this.numOfNewTask++;
             this.newTaskList.push(el);
           }else if(el.catatan_pengesah != null){

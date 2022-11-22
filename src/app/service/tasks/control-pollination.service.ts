@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
+import { TaskStatus } from 'src/app/common/task-status';
 import { BaggingTask } from 'src/app/model/bagging-task';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 import { TandanResponse } from 'src/app/model/tandan-response';
@@ -80,8 +81,10 @@ export class ControlPollinationService {
 
   create(
     formData:FormData,
+    status:string,
     callback
   ){
+    formData.append('status',status);
     this.loadingModal = this.showLoading();
     this.http.post<ControlPollinationTask>(
       `${environment.baseUrl}${environment.crossPolination}`,
@@ -162,6 +165,7 @@ export class ControlPollinationService {
       {
         no_pollen:noPollen,
         peratus_pollen:percentage,
+        status:TaskStatus.done,
       }
     ).subscribe(
       async (res:ControlPollinationTask) => {
@@ -188,6 +192,7 @@ export class ControlPollinationService {
       {
         tambahan_hari:tambahan_hari,
         bil_pemeriksaan:bil_pemeriksaan,
+        status:TaskStatus.postpone,
       }
     ).subscribe(
       async (res:ControlPollinationTask) => {
@@ -205,6 +210,8 @@ export class ControlPollinationService {
   updateRemarksNumber(
     cpId:String,
     remark:String,
+    sv_id:String,
+    status:String,
     callback
   ){
     this.loadingModal = this.showLoading();
@@ -212,6 +219,8 @@ export class ControlPollinationService {
       `${environment.baseUrl}${environment.crossPolination}${cpId}`,
       {
         catatan:remark,
+        pengesah_id:sv_id,
+        status:status,
       }
     ).subscribe(
       async (res:ControlPollinationTask) => {
@@ -231,6 +240,7 @@ export class ControlPollinationService {
     tandanId:String,
     pengesah_id:String,
     catatan_pengesah:String,
+    status:String,
     callback
   ){
     this.loadingModal = this.showLoading();
@@ -239,14 +249,13 @@ export class ControlPollinationService {
       {
         pengesah_id:pengesah_id,
         catatan_pengesah:catatan_pengesah,
+        status:status,
       }
     ).subscribe(
       async (res:ControlPollinationTask) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
-        this.tandanService.updateCycle(res.tandan_id.toString(),"debung",async (resTandan:TandanResponse)=>{
-            callback(res);
-        },false);
+        callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
