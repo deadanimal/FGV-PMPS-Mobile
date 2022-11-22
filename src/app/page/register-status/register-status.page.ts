@@ -7,6 +7,7 @@ import { LoadingController } from '@ionic/angular';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
 import { BaggingTask } from 'src/app/model/bagging-task';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
+import { QualityControlTask } from 'src/app/model/quality-control-task';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { TaskResponseModel } from 'src/app/model/task-response';
 import { AccountService } from 'src/app/service/account.service';
@@ -14,6 +15,7 @@ import { ModalService } from 'src/app/service/modal.service';
 import { TaskService } from 'src/app/service/task.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
+import { QualityControlService } from 'src/app/service/tasks/quality-control.service';
 import { TandanService } from 'src/app/service/tasks/tandan.service';
 
 @Component({
@@ -43,6 +45,7 @@ export class RegisterStatusPage implements OnInit {
     private tandanService: TandanService,
     private controlPollinationService: ControlPollinationService,
     private baggingService: BaggingService,
+    private qualityControlService: QualityControlService,
     private datePipe: DatePipe,
   ) { }
 
@@ -82,6 +85,12 @@ export class RegisterStatusPage implements OnInit {
     }
   }
 
+  _getQcTask(){
+    this.qualityControlService.getById(this.taskId,(res:QualityControlTask)=>{
+      this._getTandanInfo(res.tandan_id.toString());
+    });
+  }
+
   _getCPTask(){
     this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
       this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
@@ -116,6 +125,8 @@ export class RegisterStatusPage implements OnInit {
       this._getCPTask();
     }else if(this.taskType == "Pendebungaan Terkawal (CP)posponed"){
       this._getPostponedCPTask();
+    }else if(this.taskType == "Kawalan Kualiti (QC)"){
+      this._getQcTask();
     }else{
       this.loadingModal= await this.showLoading();
       this.taskService.getTask(this.taskId).subscribe(
@@ -138,7 +149,7 @@ export class RegisterStatusPage implements OnInit {
         this.regNumber = res.no_daftar;
         this.cycle = res.kitaran?.toUpperCase();
         this.status=res.status_tandan?.toUpperCase();
-        this.age=res.umur+" Hari";
+        this.age=res.umur? res.umur.toString(): this._calculateAge(res.tarikh_daftar).toString();
       },
       (err:HttpErrorResponse) => {
         this.loadingModal.dismiss();
@@ -210,6 +221,17 @@ export class RegisterStatusPage implements OnInit {
             taskId:this.taskId,
             treeNum:this.treeNumber,
             taskType:"debungposponed",
+          }
+        ]
+      );
+    }else if(this.taskType == "Kawalan Kualiti (QC)"){
+      this.router.navigate(
+        [
+          'app/tabs/tab1/defect',
+          {
+            taskId:this.taskId,
+            treeNum:this.treeNumber,
+            taskType:"qc",
           }
         ]
       );

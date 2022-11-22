@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 import { User } from '../model/user';
+import { TaskService } from './task.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class UserService {
   constructor(
     private http: HttpClient,
     private loadingCtrl: LoadingController,
+    private taskService: TaskService,
   ) { }
 
   async showLoading():Promise<HTMLIonLoadingElement> {

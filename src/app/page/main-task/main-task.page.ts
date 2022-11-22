@@ -121,6 +121,13 @@ export class MainTaskPage implements OnInit {
           treeNum:param1,
           taskType:this.task,
         }]);
+      }else if(taskId == "qc"){
+        this.router.navigate(['/app/tabs/tab1/reg-status',
+        {
+          taskId:id,
+          treeNum:param1,
+          taskType:this.task,
+        }]);
       }else{
         this.router.navigate(
           [
@@ -440,9 +447,12 @@ export class MainTaskPage implements OnInit {
       this.role == UserRole.petugas_balut || 
       this.role == UserRole.petugas_qa
     ){
-      this.qcService.getByUserId(this.employeeId,(res:[QualityControlTask])=>{
+      this.qcService.getByUserId(this.accountService.getSessionDetails().id.toString(),(res:[QualityControlTask])=>{
         res.forEach(el => {
-          if(el.catatan_pengesah == null){
+          if(el.status == TaskStatus.created){
+            this.numOfNewTask++;
+            this.newTaskList.push(el);
+          }else if(el.status == TaskStatus.done){
             this.numOfActiveTask++;
             this.activeTaskList.push(el);
           }else{
@@ -450,6 +460,8 @@ export class MainTaskPage implements OnInit {
             this.finishedTaskList.push(el);
           }
         });
+        console.log(res);
+        console.log(this.numOfActiveTask);
         // this.controlPollinationService.getNewlyCreatedTask(this.employeeId,(res1:[ControlPollinationTask])=>{
         //   this.numOfNewTask = res1.length;
         //   this.newTaskList = res1;

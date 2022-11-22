@@ -23,6 +23,8 @@ import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 import { UserService } from 'src/app/service/user.service';
 import { User } from 'src/app/model/user';
 import { TaskStatus } from 'src/app/common/task-status';
+import { QualityControlService } from 'src/app/service/tasks/quality-control.service';
+import { QualityControlTask } from 'src/app/model/quality-control-task';
 
 @Component({
   selector: 'app-task-status',
@@ -51,6 +53,7 @@ export class TaskStatusPage implements OnInit {
   tandanId:String;
   flowerStatus:String;
   qcSv:String;
+  qcSvId:String;
   tandanStatus:String;
   returnPage:String = '';
   treeBlock:String;
@@ -71,6 +74,7 @@ export class TaskStatusPage implements OnInit {
     private tandanService: TandanService,
     private baggingService: BaggingService,
     private controlPollinationService: ControlPollinationService,
+    private qualityControlService: QualityControlService,
     private userServices: UserService,
   ) { }
 
@@ -114,8 +118,6 @@ export class TaskStatusPage implements OnInit {
       if(params['returnPage']!=undefined){
         // this.returnPage = params['returnPage'];
       }
-
-      console.log(this.defect);
     });
   }
 
@@ -365,11 +367,21 @@ export class TaskStatusPage implements OnInit {
     });
   }
 
+  _getQCTask(taskId:String){
+    this.qualityControlService.getById(taskId,(res:QualityControlTask)=>{
+      this.qcSvId = res.pengesah_id;
+      this.tandanId = res.tandan_id.toString();
+      this._getTandanInfo(this.tandanId);
+    });
+  }
+
   async _getTask(taskId:String){
     if(this.taskType == 'debung'){
       this._getCPTask(taskId);
     }else if(this.taskType == 'debungposponed'){
       this._getPosponedCPTask(taskId);
+    }else if(this.taskType == 'qc'){
+      this._getQCTask(taskId);
     }else{
       this.baggingService.getById(taskId,(res:BaggingTask)=>{
         this.date = res.created_at.toString();
@@ -554,6 +566,14 @@ export class TaskStatusPage implements OnInit {
         }
         this._getTandanId();
       });
+    }else if(this.userRole == UserRole.petugas_qa){
+      this.userServices.getByRole(UserRole.penyelia_qa.toString(),(res:[User])=>{
+        res.forEach(el => {
+          if(el.no_kakitangan == this.qcSvId){
+            this.qcSv = el.nama;
+          }
+        });
+      });
     }
   }
 
@@ -567,6 +587,16 @@ export class TaskStatusPage implements OnInit {
         });
       });
     }
+  }
+
+  submitQcDefect(){
+    console.log("submitQcDefect")
+    console.log(this.defect)
+  }
+
+  submitNormalQc(){
+    console.log("submitNormalQc")
+    console.log(this.defect)
   }
 
 }

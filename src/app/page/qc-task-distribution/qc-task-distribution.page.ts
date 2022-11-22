@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TaskStatus } from 'src/app/common/task-status';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 import { QualityControlTask } from 'src/app/model/quality-control-task';
 import { User } from 'src/app/model/user';
+import { AccountService } from 'src/app/service/account.service';
 import { ModalService } from 'src/app/service/modal.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
@@ -26,6 +28,7 @@ export class QcTaskDistributionPage implements OnInit {
     private router:Router,
     private qualityControlService:QualityControlService,
     private baggingService:BaggingService,
+    private accountService:AccountService,
   ) { }
 
   ngOnInit() {
@@ -54,6 +57,8 @@ export class QcTaskDistributionPage implements OnInit {
     formData.append('pokok_id',this.treeId.toString());
     formData.append('tandan_id',this.tandanId.toString());
     formData.append('id_sv_qc',userId.toString());
+    formData.append('status',TaskStatus.created);
+    formData.append('pengesah_id',this.accountService.getSessionDetails().no_kakitangan);
     this.qualityControlService.create(formData,(res:QualityControlTask)=>{
       this.modalService.successPrompt("Anda telah mengagihkan tugas kepada pekerja yang dipilih").then(()=>{
         this.router.navigate(

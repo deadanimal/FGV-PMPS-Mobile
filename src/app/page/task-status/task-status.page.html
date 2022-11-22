@@ -25,11 +25,11 @@
       <ion-label position="floating">No Pokok</ion-label>
       <ion-input type="text" [(ngModel)]="treeNum" name="treeNum" required [readonly]="true"></ion-input>
     </ion-item>
-    <ion-item *ngIf="taskType == 'balut' || taskType == 'pollen-prep'" lines="full">
+    <ion-item *ngIf="taskType == 'balut' || taskType == 'qc' || taskType == 'pollen-prep'" lines="full">
       <ion-label position="floating">No Daftar</ion-label>
       <ion-input type="text" [(ngModel)]="regNo" name="regNo" required [readonly]="true"></ion-input>
     </ion-item>
-    <ion-item *ngIf="taskType == 'pollen-prep'" lines="full">
+    <ion-item *ngIf="taskType == 'qc' || taskType == 'pollen-prep'" lines="full">
       <ion-label position="floating">Penyelia QC</ion-label>
       <ion-input type="text" [(ngModel)]="qcSv" name="qcSv" required [readonly]="true"></ion-input>
     </ion-item>
@@ -53,7 +53,7 @@
       <ion-label position="floating">Catatan</ion-label>
       <ion-input type="text" [(ngModel)]="remark" name="remark" [readonly]="userRole!='Petugas Balut & Pendebungaan Terkawal' && userRole!='Petugas Kawalan Kualiti'"></ion-input>
     </ion-item>
-    <ion-item  lines="full" class="my-4" *ngIf="((userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Kawalan Kualiti') && defect == null)">
+    <ion-item  lines="full" class="my-4" *ngIf="((userRole=='Petugas Balut & Pendebungaan Terkawal') && defect == null)">
       <ion-select placeholder="Pilih Penyelia" id= "id1" #id1 >
         <ion-select-option *ngFor="let sv of userList" value={{sv.no_kakitangan}}>{{sv.nama}}</ion-select-option>
       </ion-select>
@@ -91,6 +91,16 @@
     </button>
   
     <button [disabled]="!form.valid || (photo ==null&& serverImage == null)" (click)="submitCPDefect()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' ) && (taskType == 'debung' || taskType == 'debungposponed') && defect != null" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
+      <ion-icon size="large" color="white" name="checkmark-circle-outline"></ion-icon>
+      <p class="m-auto">Hantar</p>
+    </button>
+
+    <button [disabled]="!form.valid || (photo ==null&& serverImage == null)" (click)="submitNormalQc()" *ngIf="(userRole=='Petugas Kawalan Kualiti' ) && (taskType == 'qc') && defect == null" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
+      <ion-icon size="large" color="white" name="checkmark-circle-outline"></ion-icon>
+      <p class="m-auto">Hantar</p>
+    </button>
+
+    <button [disabled]="!form.valid || (photo ==null&& serverImage == null)" (click)="submitQcDefect()" *ngIf="(userRole=='Petugas Kawalan Kualiti' ) && (taskType == 'qc') && defect != null" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="checkmark-circle-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>
