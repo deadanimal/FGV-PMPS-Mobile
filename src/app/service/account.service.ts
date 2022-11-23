@@ -13,6 +13,8 @@ export enum UserRole {
   general_worker  = "Petugas Am",
   penyelia_tuai   = "Penyelia Tuai",
   petugas_tuai    = "Petugas Tuai",
+  penyelia_makmal = "Penyelia Makmal",
+  petugas_makmal  = "Petugas Makmal",
   unknown         = "Unknown",
 }
 @Injectable({
@@ -65,6 +67,12 @@ export class AccountService {
         role = UserRole.penyelia_tuai;
       }else if(UserRole.petugas_tuai == this._accountDetails.peranan){
         role = UserRole.petugas_tuai;
+      }else if(UserRole.penyelia_makmal == this._accountDetails.peranan){
+        role = UserRole.penyelia_makmal;
+      }else if(UserRole.petugas_makmal == this._accountDetails.peranan){
+        role = UserRole.petugas_makmal;
+      }else if(UserRole.general_worker == this._accountDetails.peranan){
+        role = UserRole.general_worker;
       }else if(UserRole.unknown == this._accountDetails.peranan){
         role = UserRole.unknown;
       }
