@@ -9,6 +9,7 @@ export interface TandanResponse {
     catatan?: string;
     file?: string;
     umur: number;
+    kerosakans_id?: string;
     created_at: Date;
     updated_at: Date;
 }

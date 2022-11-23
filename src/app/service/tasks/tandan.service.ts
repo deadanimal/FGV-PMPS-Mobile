@@ -139,14 +139,11 @@ export class TandanService {
     if(loadingAnim){
       this.loadingModal = this.showLoading();
     }
-    let submitForm:FormData = new FormData();
-    submitForm.append('nama',defect.toString());
-    submitForm.append('tandan_id',tandanId.toString());
-    this.defectService.create(submitForm,(res1:DefectResponse)=>{
       this.http.put<TandanResponse>(
         `${environment.baseUrl}${environment.tandanInfo}${tandanId}`,
         {
           status_tandan:"tidak aktif",
+          kerosakans_id:defect,
         },
       ).subscribe(
         async (res:TandanResponse) => {
@@ -163,7 +160,6 @@ export class TandanService {
           }
         }
       );
-    },loadingAnim? false:true);
   }
 
   updateTreeAndCycle(
