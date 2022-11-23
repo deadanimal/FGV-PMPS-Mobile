@@ -7,9 +7,19 @@
       <ion-label position="floating">No Pollen</ion-label>
       <ion-input type="number" [(ngModel)]="pollenNumber" name="pollenNumber" required></ion-input>
     </ion-item>
-    <ion-item lines="full">
-      <ion-label position="floating">Peratus Viabiliti Pollen(%)</ion-label>
-      <ion-input type="number" [(ngModel)]="percentage" name="percentage" required></ion-input>
+    <ion-item  lines="full" class="my-4">
+      <ion-select placeholder="Peratus Viabiliti Pollen(%)" id= "id1" #id1 required>
+        <ion-select-option value=10>10%</ion-select-option>
+        <ion-select-option value=20>20%</ion-select-option>
+        <ion-select-option value=30>30%</ion-select-option>
+        <ion-select-option value=40>40%</ion-select-option>
+        <ion-select-option value=50>50%</ion-select-option>
+        <ion-select-option value=60>60%</ion-select-option>
+        <ion-select-option value=70>70%</ion-select-option>
+        <ion-select-option value=80>80%</ion-select-option>
+        <ion-select-option value=90>90%</ion-select-option>
+        <ion-select-option value=100>100%</ion-select-option>
+      </ion-select>
     </ion-item>
     <div class="text-center mx-auto mt-4 w-100">
       <button [disabled]="!form.valid" type="submit" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-auto">

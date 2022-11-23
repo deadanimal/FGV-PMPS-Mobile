@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { IonSelect } from '@ionic/angular';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 import { ModalService } from 'src/app/service/modal.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
@@ -12,8 +13,8 @@ import { ControlPollinationService } from 'src/app/service/tasks/control-pollina
 })
 export class ControlPollinationFormPage implements OnInit {
 
+  @ViewChild("id1") id1!: IonSelect;
   pollenNumber:String;
-  percentage:String;
   taskId:String;
   constructor(
     private activatedRoute:ActivatedRoute,
@@ -31,7 +32,7 @@ export class ControlPollinationFormPage implements OnInit {
   }
 
   btnClick(form:NgForm){
-    this.controlPollinationService.updatePollenNumber(this.taskId,this.pollenNumber,this.percentage,(res:ControlPollinationTask)=>{
+    this.controlPollinationService.updatePollenNumber(this.taskId,this.pollenNumber,this.id1?.value?.toString(),(res:ControlPollinationTask)=>{
       this.modalService.successPrompt("Borang Anda Telah Berjaya Dihantar Ke Penyelia").then(()=>{
         this.router.navigateByUrl(
           '/app/tabs/tab1',
