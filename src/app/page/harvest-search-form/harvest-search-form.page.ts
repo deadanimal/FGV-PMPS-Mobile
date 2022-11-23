@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TreeType } from 'src/app/common/tree-type';
 import { QcSearchResponse } from 'src/app/model/qc-search-response';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
 
@@ -30,8 +31,11 @@ export class HarvestSearchFormPage implements OnInit {
       this.baggingWorker,
       (res:[QcSearchResponse])=>{
         res.forEach(el => {
-          if(el.tandan.kitaran == 'kawal' && el.tandan.status_tandan == 'aktif'){
+          if(( el.pokok.jantina == TreeType.Motherpalm && el.tandan.kitaran == 'kawal') && el.tandan.status_tandan == 'aktif'){
             el.tandan.kitaran = "Kawalan Kualiti";
+            this.searchResult.push(el);
+          }else if(( el.pokok.jantina == TreeType.Fatherpalm && el.tandan.kitaran == 'balut') && el.tandan.status_tandan == 'aktif'){
+            el.tandan.kitaran = "Balut";
             this.searchResult.push(el);
           }
         });

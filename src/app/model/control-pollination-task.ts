@@ -15,6 +15,7 @@ export interface ControlPollinationTask {
     pengesah_id?: string;
     catatan_pengesah?: string;
     status?: string;
+    kerosakans_id?: string;
     pokok?:PokokResponse;
     created_at: Date;
     updated_at: Date;

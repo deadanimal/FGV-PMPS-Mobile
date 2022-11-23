@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { TaskStatus } from 'src/app/common/task-status';
+import { TreeType } from 'src/app/common/tree-type';
 import { BaggingTask } from 'src/app/model/bagging-task';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 import { TandanResponse } from 'src/app/model/tandan-response';
@@ -286,7 +287,7 @@ export class ControlPollinationService {
       let tempArray:BaggingTask[] = [];
       this.getByUserId(userId,async (res1:[ControlPollinationTask])=>{
         res.forEach(el => {
-          if(!this._hasCPTask(el.tandan_id.toString(),res1)){
+          if(el.pokok?.jantina == TreeType.Motherpalm && !this._hasCPTask(el.tandan_id.toString(),res1)){
             tempArray.push(el);
           }
         });
