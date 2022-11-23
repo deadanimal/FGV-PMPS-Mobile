@@ -27,6 +27,8 @@ import { QualityControlService } from 'src/app/service/tasks/quality-control.ser
 import { QualityControlTask } from 'src/app/model/quality-control-task';
 import { HarvestTask } from 'src/app/model/harvest-task';
 import { HarvestService } from 'src/app/service/tasks/harvest.service';
+import { DefectResponse } from 'src/app/model/defect-response';
+import { DefectService } from 'src/app/service/tasks/defect.service';
 
 @Component({
   selector: 'app-task-status',
@@ -60,8 +62,10 @@ export class TaskStatusPage implements OnInit {
   returnPage:String = '';
   treeBlock:String;
   defect:String;
+  defectId:number;
   weight:String;
   userList:User[] = [];
+  defectList:DefectResponse[] = [];
 
   constructor(
     private photoService:PhotoService,
@@ -80,6 +84,7 @@ export class TaskStatusPage implements OnInit {
     private qualityControlService: QualityControlService,
     private harvestService: HarvestService,
     private userServices: UserService,
+    private defectService: DefectService,
   ) { }
 
   ngOnInit() {
@@ -111,7 +116,7 @@ export class TaskStatusPage implements OnInit {
         this.tandanStatus = params['tandanStatus'];
       }
       if(params['defect']!=null){
-        this.defect = this._getDefectName(params['defect']);
+        this._getDefectList(params['defect']);
       }
       if(params['taskId']!=null){
         this.taskId = params['taskId'];
@@ -125,38 +130,27 @@ export class TaskStatusPage implements OnInit {
     });
   }
 
+  _getDefectList(defectCode){
+    this.defectId = defectCode;
+    this.defectService.getAll((res:[DefectResponse])=>{
+      res.forEach(el => {
+        this.defectList.push(el);
+      });
+      this.defect = this._getDefectName(defectCode);
+    },false);
+  }
+
   _getDefectName(code){
     let retVal = "NA";
-    if(code == "a")
-    retVal = "A: Anai-anai";
-    else if(code == "b")
-    retVal = "B: Tikus";
-    else if(code == "c")
-    retVal = "C: Beg Pecah";
-    else if(code == "d")
-    retVal = "D: Ikatan Bawah Tidak Kemas";
-    else if(code == "e")
-    retVal = "E: Ikatan Atas Tidak Kemas";
-    else if(code == "f")
-    retVal = "F: Bunga Mati";
-    else if(code == "g")
-    retVal = "G: Ikatan Atas Bunga";
-    else if(code == "h")
-    retVal = "H: Patah";
-    else if(code == "i")
-    retVal = "I: Weevil semasa CP";
-    else if(code == "j")
-    retVal = "J: Kembang tidak Sekata";
-    else if(code == "k")
-    retVal = "K: Bunga Tidak CP";
-    else if(code == "l")
-    retVal = "L: Serangan Haiwan";
-    else if(code == "m")
-    retVal = "M: Sambang";
-    else if(code == "n")
-    retVal = "N: Tenggelam Banjir";
-    else if(code == "o")
-    retVal = "O: Lain-lain";
+    if(code == 99999)
+    retVal = "Lain-lain";
+    else{
+      this.defectList.forEach(el => {
+        if(el.id == code){
+          retVal = el.nama;
+        }
+      });
+    }
 
     return retVal;
   }
@@ -226,7 +220,7 @@ export class TaskStatusPage implements OnInit {
   }
 
   _updateDefect(tandan_id:number){
-    this.tandanService.updateDefect(tandan_id.toString(),this.defect,(resDefect:TandanResponse)=>{
+    this.tandanService.updateDefect(tandan_id.toString(),this.defectId.toString(),(resDefect:TandanResponse)=>{
       this.router.navigate(
         [
           '/app/tabs/tab1/'

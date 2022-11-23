@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DefectResponse } from 'src/app/model/defect-response';
+import { DefectService } from 'src/app/service/tasks/defect.service';
 
 @Component({
   selector: 'app-defect',
@@ -8,15 +10,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class DefectPage implements OnInit {
 
-  defect:string = "z";
+  defect:number = 100000;
   taskType:String;
   taskId:String;
   tandanId:String;
   taskStatus:String;
   returnPage:String;
+  defectList:DefectResponse[] = [];
   constructor(
     private activatedRoute:ActivatedRoute,
     private router:Router,
+    private defectService: DefectService,
   ) { }
 
   ngOnInit() {
@@ -26,6 +30,12 @@ export class DefectPage implements OnInit {
         this.tandanId = params['tandanId'];
         this.taskStatus = params['taskStatus'];
         this.returnPage = params['returnPage'];
+    });
+
+    this.defectService.getAll((res:[DefectResponse])=>{
+      res.forEach(el => {
+        this.defectList.push(el);
+      });
     });
   }
 

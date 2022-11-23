@@ -43,32 +43,4 @@ export class DefectService {
       }
     );
   }
-
-  create(
-    formData:FormData,
-    callback,
-    loadingAnim = true,
-  ){
-    if(loadingAnim){
-      this.loadingModal = this.showLoading();
-    }
-    this.http.post<DefectResponse>(
-      `${environment.baseUrl}${environment.defect}`,
-      formData
-    ).subscribe(
-      async (res:DefectResponse) => {
-        if(loadingAnim){
-          this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
-        }
-        callback(res);
-      },
-      async (err:HttpErrorResponse) => {
-        if(loadingAnim){
-          this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
-        }
-      }
-    );
-  }
 }

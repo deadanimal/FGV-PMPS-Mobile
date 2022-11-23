@@ -4,33 +4,20 @@
   <div class="w-75 mx-auto">
     <ion-list>
       <ion-item>
-        <ion-select (ionChange)="handleChange($event)" value="z" placeholder="Select fruit">
-          <ion-select-option value="z">Pilih Kerosakan</ion-select-option>
-          <ion-select-option value="a">A: Anai-anai</ion-select-option>
-          <ion-select-option value="b">B: Tikus</ion-select-option>
-          <ion-select-option value="c">C: Beg Pecah</ion-select-option>
-          <ion-select-option value="d">D: Ikatan Bawah Tidak Kemas</ion-select-option>
-          <ion-select-option value="e">E: Ikatan Atas Tidak Kemas</ion-select-option>
-          <ion-select-option value="f">F: Bunga Mati</ion-select-option>
-          <ion-select-option value="g">G: Ikatan Atas Bunga</ion-select-option>
-          <ion-select-option value="h">H: Patah</ion-select-option>
-          <ion-select-option value="i">I: Weevil semasa CP</ion-select-option>
-          <ion-select-option value="j">J: Kembang tidak Sekata</ion-select-option>
-          <ion-select-option value="k">K: Bunga Tidak CP</ion-select-option>
-          <ion-select-option value="l">L: Serangan Haiwan</ion-select-option>
-          <ion-select-option value="m">M: Sambang</ion-select-option>
-          <ion-select-option value="n">N: Tenggelam Banjir</ion-select-option>
-          <ion-select-option value="o">O: Lain-lain</ion-select-option>
+        <ion-select (ionChange)="handleChange($event)" value=100000 placeholder="Pilih Kerosakan">
+          <ion-select-option value=100000>Pilih Kerosakan</ion-select-option>
+          <ion-select-option *ngFor="let item of defectList" value={{item.id}}>{{item.nama}}</ion-select-option>
+          <ion-select-option value=99999>Lain-lain</ion-select-option>
         </ion-select>
       </ion-item>
     </ion-list>
   </div>
   <div class="d-flex flex-row text-center mx-auto w-75 mt-5 justify-content-around">
-    <button (click)="reject()" [disabled]="defect == 'z'" class="mx-3 btn btn-danger text-white">
+    <button (click)="reject()" [disabled]="defect == 100000" class="mx-3 btn btn-danger text-white">
       <ion-icon name="remove-circle-outline"></ion-icon>
       Gagal
     </button>
-    <button (click)="continue()" [disabled]="defect != 'z'" class="mx-3 btn btn-success text-white">
+    <button (click)="continue()" [disabled]="defect != 100000" class="mx-3 btn btn-success text-white">
       <ion-icon name="checkmark-circle-outline"></ion-icon>
       Lulus
     </button>
