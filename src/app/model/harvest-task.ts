@@ -1,3 +1,5 @@
+import { PokokResponse } from "./pokok-respons";
+
 export interface HarvestTask {
     id: number;
     no_harvest?: string;
@@ -11,6 +13,7 @@ export interface HarvestTask {
     catatan_pengesah?: string;
     jumlah_tandan?: string;
     status?: string;
+    pokok?:PokokResponse;
     created_at: Date;
     updated_at: Date;
     jenis: string;

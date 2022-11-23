@@ -1,3 +1,5 @@
+import { PokokResponse } from "./pokok-respons";
+
 export interface BaggingTask {
     id: number;
     no_bagging?: string;
@@ -9,6 +11,7 @@ export interface BaggingTask {
     pengesah_id?: string;
     catatan_pengesah?: string;
     status?: string;
+    pokok?:PokokResponse;
     created_at: Date;
     updated_at: Date;
 }

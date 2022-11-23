@@ -1,3 +1,5 @@
+import { PokokResponse } from "./pokok-respons";
+
 export interface ControlPollinationTask {
     id: number;
     no_cp: string;
@@ -13,6 +15,7 @@ export interface ControlPollinationTask {
     pengesah_id?: string;
     catatan_pengesah?: string;
     status?: string;
+    pokok?:PokokResponse;
     created_at: Date;
     updated_at: Date;
 }

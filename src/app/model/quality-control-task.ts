@@ -1,3 +1,5 @@
+import { PokokResponse } from "./pokok-respons";
+
 export interface QualityControlTask {
     id: number;
     no_qc?: string;
@@ -15,6 +17,7 @@ export interface QualityControlTask {
     pengesah_id?: string;
     catatan_pengesah?: string;
     status?: string;
+    pokok?:PokokResponse;
     created_at: Date;
     updated_at: Date;
 }
