@@ -16,6 +16,7 @@ export const environment = {
   bagging:'/bagging/',
   defect:'/kerosakan/',
   harvest:'/harvest/',
+  pollen:'/pollen/',
   crossPolination:'/control_pollination/',
   qualityControl:'/quality_control/',
   userByRole:'/users/peranan/',

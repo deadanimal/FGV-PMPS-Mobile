@@ -3,4 +3,5 @@ export enum TandanCycle {
     cp      = 'debung',
     qc      = 'kawal',
     harvest = 'tuai',
+    pp      = 'pollen',
 }
