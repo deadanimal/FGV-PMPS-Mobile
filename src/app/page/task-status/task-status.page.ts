@@ -27,7 +27,7 @@ import { QualityControlService } from 'src/app/service/tasks/quality-control.ser
 import { QualityControlTask } from 'src/app/model/quality-control-task';
 import { HarvestModel } from 'src/app/model/harvest';
 import { HarvestService } from 'src/app/service/tasks/harvest.service';
-import { DefectResponse } from 'src/app/model/defect-response';
+import { DefectModel } from 'src/app/model/defect';
 import { DefectService } from 'src/app/service/tasks/defect.service';
 
 @Component({
@@ -65,7 +65,7 @@ export class TaskStatusPage implements OnInit {
   defectId:number;
   weight:String;
   userList:User[] = [];
-  defectList:DefectResponse[] = [];
+  defectList:DefectModel[] = [];
 
   constructor(
     private photoService:PhotoService,
@@ -132,7 +132,7 @@ export class TaskStatusPage implements OnInit {
 
   _getDefectList(defectCode){
     this.defectId = defectCode;
-    this.defectService.getAll((res:[DefectResponse])=>{
+    this.defectService.getAll((res:[DefectModel])=>{
       res.forEach(el => {
         this.defectList.push(el);
       });

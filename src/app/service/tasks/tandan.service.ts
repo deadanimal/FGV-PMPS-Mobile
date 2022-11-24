@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
-import { DefectResponse } from 'src/app/model/defect-response';
+import { DefectModel } from 'src/app/model/defect';
 import { PokokResponse } from 'src/app/model/pokok-respons';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { environment } from 'src/environments/environment';

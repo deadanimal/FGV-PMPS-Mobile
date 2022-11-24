@@ -1,4 +1,4 @@
-export interface DefectResponse {
+export interface DefectModel {
     id: number;
     faktor: string;
     jenis?: string;

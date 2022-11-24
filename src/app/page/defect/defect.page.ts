@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DefectResponse } from 'src/app/model/defect-response';
+import { DefectModel } from 'src/app/model/defect';
 import { DefectService } from 'src/app/service/tasks/defect.service';
 
 @Component({
@@ -16,7 +16,7 @@ export class DefectPage implements OnInit {
   tandanId:String;
   taskStatus:String;
   returnPage:String;
-  defectList:DefectResponse[] = [];
+  defectList:DefectModel[] = [];
   constructor(
     private activatedRoute:ActivatedRoute,
     private router:Router,
@@ -32,7 +32,7 @@ export class DefectPage implements OnInit {
         this.returnPage = params['returnPage'];
     });
 
-    this.defectService.getAll((res:[DefectResponse])=>{
+    this.defectService.getAll((res:[DefectModel])=>{
       res.forEach(el => {
         this.defectList.push(el);
       });
