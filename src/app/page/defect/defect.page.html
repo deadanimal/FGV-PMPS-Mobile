@@ -7,7 +7,6 @@
         <ion-select (ionChange)="handleChange($event)" value=100000 placeholder="Pilih Kerosakan">
           <ion-select-option value=100000>Pilih Kerosakan</ion-select-option>
           <ion-select-option *ngFor="let item of defectList" value={{item.id}}>{{item.nama}}</ion-select-option>
-          <ion-select-option value=99999>Lain-lain</ion-select-option>
         </ion-select>
       </ion-item>
     </ion-list>
