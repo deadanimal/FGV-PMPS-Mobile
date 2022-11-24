@@ -9,7 +9,7 @@ import { BaggingModel } from 'src/app/model/bagging';
 import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { HarvestModel } from 'src/app/model/harvest';
 import { LoginResponseModel } from 'src/app/model/login-response';
-import { QualityControlTask } from 'src/app/model/quality-control-task';
+import { QualityControlModel } from 'src/app/model/quality-control';
 import { TaskResponseModel } from 'src/app/model/task-response';
 import { AccountService, UserRole } from 'src/app/service/account.service';
 import { ModalService } from 'src/app/service/modal.service';
@@ -479,7 +479,7 @@ export class MainTaskPage implements OnInit {
       this.role == UserRole.petugas_balut || 
       this.role == UserRole.petugas_qa
     ){
-      this.qcService.getByUserId(this.accountService.getSessionDetails().id.toString(),(res:[QualityControlTask])=>{
+      this.qcService.getByUserId(this.accountService.getSessionDetails().id.toString(),(res:[QualityControlModel])=>{
         res.forEach(el => {
           if(el.status == TaskStatus.created){
             this.numOfNewTask++;
@@ -494,7 +494,7 @@ export class MainTaskPage implements OnInit {
         });
       });
     }else{
-      this.qcService.getAll((res:[QualityControlTask])=>{
+      this.qcService.getAll((res:[QualityControlModel])=>{
         res.forEach(el => {
           if(el.pengesah_id == this.accountService.getSessionDetails().no_kakitangan){
             if(el.status == TaskStatus.done){

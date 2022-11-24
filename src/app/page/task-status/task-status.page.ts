@@ -24,7 +24,7 @@ import { UserService } from 'src/app/service/user.service';
 import { User } from 'src/app/model/user';
 import { TaskStatus } from 'src/app/common/task-status';
 import { QualityControlService } from 'src/app/service/tasks/quality-control.service';
-import { QualityControlTask } from 'src/app/model/quality-control-task';
+import { QualityControlModel } from 'src/app/model/quality-control';
 import { HarvestModel } from 'src/app/model/harvest';
 import { HarvestService } from 'src/app/service/tasks/harvest.service';
 import { DefectModel } from 'src/app/model/defect';
@@ -367,13 +367,13 @@ export class TaskStatusPage implements OnInit {
 
   _getQCTask(taskId:String){
     if(this.userRole == UserRole.penyelia_qa){
-      this.qualityControlService.getById(taskId,(res:QualityControlTask)=>{
+      this.qualityControlService.getById(taskId,(res:QualityControlModel)=>{
         this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
         this.remark = res.catatan;
         this.tandanId = res.tandan_id.toString();
       });
     }else{
-      this.qualityControlService.getById(taskId,(res:QualityControlTask)=>{
+      this.qualityControlService.getById(taskId,(res:QualityControlModel)=>{
         this.qcSvId = res.pengesah_id;
         this.tandanId = res.tandan_id.toString();
         this._getTandanInfo(this.tandanId);
@@ -473,7 +473,7 @@ export class TaskStatusPage implements OnInit {
         this.taskId,
         this.svRemark,
         TaskStatus.verified,
-        (res:QualityControlTask)=>{
+        (res:QualityControlModel)=>{
           this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
         }
       );
@@ -482,7 +482,7 @@ export class TaskStatusPage implements OnInit {
         this.taskId,
         this.svRemark,
         TaskStatus.verified,
-        (res:QualityControlTask)=>{
+        (res:QualityControlModel)=>{
           this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
         }
       );
@@ -516,7 +516,7 @@ export class TaskStatusPage implements OnInit {
         this.taskId,
         this.svRemark,
         TaskStatus.rejected,
-        (res:QualityControlTask)=>{
+        (res:QualityControlModel)=>{
           this._promptCompleted("Tugasan Telah Berjaya Di Tolak");
         }
       );
@@ -525,7 +525,7 @@ export class TaskStatusPage implements OnInit {
         this.taskId,
         this.svRemark,
         TaskStatus.rejected,
-        (res:QualityControlTask)=>{
+        (res:QualityControlModel)=>{
           this._promptCompleted("Tugasan Telah Berjaya Di Tolak");
         }
       );
@@ -670,7 +670,7 @@ export class TaskStatusPage implements OnInit {
     formData.append('_method','put');
     formData.append('catatan',this.remark?.toString());
     formData.append('status',status);
-    this.qualityControlService.update(this.taskId,formData,(res:QualityControlTask)=>{
+    this.qualityControlService.update(this.taskId,formData,(res:QualityControlModel)=>{
       if(this.defect == null){
         this.router.navigate(
           [

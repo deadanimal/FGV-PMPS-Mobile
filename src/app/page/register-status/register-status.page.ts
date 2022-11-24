@@ -9,7 +9,7 @@ import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.c
 import { BaggingModel } from 'src/app/model/bagging';
 import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { HarvestModel } from 'src/app/model/harvest';
-import { QualityControlTask } from 'src/app/model/quality-control-task';
+import { QualityControlModel } from 'src/app/model/quality-control';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { TaskResponseModel } from 'src/app/model/task-response';
 import { AccountService } from 'src/app/service/account.service';
@@ -90,7 +90,7 @@ export class RegisterStatusPage implements OnInit {
   }
 
   _getQcTask(){
-    this.qualityControlService.getById(this.taskId,(res:QualityControlTask)=>{
+    this.qualityControlService.getById(this.taskId,(res:QualityControlModel)=>{
       this._getTandanInfo(res.tandan_id.toString());
     });
   }

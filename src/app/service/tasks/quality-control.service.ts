@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { TandanCycle } from 'src/app/common/tandan-cycle';
-import { QualityControlTask } from 'src/app/model/quality-control-task';
+import { QualityControlModel } from 'src/app/model/quality-control';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { User } from 'src/app/model/user';
 import { environment } from 'src/environments/environment';
@@ -31,10 +31,10 @@ export class QualityControlService {
 
   getAll(callback){
     this.loadingModal = this.showLoading();
-    this.http.get<[QualityControlTask]>(
+    this.http.get<[QualityControlModel]>(
       `${environment.baseUrl}${environment.qualityControl}`
     ).subscribe(
-      async (res:[QualityControlTask]) => {
+      async (res:[QualityControlModel]) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         callback(res);
@@ -54,12 +54,12 @@ export class QualityControlService {
     if(loadingAnim){
       this.loadingModal = this.showLoading();
     }
-    this.http.get<[QualityControlTask]>(
+    this.http.get<[QualityControlModel]>(
       `${environment.baseUrl}${environment.qualityControl}` // get all id first
       // `${environment.baseUrl}${environment.bagging}${userId}`
     ).subscribe(
-      async (res:[QualityControlTask]) => {
-        let callbackParam:QualityControlTask[] = [];
+      async (res:[QualityControlModel]) => {
+        let callbackParam:QualityControlModel[] = [];
         res.forEach(el => {
           if(el.id_sv_qc == userId){
             callbackParam.push(el);
@@ -88,10 +88,10 @@ export class QualityControlService {
     if(loadingAnim){
       this.loadingModal = this.showLoading();
     }
-    this.http.get<QualityControlTask>(
+    this.http.get<QualityControlModel>(
       `${environment.baseUrl}${environment.qualityControl}${qcId}`
     ).subscribe(
-      async (res:QualityControlTask) => {
+      async (res:QualityControlModel) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
           this.loadingModal.dismiss();
@@ -112,11 +112,11 @@ export class QualityControlService {
     callback
   ){
     this.loadingModal = this.showLoading();
-    this.http.post<QualityControlTask>(
+    this.http.post<QualityControlModel>(
       `${environment.baseUrl}${environment.qualityControl}`,
       formData
     ).subscribe(
-      async (res:QualityControlTask) => {
+      async (res:QualityControlModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         this.tandanService.updateCycle(res.tandan_id.toString(),TandanCycle.qc,async (resTandan:TandanResponse)=>{
@@ -136,11 +136,11 @@ export class QualityControlService {
     callback,
   ){
     this.loadingModal = this.showLoading();
-    this.http.post<QualityControlTask>(
+    this.http.post<QualityControlModel>(
       `${environment.baseUrl}${environment.qualityControl}${qcId}`,
       updateObject
     ).subscribe(
-      async (res:QualityControlTask) => {
+      async (res:QualityControlModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         callback(res);
@@ -159,14 +159,14 @@ export class QualityControlService {
     callback
   ){
     this.loadingModal = this.showLoading();
-    this.http.put<QualityControlTask>(
+    this.http.put<QualityControlModel>(
       `${environment.baseUrl}${environment.qualityControl}${qcId}`,
       {
         catatan_pengesah:catatan_pengesah,
         status:status,
       }
     ).subscribe(
-      async (res:QualityControlTask) => {
+      async (res:QualityControlModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         callback(res);

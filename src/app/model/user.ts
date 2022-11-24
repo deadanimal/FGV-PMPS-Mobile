@@ -1,4 +1,4 @@
-import { QualityControlTask } from "./quality-control-task";
+import { QualityControlModel } from "./quality-control";
 
 export interface User {
     id: number;
@@ -12,7 +12,7 @@ export interface User {
     blok?: string;
     luput_pwd?: string;
     peranan: string;
-    quality_control?: QualityControlTask[];
+    quality_control?: QualityControlModel[];
     email_verified_at?: string;
     created_at?: Date;
     updated_at?: Date;

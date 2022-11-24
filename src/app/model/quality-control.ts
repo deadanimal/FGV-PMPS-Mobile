@@ -1,6 +1,6 @@
 import { PokokResponse } from "./pokok-respons";
 
-export interface QualityControlTask {
+export interface QualityControlModel {
     id: number;
     no_qc?: string;
     pokok_id: number;
