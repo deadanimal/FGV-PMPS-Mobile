@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { TandanCycle } from 'src/app/common/tandan-cycle';
-import { HarvestTask } from 'src/app/model/harvest-task';
+import { HarvestModel } from 'src/app/model/harvest';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { User } from 'src/app/model/user';
 import { environment } from 'src/environments/environment';
@@ -31,10 +31,10 @@ export class HarvestService {
 
   getAll(callback){
     this.loadingModal = this.showLoading();
-    this.http.get<[HarvestTask]>(
+    this.http.get<[HarvestModel]>(
       `${environment.baseUrl}${environment.harvest}`
     ).subscribe(
-      async (res:[HarvestTask]) => {
+      async (res:[HarvestModel]) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         callback(res);
@@ -54,10 +54,10 @@ export class HarvestService {
     if(loadingAnim){
       this.loadingModal = this.showLoading();
     }
-    this.http.get<HarvestTask>(
+    this.http.get<HarvestModel>(
       `${environment.baseUrl}${environment.harvest}${harvestId}`
     ).subscribe(
-      async (res:HarvestTask) => {
+      async (res:HarvestModel) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
           this.loadingModal.dismiss();
@@ -78,11 +78,11 @@ export class HarvestService {
     callback
   ){
     this.loadingModal = this.showLoading();
-    this.http.post<HarvestTask>(
+    this.http.post<HarvestModel>(
       `${environment.baseUrl}${environment.harvest}`,
       formData
     ).subscribe(
-      async (res:HarvestTask) => {
+      async (res:HarvestModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         this.tandanService.updateCycle(res.tandan_id.toString(),TandanCycle.harvest,async (resTandan:TandanResponse)=>{
@@ -102,11 +102,11 @@ export class HarvestService {
     callback,
   ){
     this.loadingModal = this.showLoading();
-    this.http.post<HarvestTask>(
+    this.http.post<HarvestModel>(
       `${environment.baseUrl}${environment.harvest}${harvestId}`,
       updateObject
     ).subscribe(
-      async (res:HarvestTask) => {
+      async (res:HarvestModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         callback(res);
@@ -125,14 +125,14 @@ export class HarvestService {
     callback
   ){
     this.loadingModal = this.showLoading();
-    this.http.put<HarvestTask>(
+    this.http.put<HarvestModel>(
       `${environment.baseUrl}${environment.harvest}${harvestId}`,
       {
         catatan_pengesah:catatan_pengesah,
         status:status,
       }
     ).subscribe(
-      async (res:HarvestTask) => {
+      async (res:HarvestModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         callback(res);
@@ -158,12 +158,12 @@ export class HarvestService {
     if(loadingAnim){
       this.loadingModal = this.showLoading();
     }
-    this.http.get<[HarvestTask]>(
+    this.http.get<[HarvestModel]>(
       `${environment.baseUrl}${environment.harvest}` // get all id first
       // `${environment.baseUrl}${environment.bagging}${userId}`
     ).subscribe(
-      async (res:[HarvestTask]) => {
-        let callbackParam:HarvestTask[] = [];
+      async (res:[HarvestModel]) => {
+        let callbackParam:HarvestModel[] = [];
         res.forEach(el => {
           if(el.id_sv_harvest == userId){
             callbackParam.push(el);

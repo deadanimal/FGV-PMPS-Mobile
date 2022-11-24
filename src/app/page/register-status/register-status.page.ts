@@ -8,7 +8,7 @@ import { TandanCycle } from 'src/app/common/tandan-cycle';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
 import { BaggingTask } from 'src/app/model/bagging-task';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
-import { HarvestTask } from 'src/app/model/harvest-task';
+import { HarvestModel } from 'src/app/model/harvest';
 import { QualityControlTask } from 'src/app/model/quality-control-task';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { TaskResponseModel } from 'src/app/model/task-response';
@@ -96,7 +96,7 @@ export class RegisterStatusPage implements OnInit {
   }
 
   _getHarvestTask(){
-    this.harvestService.getById(this.taskId,(res:HarvestTask)=>{
+    this.harvestService.getById(this.taskId,(res:HarvestModel)=>{
       this._getTandanInfo(res.tandan_id.toString());
     });
   }

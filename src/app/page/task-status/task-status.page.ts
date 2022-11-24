@@ -25,7 +25,7 @@ import { User } from 'src/app/model/user';
 import { TaskStatus } from 'src/app/common/task-status';
 import { QualityControlService } from 'src/app/service/tasks/quality-control.service';
 import { QualityControlTask } from 'src/app/model/quality-control-task';
-import { HarvestTask } from 'src/app/model/harvest-task';
+import { HarvestModel } from 'src/app/model/harvest';
 import { HarvestService } from 'src/app/service/tasks/harvest.service';
 import { DefectResponse } from 'src/app/model/defect-response';
 import { DefectService } from 'src/app/service/tasks/defect.service';
@@ -383,14 +383,14 @@ export class TaskStatusPage implements OnInit {
 
   _getHarvestTask(taskId:String){
     if(this.userRole == UserRole.penyelia_tuai){
-      this.harvestService.getById(taskId,(res:HarvestTask)=>{
+      this.harvestService.getById(taskId,(res:HarvestModel)=>{
         this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
         this.remark = res.catatan;
         this.weight = res.berat_tandan?.toString();
         this.tandanId = res.tandan_id.toString();
       });
     }else{
-      this.harvestService.getById(taskId,(res:HarvestTask)=>{
+      this.harvestService.getById(taskId,(res:HarvestModel)=>{
         this.qcSvId = res.pengesah_id;
         this.tandanId = res.tandan_id.toString();
         this._getTandanInfo(this.tandanId);
@@ -700,7 +700,7 @@ export class TaskStatusPage implements OnInit {
     formData.append('catatan',this.remark?.toString());
     formData.append('berat_tandan',this.weight?.toString());
     formData.append('status',status);
-    this.harvestService.update(this.taskId,formData,(res:HarvestTask)=>{
+    this.harvestService.update(this.taskId,formData,(res:HarvestModel)=>{
       if(this.defect == null){
         this.router.navigate(
           [

@@ -1,6 +1,6 @@
 import { PokokResponse } from "./pokok-respons";
 
-export interface HarvestTask {
+export interface HarvestModel {
     id: number;
     no_harvest?: string;
     pokok_id: number;

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TaskStatus } from 'src/app/common/task-status';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
-import { HarvestTask } from 'src/app/model/harvest-task';
+import { HarvestModel } from 'src/app/model/harvest';
 import { User } from 'src/app/model/user';
 import { AccountService } from 'src/app/service/account.service';
 import { ModalService } from 'src/app/service/modal.service';
@@ -60,7 +60,7 @@ export class HarvestTaskDistributionPage implements OnInit {
     formData.append('id_sv_harvest',userId.toString());
     formData.append('status',TaskStatus.created);
     formData.append('pengesah_id',this.accountService.getSessionDetails().no_kakitangan);
-    this.harvestService.create(formData,(res:HarvestTask)=>{
+    this.harvestService.create(formData,(res:HarvestModel)=>{
       this.modalService.successPrompt("Anda telah mengagihkan tugas kepada pekerja yang dipilih").then(()=>{
         this.router.navigate(
           [
