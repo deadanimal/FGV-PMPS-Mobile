@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { TaskStatus } from 'src/app/common/task-status';
 import { TreeType } from 'src/app/common/tree-type';
-import { BaggingTask } from 'src/app/model/bagging-task';
+import { BaggingModel } from 'src/app/model/bagging';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { environment } from 'src/environments/environment';
@@ -283,8 +283,8 @@ export class ControlPollinationService {
     if(loadingAnim){
       this.loadingModal = this.showLoading();
     }
-    this.baggingService.getFinishedTask(userId,(res:[BaggingTask])=>{
-      let tempArray:BaggingTask[] = [];
+    this.baggingService.getFinishedTask(userId,(res:[BaggingModel])=>{
+      let tempArray:BaggingModel[] = [];
       this.getByUserId(userId,async (res1:[ControlPollinationTask])=>{
         res.forEach(el => {
           if(el.pokok?.jantina == TreeType.Motherpalm && !this._hasCPTask(el.tandan_id.toString(),res1)){

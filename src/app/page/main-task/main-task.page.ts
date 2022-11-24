@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { TaskStatus } from 'src/app/common/task-status';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
-import { BaggingTask } from 'src/app/model/bagging-task';
+import { BaggingModel } from 'src/app/model/bagging';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 import { HarvestModel } from 'src/app/model/harvest';
 import { LoginResponseModel } from 'src/app/model/login-response';
@@ -404,7 +404,7 @@ export class MainTaskPage implements OnInit {
       this.role == UserRole.petugas_balut || 
       this.role == UserRole.petugas_qa
     ){
-      this.baggingService.getByUserId(this.employeeId,(res:[BaggingTask])=>{
+      this.baggingService.getByUserId(this.employeeId,(res:[BaggingModel])=>{
         res.forEach(el => {
           if(el.status == TaskStatus.done){
             this.numOfActiveTask++;
@@ -416,7 +416,7 @@ export class MainTaskPage implements OnInit {
         });
       });
     }else{
-      this.baggingService.getAll((res:[BaggingTask])=>{
+      this.baggingService.getAll((res:[BaggingModel])=>{
         res.forEach(el => {
           if(el.pengesah_id == this.accountService.getSessionDetails().no_kakitangan){
             if(el.status == TaskStatus.done){

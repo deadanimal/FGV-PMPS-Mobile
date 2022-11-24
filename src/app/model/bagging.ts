@@ -1,6 +1,6 @@
 import { PokokResponse } from "./pokok-respons";
 
-export interface BaggingTask {
+export interface BaggingModel {
     id: number;
     no_bagging?: string;
     pokok_id: number;

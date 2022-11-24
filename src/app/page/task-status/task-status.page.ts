@@ -16,7 +16,7 @@ import { DatePipe } from '@angular/common';
 import { TreeService } from 'src/app/service/tasks/tree.service';
 import { PokokResponse } from 'src/app/model/pokok-respons';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
-import { BaggingTask } from 'src/app/model/bagging-task';
+import { BaggingModel } from 'src/app/model/bagging';
 import { TandanService } from 'src/app/service/tasks/tandan.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
@@ -264,7 +264,7 @@ export class TaskStatusPage implements OnInit {
       const response = await fetch(this.photo.dataUrl);
       const blob = await response.blob();
       formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
-      this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
+      this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
         formData.append('tandan_id',res.tandan_id.toString());
         formData.append('pokok_id',res.pokok_id.toString());
         formData.append('catatan',this.remark?.toString());
@@ -304,7 +304,7 @@ export class TaskStatusPage implements OnInit {
     formData.append('pengesah_id',this.id1.value?.toString());
     formData.append('tandan_id',this.tandanId.toString());
 
-    this.baggingService.createTask(formData,async (res:BaggingTask)=>{
+    this.baggingService.createTask(formData,async (res:BaggingModel)=>{
       if(res==null){
         const modal= await this.modalCtrl.create({
           component: GenericTextModalComponent,
@@ -345,7 +345,7 @@ export class TaskStatusPage implements OnInit {
         this.tandanId = res.tandan_id.toString();
       });
     }else{
-      this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
+      this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
         this.tandanId = res.tandan_id.toString();
         this._getTandanInfo(this.tandanId);
       });
@@ -412,7 +412,7 @@ export class TaskStatusPage implements OnInit {
     }else if(this.taskType == 'harvestsv'){
       this._getHarvestTask(taskId);
     }else{
-      this.baggingService.getById(taskId,(res:BaggingTask)=>{
+      this.baggingService.getById(taskId,(res:BaggingModel)=>{
         this.date = res.created_at.toString();
         this.remark = res.catatan;
         if(res.url_gambar!=null){
@@ -492,7 +492,7 @@ export class TaskStatusPage implements OnInit {
         this.accountService.getSessionDetails().no_kakitangan.toString(),
         this.svRemark,
         TaskStatus.verified,
-        (res:BaggingTask)=>{
+        (res:BaggingModel)=>{
           this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
         }
       );
@@ -535,7 +535,7 @@ export class TaskStatusPage implements OnInit {
         this.accountService.getSessionDetails().no_kakitangan.toString(),
         this.svRemark,
         TaskStatus.rejected,
-        (res:BaggingTask)=>{
+        (res:BaggingModel)=>{
           this._promptCompleted("Tugasan Telah Berjaya Di Tolak");
         }
       );
@@ -547,7 +547,7 @@ export class TaskStatusPage implements OnInit {
     const response = await fetch(this.photo.dataUrl);
     const blob = await response.blob();
     formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
-    this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
+    this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
       formData.append('tambahan_hari',this.posponedDay.toString());
       formData.append('bil_pemeriksaan',"1");
       formData.append('id_sv_cp',this.accountService.getSessionDetails().no_kakitangan);

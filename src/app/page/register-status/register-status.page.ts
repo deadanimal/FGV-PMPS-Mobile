@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
 import { TandanCycle } from 'src/app/common/tandan-cycle';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
-import { BaggingTask } from 'src/app/model/bagging-task';
+import { BaggingModel } from 'src/app/model/bagging';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 import { HarvestModel } from 'src/app/model/harvest';
 import { QualityControlTask } from 'src/app/model/quality-control-task';
@@ -102,7 +102,7 @@ export class RegisterStatusPage implements OnInit {
   }
 
   _getCPTask(){
-    this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
+    this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
       this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
         this.regNumber = tandanRes.no_daftar;
         this.cycle = tandanRes.kitaran?.toUpperCase();
@@ -113,7 +113,7 @@ export class RegisterStatusPage implements OnInit {
   }
 
   _getPostponedCPTask(){
-    this.controlPollinationService.getById(this.taskId,(res:BaggingTask)=>{
+    this.controlPollinationService.getById(this.taskId,(res:BaggingModel)=>{
       this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
         this.regNumber = tandanRes.no_daftar;
         this.cycle = tandanRes.kitaran?.toUpperCase();

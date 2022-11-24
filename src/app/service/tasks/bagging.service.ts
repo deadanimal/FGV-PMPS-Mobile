@@ -5,7 +5,7 @@ import { TaskStatus } from 'src/app/common/task-status';
 import { QcSearchResponse } from 'src/app/model/qc-search-response';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { environment } from 'src/environments/environment';
-import { BaggingTask } from '../../model/bagging-task';
+import { BaggingModel } from '../../model/bagging';
 import { TandanService } from './tandan.service';
 
 @Injectable({
@@ -33,12 +33,12 @@ export class BaggingService {
     callback
   ){
     this.loadingModal = this.showLoading();
-    this.http.get<[BaggingTask]>(
+    this.http.get<[BaggingModel]>(
       `${environment.baseUrl}${environment.bagging}` // get all id first
       // `${environment.baseUrl}${environment.bagging}${userId}`
     ).subscribe(
-      async (res:[BaggingTask]) => {
-        let callbackParam:BaggingTask[] = [];
+      async (res:[BaggingModel]) => {
+        let callbackParam:BaggingModel[] = [];
         res.forEach(el => {
           if(el.id_sv_balut == userId){
             callbackParam.push(el);
@@ -57,10 +57,10 @@ export class BaggingService {
 
   getAll(callback){
     this.loadingModal = this.showLoading();
-    this.http.get<[BaggingTask]>(
+    this.http.get<[BaggingModel]>(
       `${environment.baseUrl}${environment.bagging}`
     ).subscribe(
-      async (res:[BaggingTask]) => {
+      async (res:[BaggingModel]) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         callback(res);
@@ -80,10 +80,10 @@ export class BaggingService {
     if(loadingAnim){
       this.loadingModal = this.showLoading();
     }
-    this.http.get<BaggingTask>(
+    this.http.get<BaggingModel>(
       `${environment.baseUrl}${environment.bagging}${taskId}`
     ).subscribe(
-      async (res:BaggingTask) => {
+      async (res:BaggingModel) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
           this.loadingModal.dismiss();
@@ -111,11 +111,11 @@ export class BaggingService {
       formData.get("pokok_id").toString(),
       formData.get("tarikh_daftar").toString(),
       (tandanRes:TandanResponse)=>{
-        this.http.post<BaggingTask>(
+        this.http.post<BaggingModel>(
           `${environment.baseUrl}${environment.bagging}`,
           formData
         ).subscribe(
-          async (res:BaggingTask) => {
+          async (res:BaggingModel) => {
             this.loadingModal = await this.loadingCtrl.getTop()
             this.loadingModal.dismiss();
             callback(res);
@@ -138,7 +138,7 @@ export class BaggingService {
   ){
     //todo: if status == tolak, update tandan to rejected
     this.loadingModal = this.showLoading();
-    this.http.put<BaggingTask>(
+    this.http.put<BaggingModel>(
       `${environment.baseUrl}${environment.bagging}${taskId}`,
       {
         pengesah_id:userId,
@@ -146,7 +146,7 @@ export class BaggingService {
         status:status
       }
     ).subscribe(
-      async (res:BaggingTask) => {
+      async (res:BaggingModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         callback(res);
@@ -166,8 +166,8 @@ export class BaggingService {
     if(loadingAnim){
       this.loadingModal = this.showLoading();
     }
-    this.getByUserId(userId, async (res:[BaggingTask])=>{
-      let retVal:BaggingTask[] = [];
+    this.getByUserId(userId, async (res:[BaggingModel])=>{
+      let retVal:BaggingModel[] = [];
       res.forEach(el => {
         if(el.status == TaskStatus.verified){
           retVal.push(el);

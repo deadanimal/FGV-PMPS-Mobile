@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
-import { BaggingTask } from 'src/app/model/bagging-task';
+import { BaggingModel } from 'src/app/model/bagging';
 import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
 import { PokokResponse } from 'src/app/model/pokok-respons';
 import { TaskResponseModel } from 'src/app/model/task-response';
@@ -134,7 +134,7 @@ export class NewTaskInfoPage implements OnInit {
 
   _getTreeInfo(){
     if("Pendebungaan Terkawal (CP)" == this.taskType){
-      this.baggingService.getById(this.taskId,(res:BaggingTask)=>{
+      this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
         this.pokokService.getById(res.pokok_id.toString(),(res:PokokResponse)=>{
           this._populateTreeInfo(res);
         })
