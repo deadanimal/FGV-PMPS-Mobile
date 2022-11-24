@@ -4,17 +4,17 @@
 
   <div class="mx-auto text-center d-flex flex-column">
     <small style="font-size: 15px; font-weight: 600; text-align: center; color: rgba(98.81, 98.81, 98.81, 1);">JUMLAH TANDAN</small>
-    <small style="font-size: 35px; font-weight: 600; text-align: center; color: rgba(236, 36, 39, 1);">60</small>
+    <small style="font-size: 35px; font-weight: 600; text-align: center; color: rgba(236, 36, 39, 1);">{{tandanList.length}}</small>
   </div>
 
   <div>
-    <button (click)="startWork(1)" class="btn rounded bg-light mx-auto my-2 w-75 d-flex flex-row justify-content-between">
+    <button *ngFor="let item of tandanList" (click)="startWork(item.id)" class="btn rounded bg-light mx-auto my-2 w-75 d-flex flex-row justify-content-between">
       <div class="d-flex flex-column text-start">
         <small style="font-size: 12px; font-weight: 600; color: rgba(98.81, 98.81, 98.81, 1);">
           No Daftar:
         </small>
         <small style="font-size: 20px; font-weight: 600; color: rgba(57.37, 57.37, 57.37, 1);">
-          22C 0061 25C1
+          {{item.no_daftar}}
         </small>
       </div>
       <img src="../../../assets/qr_icon.png" class="my-auto ml-auto mx-2" style="width:42pt; height:42pt">

@@ -31,7 +31,9 @@ export class DefectPage implements OnInit {
         this.taskStatus = params['taskStatus'];
         this.returnPage = params['returnPage'];
     });
+  }
 
+  ionViewDidEnter(){
     this.defectService.getAll((res:[DefectModel])=>{
       res.forEach(el => {
         this.defectList.push(el);

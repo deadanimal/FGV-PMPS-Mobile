@@ -50,21 +50,21 @@
   <p *ngIf="disableFinishRecord || disableActiveTaskBtn || disableNewTaskBtn || disablePosponedTaskBtn" style="font-size: 14px; font-weight: 600; line-height: 100%; text-align: center; color: rgba(57.37, 57.37, 57.37, 1);">Senarai Rekod</p>
     <div>
       <div *ngIf="disableFinishRecord">
-        <div class="p-3 my-3 mx-auto w-75 shadow rounded border border-success d-flex justify-content-between align-items-center">
-          <p class="h5">Rekod 21</p>
-          <button (click)="viewTask('finished','21')" class="btn greenBtn text-white">Info</button>
+        <div *ngFor="let item of activeTaskList" class="p-3 my-3 mx-auto w-75 shadow rounded border border-success d-flex justify-content-between align-items-center">
+          <p class="h5">Rekod {{item.id}} ({{item.pokok.progeny}}-{{item.pokok.no_pokok}})</p>
+          <button (click)="viewTask('finished',item.tandan_id)" class="btn greenBtn text-white">Info</button>
         </div>
       </div>
       <div *ngIf="disableActiveTaskBtn">
-        <div class="p-3 my-3 mx-auto w-75 shadow rounded border border-primary d-flex justify-content-between align-items-center">
-          <p class="h5">Rekod 32</p>
-          <button (click)="viewTask('active','32')" class="btn blueBtn text-white">Info</button>
+        <div *ngFor="let item of activeTaskList" class="p-3 my-3 mx-auto w-75 shadow rounded border border-primary d-flex justify-content-between align-items-center">
+          <p class="h5">Rekod {{item.id}} ({{item.pokok.progeny}}-{{item.pokok.no_pokok}})</p>
+          <button (click)="viewTask('active',item.tandan_id)" class="btn blueBtn text-white">Info</button>
         </div>
       </div>
       <div *ngIf="disableNewTaskBtn">
-        <div class="p-3 my-3 mx-auto w-75 shadow rounded border border-warning d-flex justify-content-between align-items-center">
-          <p class="h5">Rekod 41</p>
-          <button (click)="viewTask('new','41')" class="btn orangeBtn text-white">Info</button>
+        <div *ngFor="let item of newTaskList" class="p-3 my-3 mx-auto w-75 shadow rounded border border-warning d-flex justify-content-between align-items-center">
+          <p class="h5">Rekod {{item.id}} ({{item.pokok.progeny}}-{{item.pokok.no_pokok}})</p>
+          <button (click)="viewTask('new',item.id,item.pokok_id)" class="btn orangeBtn text-white">Info</button>
         </div>
       </div>
       <div *ngIf="disablePosponedTaskBtn">

@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { TaskStatus } from 'src/app/common/task-status';
+import { BaggingModel } from 'src/app/model/bagging';
+import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
+import { AccountService } from 'src/app/service/account.service';
+import { PollenPreparationService } from 'src/app/service/tasks/pollen-preparation.service';
 
 @Component({
   selector: 'app-pollen-prep-main',
@@ -12,16 +17,34 @@ export class PollenPrepMainPage implements OnInit {
   disableNewTaskBtn:boolean;
   disablePosponedTaskBtn:boolean;
   disableActiveTaskBtn:boolean;
-  numOfActiveTask:number = 1;
-  numOfFinishTask:number = 1;
-  numOfPosponedTask:number = 1;
-  numOfNewTask:number = 1;
+  numOfActiveTask:number = 0;
+  numOfFinishTask:number = 0;
+  numOfPosponedTask:number = 0;
+  numOfNewTask:number = 0;
+  activeTaskList:any[];
+  finishedTaskList:any[];
+  newTaskList:any[];
+  posponedTaskList:any[];
 
   constructor(
-    private router:Router
+    private router:Router,
+    private pollenPrepService:PollenPreparationService,
+    private accountService:AccountService,
   ) { }
 
   ngOnInit() {
+  }
+
+  ionViewDidEnter(){
+    this.activeTaskList = [];
+    this.finishedTaskList = [];
+    this.newTaskList = [];
+    this.posponedTaskList = [];
+    this.numOfActiveTask = 0;
+    this.numOfFinishTask = 0;
+    this.numOfPosponedTask = 0;
+    this.numOfNewTask = 0;
+    this._getTask();
     this._initButtons();
   }
 
@@ -45,8 +68,42 @@ export class PollenPrepMainPage implements OnInit {
     this.disableActiveTaskBtn = false;
   }
 
-  viewTask(taskStatus:String, id:String){
-    this.router.navigate(['app/tabs/tab1/pollen-prep-tandan-list',{status:taskStatus}]);
+  viewTask(taskStatus:String, id:String, treeId:String = ""){
+    if(taskStatus == 'new'){
+      this.router.navigate(['app/tabs/tab1/pollen-prep-tandan-list',{status:taskStatus,treeId:treeId}]);
+    }else{
+      this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskStatus,tandanId:id}]);
+    }
+  }
+
+  _getTask(){
+    this._getNewTask();
+  }
+
+  _getNewTask(){
+    this.pollenPrepService.getNewTask((res:[BaggingModel])=>{
+      this.numOfNewTask = res.length;
+      this.newTaskList = res;
+      this._getPPTask();
+    });
+  }
+
+  _getPPTask(){
+    this.pollenPrepService.getAll(
+      (res:[PollenPreparationModel])=>{
+        res.forEach(el => {
+          if(el.id_sv_pollen == this.accountService.getSessionDetails().id.toString()){
+            if(el.status == TaskStatus.created){
+              this.activeTaskList.push(el);
+              this.numOfActiveTask++;
+            }else{
+              this.finishedTaskList.push(el);
+              this.numOfFinishTask++;
+            }
+          }
+        });
+      }
+    );
   }
 
 }

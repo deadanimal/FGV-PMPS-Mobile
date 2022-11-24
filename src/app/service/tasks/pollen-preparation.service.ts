@@ -2,9 +2,12 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { TandanCycle } from 'src/app/common/tandan-cycle';
+import { TreeType } from 'src/app/common/tree-type';
+import { BaggingModel } from 'src/app/model/bagging';
 import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { environment } from 'src/environments/environment';
+import { BaggingService } from './bagging.service';
 import { TandanService } from './tandan.service';
 
 @Injectable({
@@ -17,6 +20,7 @@ export class PollenPreparationService {
     private http: HttpClient,
     private loadingCtrl: LoadingController,
     private tandanService: TandanService,
+    private baggingService: BaggingService,
   ) { }
 
   async showLoading():Promise<HTMLIonLoadingElement> {
@@ -142,5 +146,17 @@ export class PollenPreparationService {
         this.loadingModal.dismiss();
       }
     );
+  }
+
+  getNewTask(callback){
+    this.baggingService.getAll((res:[BaggingModel])=>{
+      let retVal:BaggingModel[] = [];
+      res.forEach(el => {
+        if(el.pokok.jantina == TreeType.Fatherpalm){
+          retVal.push(el);
+        }
+      });
+      callback(retVal);
+    });
   }
 }
