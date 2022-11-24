@@ -3,7 +3,7 @@ import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
 import { BaggingModel } from 'src/app/model/bagging';
-import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
+import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { PokokResponse } from 'src/app/model/pokok-respons';
 import { TaskResponseModel } from 'src/app/model/task-response';
 import { AccountService, UserRole } from 'src/app/service/account.service';
@@ -140,7 +140,7 @@ export class NewTaskInfoPage implements OnInit {
         })
       });
     }else if("Pendebungaan Terkawal (CP)posponed" == this.taskType){
-      this.cpService.getById(this.taskId,(res:ControlPollinationTask)=>{
+      this.cpService.getById(this.taskId,(res:ControlPollinationModel)=>{
         this.pokokService.getById(res.pokok_id.toString(),(res:PokokResponse)=>{
           this._populateTreeInfo(res);
         })

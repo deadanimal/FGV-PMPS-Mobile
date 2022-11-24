@@ -7,7 +7,7 @@ import { LoadingController } from '@ionic/angular';
 import { TandanCycle } from 'src/app/common/tandan-cycle';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
 import { BaggingModel } from 'src/app/model/bagging';
-import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
+import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { HarvestModel } from 'src/app/model/harvest';
 import { QualityControlTask } from 'src/app/model/quality-control-task';
 import { TandanResponse } from 'src/app/model/tandan-response';

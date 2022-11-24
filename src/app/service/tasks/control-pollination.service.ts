@@ -4,7 +4,7 @@ import { LoadingController } from '@ionic/angular';
 import { TaskStatus } from 'src/app/common/task-status';
 import { TreeType } from 'src/app/common/tree-type';
 import { BaggingModel } from 'src/app/model/bagging';
-import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
+import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { environment } from 'src/environments/environment';
 import { BaggingService } from './bagging.service';
@@ -31,10 +31,10 @@ export class ControlPollinationService {
 
   getAll(callback){
     this.loadingModal = this.showLoading();
-    this.http.get<[ControlPollinationTask]>(
+    this.http.get<[ControlPollinationModel]>(
       `${environment.baseUrl}${environment.crossPolination}`
     ).subscribe(
-      async (res:[ControlPollinationTask]) => {
+      async (res:[ControlPollinationModel]) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         callback(res);
@@ -54,12 +54,12 @@ export class ControlPollinationService {
     if(loadingAnim){
       this.loadingModal = this.showLoading();
     }
-    this.http.get<[ControlPollinationTask]>(
+    this.http.get<[ControlPollinationModel]>(
       `${environment.baseUrl}${environment.crossPolination}` // get all id first
       // `${environment.baseUrl}${environment.bagging}${userId}`
     ).subscribe(
-      async (res:[ControlPollinationTask]) => {
-        let callbackParam:ControlPollinationTask[] = [];
+      async (res:[ControlPollinationModel]) => {
+        let callbackParam:ControlPollinationModel[] = [];
         res.forEach(el => {
           if(el.id_sv_cp == userId){
             callbackParam.push(el);
@@ -87,11 +87,11 @@ export class ControlPollinationService {
   ){
     formData.append('status',status);
     this.loadingModal = this.showLoading();
-    this.http.post<ControlPollinationTask>(
+    this.http.post<ControlPollinationModel>(
       `${environment.baseUrl}${environment.crossPolination}`,
       formData
     ).subscribe(
-      async (res:ControlPollinationTask) => {
+      async (res:ControlPollinationModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         this.tandanService.updateCycle(res.tandan_id.toString(),"debung",async (resTandan:TandanResponse)=>{
@@ -113,10 +113,10 @@ export class ControlPollinationService {
     if(loadingAnim){
       this.loadingModal = this.showLoading();
     }
-    this.http.get<ControlPollinationTask>(
+    this.http.get<ControlPollinationModel>(
       `${environment.baseUrl}${environment.crossPolination}${cpId}`
     ).subscribe(
-      async (res:ControlPollinationTask) => {
+      async (res:ControlPollinationModel) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
           this.loadingModal.dismiss();
@@ -138,11 +138,11 @@ export class ControlPollinationService {
     callback
   ){
     this.loadingModal = this.showLoading();
-    this.http.put<ControlPollinationTask>(
+    this.http.put<ControlPollinationModel>(
       `${environment.baseUrl}${environment.crossPolination}${cpId}`,
       formData
     ).subscribe(
-      async (res:ControlPollinationTask) => {
+      async (res:ControlPollinationModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         callback(res);
@@ -161,7 +161,7 @@ export class ControlPollinationService {
     callback
   ){
     this.loadingModal = this.showLoading();
-    this.http.put<ControlPollinationTask>(
+    this.http.put<ControlPollinationModel>(
       `${environment.baseUrl}${environment.crossPolination}${cpId}`,
       {
         no_pollen:noPollen,
@@ -169,7 +169,7 @@ export class ControlPollinationService {
         status:TaskStatus.done,
       }
     ).subscribe(
-      async (res:ControlPollinationTask) => {
+      async (res:ControlPollinationModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         callback(res);
@@ -188,7 +188,7 @@ export class ControlPollinationService {
     callback
   ){
     this.loadingModal = this.showLoading();
-    this.http.put<ControlPollinationTask>(
+    this.http.put<ControlPollinationModel>(
       `${environment.baseUrl}${environment.crossPolination}${cpId}`,
       {
         tambahan_hari:tambahan_hari,
@@ -196,7 +196,7 @@ export class ControlPollinationService {
         status:TaskStatus.postpone,
       }
     ).subscribe(
-      async (res:ControlPollinationTask) => {
+      async (res:ControlPollinationModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         callback(res);
@@ -216,7 +216,7 @@ export class ControlPollinationService {
     callback
   ){
     this.loadingModal = this.showLoading();
-    this.http.put<ControlPollinationTask>(
+    this.http.put<ControlPollinationModel>(
       `${environment.baseUrl}${environment.crossPolination}${cpId}`,
       {
         catatan:remark,
@@ -224,7 +224,7 @@ export class ControlPollinationService {
         status:status,
       }
     ).subscribe(
-      async (res:ControlPollinationTask) => {
+      async (res:ControlPollinationModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         callback(res);
@@ -245,7 +245,7 @@ export class ControlPollinationService {
     callback
   ){
     this.loadingModal = this.showLoading();
-    this.http.put<ControlPollinationTask>(
+    this.http.put<ControlPollinationModel>(
       `${environment.baseUrl}${environment.crossPolination}${cpId}`,
       {
         pengesah_id:pengesah_id,
@@ -253,7 +253,7 @@ export class ControlPollinationService {
         status:status,
       }
     ).subscribe(
-      async (res:ControlPollinationTask) => {
+      async (res:ControlPollinationModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
         this.loadingModal.dismiss();
         callback(res);
@@ -265,7 +265,7 @@ export class ControlPollinationService {
     );
   }
 
-  _hasCPTask(tandanId:String,cpTasks:[ControlPollinationTask]){
+  _hasCPTask(tandanId:String,cpTasks:[ControlPollinationModel]){
     let retVal = false;
     cpTasks.forEach(el => {
       if(el.tandan_id.toString() == tandanId){
@@ -285,7 +285,7 @@ export class ControlPollinationService {
     }
     this.baggingService.getFinishedTask(userId,(res:[BaggingModel])=>{
       let tempArray:BaggingModel[] = [];
-      this.getByUserId(userId,async (res1:[ControlPollinationTask])=>{
+      this.getByUserId(userId,async (res1:[ControlPollinationModel])=>{
         res.forEach(el => {
           if(el.pokok?.jantina == TreeType.Motherpalm && !this._hasCPTask(el.tandan_id.toString(),res1)){
             tempArray.push(el);

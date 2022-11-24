@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonSelect } from '@ionic/angular';
-import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
+import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { ModalService } from 'src/app/service/modal.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
 
@@ -32,7 +32,7 @@ export class ControlPollinationFormPage implements OnInit {
   }
 
   btnClick(form:NgForm){
-    this.controlPollinationService.updatePollenNumber(this.taskId,this.pollenNumber,this.id1?.value?.toString(),(res:ControlPollinationTask)=>{
+    this.controlPollinationService.updatePollenNumber(this.taskId,this.pollenNumber,this.id1?.value?.toString(),(res:ControlPollinationModel)=>{
       this.modalService.successPrompt("Borang Anda Telah Berjaya Dihantar Ke Penyelia").then(()=>{
         this.router.navigateByUrl(
           '/app/tabs/tab1',

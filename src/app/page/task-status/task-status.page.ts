@@ -19,7 +19,7 @@ import { BaggingService } from 'src/app/service/tasks/bagging.service';
 import { BaggingModel } from 'src/app/model/bagging';
 import { TandanService } from 'src/app/service/tasks/tandan.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
-import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
+import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { UserService } from 'src/app/service/user.service';
 import { User } from 'src/app/model/user';
 import { TaskStatus } from 'src/app/common/task-status';
@@ -244,7 +244,7 @@ export class TaskStatusPage implements OnInit {
         this.remark,
         this.id1?.value?.toString(),
         status,
-        (resCP:ControlPollinationTask)=>{
+        (resCP:ControlPollinationModel)=>{
           if(this.defect == null){
             this.router.navigate(
               [
@@ -270,7 +270,7 @@ export class TaskStatusPage implements OnInit {
         formData.append('catatan',this.remark?.toString());
         formData.append('id_sv_cp',this.accountService.getSessionDetails().no_kakitangan);
         formData.append('pengesah_id',this.id1?.value?.toString());
-        this.controlPollinationService.create(formData,status,(resCP:ControlPollinationTask)=>{
+        this.controlPollinationService.create(formData,status,(resCP:ControlPollinationModel)=>{
           if(this.defect == null){
             this.router.navigate(
               [
@@ -339,7 +339,7 @@ export class TaskStatusPage implements OnInit {
 
   _getCPTask(taskId:String){
     if(this.userRole == UserRole.penyelia_balut){
-      this.controlPollinationService.getById(taskId,(res:ControlPollinationTask)=>{
+      this.controlPollinationService.getById(taskId,(res:ControlPollinationModel)=>{
         this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
         this.remark = res.catatan;
         this.tandanId = res.tandan_id.toString();
@@ -353,7 +353,7 @@ export class TaskStatusPage implements OnInit {
   }
 
   _getPosponedCPTask(taskId:String){
-    this.controlPollinationService.getById(taskId,(res:ControlPollinationTask)=>{
+    this.controlPollinationService.getById(taskId,(res:ControlPollinationModel)=>{
       this.tandanId = res.tandan_id.toString();
       this.posponedDay = parseInt(res.tambahan_hari);
       this.numOfCheck = parseInt(res.bil_pemeriksaan);
@@ -464,7 +464,7 @@ export class TaskStatusPage implements OnInit {
         this.accountService.getSessionDetails().no_kakitangan.toString(),
         this.svRemark,
         TaskStatus.verified,
-        (res:ControlPollinationTask)=>{
+        (res:ControlPollinationModel)=>{
           this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
         }
       );
@@ -507,7 +507,7 @@ export class TaskStatusPage implements OnInit {
         this.accountService.getSessionDetails().no_kakitangan.toString(),
         this.svRemark,
         TaskStatus.rejected,
-        (res:ControlPollinationTask)=>{
+        (res:ControlPollinationModel)=>{
           this._promptCompleted("Tugasan Telah Berjaya Di Tolak");
         }
       );
@@ -553,7 +553,7 @@ export class TaskStatusPage implements OnInit {
       formData.append('id_sv_cp',this.accountService.getSessionDetails().no_kakitangan);
       formData.append('tandan_id',res.tandan_id.toString());
       formData.append('pokok_id',res.pokok_id.toString());
-      this.controlPollinationService.create(formData,TaskStatus.postpone,(resCP:ControlPollinationTask)=>{
+      this.controlPollinationService.create(formData,TaskStatus.postpone,(resCP:ControlPollinationModel)=>{
         this.modalService.successPrompt("Proses telah berjaya dianjakkan kepada +"+this.posponedDay+" hari").then((value1)=>{
             this.router.navigateByUrl(
               '/app/tabs/tab1',
@@ -571,7 +571,7 @@ export class TaskStatusPage implements OnInit {
       this.taskId,
       this.posponedDay.toString(),
       this.numOfCheck.toString(),
-      (resCP:ControlPollinationTask)=>{
+      (resCP:ControlPollinationModel)=>{
         this.modalService.successPrompt("Proses telah berjaya dianjakkan kepada +"+this.posponedDay+" hari").then((value1)=>{
             this.router.navigateByUrl(
               '/app/tabs/tab1',

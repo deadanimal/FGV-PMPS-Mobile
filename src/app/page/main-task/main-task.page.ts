@@ -6,7 +6,7 @@ import { LoadingController, ModalController } from '@ionic/angular';
 import { TaskStatus } from 'src/app/common/task-status';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
 import { BaggingModel } from 'src/app/model/bagging';
-import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
+import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { HarvestModel } from 'src/app/model/harvest';
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { QualityControlTask } from 'src/app/model/quality-control-task';
@@ -438,7 +438,7 @@ export class MainTaskPage implements OnInit {
       this.role == UserRole.petugas_balut || 
       this.role == UserRole.petugas_qa
     ){
-      this.controlPollinationService.getByUserId(this.employeeId,(res:[ControlPollinationTask])=>{
+      this.controlPollinationService.getByUserId(this.employeeId,(res:[ControlPollinationModel])=>{
         res.forEach(el => {
           if(el.status == TaskStatus.done){
             this.numOfActiveTask++;
@@ -451,13 +451,13 @@ export class MainTaskPage implements OnInit {
             this.finishedTaskList.push(el);
           }
         });
-        this.controlPollinationService.getNewlyCreatedTask(this.employeeId,(res1:[ControlPollinationTask])=>{
+        this.controlPollinationService.getNewlyCreatedTask(this.employeeId,(res1:[ControlPollinationModel])=>{
           this.numOfNewTask = res1.length;
           this.newTaskList = res1;
         },false);
       });
     }else{
-      this.controlPollinationService.getAll((res:[ControlPollinationTask])=>{
+      this.controlPollinationService.getAll((res:[ControlPollinationModel])=>{
         res.forEach(el => {
           if(el.pengesah_id == this.accountService.getSessionDetails().no_kakitangan){
             if(el.status == TaskStatus.done){

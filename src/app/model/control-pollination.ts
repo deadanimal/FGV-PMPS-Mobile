@@ -1,6 +1,6 @@
 import { PokokResponse } from "./pokok-respons";
 
-export interface ControlPollinationTask {
+export interface ControlPollinationModel {
     id: number;
     no_cp: string;
     pokok_id: number;

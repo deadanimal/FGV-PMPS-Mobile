@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TaskStatus } from 'src/app/common/task-status';
-import { ControlPollinationTask } from 'src/app/model/control-pollination-task';
+import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { QualityControlTask } from 'src/app/model/quality-control-task';
 import { User } from 'src/app/model/user';
 import { AccountService } from 'src/app/service/account.service';
@@ -45,7 +45,7 @@ export class QcTaskDistributionPage implements OnInit {
   _getTask(){
     this.qualityControlService.getAllQcWorker((res:[User])=>{
       this.qcWorker = res;
-      this.baggingService.getById(this.taskId,(resCP:ControlPollinationTask)=>{
+      this.baggingService.getById(this.taskId,(resCP:ControlPollinationModel)=>{
         this.tandanId = resCP.tandan_id;
         this.treeId = resCP.pokok_id;
       });
