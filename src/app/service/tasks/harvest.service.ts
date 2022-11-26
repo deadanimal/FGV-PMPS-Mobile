@@ -121,6 +121,7 @@ export class HarvestService {
   updateVerify(
     harvestId:String,
     catatan_pengesah:String,
+    sv_id:String,
     status:String,
     callback
   ){
@@ -129,6 +130,7 @@ export class HarvestService {
       `${environment.baseUrl}${environment.harvest}${harvestId}`,
       {
         catatan_pengesah:catatan_pengesah,
+        pengesah_id:sv_id,
         status:status,
       }
     ).subscribe(
@@ -152,6 +154,7 @@ export class HarvestService {
 
   getByUserId(
     userId:String,
+    userBlock:String,
     callback,
     loadingAnim = true
   ){
@@ -165,7 +168,7 @@ export class HarvestService {
       async (res:[HarvestModel]) => {
         let callbackParam:HarvestModel[] = [];
         res.forEach(el => {
-          if(el.id_sv_harvest == userId){
+          if(el.id_sv_harvest == userId || (el.id_sv_harvest == null && el.pokok.blok == userBlock)){
             callbackParam.push(el);
           }
         });

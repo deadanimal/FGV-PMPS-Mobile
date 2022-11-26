@@ -483,6 +483,7 @@ export class TaskStatusPage implements OnInit {
       this.harvestService.updateVerify(
         this.taskId,
         this.svRemark,
+        this.accountService.getSessionDetails().no_kakitangan,
         TaskStatus.verified,
         (res:QualityControlModel)=>{
           this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
@@ -536,6 +537,7 @@ export class TaskStatusPage implements OnInit {
       this.harvestService.updateVerify(
         this.taskId,
         this.svRemark,
+        this.accountService.getSessionDetails().no_kakitangan,
         TaskStatus.rejected,
         (res:QualityControlModel)=>{
           this._promptCompleted("Tugasan Telah Berjaya Di Tolak");
@@ -713,6 +715,7 @@ export class TaskStatusPage implements OnInit {
     formData.append('catatan',this.remark?.toString());
     formData.append('berat_tandan',this.weight?.toString());
     formData.append('status',status);
+    formData.append('id_sv_harvest',this.accountService.getSessionDetails().id.toString());
     this.harvestService.update(this.taskId,formData,(res:HarvestModel)=>{
       if(this.defect == null){
         this.router.navigate(

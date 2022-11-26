@@ -516,7 +516,10 @@ export class MainTaskPage implements OnInit {
     if(
       this.role == UserRole.petugas_tuai
     ){
-      this.harvestService.getByUserId(this.accountService.getSessionDetails().id.toString(),(res:[HarvestModel])=>{
+      this.harvestService.getByUserId(
+        this.accountService.getSessionDetails().id.toString(),
+        this.accountService.getSessionDetails().blok.toString(),
+        (res:[HarvestModel])=>{
         res.forEach(el => {
           if(el.status == TaskStatus.created){
             this.numOfNewTask++;
@@ -533,7 +536,8 @@ export class MainTaskPage implements OnInit {
     }else{
       this.harvestService.getAll((res:[HarvestModel])=>{
         res.forEach(el => {
-          if(el.pengesah_id == this.accountService.getSessionDetails().no_kakitangan){
+          if(el.pengesah_id == this.accountService.getSessionDetails().no_kakitangan ||
+             (el.pengesah_id == null && el.pokok?.blok == this.accountService.getSessionDetails().blok) ){
             if(el.status == TaskStatus.done){
               this.numOfNewTask++;
               this.newTaskList.push(el);
