@@ -29,6 +29,7 @@ import { HarvestModel } from 'src/app/model/harvest';
 import { HarvestService } from 'src/app/service/tasks/harvest.service';
 import { DefectModel } from 'src/app/model/defect';
 import { DefectService } from 'src/app/service/tasks/defect.service';
+import { TreeType } from 'src/app/common/tree-type';
 
 @Component({
   selector: 'app-task-status',
@@ -64,6 +65,7 @@ export class TaskStatusPage implements OnInit {
   defect:String;
   defectId:number;
   weight:String;
+  treeType:String;
   userList:User[] = [];
   defectList:DefectModel[] = [];
 
@@ -433,11 +435,11 @@ export class TaskStatusPage implements OnInit {
     // this.loadingModal= await this.showLoading();
     this.taskService.getUserById(userId).subscribe(
       (res:LoginResponseModel) => {
-        this.loadingModal.dismiss();
+        this.loadingModal?.dismiss();
         this.name = res.nama;
       },
       (err:HttpErrorResponse) => {
-        this.loadingModal.dismiss();
+        this.loadingModal?.dismiss();
       }
     );
   }
@@ -493,7 +495,17 @@ export class TaskStatusPage implements OnInit {
         this.svRemark,
         TaskStatus.verified,
         (res:BaggingModel)=>{
-          this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
+          if(this.treeType == TreeType.Fatherpalm){
+            const formData = new FormData();
+            formData.append('pokok_id',res.pokok_id.toString());
+            formData.append('tandan_id',res.tandan_id.toString());
+            formData.append('status',TaskStatus.created);
+            this.harvestService.create(formData,(res:HarvestModel)=>{
+              this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
+            });
+          }else{
+            this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
+          }
         }
       );
     }
@@ -610,6 +622,7 @@ export class TaskStatusPage implements OnInit {
     this.treeService.getById(this.treeId,(res:PokokResponse)=>{
       this.treeNum = res.progeny+'-'+res.no_pokok;
       this.treeBlock = res.blok;
+      this.treeType = res.jantina;
       this._getSupervisors();
     })
   }
