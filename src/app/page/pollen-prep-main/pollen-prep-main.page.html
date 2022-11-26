@@ -64,13 +64,13 @@
       <div *ngIf="disableNewTaskBtn">
         <div *ngFor="let item of newTaskList" class="p-3 my-3 mx-auto w-75 shadow rounded border border-warning d-flex justify-content-between align-items-center">
           <p class="h5">Rekod {{item.id}} ({{item.pokok.progeny}}-{{item.pokok.no_pokok}})</p>
-          <button (click)="viewTask('new',item.id,item.pokok_id)" class="btviewTaskn orangeBtn text-white">Info</button>
+          <button (click)="viewTask('new',item.id,item.pokok_id)" class="btn orangeBtn text-white">Info</button>
         </div>
       </div>
       <div *ngIf="disablePosponedTaskBtn">
         <div *ngFor="let item of posponedTaskList" class="p-3 my-3 mx-auto w-75 shadow rounded border border-danger d-flex justify-content-between align-items-center">
           <p class="h5">Rekod {{item.id}} ({{item.pokok?.progeny}}-{{item.pokok?.no_pokok}})</p>
-          <button (click)="viewTask('posponed',item.id)" class="btn btn-danger text-white">Info</button>
+          <button (click)="viewTask('posponed',item.id,item.tandan_id)" class="btn btn-danger text-white">Info</button>
         </div>
       </div>
     </div>

@@ -7,4 +7,5 @@ export enum InAppTaskCycle {
     harvest     = 'tuai',
     harvestSv   = 'harvestsv',
     pp          = 'pollenprep',
+    posponedpp  = 'posponedpollenprep',
 }

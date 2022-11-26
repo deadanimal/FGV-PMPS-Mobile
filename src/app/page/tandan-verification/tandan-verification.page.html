@@ -1,0 +1,19 @@
+<ion-content>
+  <app-logout-button></app-logout-button>
+  <app-user-info-header></app-user-info-header>
+
+  <div class="mx-2 h-100">
+    <form (ngSubmit)="submit(form)" #form="ngForm">
+      <div class="d-flex flex-col mx-2">
+        <button type="button" (click)="scanQr()" class="btn btn-outline-danger text-dark mx-auto">
+          <ion-label position="floating">No Daftar</ion-label>
+          <ion-input type="text" [(ngModel)]="regNumber" name="regNumber" required [disabled]="true"></ion-input>
+        </button>
+      </div>
+      <div class="w-100 text-center mt-5">
+        <button type="submit" class="btn primary-red text-white mx-auto">Seterusnya</button>
+      </div>
+    </form>
+  </div>
+
+</ion-content>

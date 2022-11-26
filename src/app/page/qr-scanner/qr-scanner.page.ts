@@ -13,6 +13,8 @@ export class QrScannerPage implements OnInit {
   taskId:String;
   returnUrl:String;
   task:String;
+  expactedTandanId:String;
+  redirect:String;
 
   constructor(
     private activatedRoute:ActivatedRoute,
@@ -26,6 +28,12 @@ export class QrScannerPage implements OnInit {
       }
       if(params['taskId']!=null){
         this.taskId = params['taskId'];
+      }
+      if(params['expactedTandanId']!=null){
+        this.expactedTandanId = params['expactedTandanId'];
+      }
+      if(params['redirect']!=null){
+        this.redirect = params['redirect'];
       }
       
       if(params['returnUrl']!=null){
@@ -69,11 +77,53 @@ export class QrScannerPage implements OnInit {
       let scanResult = result.content.replace('http://fgv.prototype.com.my/pengurusan-pokok-induk/pokok/edit/',""); // for pokok
       scanResult = scanResult.replace('http://fgv.prototype.com.my/pengurusan-pokok-induk/tandan/edit/',""); // for pokok
       if(this.treeNum!=null){
-        this.router.navigate([this.returnUrl,{task:this.task,treeNum:this.treeNum,regNo:scanResult,taskId:this.taskId,scanInput:scanResult}]);
+        this.router.navigate(
+          [
+            this.returnUrl,
+            {
+              task:this.task,
+              treeNum:this.treeNum,
+              regNo:scanResult,
+              taskId:this.taskId,
+              scanInput:scanResult
+            }
+          ]
+        );
+      }else if(this.expactedTandanId != null){
+        this.router.navigate(
+          [
+            this.returnUrl,
+            {
+              taskType:this.task,
+              taskId:this.taskId,
+              scanInput:scanResult,
+              expactedTandanId:this.expactedTandanId,
+            }
+          ]
+        );
       }else if(this.task != null){
-        this.router.navigate([this.returnUrl,{task:this.task,taskId:this.taskId,scanInput:scanResult}]);
+        this.router.navigate(
+          [
+            this.returnUrl,
+            {
+              task:this.task,
+              taskId:this.taskId,
+              scanInput:scanResult
+            }
+          ]
+        );
       }else{
-        this.router.navigate([this.returnUrl,{treeNum:scanResult,taskId:this.taskId,scanInput:scanResult}]);
+        this.router.navigate(
+          [
+            this.returnUrl,
+            {
+              treeNum:scanResult,
+              taskId:this.taskId,
+              scanInput:scanResult,
+              redirect:this.redirect,
+            }
+          ]
+        );
       }
     }
     document.querySelector('body').classList.remove('scanner-active');

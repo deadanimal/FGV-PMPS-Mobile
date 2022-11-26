@@ -85,6 +85,10 @@ const routes: Routes = [
         loadChildren: () => import('../page/harvest-task-distribution/harvest-task-distribution.module').then(m => m.HarvestTaskDistributionPageModule)
       },
       {
+        path: 'tab1/tandan-verification',
+        loadChildren: () => import('../page/tandan-verification/tandan-verification.module').then(m => m.TandanVerificationPageModule)
+      },
+      {
         path: '',
         redirectTo: 'tabs/tab1/',
         pathMatch: 'full'
