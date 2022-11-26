@@ -110,6 +110,7 @@ export class TandanVerificationPage implements OnInit {
           {
             taskType:this.taskType,
             taskId:this.taskId,
+            tandanId:this.expactedTandanId,
           }
         ]
       );
