@@ -94,6 +94,9 @@ export class PollenPrepMainPage implements OnInit {
         res.forEach(el => {
           if(el.id_sv_pollen == this.accountService.getSessionDetails().id.toString()){
             if(el.status == TaskStatus.created){
+              this.posponedTaskList.push(el);
+              this.numOfPosponedTask++;
+            }else if(el.status == TaskStatus.done){
               this.activeTaskList.push(el);
               this.numOfActiveTask++;
             }else{
