@@ -71,12 +71,8 @@ export class DashboardPage implements OnInit {
     if( this.role == UserRole.petugas_balut){
       this.wrapTask = true;
       this.debungTask = true;
-    }else if(this.role == UserRole.petugas_qa
-      ){
+    }else if(this.role == UserRole.petugas_qa){
       this.qcTask = true;
-    }else if(this.role == UserRole.general_worker){
-      this.pollenSupplyTask = true;
-      this.pollenUseTask = true;
     }else if(this.role == UserRole.penyelia_balut){
       this.wrapTask = true;
       this.debungTask = true;
@@ -86,14 +82,17 @@ export class DashboardPage implements OnInit {
       this.harvestTask = true;
     }else if(this.role == UserRole.petugas_tuai){
       this.harvestTask = true;
+    }else if(this.role == UserRole.petugas_makmal){
+      this.pollenSupplyTask = true;
+      this.pollenUseTask = true;
     }
     else{
       this.wrapTask = true;
       this.debungTask = true;
       this.qcTask = true;
       this.harvestTask = true;
-      this.pollenSupplyTask = false;
-      this.pollenUseTask = false;
+      this.pollenSupplyTask = true;
+      this.pollenUseTask = true;
     }
   }
 

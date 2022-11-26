@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController, ModalController } from '@ionic/angular';
+import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
 import { TaskStatus } from 'src/app/common/task-status';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
 import { BaggingModel } from 'src/app/model/bagging';
@@ -137,7 +138,7 @@ export class MainTaskPage implements OnInit {
             'app/tabs/tab1/task-status',
             {
               taskId:id,
-              taskType:'qcSv'
+              taskType:InAppTaskCycle.qcSv
             }
           ]
         );

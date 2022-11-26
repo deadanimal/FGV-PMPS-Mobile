@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
 import { DefectModel } from 'src/app/model/defect';
 import { DefectService } from 'src/app/service/tasks/defect.service';
 
@@ -47,7 +48,7 @@ export class DefectPage implements OnInit {
 
   continue(){
     let path = '';
-    if(this.taskType == 'pollen-prep'){
+    if(this.taskType == InAppTaskCycle.pp){
       path = 'app/tabs/tab1/task-status';
     }else{
       path = 'app/tabs/tab1/task-status';
@@ -68,7 +69,7 @@ export class DefectPage implements OnInit {
 
   reject(){
     let path = '';
-    if(this.taskType == 'pollen-prep'){
+    if(this.taskType == InAppTaskCycle.pp){
       path = 'app/tabs/tab1/task-status';
     }else{
       path = 'app/tabs/tab1/task-status';

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { TandanService } from 'src/app/service/tasks/tandan.service';
 
@@ -40,19 +41,13 @@ export class PollenPrepTandanListPage implements OnInit {
   }
 
   startWork(tandanId){
-    //todo: scanQR first
-    this._verifyAndStartWork(tandanId);
-  }
-
-  _verifyAndStartWork(tandanId){
     this.router.navigate(
       [
-        'app/tabs/tab1/defect',
+        'app/tabs/tab1/start-work-find',
         {
-          taskType:'pollen-prep',
-          status:this.taskStatus,
-          taskStatus:this.taskStatus,
-          tandanId:tandanId,
+          treeNum: this.treeId,
+          taskType: InAppTaskCycle.pp,
+          tandanId: tandanId,
         }
       ]
     );

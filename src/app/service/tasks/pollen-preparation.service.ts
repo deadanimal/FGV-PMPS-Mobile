@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { TandanCycle } from 'src/app/common/tandan-cycle';
+import { TaskStatus } from 'src/app/common/task-status';
 import { TreeType } from 'src/app/common/tree-type';
 import { BaggingModel } from 'src/app/model/bagging';
 import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
@@ -148,15 +149,34 @@ export class PollenPreparationService {
     );
   }
 
-  getNewTask(callback){
-    this.baggingService.getAll((res:[BaggingModel])=>{
-      let retVal:BaggingModel[] = [];
-      res.forEach(el => {
-        if(el.pokok.jantina == TreeType.Fatherpalm){
-          retVal.push(el);
-        }
-      });
-      callback(retVal);
+  _alreadyHasPPTask(
+    tandan_id:number,
+    ppTaskList:PollenPreparationModel[]
+  ){
+    let retVal = false;
+    ppTaskList.forEach(el => {
+      if(el.tandan_id == tandan_id){
+        retVal = true;
+      }
     });
+    return retVal;
+  }
+
+  getNewTask(callback){
+    this.getAll(
+      (res2:[PollenPreparationModel])=>{
+        this.baggingService.getAll((res:[BaggingModel])=>{
+          let retVal:BaggingModel[] = [];
+          res.forEach(el => {
+            if( el.pokok.jantina == TreeType.Fatherpalm && 
+                el.status == TaskStatus.verified &&
+                !this._alreadyHasPPTask(el.tandan_id,res2)){
+              retVal.push(el);
+            }
+          });
+          callback(retVal);
+        });
+      }
+    );
   }
 }

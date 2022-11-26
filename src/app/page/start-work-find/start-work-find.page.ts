@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { ModalService } from 'src/app/service/modal.service';
@@ -44,22 +45,39 @@ export class StartWorkFindPage implements OnInit {
       if(params['task']!=null){
         this.taskType = params['task'];
       }
+      if(params['tandanId']!=null){
+        this.tandanId = params['tandanId'];
+      }
     });
   }
 
   submit(form:NgForm){
-    if(this.regNumber!=null && this.regNumber!=""){
+    if(this.taskType == InAppTaskCycle.pp){
       this.router.navigate(
         [
-          'app/tabs/tab1/task-status',
+          'app/tabs/tab1/defect',
           {
-            taskId:this.taskId,
-            regNumber:this.regNumber,
-            treeNumber:this.treeNumber,
-            taskType:this.taskType,
+            taskType:InAppTaskCycle.pp,
+            status:'new',
+            taskStatus:'new',
+            tandanId:this.tandanId,
           }
         ]
       );
+    }else{
+      if(this.regNumber!=null && this.regNumber!=""){
+        this.router.navigate(
+          [
+            'app/tabs/tab1/task-status',
+            {
+              taskId:this.taskId,
+              regNumber:this.regNumber,
+              treeNumber:this.treeNumber,
+              taskType:this.taskType,
+            }
+          ]
+        );
+      }
     }
   }
 
