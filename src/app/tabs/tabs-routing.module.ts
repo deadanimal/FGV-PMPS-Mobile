@@ -89,6 +89,10 @@ const routes: Routes = [
         loadChildren: () => import('../page/tandan-verification/tandan-verification.module').then(m => m.TandanVerificationPageModule)
       },
       {
+        path: 'tab1/pollen-prep-task-status',
+        loadChildren: () => import('../page/pollen-prep-task-status/pollen-prep-task-status.module').then(m => m.PollenPrepTaskStatusPageModule)
+      },
+      {
         path: '',
         redirectTo: 'tabs/tab1/',
         pathMatch: 'full'

@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
 import { PollenPrepPhase } from 'src/app/common/pollen-preparation-phase';
 import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
 import { ModalService } from 'src/app/service/modal.service';
+import { NavigationService } from 'src/app/service/navigation.service';
 import { PollenPreparationService } from 'src/app/service/tasks/pollen-preparation.service';
 
 @Component({
@@ -22,65 +24,98 @@ export class PollenPrepFormPage implements OnInit {
   btn7:boolean;
   taskId:String;
   tandanId:String;
+  qcDone:Boolean;
   constructor(
     private router:Router,
     private modalService:ModalService,
     private activatedRoute:ActivatedRoute,
     private pollenPrepService:PollenPreparationService,
+    private navService:NavigationService,
   ) { }
 
   ngOnInit() {
     this.activatedRoute.params.subscribe(params => {
       this.taskId = params['taskId'];
       this.tandanId = params['tandanId'];
+      this.qcDone = params['qcDone'];
     });
   }
 
   ionViewWillEnter(){
-    this._getTask();
+    if(this.qcDone){
+      this._updateTask(PollenPrepPhase.Qc);
+    }else{
+      this._getTask();
+    }
   }
 
-  _successPrompt(){
-    let title = "Tarikh dan masa telah berjaya direkod, Sila tunggu 4 Jam untuk proses seterusnya"
-    this.modalService.successPrompt(title);
+  _updateTask(phase:PollenPrepPhase){
+    this.navService.tandanVerification(this.taskId,InAppTaskCycle.pp,this.tandanId,'app/tabs/tab1/pollen-prep-task-status',phase);
   }
 
   btnPress(buttonId:PollenPrepPhase){
     if(buttonId == PollenPrepPhase.HotRoomIn){
-      this._successPrompt();
+      if(!this.btn0){
+        this._updateTask(PollenPrepPhase.HotRoomIn);
+      }
       this.btn0 = true;
     }else if(buttonId == PollenPrepPhase.HotRoomOut){
-      if(this.btn0)
-      this.btn1 = true;
+      if(this.btn0){
+        if(!this.btn1){
+          this._updateTask(PollenPrepPhase.HotRoomOut);
+        }
+        this.btn1 = true;
+      }
     }else if(buttonId == PollenPrepPhase.Hit){
-      if(this.btn1)
-      this.btn2 = true;
+      if(this.btn1){
+        if(!this.btn2){
+          this._updateTask(PollenPrepPhase.Hit);
+        }
+        this.btn2 = true;
+      }
     }else if(buttonId == PollenPrepPhase.HotRoom2In){
-      this._successPrompt();
-      if(this.btn2)
-      this.btn3 = true;
+      if(this.btn2){
+        if(!this.btn3){
+          this._updateTask(PollenPrepPhase.HotRoom2In);
+        }
+        this.btn3 = true;
+      }
     }else if(buttonId == PollenPrepPhase.HotRoom2Out){
-      if(this.btn3)
-      this.btn4 = true;
+      if(this.btn3){
+        if(!this.btn4){
+          this._updateTask(PollenPrepPhase.HotRoom2Out);
+        }
+        this.btn4 = true;
+      }
     }else if(buttonId == PollenPrepPhase.Sieve){
-      if(this.btn4)
-      this.btn5 = true;
+      if(this.btn4){
+        if(!this.btn5){
+          this._updateTask(PollenPrepPhase.Sieve);
+        }
+        this.btn5 = true;
+      }
     }else if(buttonId == PollenPrepPhase.Qc){
       if(this.btn5){
         this.router.navigate(
           [
             'app/tabs/tab1/defect',
             {
-              taskType:'pollen-prep-form',
+              taskType:InAppTaskCycle.pollenPrepForm,
               returnPage:'pollen-prep-form',
+              tandanId:this.tandanId,
+              taskId:this.taskId,
             }
           ]
         );
         this.btn6 = true;
       }
     }else if(buttonId == PollenPrepPhase.Test){
-      if(this.btn6)
-      this.btn7 = true;
+      if(this.btn6){
+        if(!this.btn7){
+          this._updateTask(PollenPrepPhase.Test);
+        }
+        this.btn7 = true;
+      }
     }
 
   }

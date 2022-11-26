@@ -8,4 +8,5 @@ export enum InAppTaskCycle {
     harvestSv   = 'harvestsv',
     pp          = 'pollenprep',
     posponedpp  = 'posponedpollenprep',
+    pollenPrepForm  = 'pollen-prep-form',
 }

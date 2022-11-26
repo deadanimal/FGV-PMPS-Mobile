@@ -15,6 +15,7 @@ export class QrScannerPage implements OnInit {
   task:String;
   expactedTandanId:String;
   redirect:String;
+  var1:String;
 
   constructor(
     private activatedRoute:ActivatedRoute,
@@ -34,6 +35,9 @@ export class QrScannerPage implements OnInit {
       }
       if(params['redirect']!=null){
         this.redirect = params['redirect'];
+      }
+      if(params['var1']!=null){
+        this.var1 = params['var1'];
       }
       
       if(params['returnUrl']!=null){
@@ -98,6 +102,7 @@ export class QrScannerPage implements OnInit {
               taskId:this.taskId,
               scanInput:scanResult,
               expactedTandanId:this.expactedTandanId,
+              var1:this.var1,
             }
           ]
         );

@@ -201,19 +201,24 @@ export class TaskStatusPage implements OnInit {
         if(res.id != null){
           let url:string;
           if(this.returnPage == null || this.returnPage == "" || this.returnPage == undefined){
-            url = '/app/tabs/tab1/pollen-prep-form';
+            url = 'app/tabs/tab1/pollen-prep-form';
           }else{
-            url = '/app/tabs/tab1/'+this.returnPage.toString();
+            url = 'app/tabs/tab1/'+this.returnPage.toString();
           }
           if(this.tandanStatus == "ok"){
             this.modalService.successPrompt("QC telah berjaya dihantar kepada Penyelia").then(
               (value)=>{
-                setTimeout(() => {
-                  this.router.navigateByUrl(
-                    url,
-                    {
-                      replaceUrl : true
-                    }
+                setTimeout(
+                  () => {
+                    this.router.navigate(
+                      [
+                        url,
+                        {
+                          taskId:this.taskId,
+                          tandanId:this.tandanId,
+                          qcDone:true
+                        }
+                      ]
                     );
                   },
                   500
@@ -439,6 +444,8 @@ export class TaskStatusPage implements OnInit {
     }else if(this.taskType == 'harvestsv'){
       this._getHarvestTask(taskId);
     }else if(this.taskType == InAppTaskCycle.pp){
+      this._getPollenPrepTask();
+    }else if(this.taskType == InAppTaskCycle.pollenPrepForm){
       this._getPollenPrepTask();
     }else{
       this.baggingService.getById(taskId,(res:BaggingModel)=>{

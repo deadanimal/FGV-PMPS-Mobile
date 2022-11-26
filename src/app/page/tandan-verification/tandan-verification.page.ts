@@ -21,6 +21,7 @@ export class TandanVerificationPage implements OnInit {
   expactedTandanId:String;
   scanInput:String;
   redirect:String;
+  var1:String;
   constructor(
     private activatedRoute:ActivatedRoute,
     private router:Router,
@@ -44,6 +45,9 @@ export class TandanVerificationPage implements OnInit {
       }
       if(params['redirect']!=null){
         this.redirect = params['redirect'];
+      }
+      if(params['var1']!=null){
+        this.var1 = params['var1'];
       }
     });
   }
@@ -80,6 +84,7 @@ export class TandanVerificationPage implements OnInit {
                 task:this.taskType,
                 expactedTandanId:this.expactedTandanId,
                 redirect:this.redirect,
+                var1:this.var1,
               }
             ],
             {
@@ -111,6 +116,7 @@ export class TandanVerificationPage implements OnInit {
             taskType:this.taskType,
             taskId:this.taskId,
             tandanId:this.expactedTandanId,
+            var1:this.var1,
           }
         ]
       );
