@@ -125,7 +125,7 @@ export class ModalService {
       component: MenuPromptComponent,
       componentProps:{
       },
-      cssClass:"small-modal",
+      cssClass:"menu-modal",
       backdropDismiss:true,
     });
     retVal = modal.onDidDismiss();

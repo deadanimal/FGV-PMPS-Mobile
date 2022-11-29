@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-menu-prompt',
@@ -9,12 +9,26 @@ import { ModalController } from '@ionic/angular';
 })
 export class MenuPromptComponent implements OnInit {
 
+  canBack:Boolean;
+
   constructor(
     private modalCtrl:ModalController,
     private router:Router,
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
+
+  ionViewDidEnter(){
+    this.canBack = false;
+    if(this.router.url != '/app/tabs/tab1' && this.router.url != '/app/tabs/tab3'){
+      this.canBack = true;
+    }
+  }
+
+  back(){
+    this.modalCtrl.dismiss('back');
+  }
 
   logOut(){
     this.modalCtrl.dismiss('logOut');

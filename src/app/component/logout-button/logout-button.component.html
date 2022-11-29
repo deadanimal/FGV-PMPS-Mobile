@@ -1,11 +1,4 @@
-<div *ngIf="canBack" class="w-100 d-flex justify-content-between">
-  <ion-back-button (click)="back()" class="btn ml-auto text-danger"></ion-back-button>
-  <button (click)="promptMenu()" class="btn mr-auto">
-    <ion-icon name="ellipsis-vertical-outline" size="large" class="text-danger"></ion-icon>
-  </button>
-</div>
-
-<div *ngIf="!canBack" class="w-100 d-flex justify-content-end">
+<div class="w-100 d-flex justify-content-end">
   <button (click)="promptMenu()" class="btn mr-auto">
     <ion-icon name="ellipsis-vertical-outline" size="large" class="text-danger"></ion-icon>
   </button>

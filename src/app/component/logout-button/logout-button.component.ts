@@ -11,8 +11,6 @@ import { StorageService } from 'src/app/service/storage.service';
 })
 export class LogoutButtonComponent implements OnInit {
 
-  canBack:Boolean;
-
   constructor(
     private storageService:StorageService,
     private router:Router,
@@ -20,20 +18,7 @@ export class LogoutButtonComponent implements OnInit {
     private navCtrl:NavController,
   ) { }
 
-  ngOnInit() {
-    this.canBack = false;
-    if(this.router.url != '/app/tabs/tab1' && this.router.url != '/app/tabs/tab3'){
-      this.canBack = true;
-    }
-  }
-
-  back(){
-    try{
-      this.navCtrl.pop();
-    }catch{
-      this.navCtrl.navigateBack('/app/tabs/tab1');
-    }
-  }
+  ngOnInit() {}
 
   async promptMenu(){
     this.modalService.menuPrompt().then(
@@ -49,6 +34,12 @@ export class LogoutButtonComponent implements OnInit {
           });
         }else if(value['data'] == 'exit'){
           navigator['app'].exitApp();
+        }else if(value['data'] == 'back'){
+          try{
+            this.navCtrl.pop();
+          }catch{
+            this.navCtrl.navigateBack('/app/tabs/tab1');
+          }
         }
       }
     );
