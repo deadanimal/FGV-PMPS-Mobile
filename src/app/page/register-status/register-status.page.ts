@@ -107,6 +107,7 @@ export class RegisterStatusPage implements OnInit {
 
   _getCPTask(){
     this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
+      this.treeNumberDisplay = res.pokok?.progeny+'-'+res.pokok?.no_pokok;
       this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
         this.regNumber = tandanRes.no_daftar;
         this.cycle = tandanRes.kitaran?.toUpperCase();

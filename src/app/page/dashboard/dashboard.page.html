@@ -27,88 +27,88 @@
   <div style="position: relative; top: 0%;">
     <ion-grid class="mt-3">
       <ion-row *ngIf="wrapTask" class="w-75 mx-auto ion-justify-content-center ion-align-items-center">
-        <button (click)="task('wrap')" style="width: 318px; height: 89px; padding-top: 16px; padding-bottom: 15px; padding-left: 17px; padding-right: 55px; background-color: rgba(236, 36, 39, 1); border-radius: 20px; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;">
-          <ion-col>
+        <button (click)="task('wrap')" class="bg-danger w-100 p-2 d-flex align-items-center" style="border-radius: 20px;">
+          <ion-col class="col-4">
             <div style="width: 58px; height: 58px;">
-              <div style="width: 58px; height: 58px; padding-top: 14px; padding-bottom: 14px; padding-left: 13px; padding-right: 14px; background-color: white; border-radius: 10px; display: flex; flex-direction: row; align-items: center; justify-content: center;">
+              <div class="bg-white" style="padding-top: 14px; padding-bottom: 14px; padding-left: 13px; padding-right: 14px; border-radius: 10px;">
                 <img style="width: 31.32px; height: 30px; border-radius: 8px;" src="../../../assets/balut_icon.png"/>
               </div>
             </div>
           </ion-col>
           <ion-col>
-            <p class="text-center" style="font-size: 18px; font-weight: 600; line-height: 100%; color: white;">Balut</p>
+            <p class="text-start my-auto" style="font-size: 15px; font-weight: 600; line-height: 100%; color: white;">Balut</p>
           </ion-col>
         </button>
       </ion-row>
       <ion-row *ngIf="debungTask" class="w-75 my-3 mx-auto ion-justify-content-center ion-align-items-center">
-        <button (click)="task('cp')" style="width: 318px; height: 89px; padding-top: 16px; padding-bottom: 15px; padding-left: 17px; padding-right: 55px; background-color: rgba(236, 36, 39, 1); border-radius: 20px; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;" >
-          <ion-col>
+        <button (click)="task('cp')" class="bg-danger w-100 p-2 d-flex align-items-center" style="border-radius: 20px;">
+          <ion-col class="col-4">
             <div style="width: 58px; height: 58px;">
-              <div style="width: 58px; height: 58px; padding-top: 14px; padding-bottom: 14px; padding-left: 13px; padding-right: 14px; background-color: white; border-radius: 10px; display: flex; flex-direction: row; align-items: center; justify-content: center;">
+              <div class="bg-white" style="padding-top: 14px; padding-bottom: 14px; padding-left: 13px; padding-right: 14px; border-radius: 10px;">
                 <img style="width: 31.32px; height: 30px; border-radius: 8px;" src="../../../assets/cp_icon.png"/>
               </div>
             </div>
           </ion-col>
           <ion-col>
-            <p class="text-center" style="font-size: 18px; font-weight: 600; line-height: 100%; color: white;">Pendebungaan Terkawal (CP)</p>
+            <p class="text-start my-auto" style="font-size: 15px; font-weight: 600; line-height: 100%; color: white;">Pendebungaan Terkawal (CP)</p>
           </ion-col>
         </button>
       </ion-row>
       <ion-row *ngIf="qcTask" class="w-75 my-3 mx-auto ion-justify-content-center ion-align-items-center">
-        <button (click)="task('Kawalan Kualiti (QC)')" style="width: 318px; height: 89px; padding-top: 16px; padding-bottom: 15px; padding-left: 17px; padding-right: 55px; background-color: rgba(236, 36, 39, 1); border-radius: 20px; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;" >
-          <ion-col>
+        <button (click)="task('Kawalan Kualiti (QC)')" class="bg-danger w-100 p-2 d-flex align-items-center" style="border-radius: 20px;">
+          <ion-col class="col-4">
             <div style="width: 58px; height: 58px;">
-              <div style="width: 58px; height: 58px; padding-top: 14px; padding-bottom: 14px; padding-left: 13px; padding-right: 14px; background-color: white; border-radius: 10px; display: flex; flex-direction: row; align-items: center; justify-content: center;">
+              <div class="bg-white" style="padding-top: 14px; padding-bottom: 14px; padding-left: 13px; padding-right: 14px; border-radius: 10px;">
                 <img style="width: 31.32px; height: 30px; border-radius: 8px;" src="../../../assets/qc_icon.png"/>
               </div>
             </div>
           </ion-col>
           <ion-col>
-            <p class="text-center" style="font-size: 18px; font-weight: 600; line-height: 100%; color: white;">Kawalan Kualiti (QC)</p>
+            <p class="text-start my-auto" style="font-size: 15px; font-weight: 600; line-height: 100%; color: white;">Kawalan Kualiti (QC)</p>
           </ion-col>
         </button>
       </ion-row>
       <ion-row *ngIf="harvestTask" class="w-75 my-3 mx-auto ion-justify-content-center ion-align-items-center">
-        <button (click)="task('Tuai')" style="width: 318px; height: 89px; padding-top: 16px; padding-bottom: 15px; padding-left: 17px; padding-right: 55px; background-color: rgba(236, 36, 39, 1); border-radius: 20px; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;" >
-          <ion-col>
+        <button (click)="task('Tuai')" class="bg-danger w-100 p-2 d-flex align-items-center" style="border-radius: 20px;">
+          <ion-col class="col-4">
             <div style="width: 58px; height: 58px;">
-              <div style="width: 58px; height: 58px; padding-top: 14px; padding-bottom: 14px; padding-left: 13px; padding-right: 14px; background-color: white; border-radius: 10px; display: flex; flex-direction: row; align-items: center; justify-content: center;">
+              <div class="bg-white" style="padding-top: 14px; padding-bottom: 14px; padding-left: 13px; padding-right: 14px; border-radius: 10px;">
                 <img style="width: 31.32px; height: 30px; border-radius: 8px;" src="../../../assets/tuai_icon.png"/>
               </div>
             </div>
           </ion-col>
           <ion-col>
-            <p class="text-center" style="font-size: 18px; font-weight: 600; line-height: 100%; color: white;">Tuai</p>
+            <p class="text-start my-auto" style="font-size: 15px; font-weight: 600; line-height: 100%; color: white;">Tuai</p>
           </ion-col>
         </button>
       </ion-row>
 
       <ion-row *ngIf="pollenSupplyTask" class="w-75 my-3 mx-auto ion-justify-content-center ion-align-items-center">
-        <button (click)="pollenPrepTask()" style="width: 318px; height: 89px; padding-top: 16px; padding-bottom: 15px; padding-left: 17px; padding-right: 55px; background-color: rgba(236, 36, 39, 1); border-radius: 20px; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;" >
-          <ion-col>
+        <button (click)="pollenPrepTask()" class="bg-danger w-100 p-2 d-flex align-items-center" style="border-radius: 20px;">
+          <ion-col class="col-4">
             <div style="width: 58px; height: 58px;">
-              <div style="width: 58px; height: 58px; padding-top: 14px; padding-bottom: 14px; padding-left: 13px; padding-right: 14px; background-color: white; border-radius: 10px; display: flex; flex-direction: row; align-items: center; justify-content: center;">
+              <div class="bg-white" style="padding-top: 14px; padding-bottom: 14px; padding-left: 13px; padding-right: 14px; border-radius: 10px;">
                 <img style="width: 31.32px; height: 30px; border-radius: 8px;" src="../../../assets/pollen_supply.png"/>
               </div>
             </div>
           </ion-col>
           <ion-col>
-            <p class="text-center" style="font-size: 18px; font-weight: 600; line-height: 100%; color: white;">Penyediaan Pollen</p>
+            <p class="text-start my-auto" style="font-size: 15px; font-weight: 600; line-height: 100%; color: white;">Penyediaan Pollen</p>
           </ion-col>
         </button>
       </ion-row>
 
       <ion-row *ngIf="pollenUseTask" class="w-75 my-3 mx-auto ion-justify-content-center ion-align-items-center">
-        <button (click)="task('Penggunaan Pollen')" style="width: 318px; height: 89px; padding-top: 16px; padding-bottom: 15px; padding-left: 17px; padding-right: 55px; background-color: rgba(236, 36, 39, 1); border-radius: 20px; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;" >
-          <ion-col>
+        <button (click)="task('Penggunaan Pollen')" class="bg-danger w-100 p-2 d-flex align-items-center" style="border-radius: 20px;">
+          <ion-col class="col-4">
             <div style="width: 58px; height: 58px;">
-              <div style="width: 58px; height: 58px; padding-top: 14px; padding-bottom: 14px; padding-left: 13px; padding-right: 14px; background-color: white; border-radius: 10px; display: flex; flex-direction: row; align-items: center; justify-content: center;">
+              <div class="bg-white" style="padding-top: 14px; padding-bottom: 14px; padding-left: 13px; padding-right: 14px; border-radius: 10px;">
                 <img style="width: 31.32px; height: 30px; border-radius: 8px;" src="../../../assets/pollen_usage.png"/>
               </div>
             </div>
           </ion-col>
           <ion-col>
-            <p class="text-center" style="font-size: 18px; font-weight: 600; line-height: 100%; color: white;">Penggunaan Pollen</p>
+            <p class="text-start my-auto" style="font-size: 15px; font-weight: 600; line-height: 100%; color: white;">Penggunaan Pollen</p>
           </ion-col>
         </button>
       </ion-row>

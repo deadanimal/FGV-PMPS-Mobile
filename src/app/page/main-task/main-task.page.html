@@ -135,6 +135,7 @@
         <ion-col size="6" size-md="4" size-lg="2">
           <div>
             <button (click)="newQCTask()" class="btn w-100 mx-auto rounded blueBtn text-center text-white p-2">
+              <ion-badge *ngIf="numOfActiveTask > 0" color="danger">{{numOfActiveTask}}</ion-badge>
               <img height="56px" src="../../../assets/active_task_icon.png">
               <h5>Tugas Baharu</h5>
             </button>
@@ -201,6 +202,7 @@
         <ion-col size="6" size-md="4" size-lg="2">
           <div>
             <button (click)="newHarvestTask()" class="btn w-100 mx-auto rounded blueBtn text-center text-white p-2">
+              <ion-badge *ngIf="numOfActiveTask > 0" color="danger">{{numOfActiveTask}}</ion-badge>
               <img height="56px" src="../../../assets/active_task_icon.png">
               <h5>Tugas Baharu</h5>
             </button>

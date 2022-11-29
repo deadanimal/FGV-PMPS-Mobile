@@ -506,8 +506,25 @@ export class MainTaskPage implements OnInit {
             }
           }
         });
+        this.controlPollinationService.getAll((resBag:[ControlPollinationModel])=>{
+          resBag.forEach(el => {
+            if(el.status == TaskStatus.verified && !this._hasQcTaskCreated(res,el)){
+              this.numOfActiveTask++;
+            }
+          });
+        });
       });
     }
+  }
+
+  _hasQcTaskCreated(qcTasksList:[QualityControlModel],cpTask:ControlPollinationModel){
+    let retVal = false;
+    qcTasksList.forEach(el => {
+      if(el.tandan_id == cpTask.tandan_id){
+        retVal = true;
+      }
+    });
+    return retVal;
   }
 
   _getHarvestTask(){
@@ -547,8 +564,26 @@ export class MainTaskPage implements OnInit {
             }
           }
         });
+
+        this.qcService.getAll((resBag:[QualityControlModel])=>{
+          resBag.forEach(el => {
+            if(el.status == TaskStatus.verified && !this._hasHarvestTaskCreated(res,el)){
+              this.numOfActiveTask++;
+            }
+          });
+        });
       });
     }
+  }
+
+  _hasHarvestTaskCreated(harvestTasksList:[HarvestModel],qcTask:QualityControlModel){
+    let retVal = false;
+    harvestTasksList.forEach(el => {
+      if(el.tandan_id == qcTask.tandan_id){
+        retVal = true;
+      }
+    });
+    return retVal;
   }
 
   _getTask(){

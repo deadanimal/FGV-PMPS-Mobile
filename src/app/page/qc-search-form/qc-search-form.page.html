@@ -18,7 +18,7 @@
         <ion-select-option *ngFor="let item of baggingWorkers" value={{item.id}}>{{item.nama}}</ion-select-option>
       </ion-select>
     </ion-item>
-    <button type="submit" [disabled]="userSelect.value == null || progenySelect.value == null || blockSelect.value == null" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-auto mt-4">
+    <button type="submit" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-auto mt-4">
       <p class="m-auto">Cari</p>
     </button>
   </form>
