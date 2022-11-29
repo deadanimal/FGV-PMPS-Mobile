@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { AccountService } from 'src/app/service/account.service';
@@ -17,7 +18,8 @@ export class UserProfilePage implements OnInit {
   role:String;
 
   constructor(
-    private accountService:AccountService
+    private accountService:AccountService,
+    private datePipe: DatePipe,
   ) { }
 
   ngOnInit() {
@@ -25,7 +27,7 @@ export class UserProfilePage implements OnInit {
     this.name = loginDetails.nama;
     this.employeeId = loginDetails.no_kakitangan;
     this.email = loginDetails.email;
-    this.date = loginDetails.created_at?.toString();
+    this.date = this.datePipe.transform(Date.parse(loginDetails.created_at?.toString()),"dd-MM-YYYY");
     this.phone = loginDetails.no_telefon;
     this.role = loginDetails.peranan;
   }

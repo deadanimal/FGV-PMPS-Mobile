@@ -47,10 +47,7 @@ export class QcSearchFormPage implements OnInit {
           taskId:taskId,
           taskIdCycle:'debung',
         }
-      ],
-      {
-        replaceUrl : true
-      }
+      ]
     );
   }
 }

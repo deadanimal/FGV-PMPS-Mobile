@@ -9,6 +9,7 @@ import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.c
 import { BaggingModel } from 'src/app/model/bagging';
 import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { HarvestModel } from 'src/app/model/harvest';
+import { PokokResponse } from 'src/app/model/pokok-respons';
 import { QualityControlModel } from 'src/app/model/quality-control';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { TaskResponseModel } from 'src/app/model/task-response';
@@ -20,6 +21,7 @@ import { ControlPollinationService } from 'src/app/service/tasks/control-pollina
 import { HarvestService } from 'src/app/service/tasks/harvest.service';
 import { QualityControlService } from 'src/app/service/tasks/quality-control.service';
 import { TandanService } from 'src/app/service/tasks/tandan.service';
+import { TreeService } from 'src/app/service/tasks/tree.service';
 
 @Component({
   selector: 'app-register-status',
@@ -38,6 +40,7 @@ export class RegisterStatusPage implements OnInit {
   taskType:String;
   tandanId:String;
   loadingModal:any;
+  treeNumberDisplay:String;
 
   constructor(
     private activatedRoute:ActivatedRoute,
@@ -50,6 +53,7 @@ export class RegisterStatusPage implements OnInit {
     private baggingService: BaggingService,
     private qualityControlService: QualityControlService,
     private harvestService: HarvestService,
+    private treeService: TreeService,
     private datePipe: DatePipe,
   ) { }
 
@@ -153,6 +157,12 @@ export class RegisterStatusPage implements OnInit {
     }
   }
 
+  _getPokokInfo(){
+    this.treeService.getById(this.treeNumber,(res:PokokResponse)=>{
+      this.treeNumberDisplay = res.progeny+'-'+res.no_pokok;
+    });
+  }
+
   async _getTandanInfo(tandan_id:String){
     this.loadingModal= await this.showLoading();
     this.taskService.getTandanById(tandan_id).subscribe(
@@ -162,6 +172,7 @@ export class RegisterStatusPage implements OnInit {
         this.cycle = this._getCycleName(res)?.toUpperCase();
         this.status=res.status_tandan?.toUpperCase();
         this.age=res.umur? res.umur.toString(): this._calculateAge(res.tarikh_daftar).toString();
+        this._getPokokInfo();
       },
       (err:HttpErrorResponse) => {
         this.loadingModal.dismiss();

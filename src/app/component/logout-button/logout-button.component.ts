@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { ModalService } from 'src/app/service/modal.service';
 import { StorageService } from 'src/app/service/storage.service';
 
@@ -10,13 +11,28 @@ import { StorageService } from 'src/app/service/storage.service';
 })
 export class LogoutButtonComponent implements OnInit {
 
+  canBack:Boolean;
+
   constructor(
     private storageService:StorageService,
     private router:Router,
     private modalService:ModalService,
+    private navCtrl:NavController,
   ) { }
 
   ngOnInit() {
+    this.canBack = false;
+    if(this.router.url != '/app/tabs/tab1' && this.router.url != '/app/tabs/tab3'){
+      this.canBack = true;
+    }
+  }
+
+  back(){
+    try{
+      this.navCtrl.pop();
+    }catch{
+      this.navCtrl.navigateBack('/app/tabs/tab1');
+    }
   }
 
   async promptMenu(){

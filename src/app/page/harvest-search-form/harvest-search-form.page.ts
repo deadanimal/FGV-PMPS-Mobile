@@ -51,10 +51,7 @@ export class HarvestSearchFormPage implements OnInit {
           taskId:taskId,
           taskIdCycle:'debung',
         }
-      ],
-      {
-        replaceUrl : true
-      }
+      ]
     );
   }
 

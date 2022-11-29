@@ -240,10 +240,7 @@ export class MainTaskPage implements OnInit {
           treeNum:this.scanInput,
           taskType:this.task,
         }
-      ],
-      {
-        replaceUrl : true
-      }
+      ]
     );
   }
 
@@ -614,10 +611,7 @@ export class MainTaskPage implements OnInit {
         '/app/tabs/tab1/qc-search-form',
         {
         }
-      ],
-      {
-        replaceUrl : true
-      }
+      ]
     );
   }
 
@@ -625,10 +619,7 @@ export class MainTaskPage implements OnInit {
     this.router.navigate(
       [
         '/app/tabs/tab1/harvest-search-form'
-      ],
-      {
-        replaceUrl : true
-      }
+      ]
     );
   }
 

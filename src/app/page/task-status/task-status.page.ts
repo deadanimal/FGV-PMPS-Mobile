@@ -97,7 +97,7 @@ export class TaskStatusPage implements OnInit {
   }
 
   ionViewDidEnter(){
-    this.date = this.datePipe.transform(Date.now(),"yyyy-MM-dd");
+    this.date = this.datePipe.transform(Date.now(),"dd-MM-YYYY");
     this.time = this.datePipe.transform(Date.now(),"HH:mm a");
     this.name = this.accountService.getSessionDetails().nama;
     this.userRole = this.accountService.getUserRole();
@@ -322,7 +322,7 @@ export class TaskStatusPage implements OnInit {
     const blob = await response.blob();
     // for tandan
     formData.append('no_daftar',this.regNo.toString());
-    formData.append('tarikh_daftar',this.date.toString());
+    formData.append('tarikh_daftar',this.datePipe.transform(Date.now(),"yyyy-MM-dd").toString());
     formData.append('pokok_id',this.treeId.toString());
     formData.append('kitaran',this.taskType.toString());
     // for bagging
@@ -449,7 +449,7 @@ export class TaskStatusPage implements OnInit {
       this._getPollenPrepTask();
     }else{
       this.baggingService.getById(taskId,(res:BaggingModel)=>{
-        this.date = res.created_at.toString();
+        this.date = this.datePipe.transform(Date.parse(res.created_at.toString()),"yyyy-MM-dd");
         this.remark = res.catatan;
         if(res.url_gambar!=null){
           this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
