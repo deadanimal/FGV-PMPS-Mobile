@@ -11,6 +11,7 @@ export class StorageService {
   loginDetail:string = "loginDetail";
   language:string = "lang";
   offlineData:string = "offlineData";
+  offlineMode:string = "offlineMode";
   baggingOfflineData:string = "baggingOffline";
 
   constructor(private storage: Storage) {

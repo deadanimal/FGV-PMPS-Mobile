@@ -22,15 +22,17 @@ export class TandanService {
   ) {
   }
 
-  async showLoading():Promise<HTMLIonLoadingElement> {
-    const loading = await this.loadingCtrl.create();
+  async showLoading(message = ''):Promise<HTMLIonLoadingElement> {
+    const loading = await this.loadingCtrl.create({
+      message:message
+    });
     loading.present();
     return loading;
   }
 
-  getAll(callback,loadingAnim = true){
+  getAll(callback,loadingAnim = true,message = ''){
     if(loadingAnim){
-      this.loadingModal = this.showLoading();
+      this.loadingModal = this.showLoading(message);
     }
     this.http.get<[TandanResponse]>(
       `${environment.baseUrl}${environment.tandanInfo}`

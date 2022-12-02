@@ -1,0 +1,66 @@
+<ion-content>
+  <app-offline-header></app-offline-header>
+  <app-logout-button></app-logout-button>
+  <app-user-info-header></app-user-info-header>
+  
+  <div class="text-center mb-4">
+    <p class="h1">Mod Offline
+      <span>
+        (
+          <span *ngIf="isOfflineMode">Aktif</span>
+          <span *ngIf="!isOfflineMode">Tidak Aktif</span>
+        )
+      </span>
+    </p>
+    <div class="mt-4 h6">Tugas offline yang telah siap:</div>
+    <div class="row border-bottom mx-4">
+      <div class="col-9 text-start">Balut:</div>
+      <div class="col-3 text-start">3</div>
+    </div>
+    <div class="row border-bottom mx-4">
+      <div class="col-9 text-start">Pendebungaan Terkawal:</div>
+      <div class="col-3 text-start">3</div>
+    </div>
+    <div class="row border-bottom mx-4">
+      <div class="col-9 text-start">Kawalan Kualiti:</div>
+      <div class="col-3 text-start">3</div>
+    </div>
+    <div class="row border-bottom mx-4">
+      <div class="col-9 text-start">Tuai:</div>
+      <div class="col-3 text-start">3</div>
+    </div>
+
+
+    <div class="mt-4 h6">Tugas Offline Tersedia:</div>
+    <div class="row border-bottom mx-4">
+      <div class="col-9 text-start">Pendebungaan Terkawal:</div>
+      <div class="col-3 text-start">3</div>
+    </div>
+    <div class="row border-bottom mx-4">
+      <div class="col-9 text-start">Kawalan Kualiti:</div>
+      <div class="col-3 text-start">3</div>
+    </div>
+    <div class="row border-bottom mx-4">
+      <div class="col-9 text-start">Tuai:</div>
+      <div class="col-3 text-start">3</div>
+    </div>
+
+    <div class="mt-4 h6">Data Offline Tersedia:</div>
+    <div class="row border-bottom mx-4">
+      <div class="col-9 text-start">Pokok:</div>
+      <div class="col-3 text-start">6000</div>
+    </div>
+    <div class="row border-bottom mx-4">
+      <div class="col-9 text-start">Tandan:</div>
+      <div class="col-3 text-start">6000</div>
+    </div>
+    <div class="row border-bottom mx-4">
+      <div class="col-9 text-start">Penyelia:</div>
+      <div class="col-3 text-start">25</div>
+    </div>
+    <button class="btn btn-outline-danger w-75 mt-4" (click)="sync()">Sync</button>
+    <button *ngIf="!isOfflineMode" class="btn btn-outline-danger w-75 mt-4" (click)="offline(true)">Hidupkan Fungsi Offline</button>
+    <button *ngIf="isOfflineMode" class="btn btn-outline-danger w-75 mt-4" (click)="offline(false)">Matikan Fungsi Offline</button>
+    <button class="btn btn-danger w-75 mt-4" (click)="back()">Kembali</button>
+  </div>
+</ion-content>

@@ -40,6 +40,8 @@ export class LogoutButtonComponent implements OnInit {
           }catch{
             this.navCtrl.navigateBack('/app/tabs/tab1');
           }
+        }else if(value['data'] == 'sync'){
+          this.router.navigate(['offline-mode']);
         }
       }
     );

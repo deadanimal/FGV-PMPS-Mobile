@@ -15,14 +15,18 @@ export class TreeService {
     private loadingCtrl: LoadingController,
   ) { }
 
-  async showLoading():Promise<HTMLIonLoadingElement> {
-    const loading = await this.loadingCtrl.create();
+  async showLoading(message = ''):Promise<HTMLIonLoadingElement> {
+    const loading = await this.loadingCtrl.create(
+      {
+        message: message,
+      }
+    );
     loading.present();
     return loading;
   }
 
-  getAll(callback){
-    this.loadingModal = this.showLoading();
+  getAll(callback,loadingMsg = ''){
+    this.loadingModal = this.showLoading(loadingMsg);
     this.http.get<[PokokResponse]>(
       `${environment.baseUrl}${environment.treeInfo}`
     ).subscribe(

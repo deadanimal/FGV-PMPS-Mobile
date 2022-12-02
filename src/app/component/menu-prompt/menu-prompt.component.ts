@@ -42,4 +42,8 @@ export class MenuPromptComponent implements OnInit {
     this.modalCtrl.dismiss('exit');
   }
 
+  sync(){
+    this.modalCtrl.dismiss('sync');
+  }
+
 }

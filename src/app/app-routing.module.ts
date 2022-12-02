@@ -62,6 +62,10 @@ const routes: Routes = [
     path: 'pollen-prep-main',
     loadChildren: () => import('./page/pollen-prep-main/pollen-prep-main.module').then( m => m.PollenPrepMainPageModule)
   },
+  {
+    path: 'offline-mode',
+    loadChildren: () => import('./page/offline-mode/offline-mode.module').then( m => m.OfflineModePageModule)
+  },
   // {
   //   path: 'test-page',
   //   loadChildren: () => import('./page/test-page/test-page.module').then( m => m.TestPagePageModule)

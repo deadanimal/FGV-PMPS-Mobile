@@ -3,6 +3,7 @@ import { fromEvent, merge, Observable, of } from 'rxjs';
 import { AppMode } from 'src/app/common/app-mode';
 import { map } from 'rxjs/operators';
 import { StorageService } from 'src/app/service/storage.service';
+import { OfflineModeService } from 'src/app/service/offline-mode.service';
 
 @Component({
   selector: 'app-offline-header',
@@ -13,8 +14,10 @@ export class OfflineHeaderComponent implements OnInit {
 
   mode:AppMode;
   public appIsOnline$: Observable<boolean>;
+  public appIsSync: Observable<boolean>;
   constructor(
     private storageService:StorageService,
+    private offlineModeService:OfflineModeService,
   ) { }
 
   async ngOnInit() {
@@ -27,7 +30,7 @@ export class OfflineHeaderComponent implements OnInit {
       } else {
         this.mode = AppMode.Offline;
       }
-    })
+    });
   }
 
   private initConnectivityMonitoring() {
