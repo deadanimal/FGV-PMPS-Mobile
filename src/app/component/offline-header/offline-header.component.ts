@@ -1,0 +1,42 @@
+import { Component, OnInit } from '@angular/core';
+import { fromEvent, merge, Observable, of } from 'rxjs';
+import { AppMode } from 'src/app/common/app-mode';
+import { map } from 'rxjs/operators';
+import { StorageService } from 'src/app/service/storage.service';
+
+@Component({
+  selector: 'app-offline-header',
+  templateUrl: './offline-header.component.html',
+  styleUrls: ['./offline-header.component.scss'],
+})
+export class OfflineHeaderComponent implements OnInit {
+
+  mode:AppMode;
+  public appIsOnline$: Observable<boolean>;
+  constructor(
+    private storageService:StorageService,
+  ) { }
+
+  async ngOnInit() {
+    this.mode = AppMode.Online;
+    this.initConnectivityMonitoring();
+    let hasOfflineData:Boolean = await this.storageService.get(this.storageService.offlineData);
+    this.appIsOnline$.subscribe(online => {  
+      if (online) {
+        this.mode = AppMode.Online;
+      } else {
+        this.mode = AppMode.Offline;
+      }
+    })
+  }
+
+  private initConnectivityMonitoring() {
+    if (!window || !navigator || !('onLine' in navigator)) return;
+    this.appIsOnline$ = merge(
+      of(null),
+      fromEvent(window, 'online'),
+      fromEvent(window, 'offline')
+    ).pipe(map(() => navigator.onLine))
+  }
+
+}
