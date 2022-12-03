@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BaggingModel } from '../model/bagging';
 import { PokokResponse } from '../model/pokok-respons';
 import { TandanResponse } from '../model/tandan-response';
 import { StorageService } from './storage.service';
@@ -11,12 +12,32 @@ import { TreeService } from './tasks/tree.service';
 })
 export class OfflineModeService {
 
+
+  bagging:BaggingModel[] = [];
+  tandanList:TandanResponse[] = [];
+  treeList:PokokResponse[] = [];
   constructor(
     private storageService:StorageService,
     private tandanService:TandanService,
-    private baggingService:BaggingService,
     private treeService:TreeService,
-  ) { }
+  ) {
+  }
+
+  async getTreeList(){
+    this.treeList = await this.storageService.get(this.storageService.offlineTreeList);
+    if(this.treeList == null){
+      this.treeList = [];
+    }
+    return this.treeList;
+  }
+
+  async getTandanList(){
+    this.tandanList = await this.storageService.get(this.storageService.offlineTandanList);
+    if(this.tandanList == null){
+      this.tandanList = [];
+    }
+    return this.tandanList;
+  }
 
   sync(){
     this._syncBagging();
@@ -30,32 +51,21 @@ export class OfflineModeService {
     return await this.storageService.get(this.storageService.offlineMode);
   }
 
-  private _getOfflineBaggingData(){
-
-  }
-
-  private _getOfflineTandanData(offlineData:any){
-    this.tandanService.getAll((res:[TandanResponse])=>{
-      offlineData.tandanList = [];
-      res.forEach(el => {
-        if(el.pokok_id == null){
-          offlineData.tandanList.push(el);
-        }
-      });
-    },true,'Fetching Tandan List');
-  }
-
-  private _getOfflineTreeData(offlineData:any){
-    this.treeService.getAll((res:[PokokResponse])=>{
-      offlineData.treeList = res;
-      this._getOfflineTandanData(offlineData);
-    },'Fetching Tree List');
-  }
-
   private async _syncBagging(){
     //todo: upload existing data first
-    let offlineData:Object = new Object();
-    this._getOfflineTreeData(offlineData);
+    this.treeService.getAll((res:[PokokResponse])=>{
+      this.treeList = res;
+      this.storageService.set(this.storageService.offlineTreeList,this.treeList);
+      this.tandanService.getAll((res:[TandanResponse])=>{
+        this.tandanList = [];
+        res.forEach(el => {
+          if(el.pokok_id == null){
+            this.tandanList.push(el);
+          }
+        });
+        this.storageService.set(this.storageService.offlineTandanList,this.tandanList);
+      },true,'Fetching Tandan List');
+    },'Fetching Tree List');
   }
 
 }
