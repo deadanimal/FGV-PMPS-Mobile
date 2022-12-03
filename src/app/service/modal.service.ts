@@ -34,12 +34,13 @@ export class ModalService {
     return retVal;
   }
 
-  async singleInput(label:string):Promise<NgForm>{
+  async singleInput(label:string,defaultValue=""):Promise<NgForm>{
     let retVal:Promise<any>;
     const modal= await this.modalCtrl.create({
       component: ManualInputComponent,
       componentProps:{
-        label:label
+        label:label,
+        value:defaultValue,
       },
       cssClass:"small-modal",
       backdropDismiss:true,

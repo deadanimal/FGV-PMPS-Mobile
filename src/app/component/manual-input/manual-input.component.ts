@@ -10,8 +10,8 @@ import { ModalController } from '@ionic/angular';
 export class ManualInputComponent implements OnInit {
 
   @Input() label:String;
+  @Input() value:String; // default value
   input1:string;
-  value:string;
 
   constructor(
     private modalCtrl: ModalController,

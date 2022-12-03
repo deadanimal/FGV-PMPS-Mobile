@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { PokokResponse } from 'src/app/model/pokok-respons';
+import { Pokok } from 'src/app/model/qc-search-response';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -80,5 +81,17 @@ export class TreeService {
         this.loadingModal.dismiss();
       }
     );
+  }
+
+  getIdByName(no_pokok:String,callback){
+    this.getAll((res:[PokokResponse])=>{
+      let retVal:PokokResponse;
+      res.forEach(el => {
+        if(el.no_pokok == no_pokok){
+          retVal = el;
+        }
+      });
+      callback(retVal);
+    });
   }
 }

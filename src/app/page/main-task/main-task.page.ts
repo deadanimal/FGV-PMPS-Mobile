@@ -10,6 +10,7 @@ import { BaggingModel } from 'src/app/model/bagging';
 import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { HarvestModel } from 'src/app/model/harvest';
 import { LoginResponseModel } from 'src/app/model/login-response';
+import { PokokResponse } from 'src/app/model/pokok-respons';
 import { QualityControlModel } from 'src/app/model/quality-control';
 import { TaskResponseModel } from 'src/app/model/task-response';
 import { AccountService, UserRole } from 'src/app/service/account.service';
@@ -19,6 +20,7 @@ import { BaggingService } from 'src/app/service/tasks/bagging.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
 import { HarvestService } from 'src/app/service/tasks/harvest.service';
 import { QualityControlService } from 'src/app/service/tasks/quality-control.service';
+import { TreeService } from 'src/app/service/tasks/tree.service';
 
 @Component({
   selector: 'app-main-task',
@@ -61,6 +63,7 @@ export class MainTaskPage implements OnInit {
     private controlPollinationService:ControlPollinationService,
     private qcService:QualityControlService,
     private harvestService:HarvestService,
+    private treeService:TreeService,
   ) { }
 
   ngOnInit() {
@@ -85,8 +88,10 @@ export class MainTaskPage implements OnInit {
         }
       }
       if(params['scanInput']!=null){
-        this.scanInput = params['scanInput'];
-        this._proceedToWork();
+        this.scanInput = params['scanInput']; // this is tree id
+        this.treeService.getById(this.scanInput,(res:PokokResponse)=>{
+          this._manualInput(res.no_pokok);
+        });
        }
     });
 
@@ -244,14 +249,21 @@ export class MainTaskPage implements OnInit {
     );
   }
 
-  _manualInput(){
-    this.modalService.singleInput("No Pokok").then(
+  _manualInput(defaultValue=""){
+    this.modalService.singleInput("No Pokok",defaultValue).then(
       (value)=>{
         let form:NgForm;
         form = value['data'];
-        this.scanInput = form.value.value;
-        if(this.scanInput!=null && this.scanInput != ""){
-          this._proceedToWork();
+        let tree_number = form.value.value;
+        if(this.scanInput == null || this.scanInput == ""){
+          this.treeService.getIdByName(tree_number,(res:PokokResponse)=>{
+            this.scanInput = res.id.toString();
+            this._proceedToWork();
+          });
+        }else{
+          if(this.scanInput!=null && this.scanInput != ""){
+            this._proceedToWork();
+          }
         }
       }
     );
