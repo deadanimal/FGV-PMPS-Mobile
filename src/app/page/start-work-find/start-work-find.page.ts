@@ -5,6 +5,8 @@ import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { ModalService } from 'src/app/service/modal.service';
+import { OfflineModeService } from 'src/app/service/offline-mode.service';
+import { OfflineTandanService } from 'src/app/service/offline/offline-tandan.service';
 import { TandanService } from 'src/app/service/tasks/tandan.service';
 
 @Component({
@@ -19,12 +21,16 @@ export class StartWorkFindPage implements OnInit {
   tandanId:String;
   taskId:String;
   taskType:String;
+  scanned = false;
+  isOfflineMode = false;
 
   constructor(
     private activatedRoute:ActivatedRoute,
     private router:Router,
     private modalService:ModalService,
     private tandanService:TandanService,
+    private offlineModeService:OfflineModeService,
+    private offlineTandanService:OfflineTandanService,
   ) { }
 
   ngOnInit() {
@@ -34,7 +40,7 @@ export class StartWorkFindPage implements OnInit {
       }
       if(params['scanInput']!=null){
         this.tandanId = params['scanInput'];
-        this._getRegNumber();
+        this.scanned = true;
       }
       if(params['taskId']!=null){
         this.taskId = params['taskId'];
@@ -49,6 +55,13 @@ export class StartWorkFindPage implements OnInit {
         this.tandanId = params['tandanId'];
       }
     });
+  }
+
+  async ionViewDidEnter(){
+    this.isOfflineMode = await this.offlineModeService.isOfflineMode();
+    if(this.scanned){
+      this._getRegNumber();
+    }
   }
 
   submit(form:NgForm){
@@ -117,10 +130,15 @@ export class StartWorkFindPage implements OnInit {
     );
   }
 
-  _getRegNumber(){
-    this.tandanService.getById(this.tandanId,(res:TandanResponse)=>{
-      this.regNumber = res.no_daftar;
-    });
+  async _getRegNumber(){
+    if(!this.isOfflineMode){
+      this.tandanService.getById(this.tandanId,(res:TandanResponse)=>{
+        this.regNumber = res.no_daftar;
+      });
+    }else{
+      let tandanInfo = await this.offlineTandanService.getById(this.tandanId);
+      this.regNumber = tandanInfo.no_daftar;
+    }
   }
 
   scanQr(){

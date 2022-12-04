@@ -15,6 +15,8 @@ import { QualityControlModel } from 'src/app/model/quality-control';
 import { TaskResponseModel } from 'src/app/model/task-response';
 import { AccountService, UserRole } from 'src/app/service/account.service';
 import { ModalService } from 'src/app/service/modal.service';
+import { OfflineModeService } from 'src/app/service/offline-mode.service';
+import { OfflineTreeService } from 'src/app/service/offline/offline-tree.service';
 import { TaskService } from 'src/app/service/task.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
@@ -51,6 +53,7 @@ export class MainTaskPage implements OnInit {
   finishedTaskList:any[];
   newTaskList:any[];
   posponedTaskList:any[];
+  isOfflineMode = false;
 
   constructor(
     private activatedRoute:ActivatedRoute,
@@ -64,6 +67,8 @@ export class MainTaskPage implements OnInit {
     private qcService:QualityControlService,
     private harvestService:HarvestService,
     private treeService:TreeService,
+    private offlineModeService:OfflineModeService,
+    private offlineTreeService:OfflineTreeService,
   ) { }
 
   ngOnInit() {
@@ -89,9 +94,6 @@ export class MainTaskPage implements OnInit {
       }
       if(params['scanInput']!=null){
         this.scanInput = params['scanInput']; // this is tree id
-        this.treeService.getById(this.scanInput,(res:PokokResponse)=>{
-          this._manualInput(res.no_pokok);
-        });
        }
     });
 
@@ -100,11 +102,22 @@ export class MainTaskPage implements OnInit {
     this.employeeId = user.no_kakitangan;
   }
 
-  ionViewDidEnter() {
+  async ionViewDidEnter() {
     this.numOfActiveTask = 0;
     this.numOfFinishTask = 0;
     this.numOfNewTask = 0;
     this.numOfPosponedTask = 0;
+    this.isOfflineMode = await this.offlineModeService.isOfflineMode();
+    if(this.scanInput != null){
+      if(!this.isOfflineMode){
+        this.treeService.getById(this.scanInput,(res:PokokResponse)=>{
+          this._manualInput(res.no_pokok);
+        });
+      }else{
+        let treeNumber = await this.offlineTreeService.getById(this.scanInput);
+        this._manualInput(treeNumber.no_pokok);
+      }
+    }
     this._getTask();
   }
 
@@ -414,17 +427,19 @@ export class MainTaskPage implements OnInit {
       this.role == UserRole.petugas_balut || 
       this.role == UserRole.petugas_qa
     ){
-      this.baggingService.getByUserId(this.employeeId,(res:[BaggingModel])=>{
-        res.forEach(el => {
-          if(el.status == TaskStatus.done){
-            this.numOfActiveTask++;
-            this.activeTaskList.push(el);
-          }else{
-            this.numOfFinishTask++;
-            this.finishedTaskList.push(el);
-          }
+      if(!this.isOfflineMode){
+        this.baggingService.getByUserId(this.employeeId,(res:[BaggingModel])=>{
+          res.forEach(el => {
+            if(el.status == TaskStatus.done){
+              this.numOfActiveTask++;
+              this.activeTaskList.push(el);
+            }else{
+              this.numOfFinishTask++;
+              this.finishedTaskList.push(el);
+            }
+          });
         });
-      });
+      }
     }else{
       this.baggingService.getAll((res:[BaggingModel])=>{
         res.forEach(el => {

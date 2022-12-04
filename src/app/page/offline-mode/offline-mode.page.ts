@@ -47,6 +47,11 @@ export class OfflineModePage implements OnInit {
         this.offlineModeService.OfflineMode(start);
         setTimeout(async () => {
           this._refreshData();
+          this.modalService.textAndBtnPrompt('Applikasi akan di mula semula','OK').then(
+            (value)=>{
+              window.location.replace('');
+            }
+          );
         }, 500);
       }else if(user_selection == UserContinueSelection.no){
       }
