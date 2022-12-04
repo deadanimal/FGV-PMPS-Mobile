@@ -16,6 +16,7 @@ import { TaskResponseModel } from 'src/app/model/task-response';
 import { AccountService, UserRole } from 'src/app/service/account.service';
 import { ModalService } from 'src/app/service/modal.service';
 import { OfflineModeService } from 'src/app/service/offline-mode.service';
+import { OfflineBaggingService } from 'src/app/service/offline/offline-bagging.service';
 import { OfflineTreeService } from 'src/app/service/offline/offline-tree.service';
 import { TaskService } from 'src/app/service/task.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
@@ -69,6 +70,7 @@ export class MainTaskPage implements OnInit {
     private treeService:TreeService,
     private offlineModeService:OfflineModeService,
     private offlineTreeService:OfflineTreeService,
+    private offlineBaggingService:OfflineBaggingService,
   ) { }
 
   ngOnInit() {
@@ -421,7 +423,7 @@ export class MainTaskPage implements OnInit {
     }
   }
 
-  _getBaggingTask(){
+  async _getBaggingTask(){
     if(
       this.role == UserRole.general_worker || 
       this.role == UserRole.petugas_balut || 
@@ -439,6 +441,9 @@ export class MainTaskPage implements OnInit {
             }
           });
         });
+      }else{
+        this.activeTaskList = await this.offlineBaggingService.getSavedBaggingTasks();
+        this.numOfActiveTask = this.activeTaskList.length;
       }
     }else{
       this.baggingService.getAll((res:[BaggingModel])=>{

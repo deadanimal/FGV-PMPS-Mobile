@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
+import { LoadingController } from '@ionic/angular';
 import { BaggingModel } from '../model/bagging';
+import { OfflineBaggingModel } from '../model/offline-bagging';
 import { PokokResponse } from '../model/pokok-respons';
 import { TandanResponse } from '../model/tandan-response';
 import { User } from '../model/user';
 import { AccountService, UserRole } from './account.service';
+import { OfflineBaggingService } from './offline/offline-bagging.service';
 import { StorageService } from './storage.service';
+import { BaggingService } from './tasks/bagging.service';
 import { ControlPollinationService } from './tasks/control-pollination.service';
 import { TandanService } from './tasks/tandan.service';
 import { TreeService } from './tasks/tree.service';
@@ -28,6 +32,9 @@ export class OfflineModeService {
     private userService:UserService,
     private controlPollinationService:ControlPollinationService,
     private accountService:AccountService,
+    private offlineBaggingService:OfflineBaggingService,
+    private baggingService:BaggingService,
+    private loadingCtrl:LoadingController,
   ) {
   }
 
@@ -75,8 +82,29 @@ export class OfflineModeService {
     return await this.storageService.get(this.storageService.offlineMode);
   }
 
-  private async _syncBaggingAndCp(){
+  async _uploadBaggingTasks(){
+    let tasks:OfflineBaggingModel[] = await this.offlineBaggingService.getSavedBaggingTasks();
+    while(tasks.length > 0){
+      let task:OfflineBaggingModel = tasks.pop();
+      var formData = new FormData();
+
+      for ( var key in task ) {
+        if(key != 'url_gambar_data' && key != 'url_gambar'){
+          formData.append(key, task[key]);
+        }
+      }
+
+      const response = await fetch(task.url_gambar_data);
+      const blob = await response.blob();
+      formData.append('url_gambar', blob, task.url_gambar);
+      this.baggingService.createTask(formData,async (res:BaggingModel)=>{},false);
+      this.storageService.set(this.storageService.baggingOfflineData,tasks);
+    }
+  }
+
+  private _syncBaggingAndCp(){
     //todo: upload existing data first
+    this._uploadBaggingTasks();
     this.treeService.getAll((res:[PokokResponse])=>{
       this.treeList = res;
       this.storageService.set(this.storageService.offlineTreeList,this.treeList);
@@ -95,6 +123,9 @@ export class OfflineModeService {
             this.accountService.getSessionDetails().id.toString(),
             (res1:[BaggingModel])=>{
             this.newCpTaskList = res1;
+            this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+              v.dismiss();
+            });
           },false);
         },'Fetching Supervisor List');
       },true,'Fetching Tandan List');

@@ -101,9 +101,12 @@ export class BaggingService {
 
   createTask(
     formData:FormData,
-    callback
+    callback,
+    loadingAnim = true,
   ){
-    this.loadingModal = this.showLoading();
+    if(loadingAnim){
+      this.loadingModal = this.showLoading();
+    }
     formData.append('status',TaskStatus.done);
     this.tandanService.updateTreeAndCycle(
       formData.get("tandan_id").toString(),
@@ -116,13 +119,17 @@ export class BaggingService {
           formData
         ).subscribe(
           async (res:BaggingModel) => {
-            this.loadingModal = await this.loadingCtrl.getTop()
-            this.loadingModal.dismiss();
+            if(loadingAnim){
+              this.loadingModal = await this.loadingCtrl.getTop()
+              this.loadingModal.dismiss();
+            }
             callback(res);
           },
           async (err:HttpErrorResponse) => {
-            this.loadingModal = await this.loadingCtrl.getTop()
-            this.loadingModal.dismiss();
+            if(loadingAnim){
+              this.loadingModal = await this.loadingCtrl.getTop()
+              this.loadingModal.dismiss();
+            }
           }
         );
       }

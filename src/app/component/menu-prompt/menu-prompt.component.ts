@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalController, NavController } from '@ionic/angular';
+import { AccountService, UserRole } from 'src/app/service/account.service';
 
 @Component({
   selector: 'app-menu-prompt',
@@ -10,9 +11,11 @@ import { ModalController, NavController } from '@ionic/angular';
 export class MenuPromptComponent implements OnInit {
 
   canBack:Boolean;
+  showSync = false;
 
   constructor(
     private modalCtrl:ModalController,
+    private accountService:AccountService,
     private router:Router,
   ) { }
 
@@ -24,6 +27,8 @@ export class MenuPromptComponent implements OnInit {
     if(this.router.url != '/app/tabs/tab1' && this.router.url != '/app/tabs/tab3'){
       this.canBack = true;
     }
+    console.log(this.accountService.getSessionDetails().peranan);
+    this.showSync = this.accountService.getSessionDetails().peranan == UserRole.petugas_balut? true:false;
   }
 
   back(){

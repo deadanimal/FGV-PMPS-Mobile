@@ -35,7 +35,7 @@ export class StorageService {
     return this._storage?.get(key);
   }
 
-  public eraseAll(){
-    this._storage?.clear();
+  public async eraseAll(){
+    await this._storage?.clear();
   }
 }
