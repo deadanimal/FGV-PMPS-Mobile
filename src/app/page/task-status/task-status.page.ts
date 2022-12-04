@@ -33,6 +33,11 @@ import { TreeType } from 'src/app/common/tree-type';
 import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
 import { PollenPreparationService } from 'src/app/service/tasks/pollen-preparation.service';
 import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
+import { OfflineModeService } from 'src/app/service/offline-mode.service';
+import { OfflineTreeService } from 'src/app/service/offline/offline-tree.service';
+import { OfflineTandanService } from 'src/app/service/offline/offline-tandan.service';
+import { OfflineBaggingService } from 'src/app/service/offline/offline-bagging.service';
+import { OfflineBaggingModel } from 'src/app/model/offline-bagging';
 
 @Component({
   selector: 'app-task-status',
@@ -71,6 +76,7 @@ export class TaskStatusPage implements OnInit {
   treeType:String;
   userList:User[] = [];
   defectList:DefectModel[] = [];
+  isOfflineMode = false;
 
   constructor(
     private photoService:PhotoService,
@@ -91,12 +97,17 @@ export class TaskStatusPage implements OnInit {
     private userServices: UserService,
     private defectService: DefectService,
     private pollenPrepService: PollenPreparationService,
+    private offlineModeService: OfflineModeService,
+    private offlineTreeService: OfflineTreeService,
+    private offlineTandanService: OfflineTandanService,
+    private offlineBaggingService: OfflineBaggingService,
   ) { }
 
   ngOnInit() {
   }
 
-  ionViewDidEnter(){
+  async ionViewDidEnter(){
+    this.isOfflineMode = await this.offlineModeService.isOfflineMode();
     this.date = this.datePipe.transform(Date.now(),"dd-MM-YYYY");
     this.time = this.datePipe.transform(Date.now(),"HH:mm a");
     this.name = this.accountService.getSessionDetails().nama;
@@ -332,37 +343,71 @@ export class TaskStatusPage implements OnInit {
     formData.append('pengesah_id',this.id1.value?.toString());
     formData.append('tandan_id',this.tandanId.toString());
 
-    this.baggingService.createTask(formData,async (res:BaggingModel)=>{
-      if(res==null){
-        const modal= await this.modalCtrl.create({
-          component: GenericTextModalComponent,
-          componentProps:{
-            value:"Failed"
-          },
-          cssClass:"small-modal",
-          backdropDismiss:false,
-        });
-        modal.present();
-      }else{
-        this.modalService.continuePrompt().then(
-          (value)=>{
-            if(value['data'] == UserContinueSelection.no){
-              this._promptCompleted();
-            }else{
-              this.router.navigate(
-                [
-                  '/app/tabs/tab1/start-work-find',
-                  {
-                    treeNum:this.treeId,
-                    taskType:this.taskType,
-                  }
-                ]
-              );
+    if(!this.isOfflineMode){
+      this.baggingService.createTask(formData,async (res:BaggingModel)=>{
+        if(res==null){
+          const modal= await this.modalCtrl.create({
+            component: GenericTextModalComponent,
+            componentProps:{
+              value:"Failed"
+            },
+            cssClass:"small-modal",
+            backdropDismiss:false,
+          });
+          modal.present();
+        }else{
+          this.modalService.continuePrompt().then(
+            (value)=>{
+              if(value['data'] == UserContinueSelection.no){
+                this._promptCompleted();
+              }else{
+                this.router.navigate(
+                  [
+                    '/app/tabs/tab1/start-work-find',
+                    {
+                      treeNum:this.treeId,
+                      taskType:this.taskType,
+                    }
+                  ]
+                );
+              }
             }
+          );
+        }
+      });
+    }else{
+      let data:OfflineBaggingModel = {
+        no_daftar:this.regNo.toString(),
+        tarikh_daftar:this.datePipe.transform(Date.now(),"yyyy-MM-dd").toString(),
+        pokok_id:this.treeId.toString(),
+        kitaran:this.taskType.toString(),
+        url_gambar:"task_"+this.taskId+"."+this.photo.format,
+        url_gambar_data:this.photo.dataUrl,
+        id_sv_balut:this.accountService.getSessionDetails().no_kakitangan,
+        catatan:this.remark?.toString(),
+        pengesah_id:this.id1.value?.toString(),
+        tandan_id:this.tandanId.toString(),
+      };
+      this.offlineBaggingService.saveBaggingTask(data);
+
+      this.modalService.continuePrompt().then(
+        (value)=>{
+          if(value['data'] == UserContinueSelection.no){
+            this._promptCompleted();
+          }else{
+            this.router.navigate(
+              [
+                '/app/tabs/tab1/start-work-find',
+                {
+                  treeNum:this.treeId,
+                  taskType:this.taskType,
+                }
+              ]
+            );
           }
-        );
-      }
-    });
+        }
+      );
+    }
   }
 
   _getCPTask(taskId:String){
@@ -654,13 +699,33 @@ export class TaskStatusPage implements OnInit {
     });
   }
 
-  _getTreeNumber(){
-    this.treeService.getById(this.treeId,(res:PokokResponse)=>{
-      this.treeNum = res.progeny+'-'+res.no_pokok;
-      this.treeBlock = res.blok;
-      this.treeType = res.jantina;
-      this._getSupervisors();
-    })
+  async _getTreeNumber(){
+    if(!this.isOfflineMode){
+      this.treeService.getById(this.treeId,(res:PokokResponse)=>{
+        this.treeNum = res.progeny+'-'+res.no_pokok;
+        this.treeBlock = res.blok;
+        this.treeType = res.jantina;
+        this._getSupervisors();
+      })
+    }else{
+      let treeInfo = await this.offlineTreeService.getById(this.treeId);
+      this.treeNum = treeInfo.progeny+'-'+treeInfo.no_pokok;
+      this.treeBlock = treeInfo.blok;
+      this.treeType = treeInfo.jantina;
+      this._getOfflineSupervisors();
+      this._getTandanId();
+    }
+  }
+
+  async _getOfflineSupervisors(){
+    if(this.userRole == UserRole.petugas_balut){
+      let svList = await this.offlineModeService.getBaggingSvList();
+      svList.forEach(el => {
+        if(el.blok == this.treeBlock){
+          this.userList.push(el);
+        }
+      });
+    }
   }
 
   _getSupervisors(){
@@ -706,15 +771,24 @@ export class TaskStatusPage implements OnInit {
     }
   }
 
-  _getTandanId(){
+  async _getTandanId(){
     if(this.tandanId == null){
-      this.tandanService.getAll((res:[TandanResponse])=>{
-        res.forEach(el => {
+      if(!this.isOfflineMode){
+        this.tandanService.getAll((res:[TandanResponse])=>{
+          res.forEach(el => {
+            if(el.no_daftar == this.regNo){
+              this.tandanId = el.id.toString();
+            }
+          });
+        });
+      }else{
+        let tandanInfos = await this.offlineTandanService.getAll();
+        tandanInfos.forEach(el => {
           if(el.no_daftar == this.regNo){
             this.tandanId = el.id.toString();
           }
         });
-      });
+      }
     }
   }
 

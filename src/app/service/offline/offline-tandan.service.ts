@@ -22,4 +22,10 @@ export class OfflineTandanService {
 
     return retVal;
   }
+
+  async getAll(){
+    let retVal:TandanResponse[] = await this.storageService.get(this.storageService.offlineTandanList);
+
+    return retVal;
+  }
 }
