@@ -17,16 +17,19 @@ export class UserService {
     private taskService: TaskService,
   ) { }
 
-  async showLoading():Promise<HTMLIonLoadingElement> {
-    const loading = await this.loadingCtrl.create();
+  async showLoading(message = ''):Promise<HTMLIonLoadingElement> {
+    const loading = await this.loadingCtrl.create({
+      message:message
+    });
     loading.present();
     return loading;
   }
 
   getByRole(
     role:string,
-    callback){
-    this.loadingModal = this.showLoading();
+    callback,
+    message = ''){
+    this.loadingModal = this.showLoading(message);
     this.http.get<[User]>(
       `${environment.baseUrl}${environment.userByRole}${role}`
     ).subscribe(

@@ -14,6 +14,8 @@ export class StorageService {
   offlineMode:string = "offlineMode";
   offlineTreeList:string = "offlineTree";
   offlineTandanList:string = "offlineTandan";
+  baggingSvList:string = "offlineBaggingSv";
+  offlineNewCp:string = "offlineNewCp";
   baggingOfflineData:string = "baggingOffline";
 
   constructor(private storage: Storage) {

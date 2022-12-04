@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserContinueSelection } from 'src/app/component/continue-prompt/continue-prompt.component';
+import { BaggingModel } from 'src/app/model/bagging';
 import { PokokResponse } from 'src/app/model/pokok-respons';
 import { TandanResponse } from 'src/app/model/tandan-response';
+import { User } from 'src/app/model/user';
 import { ModalService } from 'src/app/service/modal.service';
 import { OfflineModeService } from 'src/app/service/offline-mode.service';
-import { StorageService } from 'src/app/service/storage.service';
-
 @Component({
   selector: 'app-offline-mode',
   templateUrl: './offline-mode.page.html',
@@ -17,6 +17,8 @@ export class OfflineModePage implements OnInit {
   isOfflineMode:Boolean = false;
   treeList:PokokResponse[] = [];
   tandanList:TandanResponse[] = [];
+  baggingSvList:User[] = [];
+  newCPTaskList:BaggingModel[] = [];
   constructor(
     private offlineModeService:OfflineModeService,
     private router:Router,
@@ -55,7 +57,8 @@ export class OfflineModePage implements OnInit {
     this.isOfflineMode = await this.offlineModeService.isOfflineMode();
     this.treeList = await this.offlineModeService.getTreeList();
     this.tandanList = await this.offlineModeService.getTandanList();
-    console.log("Finished")
+    this.baggingSvList = await this.offlineModeService.getBaggingSvList();
+    this.newCPTaskList = await this.offlineModeService.getNewCpList();
   }
 
   back(){
