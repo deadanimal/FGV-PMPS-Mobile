@@ -24,13 +24,22 @@ export class OfflineHeaderComponent implements OnInit {
     this.mode = AppMode.Online;
     this.initConnectivityMonitoring();
     let hasOfflineData:Boolean = await this.storageService.get(this.storageService.offlineData);
-    this.appIsOnline$.subscribe(online => {  
-      if (online) {
-        this.mode = AppMode.Online;
-      } else {
-        this.mode = AppMode.Offline;
+    this.appIsOnline$.subscribe(async online => {
+      let offlineModeEnabled = await this._isInOfflineMode();
+      if(!offlineModeEnabled){
+        if (online) {
+          this.mode = AppMode.Online;
+        } else {
+          this.mode = AppMode.Offline;
+        }
+      }else{
+        this.mode = AppMode.OfflineWithData
       }
     });
+  }
+
+  _isInOfflineMode(){
+    return this.offlineModeService.isOfflineMode();
   }
 
   private initConnectivityMonitoring() {
