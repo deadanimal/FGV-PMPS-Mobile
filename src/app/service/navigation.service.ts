@@ -47,4 +47,17 @@ export class NavigationService {
       ]
     );
   }
+
+  pollenPrepTest(
+    taskId:String
+  ){
+    this.router.navigate(
+      [
+        'app/tabs/tab1/pollen-prep-test',
+        {
+          taskId:taskId,
+        }
+      ]
+    );
+  }
 }

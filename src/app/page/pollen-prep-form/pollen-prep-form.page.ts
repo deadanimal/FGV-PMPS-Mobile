@@ -50,8 +50,8 @@ export class PollenPrepFormPage implements OnInit {
     }
   }
 
-  _updateTask(phase:PollenPrepPhase){
-    this.navService.tandanVerification(this.taskId,InAppTaskCycle.pp,this.tandanId,'app/tabs/tab1/pollen-prep-task-status',phase);
+  _updateTask(phase:PollenPrepPhase, nextUrl:String = 'app/tabs/tab1/pollen-prep-task-status'){
+    this.navService.tandanVerification(this.taskId,InAppTaskCycle.pp,this.tandanId,nextUrl,phase);
   }
 
   btnPress(buttonId:PollenPrepPhase){
@@ -112,9 +112,7 @@ export class PollenPrepFormPage implements OnInit {
       }
     }else if(buttonId == PollenPrepPhase.Test){
       if(this.btn6){
-        if(!this.btn7){
-          this._updateTask(PollenPrepPhase.Test);
-        }
+          this._updateTask(PollenPrepPhase.Test,'app/tabs/tab1/pollen-prep-test');
         this.btn7 = true;
       }
     }

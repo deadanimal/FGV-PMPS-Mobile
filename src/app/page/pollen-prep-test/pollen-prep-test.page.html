@@ -1,0 +1,49 @@
+<ion-content>
+  <app-offline-header></app-offline-header>
+  <app-logout-button></app-logout-button>
+  <app-user-info-header></app-user-info-header>
+
+  <form #form="ngForm" class="mx-auto my-2" style="max-width: 300px;">
+    <ion-item lines="full">
+      <ion-label position="floating">Masa Dan Tarikh Uji</ion-label>
+      <ion-input type="text" [(ngModel)]="dateAndTimeTest" name="dateAndTimeTest" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Jenis Polen</ion-label>
+      <ion-input type="text" [(ngModel)]="pollenType" name="pollenType" required></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Masa Dan Tarikh Balut</ion-label>
+      <ion-input type="text" [(ngModel)]="dateAndTimeBagging" name="dateAndTimeBagging" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Masa Dan Tarikh Tuai</ion-label>
+      <ion-input type="text" [(ngModel)]="dateAndTimeHarvest" name="dateAndTimeHarvest" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item  lines="full" class="mt-4">
+      <ion-select placeholder="Peratus Viabiliti Pollen(%)" id= "id1" #id1 required>
+        <ion-select-option value=0%-59%>0%-59%</ion-select-option>
+        <ion-select-option value=60%-69%>60%-69%</ion-select-option>
+        <ion-select-option value=70%-79%>70%-79%</ion-select-option>
+        <ion-select-option value=80%-89%>80%-89%</ion-select-option>
+        <ion-select-option value=90%-100%>90%-100%</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Bilangan Uji</ion-label>
+      <ion-input type="text" [(ngModel)]="numberOfTest" name="numberOfTest" required [readonly]="true"></ion-input>
+    </ion-item>
+  </form>
+  <div class="d-flex justify-content-center my-4">
+    <button (click)="save()" [disabled]="!form.valid" class="btn btn-outline-danger d-flex flex-row px-4 py-2 mx-2">
+      <ion-icon size="large" color="white" name="add-circle-outline"></ion-icon>
+      <p class="m-auto">Simpan</p>
+    </button>
+    
+    <button [disabled]="!form.valid" (click)="submit()" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+      <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
+      <p class="m-auto">Hantar</p>
+    </button>
+  </div>
+
+</ion-content>

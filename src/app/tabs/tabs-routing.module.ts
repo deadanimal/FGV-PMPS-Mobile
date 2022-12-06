@@ -93,6 +93,10 @@ const routes: Routes = [
         loadChildren: () => import('../page/pollen-prep-task-status/pollen-prep-task-status.module').then(m => m.PollenPrepTaskStatusPageModule)
       },
       {
+        path: 'tab1/pollen-prep-test',
+        loadChildren: () => import('../page/pollen-prep-test/pollen-prep-test.module').then(m => m.PollenPrepTestPageModule)
+      },
+      {
         path: '',
         redirectTo: 'tabs/tab1/',
         pathMatch: 'full'

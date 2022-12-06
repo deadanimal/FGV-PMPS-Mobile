@@ -265,6 +265,7 @@ export class TaskStatusPage implements OnInit {
   }
 
   async updatePollenPrep(){
+    let date = new Date();
     const formData = new FormData();
     const response = await fetch(this.photo.dataUrl);
     const blob = await response.blob();
@@ -272,6 +273,7 @@ export class TaskStatusPage implements OnInit {
     formData.append('id_sv_pollen',this.accountService.getSessionDetails().id.toString());
     formData.append('catatan2',this.remark?.toString());
     formData.append('pengesah_id',this.id1?.value?.toString());
+    formData.append('tarikh_qc', date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate());
     formData.append('_method','PUT');
 
     this.pollenPrepService.updatePost(this.taskId,formData,
