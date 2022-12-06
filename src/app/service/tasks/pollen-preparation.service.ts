@@ -179,4 +179,26 @@ export class PollenPreparationService {
       }
     );
   }
+
+  updatePost(
+    ppId:String,
+    updateObject:any,
+    callback,
+  ){
+    this.loadingModal = this.showLoading();
+    this.http.post<PollenPreparationModel>(
+      `${environment.baseUrl}${environment.pollen}${ppId}`,
+      updateObject
+    ).subscribe(
+      async (res:PollenPreparationModel) => {
+        this.loadingModal = await this.loadingCtrl.getTop()
+        this.loadingModal.dismiss();
+        callback(res);
+      },
+      async (err:HttpErrorResponse) => {
+        this.loadingModal = await this.loadingCtrl.getTop()
+        this.loadingModal.dismiss();
+      }
+    );
+  }
 }

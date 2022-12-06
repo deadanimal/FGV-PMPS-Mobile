@@ -44,6 +44,7 @@ export class PollenPrepFormPage implements OnInit {
   ionViewWillEnter(){
     if(this.qcDone){
       this._updateTask(PollenPrepPhase.Qc);
+      this.navService.updatePollenPrepTask(this.taskId,PollenPrepPhase.Qc);
     }else{
       this._getTask();
     }

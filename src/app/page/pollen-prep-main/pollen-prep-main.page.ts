@@ -75,12 +75,9 @@ export class PollenPrepMainPage implements OnInit {
     if(taskStatus == 'new'){
       this.router.navigate(['app/tabs/tab1/pollen-prep-tandan-list',{status:taskStatus,treeId:value}]);
     }else if(taskStatus == 'posponed'){
-      this.navigationService.tandanVerification(
-        id,
-        InAppTaskCycle.posponedpp,
-        value,
-        'app/tabs/tab1/pollen-prep-form'
-      );
+      this.router.navigate(['app/tabs/tab1/pollen-prep-form',{
+        taskId:id,tandanId:value
+      }]);
     }
     else{
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskStatus,tandanId:id}]);

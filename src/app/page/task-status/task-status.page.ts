@@ -194,8 +194,15 @@ export class TaskStatusPage implements OnInit {
       }
     );
   }
-  
-  async submitPollenPrep(){
+  submitPollenPrep(){
+    if(this.taskId != null){
+      this.updatePollenPrep();
+    }else{
+      this.createPollenPrep();
+    }
+  }
+
+  async createPollenPrep(){
     const formData = new FormData();
     const response = await fetch(this.photo.dataUrl);
     const blob = await response.blob();
@@ -203,11 +210,71 @@ export class TaskStatusPage implements OnInit {
     formData.append('pokok_id',this.treeId.toString());
     formData.append('tandan_id',this.tandanId.toString());
     formData.append('id_sv_pollen',this.accountService.getSessionDetails().id.toString());
-    formData.append('catatan_pemeriksa',this.remark?.toString());
+    formData.append('catatan',this.remark?.toString());
     formData.append('pengesah_id',this.id1?.value?.toString());
     formData.append('status',TaskStatus.created);
 
     this.pollenPrepService.create(formData,
+      (res:PollenPreparationModel)=>{
+        if(res.id != null){
+          let url:string;
+          if(this.returnPage == null || this.returnPage == "" || this.returnPage == undefined){
+            url = 'app/tabs/tab1/pollen-prep-form';
+          }else{
+            url = 'app/tabs/tab1/'+this.returnPage.toString();
+          }
+          if(this.tandanStatus == "ok"){
+            this.modalService.successPrompt("QC telah berjaya dihantar kepada Penyelia").then(
+              (value)=>{
+                setTimeout(
+                  () => {
+                    this.router.navigate(
+                      [
+                        url,
+                        {
+                          taskId:res.id,
+                          tandanId:this.tandanId,
+                        }
+                      ]
+                    );
+                  },
+                  500
+                );
+              }
+            );
+          }else{
+            this.modalService.successPrompt("Tandan yang rosak telah dihapuskan").then(
+              (value)=>{
+                setTimeout(() => {
+                  this.router.navigateByUrl(
+                    '/app/tabs/tab1',
+                    {
+                      replaceUrl : true
+                    }
+                    );
+                  },
+                  500
+                );
+              }
+            );
+          }
+        }else{
+          this.modalService.textAndBtnPrompt('Ralat, Sila cuba lagi','OK');
+        }
+      });
+  }
+
+  async updatePollenPrep(){
+    const formData = new FormData();
+    const response = await fetch(this.photo.dataUrl);
+    const blob = await response.blob();
+    formData.append('url_gambar2', blob, "task_"+this.taskId+"."+this.photo.format);
+    formData.append('id_sv_pollen',this.accountService.getSessionDetails().id.toString());
+    formData.append('catatan2',this.remark?.toString());
+    formData.append('pengesah_id',this.id1?.value?.toString());
+    formData.append('_method','PUT');
+
+    this.pollenPrepService.updatePost(this.taskId,formData,
       (res:PollenPreparationModel)=>{
         if(res.id != null){
           let url:string;

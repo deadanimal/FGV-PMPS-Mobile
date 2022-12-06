@@ -42,7 +42,7 @@ export class NavigationService {
         'app/tabs/tab1/pollen-prep-task-status',
         {
           taskId:taskId,
-          taskPhase:taskPhase,
+          var1:taskPhase,
         }
       ]
     );

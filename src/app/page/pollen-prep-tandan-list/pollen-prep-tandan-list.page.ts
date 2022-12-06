@@ -54,7 +54,7 @@ export class PollenPrepTandanListPage implements OnInit {
   _getTandanByTreeId(){
     this.tandanService.getAll((res:[TandanResponse])=>{
       res.forEach(el => {
-        if(el.pokok_id?.toString() == this.treeId && el.kitaran == TandanCycle.bagging){
+        if(el.pokok_id?.toString() == this.treeId && el.kitaran == TandanCycle.harvest){
           this.tandanList.push(el);
         }
       });
