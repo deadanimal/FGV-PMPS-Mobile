@@ -11,9 +11,9 @@
             <img class="m-auto h-100" src={{userIconPath}}/>
           </div>
           <div class="h-25 w-100 text-center">
-            <p *ngIf="roleShort == null; else qcSV" class="small my-2 mx-auto text-white text-capitalize">{{role}}</p>
+            <p *ngIf="roleShort == null; else qcSV" class="small my-2 mx-auto text-white text-capitalize" style="line-height: 1;">{{role}}</p>
             <ng-template #qcSV>
-              <p class="small my-2 mx-auto text-white text-capitalize">{{roleShort}}</p>
+              <p class="small my-2 mx-auto text-white text-capitalize" style="line-height: 1;">{{roleShort}}</p>
             </ng-template>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { LoginResponseModel } from 'src/app/model/login-response';
-import { AccountService } from 'src/app/service/account.service';
+import { AccountService, UserRole } from 'src/app/service/account.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -16,6 +16,7 @@ export class UserProfilePage implements OnInit {
   date:String;
   phone:String;
   role:String;
+  roleShort:String;
 
   constructor(
     private accountService:AccountService,
@@ -30,6 +31,12 @@ export class UserProfilePage implements OnInit {
     this.date = this.datePipe.transform(Date.parse(loginDetails.created_at?.toString()),"dd-MM-YYYY");
     this.phone = loginDetails.no_telefon;
     this.role = loginDetails.peranan;
+
+    if(this.role == UserRole.penyelia_qa){
+      this.roleShort = "Penyelia QC";
+    }else if(this.role == UserRole.petugas_balut){
+      this.roleShort = "Petugas Balut";
+    }
   }
 
 }

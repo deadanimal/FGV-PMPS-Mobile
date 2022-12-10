@@ -10,7 +10,10 @@
         <div class="mx-auto" style="width: 48px; height: 48px; background-color: rgba(64, 19, 28, 1); border-radius: 8px;">
           <img class="m-auto" src="../../../assets/penyelia_icon.png"/>
         </div>
-          <p class="my-2 mx-auto text-white">{{role}}</p>
+          <p *ngIf="roleShort == null; else qcSV" class="my-2 mx-auto text-white" style="line-height: 1;">{{role}}</p>
+          <ng-template #qcSV>
+            <p class="small my-2 mx-auto text-white text-capitalize" style="line-height: 1;">{{roleShort}}</p>
+          </ng-template>
       </div>
     </div>
   </div>

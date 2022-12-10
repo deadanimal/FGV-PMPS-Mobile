@@ -15,7 +15,7 @@
     <div class="mt-4 h6">Tugas offline yang telah siap:</div>
     <div class="row border-bottom mx-4">
       <div class="col-9 text-start">Balut:</div>
-      <div class="col-3 text-start">{{baggingTaskDone.length}}</div>
+      <div class="col-3 text-start">{{baggingTaskDone?.length}}</div>
     </div>
     <div class="row border-bottom mx-4">
       <div class="col-9 text-start">Pendebungaan Terkawal:</div>
@@ -34,7 +34,7 @@
     <div class="mt-4 h6">Tugas Offline Tersedia:</div>
     <div class="row border-bottom mx-4">
       <div class="col-9 text-start">Pendebungaan Terkawal:</div>
-      <div class="col-3 text-start">{{newCPTaskList.length}}</div>
+      <div class="col-3 text-start">{{newCPTaskList?.length}}</div>
     </div>
     <div class="row border-bottom mx-4">
       <div class="col-9 text-start">Kawalan Kualiti:</div>
@@ -48,15 +48,15 @@
     <div class="mt-4 h6">Data Offline Tersedia:</div>
     <div class="row border-bottom mx-4">
       <div class="col-9 text-start">Pokok:</div>
-      <div class="col-3 text-start">{{treeList.length}}</div>
+      <div class="col-3 text-start">{{treeList?.length}}</div>
     </div>
     <div class="row border-bottom mx-4">
       <div class="col-9 text-start">Tandan:</div>
-      <div class="col-3 text-start">{{tandanList.length}}</div>
+      <div class="col-3 text-start">{{tandanList?.length}}</div>
     </div>
     <div class="row border-bottom mx-4">
       <div class="col-9 text-start">Penyelia:</div>
-      <div class="col-3 text-start">{{baggingSvList.length}}</div>
+      <div class="col-3 text-start">{{baggingSvList?.length}}</div>
     </div>
     <button class="btn btn-outline-danger w-75 mt-4" (click)="sync()">Sync</button>
     <button *ngIf="!isOfflineMode" class="btn btn-outline-danger w-75 mt-4" (click)="offline(true)">Hidupkan Fungsi Offline</button>
