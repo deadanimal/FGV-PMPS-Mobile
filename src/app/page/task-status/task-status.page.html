@@ -60,7 +60,7 @@
     </ion-item>
     <ion-item  lines="full" class="my-4" *ngIf="((userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Makmal') && defect == null)">
       <ion-select placeholder="Pilih Penyelia" id= "id1" #id1 >
-        <ion-select-option *ngFor="let sv of userList" value={{sv.no_kakitangan}}>{{sv.nama}}</ion-select-option>
+        <ion-select-option *ngFor="let sv of userList" value={{sv.id}}>{{sv.nama}}</ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item *ngIf="userRole=='Penyelia Balut & Pendebungaan Terkawal' || userRole=='Penyelia Kawalan Kualiti' || userRole=='Penyelia Tuai'" lines="full">
