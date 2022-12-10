@@ -82,7 +82,7 @@ export class DashboardPage implements OnInit {
       this.harvestTask = true;
     }else if(this.role == UserRole.petugas_tuai){
       this.harvestTask = true;
-    }else if(this.role == UserRole.petugas_makmal){
+    }else if(this.role == UserRole.petugas_makmal || this.role == UserRole.penyelia_makmal){
       this.pollenSupplyTask = true;
       this.pollenUseTask = true;
     }

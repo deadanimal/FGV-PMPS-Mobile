@@ -3,8 +3,9 @@ import { Router } from '@angular/router';
 import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
 import { TaskStatus } from 'src/app/common/task-status';
 import { BaggingModel } from 'src/app/model/bagging';
+import { LoginResponseModel } from 'src/app/model/login-response';
 import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
-import { AccountService } from 'src/app/service/account.service';
+import { AccountService, UserRole } from 'src/app/service/account.service';
 import { NavigationService } from 'src/app/service/navigation.service';
 import { PollenPreparationService } from 'src/app/service/tasks/pollen-preparation.service';
 
@@ -17,6 +18,7 @@ export class PollenPrepMainPage implements OnInit {
 
   disableFinishRecord:boolean;
   disableNewTaskBtn:boolean;
+  disableNewRecord:boolean;
   disablePosponedTaskBtn:boolean;
   disableActiveTaskBtn:boolean;
   numOfActiveTask:number = 0;
@@ -27,6 +29,7 @@ export class PollenPrepMainPage implements OnInit {
   finishedTaskList:any[];
   newTaskList:any[];
   posponedTaskList:any[];
+  role:UserRole;
 
   constructor(
     private router:Router,
@@ -39,6 +42,8 @@ export class PollenPrepMainPage implements OnInit {
   }
 
   ionViewDidEnter(){
+    let user:LoginResponseModel = this.accountService.getSessionDetails();
+    this.role = this.accountService.getUserRole();
     this.activeTaskList = [];
     this.finishedTaskList = [];
     this.newTaskList = [];
@@ -80,12 +85,44 @@ export class PollenPrepMainPage implements OnInit {
       }]);
     }
     else{
-      this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskStatus,tandanId:id}]);
+      // this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskStatus,tandanId:id}]);
     }
   }
 
   _getTask(){
-    this._getNewTask();
+    if(this.role == UserRole.petugas_makmal){
+      this._getNewTask();
+    }else{
+      this._getSvTask();
+    }
+  }
+
+  _getSvTask(){
+    this.pollenPrepService.getAll((res:[PollenPreparationModel])=>{
+      res.forEach(el => {
+        if(el.pengesah_id == this.accountService.getSessionDetails().no_kakitangan){
+          if(el.status == TaskStatus.done){
+            this.numOfNewTask++;
+            this.newTaskList.push(el);
+          }else if(el.status == TaskStatus.verified || el.status == TaskStatus.rejected){
+            this.numOfFinishTask++;
+            this.finishedTaskList.push(el);
+          }
+        }
+      });
+    });
+  }
+  
+  newRecord(){
+    this._enableAllBtn();
+    this.disableNewRecord = true;
+  }
+
+  _enableAllBtn(){
+    this.disableNewTaskBtn = false;
+    this.disableFinishRecord = false;
+    this.disableNewRecord = false;
+    this.disableActiveTaskBtn = false;
   }
 
   _getNewTask(){
