@@ -103,7 +103,11 @@ export class DashboardPage implements OnInit {
   }
 
   task(task:String){
-    this.router.navigate(['app/tabs/tab1/main-task',{task:task}]);
+    if(task == "Penyediaan Pollen" && this.role == UserRole.petugas_makmal){
+      this.pollenPrepTask();
+    }else{
+      this.router.navigate(['app/tabs/tab1/main-task',{task:task}]);
+    }
   }
 
   pollenPrepTask(){
