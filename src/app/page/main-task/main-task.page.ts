@@ -11,6 +11,7 @@ import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { HarvestModel } from 'src/app/model/harvest';
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { PokokResponse } from 'src/app/model/pokok-respons';
+import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
 import { QualityControlModel } from 'src/app/model/quality-control';
 import { TaskResponseModel } from 'src/app/model/task-response';
 import { AccountService, UserRole } from 'src/app/service/account.service';
@@ -22,6 +23,7 @@ import { TaskService } from 'src/app/service/task.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
 import { HarvestService } from 'src/app/service/tasks/harvest.service';
+import { PollenPreparationService } from 'src/app/service/tasks/pollen-preparation.service';
 import { QualityControlService } from 'src/app/service/tasks/quality-control.service';
 import { TreeService } from 'src/app/service/tasks/tree.service';
 
@@ -71,6 +73,7 @@ export class MainTaskPage implements OnInit {
     private offlineModeService:OfflineModeService,
     private offlineTreeService:OfflineTreeService,
     private offlineBaggingService:OfflineBaggingService,
+    private pollenPrepService:PollenPreparationService,
   ) { }
 
   ngOnInit() {
@@ -178,6 +181,13 @@ export class MainTaskPage implements OnInit {
           taskId:id,
           treeNum:param1,
           taskType:this.task,
+        }]);
+      }else if(taskId == "pollenPrep"){
+        this.router.navigate(['app/tabs/tab1/task-status',
+        {
+          taskId:id,
+          taskType:InAppTaskCycle.ppSv,
+          tandanId:param1,
         }]);
       }else{
         this.router.navigate(
@@ -448,7 +458,7 @@ export class MainTaskPage implements OnInit {
     }else{
       this.baggingService.getAll((res:[BaggingModel])=>{
         res.forEach(el => {
-          if(el.pengesah_id == this.accountService.getSessionDetails().no_kakitangan){
+          if(el.pengesah_id == this.accountService.getSessionDetails().id.toString()){
             if(el.status == TaskStatus.done){
               this.numOfNewTask++;
               this.newTaskList.push(el);
@@ -489,7 +499,7 @@ export class MainTaskPage implements OnInit {
     }else{
       this.controlPollinationService.getAll((res:[ControlPollinationModel])=>{
         res.forEach(el => {
-          if(el.pengesah_id == this.accountService.getSessionDetails().no_kakitangan){
+          if(el.pengesah_id == this.accountService.getSessionDetails().id.toString()){
             if(el.status == TaskStatus.done){
               this.numOfNewTask++;
               this.newTaskList.push(el);
@@ -526,7 +536,7 @@ export class MainTaskPage implements OnInit {
     }else{
       this.qcService.getAll((res:[QualityControlModel])=>{
         res.forEach(el => {
-          if(el.pengesah_id == this.accountService.getSessionDetails().no_kakitangan){
+          if(el.pengesah_id == this.accountService.getSessionDetails().id.toString()){
             if(el.status == TaskStatus.done){
               this.numOfNewTask++;
               this.newTaskList.push(el);
@@ -559,6 +569,26 @@ export class MainTaskPage implements OnInit {
     return retVal;
   }
 
+  _getPollenPrepTask(){
+    if(
+      this.role == UserRole.penyelia_makmal
+    ){
+      this.pollenPrepService.getAll((res:[PollenPreparationModel])=>{
+        res.forEach(el => {
+          if(el.pengesah_id == this.accountService.getSessionDetails().id){
+            if(el.status == TaskStatus.done){
+              this.numOfNewTask++;
+              this.newTaskList.push(el);
+            }else if(el.status == TaskStatus.verified || el.status == TaskStatus.rejected){
+              this.numOfFinishTask++;
+              this.finishedTaskList.push(el);
+            }
+          }
+        });
+      });
+    }
+  }
+
   _getHarvestTask(){
     if(
       this.role == UserRole.petugas_tuai
@@ -583,7 +613,7 @@ export class MainTaskPage implements OnInit {
     }else{
       this.harvestService.getAll((res:[HarvestModel])=>{
         res.forEach(el => {
-          if(el.pengesah_id == this.accountService.getSessionDetails().no_kakitangan ||
+          if(el.pengesah_id == this.accountService.getSessionDetails().id.toString() ||
              (el.pengesah_id == null && el.pokok?.blok == this.accountService.getSessionDetails().blok) ){
             if(el.status == TaskStatus.done){
               this.numOfNewTask++;
@@ -631,6 +661,8 @@ export class MainTaskPage implements OnInit {
       this._getQCTask();
     }else if(this.task == 'Tuai'){
       this._getHarvestTask();
+    }else if(this.task == 'Penyediaan Pollen'){
+      this._getPollenPrepTask();
     }
   }
 

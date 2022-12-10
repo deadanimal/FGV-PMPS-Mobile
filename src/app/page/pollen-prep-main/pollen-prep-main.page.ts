@@ -100,7 +100,7 @@ export class PollenPrepMainPage implements OnInit {
   _getSvTask(){
     this.pollenPrepService.getAll((res:[PollenPreparationModel])=>{
       res.forEach(el => {
-        if(el.pengesah_id == this.accountService.getSessionDetails().no_kakitangan){
+        if(el.pengesah_id == this.accountService.getSessionDetails().id){
           if(el.status == TaskStatus.done){
             this.numOfNewTask++;
             this.newTaskList.push(el);
@@ -137,7 +137,7 @@ export class PollenPrepMainPage implements OnInit {
     this.pollenPrepService.getAll(
       (res:[PollenPreparationModel])=>{
         res.forEach(el => {
-          if(el.id_sv_pollen == this.accountService.getSessionDetails().id.toString()){
+          if(el.id_sv_pollen == this.accountService.getSessionDetails().id){
             if(el.status == TaskStatus.created){
               this.posponedTaskList.push(el);
               this.numOfPosponedTask++;

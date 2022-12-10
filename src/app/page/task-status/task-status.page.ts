@@ -541,7 +541,15 @@ export class TaskStatusPage implements OnInit {
   }
 
   _getPollenPrepTask(){
+    if(this.userRole == UserRole.penyelia_makmal){
+      this.pollenPrepService.getById(this.taskId,(res:PollenPreparationModel)=>{
+        this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
+        this.remark = res.catatan;
+        this.tandanId = res.tandan_id.toString();
+      });
+    }else{
       this._getTandanInfo(this.tandanId);
+    }
   }
 
   async _getTask(taskId:String){
@@ -557,7 +565,7 @@ export class TaskStatusPage implements OnInit {
       this._getHarvestTask(taskId);
     }else if(this.taskType == 'harvestsv'){
       this._getHarvestTask(taskId);
-    }else if(this.taskType == InAppTaskCycle.pp){
+    }else if(this.taskType == InAppTaskCycle.pp || this.taskType == InAppTaskCycle.ppSv){
       this._getPollenPrepTask();
     }else if(this.taskType == InAppTaskCycle.pollenPrepForm){
       this._getPollenPrepTask();
@@ -637,6 +645,15 @@ export class TaskStatusPage implements OnInit {
           this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
         }
       );
+    }else if(this.taskType == InAppTaskCycle.ppSv){
+      this.pollenPrepService.updateVerify(
+        this.taskId,
+        this.svRemark,
+        TaskStatus.verified,
+        (res:PollenPreparationModel)=>{
+          this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
+        }
+      );
     }else{
       this.baggingService.verify(
         this.taskId,
@@ -686,6 +703,15 @@ export class TaskStatusPage implements OnInit {
         this.taskId,
         this.svRemark,
         this.accountService.getSessionDetails().no_kakitangan,
+        TaskStatus.rejected,
+        (res:QualityControlModel)=>{
+          this._promptCompleted("Tugasan Telah Berjaya Di Tolak");
+        }
+      );
+    }else if(this.taskType == InAppTaskCycle.ppSv){
+      this.pollenPrepService.updateVerify(
+        this.taskId,
+        this.svRemark,
         TaskStatus.rejected,
         (res:QualityControlModel)=>{
           this._promptCompleted("Tugasan Telah Berjaya Di Tolak");

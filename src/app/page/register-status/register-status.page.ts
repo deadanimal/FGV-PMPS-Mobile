@@ -10,6 +10,7 @@ import { BaggingModel } from 'src/app/model/bagging';
 import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { HarvestModel } from 'src/app/model/harvest';
 import { PokokResponse } from 'src/app/model/pokok-respons';
+import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
 import { QualityControlModel } from 'src/app/model/quality-control';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { TaskResponseModel } from 'src/app/model/task-response';
@@ -19,6 +20,7 @@ import { TaskService } from 'src/app/service/task.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
 import { HarvestService } from 'src/app/service/tasks/harvest.service';
+import { PollenPreparationService } from 'src/app/service/tasks/pollen-preparation.service';
 import { QualityControlService } from 'src/app/service/tasks/quality-control.service';
 import { TandanService } from 'src/app/service/tasks/tandan.service';
 import { TreeService } from 'src/app/service/tasks/tree.service';
@@ -54,6 +56,7 @@ export class RegisterStatusPage implements OnInit {
     private qualityControlService: QualityControlService,
     private harvestService: HarvestService,
     private treeService: TreeService,
+    private pollenPrepService: PollenPreparationService,
     private datePipe: DatePipe,
   ) { }
 
@@ -95,6 +98,12 @@ export class RegisterStatusPage implements OnInit {
 
   _getQcTask(){
     this.qualityControlService.getById(this.taskId,(res:QualityControlModel)=>{
+      this._getTandanInfo(res.tandan_id.toString());
+    });
+  }
+
+  _getPollenPrepTask(){
+    this.pollenPrepService.getById(this.taskId,(res:PollenPreparationModel)=>{
       this._getTandanInfo(res.tandan_id.toString());
     });
   }
@@ -144,6 +153,8 @@ export class RegisterStatusPage implements OnInit {
       this._getQcTask();
     }else if(this.taskType == "Tuai"){
       this._getHarvestTask();
+    }else if(this.taskType == "Penyediaan Pollen"){
+      this._getPollenPrepTask();
     }else{
       this.loadingModal= await this.showLoading();
       this.taskService.getTask(this.taskId).subscribe(

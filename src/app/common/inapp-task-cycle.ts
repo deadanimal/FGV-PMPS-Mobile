@@ -7,6 +7,7 @@ export enum InAppTaskCycle {
     harvest     = 'tuai',
     harvestSv   = 'harvestsv',
     pp          = 'pollenprep',
+    ppSv        = 'pollenprepsv',
     posponedpp  = 'posponedpollenprep',
     pollenPrepForm  = 'pollen-prep-form',
 }
