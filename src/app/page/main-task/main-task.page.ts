@@ -18,6 +18,7 @@ import { AccountService, UserRole } from 'src/app/service/account.service';
 import { ModalService } from 'src/app/service/modal.service';
 import { OfflineModeService } from 'src/app/service/offline-mode.service';
 import { OfflineBaggingService } from 'src/app/service/offline/offline-bagging.service';
+import { OfflineControlPollinationService } from 'src/app/service/offline/offline-control-pollination.service';
 import { OfflineTreeService } from 'src/app/service/offline/offline-tree.service';
 import { TaskService } from 'src/app/service/task.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
@@ -73,6 +74,7 @@ export class MainTaskPage implements OnInit {
     private offlineModeService:OfflineModeService,
     private offlineTreeService:OfflineTreeService,
     private offlineBaggingService:OfflineBaggingService,
+    private offlineCPService:OfflineControlPollinationService,
     private pollenPrepService:PollenPreparationService,
   ) { }
 
@@ -472,30 +474,35 @@ export class MainTaskPage implements OnInit {
     }
   }
 
-  _getCPTask(){
+  async _getCPTask(){
     if(
       this.role == UserRole.general_worker || 
       this.role == UserRole.petugas_balut || 
       this.role == UserRole.petugas_qa
     ){
-      this.controlPollinationService.getByUserId(this.employeeId,(res:[ControlPollinationModel])=>{
-        res.forEach(el => {
-          if(el.status == TaskStatus.done){
-            this.numOfActiveTask++;
-            this.activeTaskList.push(el);
-          }else if(el.status == TaskStatus.postpone){
-            this.numOfPosponedTask++;
-            this.posponedTaskList.push(el);
-          }else{
-            this.numOfFinishTask++;
-            this.finishedTaskList.push(el);
-          }
+      if(!this.isOfflineMode){
+        this.controlPollinationService.getByUserId(this.employeeId,(res:[ControlPollinationModel])=>{
+          res.forEach(el => {
+            if(el.status == TaskStatus.done){
+              this.numOfActiveTask++;
+              this.activeTaskList.push(el);
+            }else if(el.status == TaskStatus.postpone){
+              this.numOfPosponedTask++;
+              this.posponedTaskList.push(el);
+            }else{
+              this.numOfFinishTask++;
+              this.finishedTaskList.push(el);
+            }
+          });
+          this.controlPollinationService.getNewlyCreatedTask(this.employeeId,(res1:[ControlPollinationModel])=>{
+            this.numOfNewTask = res1.length;
+            this.newTaskList = res1;
+          },false);
         });
-        this.controlPollinationService.getNewlyCreatedTask(this.employeeId,(res1:[ControlPollinationModel])=>{
-          this.numOfNewTask = res1.length;
-          this.newTaskList = res1;
-        },false);
-      });
+      }else{
+        this.newTaskList = await this.offlineCPService.getNewCpTaskList();
+        this.numOfNewTask = this.newTaskList.length;
+      }
     }else{
       this.controlPollinationService.getAll((res:[ControlPollinationModel])=>{
         res.forEach(el => {

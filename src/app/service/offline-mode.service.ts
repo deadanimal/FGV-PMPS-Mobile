@@ -122,6 +122,7 @@ export class OfflineModeService {
             this.accountService.getSessionDetails().id,
             (res1:[BaggingModel])=>{
             this.newCpTaskList = res1;
+            this.storageService.set(this.storageService.offlineNewCp,this.newCpTaskList);
             this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
               v.dismiss();
             });
