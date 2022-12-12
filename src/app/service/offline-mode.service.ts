@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
+import { TandanCycle } from '../common/tandan-cycle';
 import { BaggingModel } from '../model/bagging';
+import { DefectModel } from '../model/defect';
 import { OfflineBaggingModel } from '../model/offline-bagging';
 import { PokokResponse } from '../model/pokok-respons';
 import { TandanResponse } from '../model/tandan-response';
@@ -10,6 +12,7 @@ import { OfflineBaggingService } from './offline/offline-bagging.service';
 import { StorageService } from './storage.service';
 import { BaggingService } from './tasks/bagging.service';
 import { ControlPollinationService } from './tasks/control-pollination.service';
+import { DefectService } from './tasks/defect.service';
 import { TandanService } from './tasks/tandan.service';
 import { TreeService } from './tasks/tree.service';
 import { UserService } from './user.service';
@@ -25,6 +28,7 @@ export class OfflineModeService {
   treeList:PokokResponse[] = [];
   baggingSvList:User[] = [];
   newCpTaskList:BaggingModel[] = [];
+  defectList:DefectModel[] = [];
   constructor(
     private storageService:StorageService,
     private tandanService:TandanService,
@@ -35,6 +39,7 @@ export class OfflineModeService {
     private offlineBaggingService:OfflineBaggingService,
     private baggingService:BaggingService,
     private loadingCtrl:LoadingController,
+    private defectService:DefectService,
   ) {
   }
 
@@ -110,7 +115,7 @@ export class OfflineModeService {
       this.tandanService.getAll((res2:[TandanResponse])=>{
         this.tandanList = [];
         res2.forEach(el => {
-          if(el.pokok_id == null){
+          if(el.pokok_id == null || el.kitaran == TandanCycle.bagging){
             this.tandanList.push(el);
           }
         });
@@ -123,8 +128,12 @@ export class OfflineModeService {
             (res1:[BaggingModel])=>{
             this.newCpTaskList = res1;
             this.storageService.set(this.storageService.offlineNewCp,this.newCpTaskList);
-            this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
-              v.dismiss();
+            this.defectService.getAll((defectRes:[DefectModel])=>{
+              this.defectList = defectRes;
+              this.storageService.set(this.storageService.offlineDefectList,defectRes);
+              this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+                v.dismiss();
+              });
             });
           },false);
         },'Fetching Supervisor List');

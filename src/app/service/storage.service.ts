@@ -16,6 +16,7 @@ export class StorageService {
   offlineTandanList:string = "offlineTandan";
   baggingSvList:string = "offlineBaggingSv";
   offlineNewCp:string = "offlineNewCp";
+  offlineDefectList:string = "offlineDefectList";
   baggingOfflineData:string = "baggingOffline";
   controlPollinationOfflineData:string = "cpOffline";
 

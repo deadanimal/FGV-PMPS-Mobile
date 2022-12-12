@@ -11,11 +11,11 @@ export class OfflineTandanService {
     private storageService:StorageService
   ) { }
 
-  async getById(id:String){
+  async getById(id:number){
     let tempArray:TandanResponse[] = await this.storageService.get(this.storageService.offlineTandanList);
     let retVal:TandanResponse;
     tempArray.forEach(el => {
-      if(el.id.toString() == id){
+      if(el.id == id){
         retVal = el;
       }
     });

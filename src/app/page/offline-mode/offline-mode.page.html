@@ -58,6 +58,10 @@
       <div class="col-9 text-start">Penyelia:</div>
       <div class="col-3 text-start">{{baggingSvList?.length}}</div>
     </div>
+    <div class="row border-bottom mx-4">
+      <div class="col-9 text-start">Kerosakan Tandan:</div>
+      <div class="col-3 text-start">{{defectList?.length}}</div>
+    </div>
     <button class="btn btn-outline-danger w-75 mt-4" (click)="sync()">Sync</button>
     <button *ngIf="!isOfflineMode" class="btn btn-outline-danger w-75 mt-4" (click)="offline(true)">Hidupkan Fungsi Offline</button>
     <button *ngIf="isOfflineMode" class="btn btn-outline-danger w-75 mt-4" (click)="offline(false)">Matikan Fungsi Offline</button>

@@ -38,6 +38,8 @@ import { OfflineTreeService } from 'src/app/service/offline/offline-tree.service
 import { OfflineTandanService } from 'src/app/service/offline/offline-tandan.service';
 import { OfflineBaggingService } from 'src/app/service/offline/offline-bagging.service';
 import { OfflineBaggingModel } from 'src/app/model/offline-bagging';
+import { OfflineControlPollinationService } from 'src/app/service/offline/offline-control-pollination.service';
+import { OfflineControlPollinationModel } from 'src/app/model/offline-control-pollination';
 
 @Component({
   selector: 'app-task-status',
@@ -101,6 +103,7 @@ export class TaskStatusPage implements OnInit {
     private offlineTreeService: OfflineTreeService,
     private offlineTandanService: OfflineTandanService,
     private offlineBaggingService: OfflineBaggingService,
+    private offlineCpService: OfflineControlPollinationService,
   ) { }
 
   ngOnInit() {
@@ -345,54 +348,96 @@ export class TaskStatusPage implements OnInit {
     this.submitCP(TaskStatus.created);
   }
 
-  async submitCP(status:TaskStatus){
-    if(this.taskType == 'debungposponed'){
-      this.controlPollinationService.updateRemarksNumber(
-        this.taskId,
-        this.remark,
-        this.id1?.value?.toString(),
-        status,
-        (resCP:ControlPollinationModel)=>{
-          if(this.defect == null){
-            this.router.navigate(
-              [
-                '/app/tabs/tab1/control-pollen-form',
-                {
-                  taskId:resCP.id,
-                }
-              ]
-            );
-          }else{
-            this._updateDefect(resCP.tandan_id);
-          }
+  _updateCP(status:TaskStatus){
+    this.controlPollinationService.updateRemarksNumber(
+      this.taskId,
+      this.remark,
+      this.id1?.value?.toString(),
+      status,
+      (resCP:ControlPollinationModel)=>{
+        if(this.defect == null){
+          this.router.navigate(
+            [
+              '/app/tabs/tab1/control-pollen-form',
+              {
+                taskId:resCP.id,
+              }
+            ]
+          );
+        }else{
+          this._updateDefect(resCP.tandan_id);
         }
-      );
-    }else{
-      const formData = new FormData();
-      const response = await fetch(this.photo.dataUrl);
-      const blob = await response.blob();
-      formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
+      }
+    );
+  }
+
+  async _createCp(status:TaskStatus){
+    const formData = new FormData();
+    const response = await fetch(this.photo.dataUrl);
+    const blob = await response.blob();
+    formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
+    if(!this.isOfflineMode){
       this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
         formData.append('tandan_id',res.tandan_id.toString());
         formData.append('pokok_id',res.pokok_id.toString());
         formData.append('catatan',this.remark?.toString());
         formData.append('id_sv_cp',this.accountService.getSessionDetails().id.toString());
         formData.append('pengesah_id',this.id1?.value?.toString());
-        this.controlPollinationService.create(formData,status,(resCP:ControlPollinationModel)=>{
-          if(this.defect == null){
-            this.router.navigate(
-              [
-                '/app/tabs/tab1/control-pollen-form',
-                {
-                  taskId:resCP.id,
-                }
-              ]
-            );
-          }else{
-            this._updateDefect(resCP.tandan_id);
-          }
-        });
-      });
+          this.controlPollinationService.create(formData,status,(resCP:ControlPollinationModel)=>{
+            if(this.defect == null){
+              this.router.navigate(
+                [
+                  '/app/tabs/tab1/control-pollen-form',
+                  {
+                    taskId:resCP.id,
+                  }
+                ]
+                );
+              }else{
+                this._updateDefect(resCP.tandan_id);
+              }
+            }
+          );
+        }
+      );
+    }else{
+      let data:OfflineControlPollinationModel = {
+        tandan_id:this.tandanId,
+        url_gambar:"task_"+this.taskId+"."+this.photo.format,
+        url_gambar_data:this.photo.dataUrl,
+        id_sv_cp:this.accountService.getSessionDetails().id,
+        catatan:this.remark?.toString(),
+        pengesah_id:this.id1.value?.toString(),
+        pokok_id:this.treeId,
+        defect:this.defect?.toString(),
+        status:status,
+      };
+
+      this.offlineCpService.saveCPTask(data);
+      if(this.defect == null){
+        this.router.navigate(
+          [
+            '/app/tabs/tab1/control-pollen-form',
+            {
+              tandanId:this.tandanId,
+            }
+          ]
+        );
+      }else{
+        this.router.navigate(
+          [
+            '/app/tabs/tab1/'
+          ]
+        );
+      }
+    }
+  }
+
+  async submitCP(status:TaskStatus){
+    if(this.taskType == 'debungposponed'){
+      this._updateCP(status);
+    }else{
+      this._createCp(status);
     }
   }
 
@@ -479,7 +524,7 @@ export class TaskStatusPage implements OnInit {
     }
   }
 
-  _getCPTask(taskId:String){
+  async _getCPTask(taskId:String){
     if(this.userRole == UserRole.penyelia_balut){
       this.controlPollinationService.getById(taskId,(res:ControlPollinationModel)=>{
         this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
@@ -487,10 +532,15 @@ export class TaskStatusPage implements OnInit {
         this.tandanId = res.tandan_id.toString();
       });
     }else{
-      this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
-        this.tandanId = res.tandan_id.toString();
-        this._getTandanInfo(this.tandanId);
-      });
+      if(!this.isOfflineMode){
+        this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
+          this.tandanId = res.tandan_id.toString();
+        });
+      }else{
+        let newTask:BaggingModel = await this.offlineCpService.getNewTaskById(parseInt(this.taskId.toString()));
+        this.tandanId = newTask.tandan_id.toString();
+      }
+      this._getTandanInfo(this.tandanId);
     }
   }
 
@@ -601,11 +651,17 @@ export class TaskStatusPage implements OnInit {
   }
 
   async _getTandanInfo(tandanId:String){
-    this.tandanService.getById(tandanId,(res:TandanResponse)=>{
-      this.regNo = res.no_daftar;
-      this.treeId = res.pokok_id.toString();
-      this._getTreeNumber();
-    });
+    if(!this.isOfflineMode){
+      this.tandanService.getById(tandanId,(res:TandanResponse)=>{
+        this.regNo = res.no_daftar;
+        this.treeId = res.pokok_id.toString();
+      });
+    }else{
+      let tandan:TandanResponse = await this.offlineTandanService.getById(parseInt(tandanId.toString()));
+      this.regNo = tandan.no_daftar;
+      this.treeId = tandan.pokok_id.toString();
+    }
+    this._getTreeNumber();
   }
 
   async showLoading():Promise<HTMLIonLoadingElement> {

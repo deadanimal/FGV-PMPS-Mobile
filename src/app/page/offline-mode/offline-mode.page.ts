@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserContinueSelection } from 'src/app/component/continue-prompt/continue-prompt.component';
 import { BaggingModel } from 'src/app/model/bagging';
+import { DefectModel } from 'src/app/model/defect';
 import { OfflineBaggingModel } from 'src/app/model/offline-bagging';
 import { PokokResponse } from 'src/app/model/pokok-respons';
 import { TandanResponse } from 'src/app/model/tandan-response';
@@ -9,6 +10,7 @@ import { User } from 'src/app/model/user';
 import { ModalService } from 'src/app/service/modal.service';
 import { OfflineModeService } from 'src/app/service/offline-mode.service';
 import { OfflineBaggingService } from 'src/app/service/offline/offline-bagging.service';
+import { OfflineDefectService } from 'src/app/service/offline/offline-defect.service';
 @Component({
   selector: 'app-offline-mode',
   templateUrl: './offline-mode.page.html',
@@ -22,11 +24,13 @@ export class OfflineModePage implements OnInit {
   baggingSvList:User[] = [];
   newCPTaskList:BaggingModel[] = [];
   baggingTaskDone:OfflineBaggingModel[] = [];
+  defectList:DefectModel[] = [];
   constructor(
     private offlineModeService:OfflineModeService,
     private router:Router,
     private modalService:ModalService,
     private offlineBaggingService:OfflineBaggingService,
+    private offlineDefectService:OfflineDefectService,
   ) { }
 
   async ngOnInit() {
@@ -69,6 +73,7 @@ export class OfflineModePage implements OnInit {
     this.baggingSvList = await this.offlineModeService.getBaggingSvList();
     this.newCPTaskList = await this.offlineModeService.getNewCpList();
     this.baggingTaskDone = await this.offlineBaggingService.getSavedBaggingTasks();
+    this.defectList = await this.offlineDefectService.getAll();
   }
 
   back(){

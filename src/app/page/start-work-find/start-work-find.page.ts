@@ -136,7 +136,7 @@ export class StartWorkFindPage implements OnInit {
         this.regNumber = res.no_daftar;
       });
     }else{
-      let tandanInfo = await this.offlineTandanService.getById(this.tandanId);
+      let tandanInfo = await this.offlineTandanService.getById(parseInt(this.tandanId.toString()));
       this.regNumber = tandanInfo.no_daftar;
     }
   }

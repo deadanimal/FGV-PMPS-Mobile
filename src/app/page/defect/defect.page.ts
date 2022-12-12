@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
 import { DefectModel } from 'src/app/model/defect';
+import { OfflineModeService } from 'src/app/service/offline-mode.service';
+import { OfflineDefectService } from 'src/app/service/offline/offline-defect.service';
 import { DefectService } from 'src/app/service/tasks/defect.service';
 
 @Component({
@@ -18,10 +20,13 @@ export class DefectPage implements OnInit {
   taskStatus:String;
   returnPage:String;
   defectList:DefectModel[] = [];
+  isOfflineMode = false;
   constructor(
     private activatedRoute:ActivatedRoute,
     private router:Router,
     private defectService: DefectService,
+    private offlineModeService:OfflineModeService,
+    private offlineDefectService:OfflineDefectService,
   ) { }
 
   ngOnInit() {
@@ -34,12 +39,21 @@ export class DefectPage implements OnInit {
     });
   }
 
-  ionViewDidEnter(){
-    this.defectService.getAll((res:[DefectModel])=>{
-      res.forEach(el => {
-        this.defectList.push(el);
+  async ionViewDidEnter(){
+    this.isOfflineMode = await this.offlineModeService.isOfflineMode();
+    this._getDefect();
+  }
+
+  async _getDefect(){
+    if(!this.isOfflineMode){
+      this.defectService.getAll((res:[DefectModel])=>{
+        res.forEach(el => {
+          this.defectList.push(el);
+        });
       });
-    });
+    }else{
+      this.defectList = await this.offlineDefectService.getAll();
+    }
   }
 
   handleChange(e) {
