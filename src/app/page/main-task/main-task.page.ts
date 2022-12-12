@@ -48,7 +48,7 @@ export class MainTaskPage implements OnInit {
   numOfFinishTask:number = 0;
   numOfNewTask:number = 0;
   numOfPosponedTask:number = 0;
-  employeeId:String;
+  employeeId:number;
   scanInput:String;
   loadingModal:any;
   hasNewTask:boolean = false;
@@ -104,7 +104,7 @@ export class MainTaskPage implements OnInit {
 
     let user:LoginResponseModel = this.accountService.getSessionDetails();
     this.role = this.accountService.getUserRole();
-    this.employeeId = user.no_kakitangan;
+    this.employeeId = user.id;
   }
 
   async ionViewDidEnter() {
@@ -519,7 +519,7 @@ export class MainTaskPage implements OnInit {
       this.role == UserRole.petugas_balut || 
       this.role == UserRole.petugas_qa
     ){
-      this.qcService.getByUserId(this.accountService.getSessionDetails().id.toString(),(res:[QualityControlModel])=>{
+      this.qcService.getByUserId(this.accountService.getSessionDetails().id,(res:[QualityControlModel])=>{
         res.forEach(el => {
           if(el.status == TaskStatus.created){
             this.numOfNewTask++;
@@ -536,7 +536,7 @@ export class MainTaskPage implements OnInit {
     }else{
       this.qcService.getAll((res:[QualityControlModel])=>{
         res.forEach(el => {
-          if(el.pengesah_id == this.accountService.getSessionDetails().id.toString()){
+          if(el.pengesah_id == this.accountService.getSessionDetails().id){
             if(el.status == TaskStatus.done){
               this.numOfNewTask++;
               this.newTaskList.push(el);
@@ -594,7 +594,7 @@ export class MainTaskPage implements OnInit {
       this.role == UserRole.petugas_tuai
     ){
       this.harvestService.getByUserId(
-        this.accountService.getSessionDetails().id.toString(),
+        this.accountService.getSessionDetails().id,
         this.accountService.getSessionDetails().blok.toString(),
         (res:[HarvestModel])=>{
         res.forEach(el => {
@@ -613,7 +613,7 @@ export class MainTaskPage implements OnInit {
     }else{
       this.harvestService.getAll((res:[HarvestModel])=>{
         res.forEach(el => {
-          if(el.pengesah_id == this.accountService.getSessionDetails().id.toString() ||
+          if(el.pengesah_id == this.accountService.getSessionDetails().id ||
              (el.pengesah_id == null && el.pokok?.blok == this.accountService.getSessionDetails().blok) ){
             if(el.status == TaskStatus.done){
               this.numOfNewTask++;
@@ -663,38 +663,6 @@ export class MainTaskPage implements OnInit {
       this._getHarvestTask();
     }else if(this.task == 'Penyediaan Pollen'){
       this._getPollenPrepTask();
-    }
-  }
-
-  async _getTaskOld(){
-    this.loadingModal= await this.showLoading();
-    this.activeTaskList = [];
-    this.finishedTaskList = [];
-    this.newTaskList = [];
-    if(
-        this.role == UserRole.general_worker || 
-        this.role == UserRole.petugas_balut || 
-        this.role == UserRole.petugas_qa
-      ){
-      this.taskService.getTaskById(this.employeeId).subscribe(
-        (res:[TaskResponseModel]) => {
-          this.loadingModal.dismiss();
-          this._populateData(res);
-        },
-        (err:HttpErrorResponse) => {
-          this.loadingModal.dismiss();
-        }
-      );
-    }else{
-      this.taskService.getAllTask().subscribe(
-        (res:[TaskResponseModel]) => {
-          this.loadingModal.dismiss();
-          this._populateData(res);
-        },
-        (err:HttpErrorResponse) => {
-          this.loadingModal.dismiss();
-        }
-      );
     }
   }
 

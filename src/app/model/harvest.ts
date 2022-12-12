@@ -7,9 +7,9 @@ export interface HarvestModel {
     tandan_id: number;
     berat_tandan?: string;
     catatan?: string;
-    id_sv_harvest?: string;
+    id_sv_harvest?: number;
     url_gambar?: string;
-    pengesah_id?: string;
+    pengesah_id?: number;
     catatan_pengesah?: string;
     jumlah_tandan?: string;
     status?: string;

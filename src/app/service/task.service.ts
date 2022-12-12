@@ -39,7 +39,7 @@ export class TaskService {
   }
 
   getUserById(
-    userId:String,
+    userId:number,
   ): Observable<LoginResponseModel> {
     return this.http.get<LoginResponseModel>(
       `${environment.baseUrl}${environment.profileById}${userId}`

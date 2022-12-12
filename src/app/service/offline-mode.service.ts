@@ -103,7 +103,6 @@ export class OfflineModeService {
   }
 
   private _syncBaggingAndCp(){
-    //todo: upload existing data first
     this._uploadBaggingTasks();
     this.treeService.getAll((res:[PokokResponse])=>{
       this.treeList = res;
@@ -120,7 +119,7 @@ export class OfflineModeService {
           this.baggingSvList = res3;
           this.storageService.set(this.storageService.baggingSvList,this.baggingSvList);
           this.controlPollinationService.getNewlyCreatedTask(
-            this.accountService.getSessionDetails().id.toString(),
+            this.accountService.getSessionDetails().id,
             (res1:[BaggingModel])=>{
             this.newCpTaskList = res1;
             this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{

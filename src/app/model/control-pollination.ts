@@ -9,7 +9,7 @@ export interface ControlPollinationModel {
     tambahan_hari?: string;
     no_pollen?: string;
     peratus_pollen?: string;
-    id_sv_cp?: string;
+    id_sv_cp?: number;
     url_gambar?: string;
     catatan?: string;
     pengesah_id?: string;

@@ -5,7 +5,7 @@ export interface OfflineBaggingModel {
     kitaran:string;
     url_gambar:string;
     url_gambar_data:string;
-    id_sv_balut:string;
+    id_sv_balut:number;
     catatan:string;
     pengesah_id:string;
     tandan_id:string;

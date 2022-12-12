@@ -6,7 +6,7 @@ export interface BaggingModel {
     pokok_id: number;
     tandan_id: number;
     url_gambar?: string;
-    id_sv_balut?: string;
+    id_sv_balut?: number;
     catatan?: string;
     pengesah_id?: string;
     catatan_pengesah?: string;

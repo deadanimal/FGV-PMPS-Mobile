@@ -47,7 +47,7 @@ export class ControlPollinationService {
   }
 
   getByUserId(
-    userId:String,
+    userId:number,
     callback,
     loadingAnim = true
   ){
@@ -239,7 +239,7 @@ export class ControlPollinationService {
   updateVerify(
     cpId:String,
     tandanId:String,
-    pengesah_id:String,
+    pengesah_id:number,
     catatan_pengesah:String,
     status:String,
     callback
@@ -276,7 +276,7 @@ export class ControlPollinationService {
   }
 
   getNewlyCreatedTask(
-    userId:String,
+    userId:number,
     callback,
     loadingAnim = true,
   ){

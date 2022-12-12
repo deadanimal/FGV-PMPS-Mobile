@@ -47,7 +47,7 @@ export class QualityControlService {
   }
 
   getByUserId(
-    userId:String,
+    userId:number,
     callback,
     loadingAnim = true
   ){

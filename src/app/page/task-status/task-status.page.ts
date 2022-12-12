@@ -66,7 +66,7 @@ export class TaskStatusPage implements OnInit {
   tandanId:String;
   flowerStatus:String;
   qcSv:String;
-  qcSvId:String;
+  qcSvId:number;
   tandanStatus:String;
   returnPage:String = '';
   treeBlock:String;
@@ -376,7 +376,7 @@ export class TaskStatusPage implements OnInit {
         formData.append('tandan_id',res.tandan_id.toString());
         formData.append('pokok_id',res.pokok_id.toString());
         formData.append('catatan',this.remark?.toString());
-        formData.append('id_sv_cp',this.accountService.getSessionDetails().no_kakitangan);
+        formData.append('id_sv_cp',this.accountService.getSessionDetails().id.toString());
         formData.append('pengesah_id',this.id1?.value?.toString());
         this.controlPollinationService.create(formData,status,(resCP:ControlPollinationModel)=>{
           if(this.defect == null){
@@ -407,7 +407,7 @@ export class TaskStatusPage implements OnInit {
     formData.append('kitaran',this.taskType.toString());
     // for bagging
     formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
-    formData.append('id_sv_balut',this.accountService.getSessionDetails().no_kakitangan);
+    formData.append('id_sv_balut',this.accountService.getSessionDetails().id.toString());
     formData.append('catatan',this.remark?.toString());
     formData.append('pengesah_id',this.id1.value?.toString());
     formData.append('tandan_id',this.tandanId.toString());
@@ -452,7 +452,7 @@ export class TaskStatusPage implements OnInit {
         kitaran:this.taskType.toString(),
         url_gambar:"task_"+this.taskId+"."+this.photo.format,
         url_gambar_data:this.photo.dataUrl,
-        id_sv_balut:this.accountService.getSessionDetails().no_kakitangan,
+        id_sv_balut:this.accountService.getSessionDetails().id,
         catatan:this.remark?.toString(),
         pengesah_id:this.id1.value?.toString(),
         tandan_id:this.tandanId.toString(),
@@ -587,7 +587,7 @@ export class TaskStatusPage implements OnInit {
     }
   }
 
-  async _getUserInfo(userId:String){
+  async _getUserInfo(userId:number){
     // this.loadingModal= await this.showLoading();
     this.taskService.getUserById(userId).subscribe(
       (res:LoginResponseModel) => {
@@ -619,7 +619,7 @@ export class TaskStatusPage implements OnInit {
       this.controlPollinationService.updateVerify(
         this.taskId,
         this.tandanId,
-        this.accountService.getSessionDetails().no_kakitangan.toString(),
+        this.accountService.getSessionDetails().id,
         this.svRemark,
         TaskStatus.verified,
         (res:ControlPollinationModel)=>{
@@ -639,7 +639,7 @@ export class TaskStatusPage implements OnInit {
       this.harvestService.updateVerify(
         this.taskId,
         this.svRemark,
-        this.accountService.getSessionDetails().no_kakitangan,
+        this.accountService.getSessionDetails().id,
         TaskStatus.verified,
         (res:QualityControlModel)=>{
           this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
@@ -657,7 +657,7 @@ export class TaskStatusPage implements OnInit {
     }else{
       this.baggingService.verify(
         this.taskId,
-        this.accountService.getSessionDetails().no_kakitangan.toString(),
+        this.accountService.getSessionDetails().id,
         this.svRemark,
         TaskStatus.verified,
         (res:BaggingModel)=>{
@@ -682,7 +682,7 @@ export class TaskStatusPage implements OnInit {
       this.controlPollinationService.updateVerify(
         this.taskId,
         this.tandanId,
-        this.accountService.getSessionDetails().no_kakitangan.toString(),
+        this.accountService.getSessionDetails().id,
         this.svRemark,
         TaskStatus.rejected,
         (res:ControlPollinationModel)=>{
@@ -702,7 +702,7 @@ export class TaskStatusPage implements OnInit {
       this.harvestService.updateVerify(
         this.taskId,
         this.svRemark,
-        this.accountService.getSessionDetails().no_kakitangan,
+        this.accountService.getSessionDetails().id,
         TaskStatus.rejected,
         (res:QualityControlModel)=>{
           this._promptCompleted("Tugasan Telah Berjaya Di Tolak");
@@ -720,7 +720,7 @@ export class TaskStatusPage implements OnInit {
     }else{
       this.baggingService.verify(
         this.taskId,
-        this.accountService.getSessionDetails().no_kakitangan.toString(),
+        this.accountService.getSessionDetails().id,
         this.svRemark,
         TaskStatus.rejected,
         (res:BaggingModel)=>{
@@ -738,7 +738,7 @@ export class TaskStatusPage implements OnInit {
     this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
       formData.append('tambahan_hari',this.posponedDay.toString());
       formData.append('bil_pemeriksaan',"1");
-      formData.append('id_sv_cp',this.accountService.getSessionDetails().no_kakitangan);
+      formData.append('id_sv_cp',this.accountService.getSessionDetails().id.toString());
       formData.append('tandan_id',res.tandan_id.toString());
       formData.append('pokok_id',res.pokok_id.toString());
       this.controlPollinationService.create(formData,TaskStatus.postpone,(resCP:ControlPollinationModel)=>{
@@ -843,7 +843,7 @@ export class TaskStatusPage implements OnInit {
     }else if(this.userRole == UserRole.petugas_qa){
       this.userServices.getByRole(UserRole.penyelia_qa.toString(),(res:[User])=>{
         res.forEach(el => {
-          if(el.no_kakitangan == this.qcSvId){
+          if(el.id == this.qcSvId){
             this.qcSv = el.nama;
           }
         });

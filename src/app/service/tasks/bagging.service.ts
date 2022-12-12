@@ -29,7 +29,7 @@ export class BaggingService {
   }
 
   getByUserId(
-    userId:String,
+    userId:number,
     callback
   ){
     this.loadingModal = this.showLoading();
@@ -138,7 +138,7 @@ export class BaggingService {
 
   verify(
     taskId:String,
-    userId:String,
+    userId:number,
     comments:String,
     status:String,
     callback
@@ -166,7 +166,7 @@ export class BaggingService {
   }
 
   getFinishedTask(
-    userId:String,
+    userId:number,
     callback,
     loadingAnim = true
   ){

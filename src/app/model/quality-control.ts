@@ -7,14 +7,14 @@ export interface QualityControlModel {
     tandan_id: number;
     status_bunga?: string;
     status_qc?: string;
-    id_sv_qc?: string;
+    id_sv_qc?: number;
     url_gambar?: string;
     catatan?: string;
     jum_bagging?: string;
     jum_bagging_lulus?: string;
     jum_bagging_rosak?: string;
     peratus_rosak?: string;
-    pengesah_id?: string;
+    pengesah_id?: number;
     catatan_pengesah?: string;
     status?: string;
     pokok?:PokokResponse;

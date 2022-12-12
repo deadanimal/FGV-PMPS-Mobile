@@ -121,7 +121,7 @@ export class HarvestService {
   updateVerify(
     harvestId:String,
     catatan_pengesah:String,
-    sv_id:String,
+    sv_id:number,
     status:String,
     callback
   ){
@@ -153,7 +153,7 @@ export class HarvestService {
   }
 
   getByUserId(
-    userId:String,
+    userId:number,
     userBlock:String,
     callback,
     loadingAnim = true

@@ -17,6 +17,7 @@ export class StorageService {
   baggingSvList:string = "offlineBaggingSv";
   offlineNewCp:string = "offlineNewCp";
   baggingOfflineData:string = "baggingOffline";
+  controlPollinationOfflineData:string = "cpOffline";
 
   constructor(private storage: Storage) {
     this.init();
