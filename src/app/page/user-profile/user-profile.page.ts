@@ -36,6 +36,8 @@ export class UserProfilePage implements OnInit {
       this.roleShort = "Penyelia QC";
     }else if(this.role == UserRole.petugas_balut){
       this.roleShort = "Petugas Balut";
+    }else if(this.role == UserRole.penyelia_balut){
+      this.roleShort = "Penyelia Balut";
     }
   }
 
