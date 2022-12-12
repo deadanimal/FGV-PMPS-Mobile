@@ -4,12 +4,14 @@ import { UserContinueSelection } from 'src/app/component/continue-prompt/continu
 import { BaggingModel } from 'src/app/model/bagging';
 import { DefectModel } from 'src/app/model/defect';
 import { OfflineBaggingModel } from 'src/app/model/offline-bagging';
+import { OfflineControlPollinationModel } from 'src/app/model/offline-control-pollination';
 import { PokokResponse } from 'src/app/model/pokok-respons';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { User } from 'src/app/model/user';
 import { ModalService } from 'src/app/service/modal.service';
 import { OfflineModeService } from 'src/app/service/offline-mode.service';
 import { OfflineBaggingService } from 'src/app/service/offline/offline-bagging.service';
+import { OfflineControlPollinationService } from 'src/app/service/offline/offline-control-pollination.service';
 import { OfflineDefectService } from 'src/app/service/offline/offline-defect.service';
 @Component({
   selector: 'app-offline-mode',
@@ -24,6 +26,7 @@ export class OfflineModePage implements OnInit {
   baggingSvList:User[] = [];
   newCPTaskList:BaggingModel[] = [];
   baggingTaskDone:OfflineBaggingModel[] = [];
+  cpTaskDone:OfflineControlPollinationModel[] = [];
   defectList:DefectModel[] = [];
   constructor(
     private offlineModeService:OfflineModeService,
@@ -31,6 +34,7 @@ export class OfflineModePage implements OnInit {
     private modalService:ModalService,
     private offlineBaggingService:OfflineBaggingService,
     private offlineDefectService:OfflineDefectService,
+    private offlineCPService:OfflineControlPollinationService,
   ) { }
 
   async ngOnInit() {
@@ -73,7 +77,17 @@ export class OfflineModePage implements OnInit {
     this.baggingSvList = await this.offlineModeService.getBaggingSvList();
     this.newCPTaskList = await this.offlineModeService.getNewCpList();
     this.baggingTaskDone = await this.offlineBaggingService.getSavedBaggingTasks();
+    if(this.baggingTaskDone == null){
+      this.baggingTaskDone = [];
+    }
+    this.cpTaskDone = await this.offlineCPService.getSavedCPTasks();
+    if(this.cpTaskDone == null){
+      this.cpTaskDone = [];
+    }
     this.defectList = await this.offlineDefectService.getAll();
+    if(this.defectList == null){
+      this.defectList = [];
+    }
   }
 
   back(){

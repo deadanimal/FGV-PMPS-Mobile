@@ -4,11 +4,13 @@ import { TandanCycle } from '../common/tandan-cycle';
 import { BaggingModel } from '../model/bagging';
 import { DefectModel } from '../model/defect';
 import { OfflineBaggingModel } from '../model/offline-bagging';
+import { OfflineControlPollinationModel } from '../model/offline-control-pollination';
 import { PokokResponse } from '../model/pokok-respons';
 import { TandanResponse } from '../model/tandan-response';
 import { User } from '../model/user';
 import { AccountService, UserRole } from './account.service';
 import { OfflineBaggingService } from './offline/offline-bagging.service';
+import { OfflineControlPollinationService } from './offline/offline-control-pollination.service';
 import { StorageService } from './storage.service';
 import { BaggingService } from './tasks/bagging.service';
 import { ControlPollinationService } from './tasks/control-pollination.service';
@@ -37,6 +39,7 @@ export class OfflineModeService {
     private controlPollinationService:ControlPollinationService,
     private accountService:AccountService,
     private offlineBaggingService:OfflineBaggingService,
+    private offlineCpService:OfflineControlPollinationService,
     private baggingService:BaggingService,
     private loadingCtrl:LoadingController,
     private defectService:DefectService,
@@ -107,8 +110,33 @@ export class OfflineModeService {
     }
   }
 
+  async _uploadCPTasks(){
+    let tasks:OfflineControlPollinationModel[] = await this.offlineCpService.getSavedCPTasks();
+    while(tasks.length > 0){
+      let task:OfflineControlPollinationModel = tasks.pop();
+      var formData = new FormData();
+
+      for ( var key in task ) {
+        if(key != 'url_gambar_data' && key != 'url_gambar'){
+          formData.append(key, task[key]);
+        }
+      }
+
+      const response = await fetch(task.url_gambar_data);
+      const blob = await response.blob();
+      formData.append('url_gambar', blob, task.url_gambar);
+      this.controlPollinationService.create(formData,task.status ,async (res:BaggingModel)=>{
+        this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+          v.dismiss();
+        });
+      });
+      this.storageService.set(this.storageService.controlPollinationOfflineData,tasks);
+    }
+  }
+
   private _syncBaggingAndCp(){
     this._uploadBaggingTasks();
+    this._uploadCPTasks();
     this.treeService.getAll((res:[PokokResponse])=>{
       this.treeList = res;
       this.storageService.set(this.storageService.offlineTreeList,this.treeList);
