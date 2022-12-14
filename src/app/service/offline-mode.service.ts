@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { TandanCycle } from '../common/tandan-cycle';
+import { TaskStatus } from '../common/task-status';
 import { BaggingModel } from '../model/bagging';
 import { DefectModel } from '../model/defect';
 import { OfflineBaggingModel } from '../model/offline-bagging';
 import { OfflineControlPollinationModel } from '../model/offline-control-pollination';
 import { PokokResponse } from '../model/pokok-respons';
+import { QualityControlModel } from '../model/quality-control';
 import { TandanResponse } from '../model/tandan-response';
 import { User } from '../model/user';
 import { AccountService, UserRole } from './account.service';
@@ -15,6 +17,7 @@ import { StorageService } from './storage.service';
 import { BaggingService } from './tasks/bagging.service';
 import { ControlPollinationService } from './tasks/control-pollination.service';
 import { DefectService } from './tasks/defect.service';
+import { QualityControlService } from './tasks/quality-control.service';
 import { TandanService } from './tasks/tandan.service';
 import { TreeService } from './tasks/tree.service';
 import { UserService } from './user.service';
@@ -31,6 +34,7 @@ export class OfflineModeService {
   baggingSvList:User[] = [];
   newCpTaskList:BaggingModel[] = [];
   defectList:DefectModel[] = [];
+  qcList:QualityControlModel[] = [];
   constructor(
     private storageService:StorageService,
     private tandanService:TandanService,
@@ -43,6 +47,7 @@ export class OfflineModeService {
     private baggingService:BaggingService,
     private loadingCtrl:LoadingController,
     private defectService:DefectService,
+    private qcService:QualityControlService,
   ) {
   }
 
@@ -78,8 +83,20 @@ export class OfflineModeService {
     return this.newCpTaskList;
   }
 
+  async getNewQcList(){
+    this.qcList = await this.storageService.get(this.storageService.offlineNewQc);
+    if(this.qcList == null){
+      this.qcList = [];
+    }
+    return this.qcList;
+  }
+
   sync(){
-    this._syncBaggingAndCp();
+    if(this.accountService.getUserRole() == UserRole.petugas_balut){
+      this._syncBaggingAndCp();
+    }else if(this.accountService.getUserRole() == UserRole.petugas_qa){
+      this._syncQC();
+    }else{}
   }
 
   OfflineMode(state:boolean){
@@ -134,9 +151,7 @@ export class OfflineModeService {
     }
   }
 
-  private _syncBaggingAndCp(){
-    this._uploadBaggingTasks();
-    this._uploadCPTasks();
+  private _getTreeAndTandan(nextMethod){
     this.treeService.getAll((res:[PokokResponse])=>{
       this.treeList = res;
       this.storageService.set(this.storageService.offlineTreeList,this.treeList);
@@ -148,6 +163,16 @@ export class OfflineModeService {
           }
         });
         this.storageService.set(this.storageService.offlineTandanList,this.tandanList);
+        nextMethod();
+      },true,'Fetching Tandan List');
+    },'Fetching Tree List');
+  }
+
+  private _syncBaggingAndCp(){
+    this._uploadBaggingTasks();
+    this._uploadCPTasks();
+    this._getTreeAndTandan(
+      ()=>{
         this.userService.getByRole(UserRole.penyelia_balut,(res3:[User])=>{
           this.baggingSvList = res3;
           this.storageService.set(this.storageService.baggingSvList,this.baggingSvList);
@@ -165,8 +190,27 @@ export class OfflineModeService {
             });
           },false);
         },'Fetching Supervisor List');
-      },true,'Fetching Tandan List');
-    },'Fetching Tree List');
+      }
+    )
+  }
+
+  private _syncQC(){
+    this._getTreeAndTandan(
+      ()=>{
+        this.qcService.getByUserId(
+          this.accountService.getSessionDetails().id,
+          (res:QualityControlModel[])=>{
+            this.qcList = [];
+            res.forEach(el => {
+              if(el.status == TaskStatus.created){
+                this.qcList.push(el);
+              }
+            });
+            this.storageService.set(this.storageService.offlineNewQc,this.qcList);
+          }
+        );
+      }
+    )
   }
 
 }

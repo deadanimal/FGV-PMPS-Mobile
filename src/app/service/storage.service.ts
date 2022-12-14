@@ -19,6 +19,8 @@ export class StorageService {
   offlineDefectList:string = "offlineDefectList";
   baggingOfflineData:string = "baggingOffline";
   controlPollinationOfflineData:string = "cpOffline";
+  offlineNewQc:string = "offlineNewQc";
+  qcOfflineData:string = "qcOffline";
 
   constructor(private storage: Storage) {
     this.init();

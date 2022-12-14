@@ -6,6 +6,7 @@ import { DefectModel } from 'src/app/model/defect';
 import { OfflineBaggingModel } from 'src/app/model/offline-bagging';
 import { OfflineControlPollinationModel } from 'src/app/model/offline-control-pollination';
 import { PokokResponse } from 'src/app/model/pokok-respons';
+import { QualityControlModel } from 'src/app/model/quality-control';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { User } from 'src/app/model/user';
 import { ModalService } from 'src/app/service/modal.service';
@@ -13,6 +14,7 @@ import { OfflineModeService } from 'src/app/service/offline-mode.service';
 import { OfflineBaggingService } from 'src/app/service/offline/offline-bagging.service';
 import { OfflineControlPollinationService } from 'src/app/service/offline/offline-control-pollination.service';
 import { OfflineDefectService } from 'src/app/service/offline/offline-defect.service';
+import { OfflineQcService } from 'src/app/service/offline/offline-qc.service';
 @Component({
   selector: 'app-offline-mode',
   templateUrl: './offline-mode.page.html',
@@ -25,7 +27,9 @@ export class OfflineModePage implements OnInit {
   tandanList:TandanResponse[] = [];
   baggingSvList:User[] = [];
   newCPTaskList:BaggingModel[] = [];
+  newQcTaskList:QualityControlModel[] = [];
   baggingTaskDone:OfflineBaggingModel[] = [];
+  qcTaskDone:OfflineBaggingModel[] = [];
   cpTaskDone:OfflineControlPollinationModel[] = [];
   defectList:DefectModel[] = [];
   constructor(
@@ -35,6 +39,7 @@ export class OfflineModePage implements OnInit {
     private offlineBaggingService:OfflineBaggingService,
     private offlineDefectService:OfflineDefectService,
     private offlineCPService:OfflineControlPollinationService,
+    private offlineQcService:OfflineQcService,
   ) { }
 
   async ngOnInit() {
@@ -76,7 +81,9 @@ export class OfflineModePage implements OnInit {
     this.tandanList = await this.offlineModeService.getTandanList();
     this.baggingSvList = await this.offlineModeService.getBaggingSvList();
     this.newCPTaskList = await this.offlineModeService.getNewCpList();
+    this.newQcTaskList = await this.offlineModeService.getNewQcList();
     this.baggingTaskDone = await this.offlineBaggingService.getSavedBaggingTasks();
+    this.baggingTaskDone = await this.offlineQcService.getSavedQcTasks();
     if(this.baggingTaskDone == null){
       this.baggingTaskDone = [];
     }

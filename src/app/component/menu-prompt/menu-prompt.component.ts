@@ -27,8 +27,13 @@ export class MenuPromptComponent implements OnInit {
     if(this.router.url != '/app/tabs/tab1' && this.router.url != '/app/tabs/tab3'){
       this.canBack = true;
     }
-    console.log(this.accountService.getSessionDetails().peranan);
-    this.showSync = this.accountService.getSessionDetails().peranan == UserRole.petugas_balut? true:false;
+
+    if( this.accountService.getSessionDetails().peranan == UserRole.petugas_balut ||
+      this.accountService.getSessionDetails().peranan == UserRole.petugas_qa ){
+      this.showSync = true;
+    }else{
+      this.showSync = false;
+    }
   }
 
   back(){
