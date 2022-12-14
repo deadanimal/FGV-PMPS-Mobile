@@ -19,6 +19,7 @@ import { ModalService } from 'src/app/service/modal.service';
 import { OfflineModeService } from 'src/app/service/offline-mode.service';
 import { OfflineBaggingService } from 'src/app/service/offline/offline-bagging.service';
 import { OfflineControlPollinationService } from 'src/app/service/offline/offline-control-pollination.service';
+import { OfflineQcService } from 'src/app/service/offline/offline-qc.service';
 import { OfflineTreeService } from 'src/app/service/offline/offline-tree.service';
 import { TaskService } from 'src/app/service/task.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
@@ -76,6 +77,7 @@ export class MainTaskPage implements OnInit {
     private offlineBaggingService:OfflineBaggingService,
     private offlineCPService:OfflineControlPollinationService,
     private pollenPrepService:PollenPreparationService,
+    private offlineQCService:OfflineQcService,
   ) { }
 
   ngOnInit() {
@@ -520,26 +522,31 @@ export class MainTaskPage implements OnInit {
     }
   }
 
-  _getQCTask(){
+  async _getQCTask(){
     if(
       this.role == UserRole.general_worker || 
       this.role == UserRole.petugas_balut || 
       this.role == UserRole.petugas_qa
     ){
-      this.qcService.getByUserId(this.accountService.getSessionDetails().id,(res:[QualityControlModel])=>{
-        res.forEach(el => {
-          if(el.status == TaskStatus.created){
-            this.numOfNewTask++;
-            this.newTaskList.push(el);
-          }else if(el.status == TaskStatus.done){
-            this.numOfActiveTask++;
-            this.activeTaskList.push(el);
-          }else{
-            this.numOfFinishTask++;
-            this.finishedTaskList.push(el);
-          }
+      if(!this.isOfflineMode){
+        this.qcService.getByUserId(this.accountService.getSessionDetails().id,(res:[QualityControlModel])=>{
+          res.forEach(el => {
+            if(el.status == TaskStatus.created){
+              this.numOfNewTask++;
+              this.newTaskList.push(el);
+            }else if(el.status == TaskStatus.done){
+              this.numOfActiveTask++;
+              this.activeTaskList.push(el);
+            }else{
+              this.numOfFinishTask++;
+              this.finishedTaskList.push(el);
+            }
+          });
         });
-      });
+      }else{
+        this.newTaskList = await this.offlineQCService.getNewQCTaskList();
+        this.numOfNewTask = this.newTaskList.length;
+      }
     }else{
       this.qcService.getAll((res:[QualityControlModel])=>{
         res.forEach(el => {

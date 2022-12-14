@@ -24,4 +24,22 @@ export class OfflineQcService {
     let retVal = await this.storageService.get(this.storageService.qcOfflineData);
     return retVal;
   }
+
+  async getNewQCTaskList(){
+    let retVal = await this.storageService.get(this.storageService.offlineNewQc);
+    return retVal;
+  }
+
+  async getNewTaskById(id:number){
+    let tempArr:QualityControlModel[] = await this.storageService.get(this.storageService.offlineNewQc);
+    let retVal:QualityControlModel;
+
+    tempArr.forEach(el => {
+      if(el.id == id){
+        retVal = el;
+      }
+    });
+
+    return retVal;
+  }
 }

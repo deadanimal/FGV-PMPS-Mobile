@@ -156,12 +156,12 @@ export class OfflineModeService {
       this.treeList = res;
       this.storageService.set(this.storageService.offlineTreeList,this.treeList);
       this.tandanService.getAll((res2:[TandanResponse])=>{
-        this.tandanList = [];
-        res2.forEach(el => {
-          if(el.pokok_id == null || el.kitaran == TandanCycle.bagging){
-            this.tandanList.push(el);
-          }
-        });
+        this.tandanList = res2;
+        // res2.forEach(el => {
+        //   if(el.pokok_id == null || el.kitaran == TandanCycle.bagging){
+        //     this.tandanList.push(el);
+        //   }
+        // });
         this.storageService.set(this.storageService.offlineTandanList,this.tandanList);
         nextMethod();
       },true,'Fetching Tandan List');
@@ -207,6 +207,13 @@ export class OfflineModeService {
               }
             });
             this.storageService.set(this.storageService.offlineNewQc,this.qcList);
+            this.defectService.getAll((defectRes:[DefectModel])=>{
+              this.defectList = defectRes;
+              this.storageService.set(this.storageService.offlineDefectList,defectRes);
+              this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+                v.dismiss();
+              });
+            });
           }
         );
       }

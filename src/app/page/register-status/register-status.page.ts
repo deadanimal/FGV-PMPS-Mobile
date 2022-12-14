@@ -18,6 +18,7 @@ import { AccountService } from 'src/app/service/account.service';
 import { ModalService } from 'src/app/service/modal.service';
 import { OfflineModeService } from 'src/app/service/offline-mode.service';
 import { OfflineControlPollinationService } from 'src/app/service/offline/offline-control-pollination.service';
+import { OfflineQcService } from 'src/app/service/offline/offline-qc.service';
 import { OfflineTandanService } from 'src/app/service/offline/offline-tandan.service';
 import { TaskService } from 'src/app/service/task.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
@@ -65,6 +66,7 @@ export class RegisterStatusPage implements OnInit {
     private offlineModeService: OfflineModeService,
     private offlineCPService: OfflineControlPollinationService,
     private offlineTandanService: OfflineTandanService,
+    private offlineQCService: OfflineQcService,
   ) { }
 
   ngOnInit() {
@@ -104,10 +106,20 @@ export class RegisterStatusPage implements OnInit {
     }
   }
 
-  _getQcTask(){
-    this.qualityControlService.getById(this.taskId,(res:QualityControlModel)=>{
-      this._getTandanInfo(res.tandan_id.toString());
-    });
+  async _getQcTask(){
+    if(!this.isOfflineMode){
+      this.qualityControlService.getById(this.taskId,(res:QualityControlModel)=>{
+        this._getTandanInfo(res.tandan_id.toString());
+      });
+    }else{
+      let qcTask:QualityControlModel = await this.offlineQCService.getNewTaskById(parseInt(this.taskId.toString()));
+      let tandan:TandanResponse = await this.offlineTandanService.getById(qcTask.tandan_id);
+      this.treeNumberDisplay = qcTask.pokok?.progeny+'-'+qcTask.pokok?.no_pokok;
+      this.regNumber = tandan.no_daftar;
+      this.cycle = tandan.kitaran?.toUpperCase();
+      this.status=tandan.status_tandan?.toUpperCase();
+      this.age=tandan.umur? tandan.umur.toString(): this._calculateAge(tandan.tarikh_daftar).toString();
+    }
   }
 
   _getPollenPrepTask(){
