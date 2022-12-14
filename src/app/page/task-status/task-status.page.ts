@@ -628,6 +628,7 @@ export class TaskStatusPage implements OnInit {
         }
         this._getUserInfo(res.id_sv_balut);
         if(res.tandan_id != null){
+          this.treeId = res.pokok_id.toString();
           this._getTandanInfo(res.tandan_id.toString());
         }else{
           this.treeId = "-";
@@ -638,14 +639,11 @@ export class TaskStatusPage implements OnInit {
   }
 
   async _getUserInfo(userId:number){
-    // this.loadingModal= await this.showLoading();
     this.taskService.getUserById(userId).subscribe(
       (res:LoginResponseModel) => {
-        this.loadingModal?.dismiss();
         this.name = res.nama;
       },
       (err:HttpErrorResponse) => {
-        this.loadingModal?.dismiss();
       }
     );
   }
