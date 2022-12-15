@@ -58,7 +58,7 @@ export class QcTaskDistributionPage implements OnInit {
     formData.append('tandan_id',this.tandanId.toString());
     formData.append('id_sv_qc',userId.toString());
     formData.append('status',TaskStatus.created);
-    formData.append('pengesah_id',this.accountService.getSessionDetails().no_kakitangan);
+    formData.append('pengesah_id',this.accountService.getSessionDetails().id.toString());
     this.qualityControlService.create(formData,(res:QualityControlModel)=>{
       this.modalService.successPrompt("Anda telah mengagihkan tugas kepada pekerja yang dipilih").then(()=>{
         this.router.navigate(

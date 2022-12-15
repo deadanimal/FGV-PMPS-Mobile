@@ -210,9 +210,16 @@ export class OfflineModeService {
             this.defectService.getAll((defectRes:[DefectModel])=>{
               this.defectList = defectRes;
               this.storageService.set(this.storageService.offlineDefectList,defectRes);
-              this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
-                v.dismiss();
-              });
+              this.userService.getByRole(
+                UserRole.penyelia_qa,
+                (res3:[User])=>{
+                  this.baggingSvList = res3;
+                  this.storageService.set(this.storageService.baggingSvList,this.baggingSvList);
+                  this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+                    v.dismiss();
+                  });
+                }
+              ),'Fetching Supervisor List';
             });
           }
         );

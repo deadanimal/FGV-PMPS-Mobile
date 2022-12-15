@@ -40,6 +40,8 @@ import { OfflineBaggingService } from 'src/app/service/offline/offline-bagging.s
 import { OfflineBaggingModel } from 'src/app/model/offline-bagging';
 import { OfflineControlPollinationService } from 'src/app/service/offline/offline-control-pollination.service';
 import { OfflineControlPollinationModel } from 'src/app/model/offline-control-pollination';
+import { OfflineQcService } from 'src/app/service/offline/offline-qc.service';
+import { OfflineQualityControlModel } from 'src/app/model/offline-quality-control';
 
 @Component({
   selector: 'app-task-status',
@@ -104,6 +106,7 @@ export class TaskStatusPage implements OnInit {
     private offlineTandanService: OfflineTandanService,
     private offlineBaggingService: OfflineBaggingService,
     private offlineCpService: OfflineControlPollinationService,
+    private offlineQcService: OfflineQcService,
   ) { }
 
   ngOnInit() {
@@ -557,7 +560,7 @@ export class TaskStatusPage implements OnInit {
     });
   }
 
-  _getQCTask(taskId:String){
+  async _getQCTask(taskId:String){
     if(this.userRole == UserRole.penyelia_qa){
       this.qualityControlService.getById(taskId,(res:QualityControlModel)=>{
         this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
@@ -565,11 +568,17 @@ export class TaskStatusPage implements OnInit {
         this.tandanId = res.tandan_id.toString();
       });
     }else{
-      this.qualityControlService.getById(taskId,(res:QualityControlModel)=>{
-        this.qcSvId = res.pengesah_id;
-        this.tandanId = res.tandan_id.toString();
-        this._getTandanInfo(this.tandanId);
-      });
+      if(!this.isOfflineMode){
+        this.qualityControlService.getById(taskId,(res:QualityControlModel)=>{
+          this.qcSvId = res.pengesah_id;
+          this.tandanId = res.tandan_id.toString();
+        });
+      }else{
+        let newTask:QualityControlModel = await this.offlineQcService.getNewTaskById(parseInt(this.taskId.toString()));
+        this.tandanId = newTask.tandan_id.toString();
+        this.qcSvId = newTask.pengesah_id;
+      }
+      this._getTandanInfo(this.tandanId);
     }
   }
 
@@ -867,11 +876,17 @@ export class TaskStatusPage implements OnInit {
   }
 
   async _getOfflineSupervisors(){
+    let svList = await this.offlineModeService.getBaggingSvList();
     if(this.userRole == UserRole.petugas_balut){
-      let svList = await this.offlineModeService.getBaggingSvList();
       svList.forEach(el => {
         if(el.blok == this.treeBlock){
           this.userList.push(el);
+        }
+      });
+    }else if(this.userRole == UserRole.petugas_qa){
+      svList.forEach(el => {
+        if(el.id == this.qcSvId){
+          this.qcSv = el.nama;
         }
       });
     }
@@ -950,24 +965,39 @@ export class TaskStatusPage implements OnInit {
   }
 
   async _submitQc(status:TaskStatus){
-    const formData = new FormData();
-    const response = await fetch(this.photo.dataUrl);
-    const blob = await response.blob();
-    formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
-    formData.append('_method','put');
-    formData.append('catatan',this.remark?.toString());
-    formData.append('status',status);
-    this.qualityControlService.update(this.taskId,formData,(res:QualityControlModel)=>{
-      if(this.defect == null){
-        this.router.navigate(
-          [
-            '/app/tabs/tab1'
-          ]
-        );
-      }else{
-        this._updateDefect(res.tandan_id);
-      }
-    });
+    if(!this.isOfflineMode){
+      const formData = new FormData();
+      const response = await fetch(this.photo.dataUrl);
+      const blob = await response.blob();
+      formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
+      formData.append('_method','put');
+      formData.append('catatan',this.remark?.toString());
+      formData.append('status',status);
+      this.qualityControlService.update(this.taskId,formData,(res:QualityControlModel)=>{
+        if(this.defect == null){
+          this.router.navigate(
+            [
+              '/app/tabs/tab1'
+            ]
+            );
+          }else{
+            this._updateDefect(res.tandan_id);
+          }
+        });
+    }else{
+      let data:OfflineQualityControlModel = {
+        id:this.taskId,
+        tandan_id:this.tandanId.toString(),
+        catatan:this.remark?.toString(),
+        url_gambar:"task_"+this.taskId+"."+this.photo.format,
+        url_gambar_data:this.photo.dataUrl,
+        status:status,
+        defectId:this.defectId,
+      };
+      this.offlineQcService.saveQCTask(data);
+      
+      this._promptCompleted();
+    }
   }
 
   submitHarvestDefect(){
