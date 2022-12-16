@@ -677,13 +677,14 @@ export class TaskStatusPage implements OnInit {
       this.tandanService.getById(tandanId,(res:TandanResponse)=>{
         this.regNo = res.no_daftar;
         this.treeId = res.pokok_id.toString();
+        this._getTreeNumber();
       });
     }else{
       let tandan:TandanResponse = await this.offlineTandanService.getById(parseInt(tandanId.toString()));
       this.regNo = tandan.no_daftar;
       this.treeId = tandan.pokok_id.toString();
+      this._getTreeNumber();
     }
-    this._getTreeNumber();
   }
 
   async showLoading():Promise<HTMLIonLoadingElement> {
