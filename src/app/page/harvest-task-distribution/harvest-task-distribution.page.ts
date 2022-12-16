@@ -59,7 +59,7 @@ export class HarvestTaskDistributionPage implements OnInit {
     formData.append('tandan_id',this.tandanId.toString());
     formData.append('id_sv_harvest',userId.toString());
     formData.append('status',TaskStatus.created);
-    formData.append('pengesah_id',this.accountService.getSessionDetails().no_kakitangan);
+    formData.append('pengesah_id',this.accountService.getSessionDetails().id.toString());
     this.harvestService.create(formData,(res:HarvestModel)=>{
       this.modalService.successPrompt("Anda telah mengagihkan tugas kepada pekerja yang dipilih").then(()=>{
         this.router.navigate(
