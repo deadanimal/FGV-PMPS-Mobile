@@ -24,15 +24,18 @@ export class BaggingService {
 
   async showLoading():Promise<HTMLIonLoadingElement> {
     const loading = await this.loadingCtrl.create();
-    loading.present();
+    let top = await this.loadingCtrl.getTop();
+    if(top == null){
+      loading.present();
+    }
     return loading;
   }
 
-  getByUserId(
+  async getByUserId(
     userId:number,
     callback
   ){
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.get<[BaggingModel]>(
       `${environment.baseUrl}${environment.bagging}` // get all id first
       // `${environment.baseUrl}${environment.bagging}${userId}`
@@ -45,40 +48,48 @@ export class BaggingService {
           }
         });
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(callbackParam);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
 
-  getAll(callback){
-    this.loadingModal = this.showLoading();
+  async getAll(callback){
+    this.loadingModal = await this.showLoading();
     this.http.get<[BaggingModel]>(
       `${environment.baseUrl}${environment.bagging}`
     ).subscribe(
       async (res:[BaggingModel]) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
 
-  getById(
+  async getById(
     taskId:String,
     callback,
     loadingAnim = true,
   ){
     if(loadingAnim){
-      this.loadingModal = this.showLoading();
+      this.loadingModal = await this.showLoading();
     }
     this.http.get<BaggingModel>(
       `${environment.baseUrl}${environment.bagging}${taskId}`
@@ -86,26 +97,30 @@ export class BaggingService {
       async (res:BaggingModel) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
       }
     );
   }
 
-  createTask(
+  async createTask(
     formData:FormData,
     callback,
     loadingAnim = true,
   ){
     if(loadingAnim){
-      this.loadingModal = this.showLoading();
+      this.loadingModal = await this.showLoading();
     }
     formData.append('status',TaskStatus.done);
     this.tandanService.updateTreeAndCycle(
@@ -121,14 +136,18 @@ export class BaggingService {
           async (res:BaggingModel) => {
             if(loadingAnim){
               this.loadingModal = await this.loadingCtrl.getTop()
-              this.loadingModal.dismiss();
+              if(this.loadingModal != null){
+                this.loadingModal.dismiss();
+              }
             }
             callback(res);
           },
           async (err:HttpErrorResponse) => {
             if(loadingAnim){
               this.loadingModal = await this.loadingCtrl.getTop()
-              this.loadingModal.dismiss();
+              if(this.loadingModal != null){
+                this.loadingModal.dismiss();
+              }
             }
           }
         );
@@ -136,7 +155,7 @@ export class BaggingService {
     );
   }
 
-  verify(
+  async verify(
     taskId:String,
     userId:number,
     comments:String,
@@ -144,7 +163,7 @@ export class BaggingService {
     callback
   ){
     //todo: if status == tolak, update tandan to rejected
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.put<BaggingModel>(
       `${environment.baseUrl}${environment.bagging}${taskId}`,
       {
@@ -155,23 +174,27 @@ export class BaggingService {
     ).subscribe(
       async (res:BaggingModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
 
-  getFinishedTask(
+  async getFinishedTask(
     userId:number,
     callback,
     loadingAnim = true
   ){
     if(loadingAnim){
-      this.loadingModal = this.showLoading();
+      this.loadingModal = await this.showLoading();
     }
     this.getByUserId(userId, async (res:[BaggingModel])=>{
       let retVal:BaggingModel[] = [];
@@ -182,13 +205,15 @@ export class BaggingService {
       });
       if(loadingAnim){
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
       callback(retVal);
     });
   }
 
-  searchByTreeInfo(
+  async searchByTreeInfo(
     blok:String,
     progeny:String,
     pembalut:String,
@@ -196,7 +221,7 @@ export class BaggingService {
     loadingAnim = true
   ){
     if(loadingAnim){
-      this.loadingModal = this.showLoading();
+      this.loadingModal = await this.showLoading();
     }
     this.http.post<[QcSearchResponse]>(
       `${environment.baseUrl}${environment.qcSearch}`,
@@ -209,14 +234,18 @@ export class BaggingService {
       async (res:[QcSearchResponse]) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
       }
     );

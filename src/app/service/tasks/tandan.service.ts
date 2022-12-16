@@ -26,13 +26,16 @@ export class TandanService {
     const loading = await this.loadingCtrl.create({
       message:message
     });
-    loading.present();
+    let top = await this.loadingCtrl.getTop();
+    if(top == null){
+      loading.present();
+    }
     return loading;
   }
 
-  getAll(callback,loadingAnim = true,message = ''){
+  async getAll(callback,loadingAnim = true,message = ''){
     if(loadingAnim){
-      this.loadingModal = this.showLoading(message);
+      this.loadingModal = await this.showLoading(message);
     }
     this.http.get<[TandanResponse]>(
       `${environment.baseUrl}${environment.tandanInfo}`
@@ -40,26 +43,30 @@ export class TandanService {
       async (res:[TandanResponse]) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
       }
     );
   }
 
-  getById(
+  async getById(
     tandanId:String,
     callback,
     loadingAnim = true
   ){
     if(loadingAnim){
-      this.loadingModal = this.showLoading();
+      this.loadingModal = await this.showLoading();
     }
     this.http.get<TandanResponse>(
       `${environment.baseUrl}${environment.tandanInfo}${tandanId}`
@@ -67,48 +74,56 @@ export class TandanService {
       async (res:TandanResponse) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
       }
     );
   }
 
-  create(
+  async create(
     formData:FormData,
     callback
   ){
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.post<TandanResponse>(
       `${environment.baseUrl}${environment.tandanInfo}`,
       formData
     ).subscribe(
       async (res:TandanResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
 
-  updateCycle(
+  async updateCycle(
     tandanId:String,
     kitaran:String,
     callback,
     loadingAnim = true
   ){
     if(loadingAnim){
-      this.loadingModal = this.showLoading();
+      this.loadingModal = await this.showLoading();
     }
     this.http.put<TandanResponse>(
       `${environment.baseUrl}${environment.tandanInfo}${tandanId}`,
@@ -119,27 +134,31 @@ export class TandanService {
       async (res:TandanResponse) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
       }
     );
   }
 
-  updateDefect(
+  async updateDefect(
     tandanId:String,
     defect:String,
     callback,
     loadingAnim = true
   ){
     if(loadingAnim){
-      this.loadingModal = this.showLoading();
+      this.loadingModal = await this.showLoading();
     }
       this.http.put<TandanResponse>(
         `${environment.baseUrl}${environment.tandanInfo}${tandanId}`,
@@ -151,20 +170,24 @@ export class TandanService {
         async (res:TandanResponse) => {
           if(loadingAnim){
             this.loadingModal = await this.loadingCtrl.getTop()
-            this.loadingModal.dismiss();
+            if(this.loadingModal != null){
+              this.loadingModal.dismiss();
+            }
           }
           callback(res);
         },
         async (err:HttpErrorResponse) => {
           if(loadingAnim){
             this.loadingModal = await this.loadingCtrl.getTop()
-            this.loadingModal.dismiss();
+            if(this.loadingModal != null){
+              this.loadingModal.dismiss();
+            }
           }
         }
       );
   }
 
-  updateTreeAndCycle(
+  async updateTreeAndCycle(
     tandanId:String,
     kitaran:String,
     treeId:String,
@@ -173,7 +196,7 @@ export class TandanService {
     loadingAnim = true
   ){
     if(loadingAnim){
-      this.loadingModal = this.showLoading();
+      this.loadingModal = await this.showLoading();
     }
     this.http.put<TandanResponse>(
       `${environment.baseUrl}${environment.tandanInfo}${tandanId}`,
@@ -187,14 +210,18 @@ export class TandanService {
       async (res:TandanResponse) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
       }
     );

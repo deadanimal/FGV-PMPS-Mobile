@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
 })
 export class TreeService {
 
-  loadingModal:any;
+  loadingModal:HTMLIonLoadingElement;
   constructor(
     private http: HttpClient,
     private loadingCtrl: LoadingController,
@@ -22,23 +22,30 @@ export class TreeService {
         message: message,
       }
     );
-    loading.present();
+    let top = await this.loadingCtrl.getTop();
+    if(top == null){
+      loading.present();
+    }
     return loading;
   }
 
-  getAll(callback,loadingMsg = ''){
-    this.loadingModal = this.showLoading(loadingMsg);
+  async getAll(callback,loadingMsg = ''){
+    this.loadingModal = await this.showLoading(loadingMsg);
     this.http.get<[PokokResponse]>(
       `${environment.baseUrl}${environment.treeInfo}`
     ).subscribe(
       async (res:[PokokResponse]) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
@@ -63,22 +70,26 @@ export class TreeService {
     return retval;
   }
 
-  getById(
+  async getById(
     tandanId:String,
     callback
   ){
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.get<PokokResponse>(
       `${environment.baseUrl}${environment.treeInfo}${tandanId}`
     ).subscribe(
       async (res:PokokResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }

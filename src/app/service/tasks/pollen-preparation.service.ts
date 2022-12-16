@@ -26,34 +26,41 @@ export class PollenPreparationService {
 
   async showLoading():Promise<HTMLIonLoadingElement> {
     const loading = await this.loadingCtrl.create();
-    loading.present();
+    let top = await this.loadingCtrl.getTop();
+    if(top == null){
+      loading.present();
+    }
     return loading;
   }
 
-  getAll(callback){
-    this.loadingModal = this.showLoading();
+  async getAll(callback){
+    this.loadingModal = await this.showLoading();
     this.http.get<[PollenPreparationModel]>(
       `${environment.baseUrl}${environment.pollen}`
     ).subscribe(
       async (res:[PollenPreparationModel]) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
 
-  getById(
+  async getById(
     ppId:String,
     callback,
     loadingAnim = true,
   ){
     if(loadingAnim){
-      this.loadingModal = this.showLoading();
+      this.loadingModal = await this.showLoading();
     }
     this.http.get<PollenPreparationModel>(
       `${environment.baseUrl}${environment.pollen}${ppId}`
@@ -61,31 +68,37 @@ export class PollenPreparationService {
       async (res:PollenPreparationModel) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
       }
     );
   }
 
-  create(
+  async create(
     formData:FormData,
     callback
   ){
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.post<PollenPreparationModel>(
       `${environment.baseUrl}${environment.pollen}`,
       formData
     ).subscribe(
       async (res:PollenPreparationModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         this.tandanService.updateCycle(
           res.tandan_id.toString(),
           TandanCycle.pp,
@@ -96,40 +109,46 @@ export class PollenPreparationService {
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
 
-  update(
+  async update(
     ppId:String,
     updateObject:any,
     callback,
   ){
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.put<PollenPreparationModel>(
       `${environment.baseUrl}${environment.pollen}${ppId}`,
       updateObject
     ).subscribe(
       async (res:PollenPreparationModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
 
-  updateVerify(
+  async updateVerify(
     ppId:String,
     catatan_pengesah:String,
     status:String,
     callback
   ){
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.put<PollenPreparationModel>(
       `${environment.baseUrl}${environment.pollen}${ppId}`,
       {
@@ -139,12 +158,16 @@ export class PollenPreparationService {
     ).subscribe(
       async (res:PollenPreparationModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
@@ -180,24 +203,28 @@ export class PollenPreparationService {
     );
   }
 
-  updatePost(
+  async updatePost(
     ppId:String,
     updateObject:any,
     callback,
   ){
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.post<PollenPreparationModel>(
       `${environment.baseUrl}${environment.pollen}${ppId}`,
       updateObject
     ).subscribe(
       async (res:PollenPreparationModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }

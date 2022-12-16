@@ -25,34 +25,41 @@ export class ControlPollinationService {
 
   async showLoading():Promise<HTMLIonLoadingElement> {
     const loading = await this.loadingCtrl.create();
-    loading.present();
+    let top = await this.loadingCtrl.getTop();
+    if(top == null){
+      loading.present();
+    }
     return loading;
   }
 
-  getAll(callback){
-    this.loadingModal = this.showLoading();
+  async getAll(callback){
+    this.loadingModal = await this.showLoading();
     this.http.get<[ControlPollinationModel]>(
       `${environment.baseUrl}${environment.crossPolination}`
     ).subscribe(
       async (res:[ControlPollinationModel]) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
 
-  getByUserId(
+  async getByUserId(
     userId:number,
     callback,
     loadingAnim = true
   ){
     if(loadingAnim){
-      this.loadingModal = this.showLoading();
+      this.loadingModal = await this.showLoading();
     }
     this.http.get<[ControlPollinationModel]>(
       `${environment.baseUrl}${environment.crossPolination}` // get all id first
@@ -66,52 +73,60 @@ export class ControlPollinationService {
           }
         });
         if(loadingAnim){
-          this.loadingModal = await this.loadingCtrl.getTop()  
-          this.loadingModal.dismiss();
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(callbackParam);
       },
       async (err:HttpErrorResponse) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
       }
     );
   }
 
-  create(
+  async create(
     formData:FormData,
     status:string,
     callback
   ){
     formData.append('status',status);
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.post<ControlPollinationModel>(
       `${environment.baseUrl}${environment.crossPolination}`,
       formData
     ).subscribe(
       async (res:ControlPollinationModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         this.tandanService.updateCycle(res.tandan_id.toString(),"debung",async (resTandan:TandanResponse)=>{
           callback(res);
         });
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
 
-  getById(
+  async getById(
     cpId:String,
     callback,
     loadingAnim = true,
   ){
     if(loadingAnim){
-      this.loadingModal = this.showLoading();
+      this.loadingModal = await this.showLoading();
     }
     this.http.get<ControlPollinationModel>(
       `${environment.baseUrl}${environment.crossPolination}${cpId}`
@@ -119,48 +134,56 @@ export class ControlPollinationService {
       async (res:ControlPollinationModel) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
       }
     );
   }
 
-  update(
+  async update(
     cpId:String,
     formData:FormData,
     callback
   ){
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.put<ControlPollinationModel>(
       `${environment.baseUrl}${environment.crossPolination}${cpId}`,
       formData
     ).subscribe(
       async (res:ControlPollinationModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
 
-  updatePollenNumber(
+  async updatePollenNumber(
     cpId:String,
     noPollen:String,
     percentage:String,
     callback
   ){
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.put<ControlPollinationModel>(
       `${environment.baseUrl}${environment.crossPolination}${cpId}`,
       {
@@ -171,23 +194,27 @@ export class ControlPollinationService {
     ).subscribe(
       async (res:ControlPollinationModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
 
-  updateAdditionalDaysNumber(
+  async updateAdditionalDaysNumber(
     cpId:String,
     tambahan_hari:String,
     bil_pemeriksaan:String,
     callback
   ){
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.put<ControlPollinationModel>(
       `${environment.baseUrl}${environment.crossPolination}${cpId}`,
       {
@@ -198,24 +225,28 @@ export class ControlPollinationService {
     ).subscribe(
       async (res:ControlPollinationModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
 
-  updateRemarksNumber(
+  async updateRemarksNumber(
     cpId:String,
     remark:String,
     sv_id:String,
     status:String,
     callback
   ){
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.put<ControlPollinationModel>(
       `${environment.baseUrl}${environment.crossPolination}${cpId}`,
       {
@@ -226,17 +257,21 @@ export class ControlPollinationService {
     ).subscribe(
       async (res:ControlPollinationModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
 
-  updateVerify(
+  async updateVerify(
     cpId:String,
     tandanId:String,
     pengesah_id:number,
@@ -244,7 +279,7 @@ export class ControlPollinationService {
     status:String,
     callback
   ){
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.put<ControlPollinationModel>(
       `${environment.baseUrl}${environment.crossPolination}${cpId}`,
       {
@@ -255,12 +290,16 @@ export class ControlPollinationService {
     ).subscribe(
       async (res:ControlPollinationModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
@@ -275,13 +314,13 @@ export class ControlPollinationService {
     return retVal;
   }
 
-  getNewlyCreatedTask(
+  async getNewlyCreatedTask(
     userId:number,
     callback,
     loadingAnim = true,
   ){
     if(loadingAnim){
-      this.loadingModal = this.showLoading();
+      this.loadingModal = await this.showLoading();
     }
     this.baggingService.getFinishedTask(userId,(res:[BaggingModel])=>{
       let tempArray:BaggingModel[] = [];
@@ -293,7 +332,9 @@ export class ControlPollinationService {
         });
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(tempArray);
       },false);

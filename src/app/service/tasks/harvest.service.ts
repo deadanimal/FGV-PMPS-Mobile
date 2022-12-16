@@ -25,34 +25,41 @@ export class HarvestService {
 
   async showLoading():Promise<HTMLIonLoadingElement> {
     const loading = await this.loadingCtrl.create();
-    loading.present();
+    let top = await this.loadingCtrl.getTop();
+    if(top == null){
+      loading.present();
+    }
     return loading;
   }
 
-  getAll(callback){
-    this.loadingModal = this.showLoading();
+  async getAll(callback){
+    this.loadingModal = await this.showLoading();
     this.http.get<[HarvestModel]>(
       `${environment.baseUrl}${environment.harvest}`
     ).subscribe(
       async (res:[HarvestModel]) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
 
-  getById(
+  async getById(
     harvestId:String,
     callback,
     loadingAnim = true,
   ){
     if(loadingAnim){
-      this.loadingModal = this.showLoading();
+      this.loadingModal = await this.showLoading();
     }
     this.http.get<HarvestModel>(
       `${environment.baseUrl}${environment.harvest}${harvestId}`
@@ -60,72 +67,84 @@ export class HarvestService {
       async (res:HarvestModel) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
       }
     );
   }
 
-  create(
+  async create(
     formData:FormData,
     callback
   ){
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.post<HarvestModel>(
       `${environment.baseUrl}${environment.harvest}`,
       formData
     ).subscribe(
       async (res:HarvestModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         this.tandanService.updateCycle(res.tandan_id.toString(),TandanCycle.harvest,async (resTandan:TandanResponse)=>{
           callback(res);
         });
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
 
-  update(
+  async update(
     harvestId:String,
     updateObject:any,
     callback,
   ){
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.post<HarvestModel>(
       `${environment.baseUrl}${environment.harvest}${harvestId}`,
       updateObject
     ).subscribe(
       async (res:HarvestModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
 
-  updateVerify(
+  async updateVerify(
     harvestId:String,
     catatan_pengesah:String,
     sv_id:number,
     status:String,
     callback
   ){
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.put<HarvestModel>(
       `${environment.baseUrl}${environment.harvest}${harvestId}`,
       {
@@ -136,12 +155,16 @@ export class HarvestService {
     ).subscribe(
       async (res:HarvestModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
@@ -152,14 +175,14 @@ export class HarvestService {
     });
   }
 
-  getByUserId(
+  async getByUserId(
     userId:number,
     userBlock:String,
     callback,
     loadingAnim = true
   ){
     if(loadingAnim){
-      this.loadingModal = this.showLoading();
+      this.loadingModal = await this.showLoading();
     }
     this.http.get<[HarvestModel]>(
       `${environment.baseUrl}${environment.harvest}` // get all id first
@@ -174,14 +197,18 @@ export class HarvestService {
         });
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()  
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(callbackParam);
       },
       async (err:HttpErrorResponse) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
       }
     );

@@ -541,12 +541,13 @@ export class TaskStatusPage implements OnInit {
       if(!this.isOfflineMode){
         this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
           this.tandanId = res.tandan_id.toString();
+          this._getTandanInfo(this.tandanId);
         });
       }else{
         let newTask:BaggingModel = await this.offlineCpService.getNewTaskById(parseInt(this.taskId.toString()));
         this.tandanId = newTask.tandan_id.toString();
+        this._getTandanInfo(this.tandanId);
       }
-      this._getTandanInfo(this.tandanId);
     }
   }
 
@@ -575,13 +576,14 @@ export class TaskStatusPage implements OnInit {
         this.qualityControlService.getById(taskId,(res:QualityControlModel)=>{
           this.qcSvId = res.pengesah_id;
           this.tandanId = res.tandan_id.toString();
+          this._getTandanInfo(this.tandanId);
         });
       }else{
         let newTask:QualityControlModel = await this.offlineQcService.getNewTaskById(parseInt(this.taskId.toString()));
         this.tandanId = newTask.tandan_id.toString();
         this.qcSvId = newTask.pengesah_id;
+        this._getTandanInfo(this.tandanId);
       }
-      this._getTandanInfo(this.tandanId);
     }
   }
 
@@ -598,13 +600,15 @@ export class TaskStatusPage implements OnInit {
         this.harvestService.getById(taskId,(res:HarvestModel)=>{
           this.qcSvId = res.pengesah_id;
           this.tandanId = res.tandan_id.toString();
+          this.treeId = res.pokok_id.toString();
+          this._getTandanInfo(this.tandanId);
         });
       }else{
         let newTask:HarvestModel = await this.offlineHarvestService.getNewTaskById(parseInt(this.taskId.toString()));
         this.tandanId = newTask.tandan_id.toString();
         this.qcSvId = newTask.pengesah_id;
+        this._getTandanInfo(this.tandanId);
       }
-      this._getTandanInfo(this.tandanId);
     }
   }
 
@@ -637,7 +641,7 @@ export class TaskStatusPage implements OnInit {
       this._getPollenPrepTask();
     }else if(this.taskType == InAppTaskCycle.pollenPrepForm){
       this._getPollenPrepTask();
-    }else{
+    }else if(this.taskType == InAppTaskCycle.bagging && this.accountService.getUserRole() == UserRole.penyelia_balut){
       this.baggingService.getById(taskId,(res:BaggingModel)=>{
         this.date = this.datePipe.transform(Date.parse(res.created_at.toString()),"yyyy-MM-dd");
         this.remark = res.catatan;
@@ -652,7 +656,9 @@ export class TaskStatusPage implements OnInit {
           this.treeId = "-";
           this.regNo = "-";
         }
-      },false);
+      },true);
+    }else{
+      
     }
   }
 
@@ -868,7 +874,7 @@ export class TaskStatusPage implements OnInit {
 
   async _getTreeNumber(){
     if(!this.isOfflineMode){
-      this.treeService.getById(this.treeId,(res:PokokResponse)=>{
+      this.treeService.getById(this.treeId,async (res:PokokResponse)=>{
         this.treeNum = res.progeny+'-'+res.no_pokok;
         this.treeBlock = res.blok;
         this.treeType = res.jantina;

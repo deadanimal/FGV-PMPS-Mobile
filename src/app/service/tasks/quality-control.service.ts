@@ -25,34 +25,41 @@ export class QualityControlService {
 
   async showLoading():Promise<HTMLIonLoadingElement> {
     const loading = await this.loadingCtrl.create();
-    loading.present();
+    let top = await this.loadingCtrl.getTop();
+    if(top == null){
+      loading.present();
+    }
     return loading;
   }
 
-  getAll(callback){
-    this.loadingModal = this.showLoading();
+  async getAll(callback){
+    this.loadingModal = await this.showLoading();
     this.http.get<[QualityControlModel]>(
       `${environment.baseUrl}${environment.qualityControl}`
     ).subscribe(
       async (res:[QualityControlModel]) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
 
-  getByUserId(
+  async getByUserId(
     userId:number,
     callback,
     loadingAnim = true
   ){
     if(loadingAnim){
-      this.loadingModal = this.showLoading();
+      this.loadingModal = await this.showLoading();
     }
     this.http.get<[QualityControlModel]>(
       `${environment.baseUrl}${environment.qualityControl}` // get all id first
@@ -66,27 +73,31 @@ export class QualityControlService {
           }
         });
         if(loadingAnim){
-          this.loadingModal = await this.loadingCtrl.getTop()  
-          this.loadingModal.dismiss();
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(callbackParam);
       },
       async (err:HttpErrorResponse) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
       }
     );
   }
 
-  getById(
+  async getById(
     qcId:String,
     callback,
     loadingAnim = true,
   ){
     if(loadingAnim){
-      this.loadingModal = this.showLoading();
+      this.loadingModal = await this.showLoading();
     }
     this.http.get<QualityControlModel>(
       `${environment.baseUrl}${environment.qualityControl}${qcId}`
@@ -94,71 +105,83 @@ export class QualityControlService {
       async (res:QualityControlModel) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
-          this.loadingModal.dismiss();
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
       }
     );
   }
 
-  create(
+  async create(
     formData:FormData,
     callback
   ){
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.post<QualityControlModel>(
       `${environment.baseUrl}${environment.qualityControl}`,
       formData
     ).subscribe(
       async (res:QualityControlModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         this.tandanService.updateCycle(res.tandan_id.toString(),TandanCycle.qc,async (resTandan:TandanResponse)=>{
           callback(res);
         });
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
 
-  update(
+  async update(
     qcId:String,
     updateObject:any,
     callback,
   ){
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.post<QualityControlModel>(
       `${environment.baseUrl}${environment.qualityControl}${qcId}`,
       updateObject
     ).subscribe(
       async (res:QualityControlModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
 
-  updateVerify(
+  async updateVerify(
     qcId:String,
     catatan_pengesah:String,
     status:String,
     callback
   ){
-    this.loadingModal = this.showLoading();
+    this.loadingModal = await this.showLoading();
     this.http.put<QualityControlModel>(
       `${environment.baseUrl}${environment.qualityControl}${qcId}`,
       {
@@ -168,12 +191,16 @@ export class QualityControlService {
     ).subscribe(
       async (res:QualityControlModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        this.loadingModal.dismiss();
+        if(this.loadingModal != null){
+          this.loadingModal.dismiss();
+        }
       }
     );
   }
