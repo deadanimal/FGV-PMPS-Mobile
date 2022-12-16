@@ -6,6 +6,7 @@ import { BaggingModel } from '../model/bagging';
 import { DefectModel } from '../model/defect';
 import { OfflineBaggingModel } from '../model/offline-bagging';
 import { OfflineControlPollinationModel } from '../model/offline-control-pollination';
+import { OfflineQualityControlModel } from '../model/offline-quality-control';
 import { PokokResponse } from '../model/pokok-respons';
 import { QualityControlModel } from '../model/quality-control';
 import { TandanResponse } from '../model/tandan-response';
@@ -13,6 +14,7 @@ import { User } from '../model/user';
 import { AccountService, UserRole } from './account.service';
 import { OfflineBaggingService } from './offline/offline-bagging.service';
 import { OfflineControlPollinationService } from './offline/offline-control-pollination.service';
+import { OfflineQcService } from './offline/offline-qc.service';
 import { StorageService } from './storage.service';
 import { BaggingService } from './tasks/bagging.service';
 import { ControlPollinationService } from './tasks/control-pollination.service';
@@ -48,6 +50,8 @@ export class OfflineModeService {
     private loadingCtrl:LoadingController,
     private defectService:DefectService,
     private qcService:QualityControlService,
+    private offlineQCService:OfflineQcService,
+    private qualityControlService:QualityControlService,
   ) {
   }
 
@@ -194,9 +198,43 @@ export class OfflineModeService {
     )
   }
 
+
+  async _uploadQCTasks(){
+    let tasks:OfflineQualityControlModel[] = await this.offlineQCService.getSavedQcTasks();
+    while(tasks.length > 0){
+      let task:OfflineQualityControlModel = tasks.pop();
+      var formData = new FormData();
+      formData.append('_method','put');
+      formData.append('catatan',task.catatan);
+      formData.append('status',task.status);
+
+      const response = await fetch(task.url_gambar_data);
+      const blob = await response.blob();
+      formData.append('url_gambar', blob, task.url_gambar);
+      this.qualityControlService.update(task.id,formData,async (res:BaggingModel)=>{
+        if(task.defectId != null){
+          this.tandanService.updateDefect(task.tandan_id.toString(),task.defectId.toString(),(resDefect:TandanResponse)=>{
+            this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+              v.dismiss();
+            });
+          });
+        }else{
+          this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+            v.dismiss();
+          });
+        }
+      });
+      this.storageService.set(this.storageService.controlPollinationOfflineData,tasks);
+    }
+  }
+
   private _syncQC(){
+    this._uploadQCTasks();
     this._getTreeAndTandan(
       ()=>{
+        this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+          v.dismiss();
+        });
         this.qcService.getByUserId(
           this.accountService.getSessionDetails().id,
           (res:QualityControlModel[])=>{
