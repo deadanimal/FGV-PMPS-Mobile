@@ -212,7 +212,6 @@ export class OfflineModeService {
     )
   }
 
-
   async _uploadQCTasks(){
     let tasks:OfflineQualityControlModel[] = await this.offlineQCService.getSavedQcTasks();
     while(tasks.length > 0){
@@ -296,6 +295,10 @@ export class OfflineModeService {
               }
             });
             this.storageService.set(this.storageService.offlineNewHarvest,this.harvestList);
+            this.defectService.getAll((defectRes:[DefectModel])=>{
+              this.defectList = defectRes;
+              this.storageService.set(this.storageService.offlineDefectList,defectRes);
+            });
           }
         );
       }
