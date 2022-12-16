@@ -12,7 +12,7 @@ export class OfflineHarvestService {
     private storageService:StorageService,
   ) { }
 
-  async saveQCTask(task:OfflineHarvestModel){
+  async saveHarvestTask(task:OfflineHarvestModel){
     let currentTask = await this.storageService.get(this.storageService.harvestOfflineData);
     if(currentTask == null){
       currentTask = [];
@@ -22,12 +22,12 @@ export class OfflineHarvestService {
     this._updateNewTask(parseInt(task.tandan_id.toString()));
   }
 
-  async getSavedQcTasks(){
+  async getSavedHarvestTasks(){
     let retVal = await this.storageService.get(this.storageService.harvestOfflineData);
     return retVal;
   }
 
-  async getNewQCTaskList(){
+  async getNewHarvestTaskList(){
     let retVal = await this.storageService.get(this.storageService.offlineNewHarvest);
     return retVal;
   }

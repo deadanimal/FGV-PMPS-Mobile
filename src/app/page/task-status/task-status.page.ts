@@ -1051,7 +1051,7 @@ export class TaskStatusPage implements OnInit {
         tandan_id:this.tandanId,
         id_sv_harvest:this.accountService.getSessionDetails().id.toString(),
       };
-      this.offlineHarvestService.saveQCTask(data);
+      this.offlineHarvestService.saveHarvestTask(data);
       
       this._promptCompleted();
     }

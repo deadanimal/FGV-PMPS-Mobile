@@ -15,6 +15,7 @@ import { OfflineModeService } from 'src/app/service/offline-mode.service';
 import { OfflineBaggingService } from 'src/app/service/offline/offline-bagging.service';
 import { OfflineControlPollinationService } from 'src/app/service/offline/offline-control-pollination.service';
 import { OfflineDefectService } from 'src/app/service/offline/offline-defect.service';
+import { OfflineHarvestService } from 'src/app/service/offline/offline-harvest.service';
 import { OfflineQcService } from 'src/app/service/offline/offline-qc.service';
 @Component({
   selector: 'app-offline-mode',
@@ -34,6 +35,7 @@ export class OfflineModePage implements OnInit {
   qcTaskDone:OfflineBaggingModel[] = [];
   cpTaskDone:OfflineControlPollinationModel[] = [];
   defectList:DefectModel[] = [];
+  harvestTaskDone:OfflineHarvestService[] = [];
   constructor(
     private offlineModeService:OfflineModeService,
     private router:Router,
@@ -42,6 +44,7 @@ export class OfflineModePage implements OnInit {
     private offlineDefectService:OfflineDefectService,
     private offlineCPService:OfflineControlPollinationService,
     private offlineQcService:OfflineQcService,
+    private offlineHarvestService:OfflineHarvestService,
   ) { }
 
   async ngOnInit() {
@@ -85,10 +88,17 @@ export class OfflineModePage implements OnInit {
     this.newCPTaskList = await this.offlineModeService.getNewCpList();
     this.newQcTaskList = await this.offlineModeService.getNewQcList();
     this.baggingTaskDone = await this.offlineBaggingService.getSavedBaggingTasks();
-    this.baggingTaskDone = await this.offlineQcService.getSavedQcTasks();
+    this.qcTaskDone = await this.offlineQcService.getSavedQcTasks();
     this.newHarvestTaskList = await this.offlineModeService.getNewHarvestList();
+    this.harvestTaskDone = await this.offlineHarvestService.getSavedHarvestTasks();
     if(this.baggingTaskDone == null){
       this.baggingTaskDone = [];
+    }
+    if(this.qcTaskDone == null){
+      this.qcTaskDone = [];
+    }
+    if(this.harvestTaskDone == null){
+      this.harvestTaskDone = [];
     }
     this.cpTaskDone = await this.offlineCPService.getSavedCPTasks();
     if(this.cpTaskDone == null){

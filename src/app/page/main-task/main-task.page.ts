@@ -628,7 +628,7 @@ export class MainTaskPage implements OnInit {
           });
         });
       }else{
-        this.newTaskList = await this.offlineHarvestService.getNewQCTaskList();
+        this.newTaskList = await this.offlineHarvestService.getNewHarvestTaskList();
         this.numOfNewTask = this.newTaskList.length;
       }
     }else{

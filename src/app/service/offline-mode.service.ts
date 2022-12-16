@@ -7,6 +7,7 @@ import { DefectModel } from '../model/defect';
 import { HarvestModel } from '../model/harvest';
 import { OfflineBaggingModel } from '../model/offline-bagging';
 import { OfflineControlPollinationModel } from '../model/offline-control-pollination';
+import { OfflineHarvestModel } from '../model/offline-harvest';
 import { OfflineQualityControlModel } from '../model/offline-quality-control';
 import { PokokResponse } from '../model/pokok-respons';
 import { QualityControlModel } from '../model/quality-control';
@@ -15,6 +16,7 @@ import { User } from '../model/user';
 import { AccountService, UserRole } from './account.service';
 import { OfflineBaggingService } from './offline/offline-bagging.service';
 import { OfflineControlPollinationService } from './offline/offline-control-pollination.service';
+import { OfflineHarvestService } from './offline/offline-harvest.service';
 import { OfflineQcService } from './offline/offline-qc.service';
 import { StorageService } from './storage.service';
 import { BaggingService } from './tasks/bagging.service';
@@ -56,6 +58,7 @@ export class OfflineModeService {
     private offlineQCService:OfflineQcService,
     private qualityControlService:QualityControlService,
     private harvestService:HarvestService,
+    private offlineHarvestService:OfflineHarvestService,
   ) {
   }
 
@@ -175,11 +178,6 @@ export class OfflineModeService {
       this.storageService.set(this.storageService.offlineTreeList,this.treeList);
       this.tandanService.getAll((res2:[TandanResponse])=>{
         this.tandanList = res2;
-        // res2.forEach(el => {
-        //   if(el.pokok_id == null || el.kitaran == TandanCycle.bagging){
-        //     this.tandanList.push(el);
-        //   }
-        // });
         this.storageService.set(this.storageService.offlineTandanList,this.tandanList);
         nextMethod();
       },true,'Fetching Tandan List');
@@ -278,12 +276,40 @@ export class OfflineModeService {
     );
   }
 
+  async _uploadHarvestTasks(){
+    let tasks:OfflineHarvestModel[] = await this.offlineHarvestService.getSavedHarvestTasks();
+    while(tasks.length > 0){
+      let task:OfflineHarvestModel = tasks.pop();
+      var formData = new FormData();
+      formData.append('_method','put');
+      formData.append('catatan',task.catatan);
+      formData.append('status',task.status);
+      formData.append('berat_tandan',task.berat_tandan.toString());
+      formData.append('id_sv_harvest',task.id_sv_harvest.toString());
+      const response = await fetch(task.url_gambar_data);
+      const blob = await response.blob();
+      formData.append('url_gambar', blob, task.url_gambar);
+      this.harvestService.update(task.id,formData,async (res:HarvestModel)=>{
+        if(task.defectId != null){
+          this.tandanService.updateDefect(task.tandan_id.toString(),task.defectId.toString(),(resDefect:TandanResponse)=>{
+            this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+              v.dismiss();
+            });
+          });
+        }else{
+          this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+            v.dismiss();
+          });
+        }
+      });
+      this.storageService.set(this.storageService.harvestOfflineData,tasks);
+    }
+  }
+
   private _syncHarvest(){
+    this._uploadHarvestTasks();
     this._getTreeAndTandan(
       ()=>{
-        this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
-          v.dismiss();
-        });
         this.harvestService.getByUserId(
           this.accountService.getSessionDetails().id,
           this.accountService.getSessionDetails().blok,
@@ -294,10 +320,16 @@ export class OfflineModeService {
                 this.harvestList.push(el);
               }
             });
+            this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+              v.dismiss();
+            });
             this.storageService.set(this.storageService.offlineNewHarvest,this.harvestList);
             this.defectService.getAll((defectRes:[DefectModel])=>{
               this.defectList = defectRes;
               this.storageService.set(this.storageService.offlineDefectList,defectRes);
+              this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+                v.dismiss();
+              });
             });
           }
         );
