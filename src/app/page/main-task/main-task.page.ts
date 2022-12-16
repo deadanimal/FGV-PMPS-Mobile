@@ -19,6 +19,7 @@ import { ModalService } from 'src/app/service/modal.service';
 import { OfflineModeService } from 'src/app/service/offline-mode.service';
 import { OfflineBaggingService } from 'src/app/service/offline/offline-bagging.service';
 import { OfflineControlPollinationService } from 'src/app/service/offline/offline-control-pollination.service';
+import { OfflineHarvestService } from 'src/app/service/offline/offline-harvest.service';
 import { OfflineQcService } from 'src/app/service/offline/offline-qc.service';
 import { OfflineTreeService } from 'src/app/service/offline/offline-tree.service';
 import { TaskService } from 'src/app/service/task.service';
@@ -78,6 +79,7 @@ export class MainTaskPage implements OnInit {
     private offlineCPService:OfflineControlPollinationService,
     private pollenPrepService:PollenPreparationService,
     private offlineQCService:OfflineQcService,
+    private offlineHarvestService:OfflineHarvestService,
   ) { }
 
   ngOnInit() {
@@ -603,27 +605,32 @@ export class MainTaskPage implements OnInit {
     }
   }
 
-  _getHarvestTask(){
+  async _getHarvestTask(){
     if(
       this.role == UserRole.petugas_tuai
     ){
-      this.harvestService.getByUserId(
-        this.accountService.getSessionDetails().id,
-        this.accountService.getSessionDetails().blok.toString(),
-        (res:[HarvestModel])=>{
-        res.forEach(el => {
-          if(el.status == TaskStatus.created){
-            this.numOfNewTask++;
-            this.newTaskList.push(el);
-          }else if(el.status == TaskStatus.done){
-            this.numOfActiveTask++;
-            this.activeTaskList.push(el);
-          }else{
-            this.numOfFinishTask++;
-            this.finishedTaskList.push(el);
-          }
+      if(!this.isOfflineMode){
+        this.harvestService.getByUserId(
+          this.accountService.getSessionDetails().id,
+          this.accountService.getSessionDetails().blok.toString(),
+          (res:[HarvestModel])=>{
+          res.forEach(el => {
+            if(el.status == TaskStatus.created){
+              this.numOfNewTask++;
+              this.newTaskList.push(el);
+            }else if(el.status == TaskStatus.done){
+              this.numOfActiveTask++;
+              this.activeTaskList.push(el);
+            }else{
+              this.numOfFinishTask++;
+              this.finishedTaskList.push(el);
+            }
+          });
         });
-      });
+      }else{
+        this.newTaskList = await this.offlineHarvestService.getNewQCTaskList();
+        this.numOfNewTask = this.newTaskList.length;
+      }
     }else{
       this.harvestService.getAll((res:[HarvestModel])=>{
         res.forEach(el => {
