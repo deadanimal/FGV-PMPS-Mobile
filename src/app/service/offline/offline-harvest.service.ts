@@ -19,7 +19,7 @@ export class OfflineHarvestService {
     }
     currentTask.push(task);
     this.storageService.set(this.storageService.harvestOfflineData,currentTask);
-    this._updateNewTask(task.tandan_id);
+    this._updateNewTask(parseInt(task.tandan_id.toString()));
   }
 
   async getSavedQcTasks(){
@@ -32,9 +32,9 @@ export class OfflineHarvestService {
     return retVal;
   }
 
-  async _updateNewTask(removeTandan){
+  async _updateNewTask(removeTandan:number){
     let tempArr:HarvestModel[] = await this.storageService.get(this.storageService.offlineNewHarvest);
-    let retArr:HarvestModel[];
+    let retArr:HarvestModel[] = [];
     tempArr.forEach(el => {
       if(el.tandan_id != removeTandan){
         retArr.push(el);

@@ -42,6 +42,8 @@ import { OfflineControlPollinationService } from 'src/app/service/offline/offlin
 import { OfflineControlPollinationModel } from 'src/app/model/offline-control-pollination';
 import { OfflineQcService } from 'src/app/service/offline/offline-qc.service';
 import { OfflineQualityControlModel } from 'src/app/model/offline-quality-control';
+import { OfflineHarvestService } from 'src/app/service/offline/offline-harvest.service';
+import { OfflineHarvestModel } from 'src/app/model/offline-harvest';
 
 @Component({
   selector: 'app-task-status',
@@ -107,6 +109,7 @@ export class TaskStatusPage implements OnInit {
     private offlineBaggingService: OfflineBaggingService,
     private offlineCpService: OfflineControlPollinationService,
     private offlineQcService: OfflineQcService,
+    private offlineHarvestService: OfflineHarvestService,
   ) { }
 
   ngOnInit() {
@@ -582,7 +585,7 @@ export class TaskStatusPage implements OnInit {
     }
   }
 
-  _getHarvestTask(taskId:String){
+  async _getHarvestTask(taskId:String){
     if(this.userRole == UserRole.penyelia_tuai){
       this.harvestService.getById(taskId,(res:HarvestModel)=>{
         this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
@@ -591,11 +594,17 @@ export class TaskStatusPage implements OnInit {
         this.tandanId = res.tandan_id.toString();
       });
     }else{
-      this.harvestService.getById(taskId,(res:HarvestModel)=>{
-        this.qcSvId = res.pengesah_id;
-        this.tandanId = res.tandan_id.toString();
-        this._getTandanInfo(this.tandanId);
-      });
+      if(!this.isOfflineMode){
+        this.harvestService.getById(taskId,(res:HarvestModel)=>{
+          this.qcSvId = res.pengesah_id;
+          this.tandanId = res.tandan_id.toString();
+        });
+      }else{
+        let newTask:HarvestModel = await this.offlineHarvestService.getNewTaskById(parseInt(this.taskId.toString()));
+        this.tandanId = newTask.tandan_id.toString();
+        this.qcSvId = newTask.pengesah_id;
+      }
+      this._getTandanInfo(this.tandanId);
     }
   }
 
@@ -1009,26 +1018,43 @@ export class TaskStatusPage implements OnInit {
   }
 
   async _submitHarvest(status:TaskStatus){
-    const formData = new FormData();
-    const response = await fetch(this.photo.dataUrl);
-    const blob = await response.blob();
-    formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
-    formData.append('_method','put');
-    formData.append('catatan',this.remark?.toString());
-    formData.append('berat_tandan',this.weight?.toString());
-    formData.append('status',status);
-    formData.append('id_sv_harvest',this.accountService.getSessionDetails().id.toString());
-    this.harvestService.update(this.taskId,formData,(res:HarvestModel)=>{
-      if(this.defect == null){
-        this.router.navigate(
-          [
-            '/app/tabs/tab1'
-          ]
-        );
-      }else{
-        this._updateDefect(res.tandan_id);
-      }
-    });
+    if(!this.isOfflineMode){
+      const formData = new FormData();
+      const response = await fetch(this.photo.dataUrl);
+      const blob = await response.blob();
+      formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
+      formData.append('_method','put');
+      formData.append('catatan',this.remark?.toString());
+      formData.append('berat_tandan',this.weight?.toString());
+      formData.append('status',status);
+      formData.append('id_sv_harvest',this.accountService.getSessionDetails().id.toString());
+      this.harvestService.update(this.taskId,formData,(res:HarvestModel)=>{
+        if(this.defect == null){
+          this.router.navigate(
+            [
+              '/app/tabs/tab1'
+            ]
+          );
+        }else{
+          this._updateDefect(res.tandan_id);
+        }
+      });
+    }else{
+      let data:OfflineHarvestModel = {
+        id:this.taskId,
+        berat_tandan:this.weight?.toString(),
+        catatan:this.remark?.toString(),
+        url_gambar:"task_"+this.taskId+"."+this.photo.format,
+        url_gambar_data:this.photo.dataUrl,
+        status:status,
+        defectId:this.defectId,
+        tandan_id:this.tandanId,
+        id_sv_harvest:this.accountService.getSessionDetails().id.toString(),
+      };
+      this.offlineHarvestService.saveQCTask(data);
+      
+      this._promptCompleted();
+    }
   }
 
 }

@@ -39,7 +39,7 @@ export class OfflineControlPollinationService {
 
   async _updateNewTask(removeTandan){
     let tempArr:BaggingModel[] = await this.storageService.get(this.storageService.offlineNewCp);
-    let retArr:BaggingModel[];
+    let retArr:BaggingModel[] = [];
     tempArr.forEach(el => {
       if(el.tandan_id != removeTandan){
         retArr.push(el);

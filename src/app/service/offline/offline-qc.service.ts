@@ -34,7 +34,7 @@ export class OfflineQcService {
 
   async _updateNewTask(removeTandan){
     let tempArr:QualityControlModel[] = await this.storageService.get(this.storageService.offlineNewQc);
-    let retArr:QualityControlModel[];
+    let retArr:QualityControlModel[] = [];
     tempArr.forEach(el => {
       if(el.tandan_id != removeTandan){
         retArr.push(el);
