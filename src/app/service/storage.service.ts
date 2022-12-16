@@ -21,6 +21,7 @@ export class StorageService {
   controlPollinationOfflineData:string = "cpOffline";
   offlineNewQc:string = "offlineNewQc";
   qcOfflineData:string = "qcOffline";
+  offlineNewHarvest:string = "offlineNewHarvest";
 
   constructor(private storage: Storage) {
     this.init();

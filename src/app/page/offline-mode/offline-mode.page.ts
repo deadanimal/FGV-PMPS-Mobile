@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { UserContinueSelection } from 'src/app/component/continue-prompt/continue-prompt.component';
 import { BaggingModel } from 'src/app/model/bagging';
 import { DefectModel } from 'src/app/model/defect';
+import { HarvestModel } from 'src/app/model/harvest';
 import { OfflineBaggingModel } from 'src/app/model/offline-bagging';
 import { OfflineControlPollinationModel } from 'src/app/model/offline-control-pollination';
 import { PokokResponse } from 'src/app/model/pokok-respons';
@@ -28,6 +29,7 @@ export class OfflineModePage implements OnInit {
   baggingSvList:User[] = [];
   newCPTaskList:BaggingModel[] = [];
   newQcTaskList:QualityControlModel[] = [];
+  newHarvestTaskList:HarvestModel[] = [];
   baggingTaskDone:OfflineBaggingModel[] = [];
   qcTaskDone:OfflineBaggingModel[] = [];
   cpTaskDone:OfflineControlPollinationModel[] = [];
@@ -84,6 +86,7 @@ export class OfflineModePage implements OnInit {
     this.newQcTaskList = await this.offlineModeService.getNewQcList();
     this.baggingTaskDone = await this.offlineBaggingService.getSavedBaggingTasks();
     this.baggingTaskDone = await this.offlineQcService.getSavedQcTasks();
+    this.newHarvestTaskList = await this.offlineModeService.getNewHarvestList();
     if(this.baggingTaskDone == null){
       this.baggingTaskDone = [];
     }

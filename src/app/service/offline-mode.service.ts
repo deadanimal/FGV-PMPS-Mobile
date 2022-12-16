@@ -4,6 +4,7 @@ import { TandanCycle } from '../common/tandan-cycle';
 import { TaskStatus } from '../common/task-status';
 import { BaggingModel } from '../model/bagging';
 import { DefectModel } from '../model/defect';
+import { HarvestModel } from '../model/harvest';
 import { OfflineBaggingModel } from '../model/offline-bagging';
 import { OfflineControlPollinationModel } from '../model/offline-control-pollination';
 import { OfflineQualityControlModel } from '../model/offline-quality-control';
@@ -19,6 +20,7 @@ import { StorageService } from './storage.service';
 import { BaggingService } from './tasks/bagging.service';
 import { ControlPollinationService } from './tasks/control-pollination.service';
 import { DefectService } from './tasks/defect.service';
+import { HarvestService } from './tasks/harvest.service';
 import { QualityControlService } from './tasks/quality-control.service';
 import { TandanService } from './tasks/tandan.service';
 import { TreeService } from './tasks/tree.service';
@@ -37,6 +39,7 @@ export class OfflineModeService {
   newCpTaskList:BaggingModel[] = [];
   defectList:DefectModel[] = [];
   qcList:QualityControlModel[] = [];
+  harvestList:HarvestModel[] = [];
   constructor(
     private storageService:StorageService,
     private tandanService:TandanService,
@@ -52,6 +55,7 @@ export class OfflineModeService {
     private qcService:QualityControlService,
     private offlineQCService:OfflineQcService,
     private qualityControlService:QualityControlService,
+    private harvestService:HarvestService,
   ) {
   }
 
@@ -95,11 +99,21 @@ export class OfflineModeService {
     return this.qcList;
   }
 
+  async getNewHarvestList(){
+    this.harvestList = await this.storageService.get(this.storageService.offlineNewHarvest);
+    if(this.harvestList == null){
+      this.harvestList = [];
+    }
+    return this.harvestList;
+  }
+
   sync(){
     if(this.accountService.getUserRole() == UserRole.petugas_balut){
       this._syncBaggingAndCp();
     }else if(this.accountService.getUserRole() == UserRole.petugas_qa){
       this._syncQC();
+    }else if(this.accountService.getUserRole() == UserRole.petugas_tuai){
+      this._syncHarvest();
     }else{}
   }
 
@@ -262,7 +276,30 @@ export class OfflineModeService {
           }
         );
       }
-    )
+    );
+  }
+
+  private _syncHarvest(){
+    this._getTreeAndTandan(
+      ()=>{
+        this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+          v.dismiss();
+        });
+        this.harvestService.getByUserId(
+          this.accountService.getSessionDetails().id,
+          this.accountService.getSessionDetails().blok,
+          (res:HarvestModel[])=>{
+            this.harvestList = [];
+            res.forEach(el => {
+              if(el.status == TaskStatus.created){
+                this.harvestList.push(el);
+              }
+            });
+            this.storageService.set(this.storageService.offlineNewHarvest,this.harvestList);
+          }
+        );
+      }
+    );
   }
 
 }

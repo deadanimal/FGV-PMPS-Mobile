@@ -29,7 +29,9 @@ export class MenuPromptComponent implements OnInit {
     }
 
     if( this.accountService.getSessionDetails().peranan == UserRole.petugas_balut ||
-      this.accountService.getSessionDetails().peranan == UserRole.petugas_qa ){
+      this.accountService.getSessionDetails().peranan == UserRole.petugas_qa ||
+      this.accountService.getSessionDetails().peranan == UserRole.petugas_tuai
+      ){
       this.showSync = true;
     }else{
       this.showSync = false;
