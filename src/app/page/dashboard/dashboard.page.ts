@@ -40,18 +40,18 @@ export class DashboardPage implements OnInit {
     this.username = loginDetails.nama;
     this.employeeId = loginDetails.no_kakitangan;
     this.role = this.accountService.getUserRole();
-    if(this.role == UserRole.penyelia_qa){
+    if(this.role == UserRole.penyelia_qc){
       this.roleShort = "Penyelia QC";
     }else if(this.role == UserRole.petugas_balut){
       this.roleShort = "Petugas Balut";
     }else if(this.role == UserRole.penyelia_balut){
       this.roleShort = "Penyelia Balut";
-    }else if(this.role == UserRole.petugas_qa){
-      this.roleShort = "Petugas QA";
+    }else if(this.role == UserRole.petugas_qc){
+      this.roleShort = "Petugas QC";
     }
     if( this.role == UserRole.general_worker || 
         this.role == UserRole.petugas_balut || 
-        this.role == UserRole.petugas_qa
+        this.role == UserRole.petugas_qc
       ){
       this.userIconPath="../../../assets/worker_icon.png"
       document.getElementById('iconBg').style.backgroundColor = "#F89521";
@@ -75,12 +75,12 @@ export class DashboardPage implements OnInit {
     if( this.role == UserRole.petugas_balut){
       this.wrapTask = true;
       this.debungTask = true;
-    }else if(this.role == UserRole.petugas_qa){
+    }else if(this.role == UserRole.petugas_qc){
       this.qcTask = true;
     }else if(this.role == UserRole.penyelia_balut){
       this.wrapTask = true;
       this.debungTask = true;
-    }else if(this.role == UserRole.penyelia_qa){
+    }else if(this.role == UserRole.penyelia_qc){
       this.qcTask = true;
     }else if(this.role == UserRole.penyelia_tuai){
       this.harvestTask = true;

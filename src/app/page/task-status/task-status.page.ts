@@ -565,7 +565,7 @@ export class TaskStatusPage implements OnInit {
   }
 
   async _getQCTask(taskId:String){
-    if(this.userRole == UserRole.penyelia_qa){
+    if(this.userRole == UserRole.penyelia_qc){
       this.qualityControlService.getById(taskId,(res:QualityControlModel)=>{
         this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
         this.remark = res.catatan;
@@ -899,7 +899,7 @@ export class TaskStatusPage implements OnInit {
           this.userList.push(el);
         }
       });
-    }else if(this.userRole == UserRole.petugas_qa){
+    }else if(this.userRole == UserRole.petugas_qc){
       svList.forEach(el => {
         if(el.id == this.qcSvId){
           this.qcSv = el.nama;
@@ -925,8 +925,8 @@ export class TaskStatusPage implements OnInit {
         }
         this._getTandanId();
       });
-    }else if(this.userRole == UserRole.petugas_qa){
-      this.userServices.getByRole(UserRole.penyelia_qa.toString(),(res:[User])=>{
+    }else if(this.userRole == UserRole.petugas_qc){
+      this.userServices.getByRole(UserRole.penyelia_qc.toString(),(res:[User])=>{
         res.forEach(el => {
           if(el.id == this.qcSvId){
             this.qcSv = el.nama;

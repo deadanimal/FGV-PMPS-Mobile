@@ -8,8 +8,8 @@ import { StorageService } from './storage.service';
 export enum UserRole {
   penyelia_balut  = "Penyelia Balut & Pendebungaan Terkawal",
   petugas_balut   = "Petugas Balut & Pendebungaan Terkawal",
-  penyelia_qa     = "Penyelia Kawalan Kualiti",
-  petugas_qa      = "Petugas Kawalan Kualiti",
+  penyelia_qc     = "Penyelia Kawalan Kualiti",
+  petugas_qc      = "Petugas Kawalan Kualiti",
   general_worker  = "Petugas Am",
   penyelia_tuai   = "Penyelia Tuai",
   petugas_tuai    = "Petugas Tuai",
@@ -57,12 +57,12 @@ export class AccountService {
     if(this._accountDetails!=null){
       if(UserRole.penyelia_balut == this._accountDetails.peranan){
         role = UserRole.penyelia_balut;
-      }else if(UserRole.penyelia_qa == this._accountDetails.peranan){
-        role = UserRole.penyelia_qa;
+      }else if(UserRole.penyelia_qc == this._accountDetails.peranan){
+        role = UserRole.penyelia_qc;
       }else if(UserRole.petugas_balut == this._accountDetails.peranan){
         role = UserRole.petugas_balut;
-      }else if(UserRole.petugas_qa == this._accountDetails.peranan){
-        role = UserRole.petugas_qa;
+      }else if(UserRole.petugas_qc == this._accountDetails.peranan){
+        role = UserRole.petugas_qc;
       }else if(UserRole.penyelia_tuai == this._accountDetails.peranan){
         role = UserRole.penyelia_tuai;
       }else if(UserRole.petugas_tuai == this._accountDetails.peranan){

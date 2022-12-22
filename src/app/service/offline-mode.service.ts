@@ -113,7 +113,7 @@ export class OfflineModeService {
   sync(){
     if(this.accountService.getUserRole() == UserRole.petugas_balut){
       this._syncBaggingAndCp();
-    }else if(this.accountService.getUserRole() == UserRole.petugas_qa){
+    }else if(this.accountService.getUserRole() == UserRole.petugas_qc){
       this._syncQC();
     }else if(this.accountService.getUserRole() == UserRole.petugas_tuai){
       this._syncHarvest();
@@ -260,7 +260,7 @@ export class OfflineModeService {
               this.defectList = defectRes;
               this.storageService.set(this.storageService.offlineDefectList,defectRes);
               this.userService.getByRole(
-                UserRole.penyelia_qa,
+                UserRole.penyelia_qc,
                 (res3:[User])=>{
                   this.baggingSvList = res3;
                   this.storageService.set(this.storageService.baggingSvList,this.baggingSvList);

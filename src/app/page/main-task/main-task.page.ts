@@ -443,7 +443,7 @@ export class MainTaskPage implements OnInit {
     if(
       this.role == UserRole.general_worker || 
       this.role == UserRole.petugas_balut || 
-      this.role == UserRole.petugas_qa
+      this.role == UserRole.petugas_qc
     ){
       if(!this.isOfflineMode){
         this.baggingService.getByUserId(this.employeeId,(res:[BaggingModel])=>{
@@ -482,7 +482,7 @@ export class MainTaskPage implements OnInit {
     if(
       this.role == UserRole.general_worker || 
       this.role == UserRole.petugas_balut || 
-      this.role == UserRole.petugas_qa
+      this.role == UserRole.petugas_qc
     ){
       if(!this.isOfflineMode){
         this.controlPollinationService.getByUserId(this.employeeId,(res:[ControlPollinationModel])=>{
@@ -528,7 +528,7 @@ export class MainTaskPage implements OnInit {
     if(
       this.role == UserRole.general_worker || 
       this.role == UserRole.petugas_balut || 
-      this.role == UserRole.petugas_qa
+      this.role == UserRole.petugas_qc
     ){
       if(!this.isOfflineMode){
         this.qcService.getByUserId(this.accountService.getSessionDetails().id,(res:[QualityControlModel])=>{

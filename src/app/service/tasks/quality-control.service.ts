@@ -206,7 +206,7 @@ export class QualityControlService {
   }
 
   getAllQcWorker(callback){
-    this.userService.getByRole(UserRole.petugas_qa,(res:[User])=>{
+    this.userService.getByRole(UserRole.petugas_qc,(res:[User])=>{
       callback(res);
     });
   }
