@@ -52,6 +52,9 @@ export class QrScannerPage implements OnInit {
 
       console.log(this.returnUrl);
     });
+  }
+
+  ionViewWillEnter(){
     this.didUserGrantPermission();
     setTimeout(() => {
       this.startScan();

@@ -122,8 +122,8 @@ export class MainTaskPage implements OnInit {
     if(this.scanInput != null){
       if(!this.isOfflineMode){
         this.treeService.getById(this.scanInput,(res:PokokResponse)=>{
-          this._manualInput(res.no_pokok);
-        });
+          this._manualInput(res.progeny+"-"+res.no_pokok);
+        },false);
       }else{
         let treeNumber = await this.offlineTreeService.getById(this.scanInput);
         this._manualInput(treeNumber.no_pokok);

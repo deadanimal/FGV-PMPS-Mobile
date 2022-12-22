@@ -72,33 +72,37 @@ export class TreeService {
 
   async getById(
     tandanId:String,
-    callback
+    callback,
+    loadingAnim = true,
   ){
-    this.loadingModal = await this.showLoading();
+    if(loadingAnim){
+      this.loadingModal = await this.showLoading();
+    }
     this.http.get<PokokResponse>(
       `${environment.baseUrl}${environment.treeInfo}${tandanId}`
     ).subscribe(
       async (res:PokokResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        if(this.loadingModal != null){
+        if(this.loadingModal != null && loadingAnim){
           this.loadingModal.dismiss();
         }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
-        if(this.loadingModal != null){
+        if(this.loadingModal != null && loadingAnim){
           this.loadingModal.dismiss();
         }
       }
     );
   }
 
-  getIdByName(no_pokok:String,callback){
+  getIdByName(treeName:String,callback){
+    let treeInfo = treeName.split('-'); //FPG-22
     this.getAll((res:[PokokResponse])=>{
       let retVal:PokokResponse;
       res.forEach(el => {
-        if(el.no_pokok == no_pokok){
+        if(el.no_pokok == treeInfo[1] && el.progeny.toLowerCase() == treeInfo[0].toLowerCase()){
           retVal = el;
         }
       });
