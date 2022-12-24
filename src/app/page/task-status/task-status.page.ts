@@ -193,8 +193,32 @@ export class TaskStatusPage implements OnInit {
     this.modalService.successPrompt(title).then(
       (value)=>{
         setTimeout(() => {
-            this.router.navigateByUrl(
-              '/app/tabs/tab1',
+          let task:string;
+          let url:string;
+          if( this.accountService.getUserRole() == UserRole.penyelia_balut ||
+              this.accountService.getUserRole() == UserRole.penyelia_qc ||
+              this.accountService.getUserRole() == UserRole.penyelia_qc ||
+              this.accountService.getUserRole() == UserRole.penyelia_makmal ){
+              if(this.taskType == InAppTaskCycle.bagging){
+                task = "wrap"
+              }else if(this.taskType == InAppTaskCycle.qcSv){
+                task = "Kawalan Kualiti (QC)"
+              }else if(this.taskType == InAppTaskCycle.harvestSv){
+                task = "Tuai"
+              }else if(this.taskType == InAppTaskCycle.cp){
+                task = "cp"
+              }
+              url = '/app/tabs/tab1/main-task';
+            }else{
+              url = '/app/tabs/tab1';
+            }
+            this.router.navigate(
+              [
+                'app/tabs/tab1/main-task',
+                {
+                  task:task
+                }
+              ],
               {
                 replaceUrl : true
               }
