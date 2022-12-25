@@ -119,6 +119,7 @@ export class MainTaskPage implements OnInit {
     this.numOfNewTask = 0;
     this.numOfPosponedTask = 0;
     this.isOfflineMode = await this.offlineModeService.isOfflineMode();
+    this._getTask();
     if(this.scanInput != null){
       if(!this.isOfflineMode){
         this.treeService.getById(this.scanInput,(res:PokokResponse)=>{
@@ -126,10 +127,9 @@ export class MainTaskPage implements OnInit {
         },false);
       }else{
         let treeNumber = await this.offlineTreeService.getById(this.scanInput);
-        this._manualInput(treeNumber.no_pokok);
+        this._manualInput(treeNumber.progeny+"-"+treeNumber.no_pokok);
       }
     }
-    this._getTask();
   }
 
   viewTask(taskId:String,status:String,id:number,param1:string = ""){
