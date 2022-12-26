@@ -5,7 +5,7 @@
 
   <form #form="ngForm" class="mx-auto my-2" style="max-width: 300px;" (ngSubmit)="submit(form)">
     <ion-item  lines="full" class="my-4">
-      <ion-select placeholder="Pilih Blok" id= "blockSelect" #blockSelect>
+      <ion-select (ionChange)="blockSelectEvent($event)" placeholder="Pilih Blok" id= "blockSelect" #blockSelect>
         <ion-select-option *ngFor="let item of blockNames" value={{item}}>{{item}}</ion-select-option>
       </ion-select>
     </ion-item>

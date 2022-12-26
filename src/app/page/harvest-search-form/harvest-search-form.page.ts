@@ -25,6 +25,8 @@ export class HarvestSearchFormPage implements OnInit {
   blockNames:String[] = [];
   progenyNames:String[] = [];
   baggingWorkers:User[] = [];
+  listOfBaggingWorkers:User[] = [];
+  listOfTree:PokokResponse[] = [];
   constructor(
     private baggingService:BaggingService,
     private router:Router,
@@ -38,6 +40,7 @@ export class HarvestSearchFormPage implements OnInit {
   ionViewDidEnter(){
     this.treeService.getAll(
       (res:[PokokResponse])=>{
+        this.listOfTree = res;
         res.forEach(el => {
           if(!this.blockNames.includes(el.blok.trim())){
             this.blockNames.push(el.blok.trim());
@@ -49,6 +52,7 @@ export class HarvestSearchFormPage implements OnInit {
         );
         this.userService.getByRole(UserRole.petugas_balut,(res1:[User])=>{
           this.baggingWorkers = res1;
+          this.listOfBaggingWorkers = this.baggingWorkers;
         });
       }
     );
@@ -84,5 +88,25 @@ export class HarvestSearchFormPage implements OnInit {
       ]
     );
   }
+
+  blockSelectEvent(event){
+    if(event.detail.value!=null){
+      this.progenyNames = [];
+      this.baggingWorkers = [];
+      this.listOfTree.forEach(el => {
+        if(el.blok == event.detail.value){
+          if(!this.progenyNames.includes(el.progeny.trim())){
+            this.progenyNames.push(el.progeny.trim());
+          }
+        }
+      });
+      this.listOfBaggingWorkers.forEach(el=>{
+        if(el.blok == event.detail.value){
+          this.baggingWorkers.push(el);
+        }
+      });
+    }
+  }
+
 
 }
