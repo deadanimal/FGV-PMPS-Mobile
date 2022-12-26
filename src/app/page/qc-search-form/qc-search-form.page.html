@@ -4,18 +4,18 @@
   <app-user-info-header></app-user-info-header>
 
   <form #form="ngForm" class="mx-auto my-2" style="max-width: 300px;" (ngSubmit)="submit(form)">
-    <ion-item  lines="full" class="my-4">
-      <ion-select placeholder="Pilih Blok" id= "blockSelect" #blockSelect>
+    <ion-item lines="full" class="my-4">
+      <ion-select (ionChange)="blockSelectEvent($event)" placeholder="Pilih Blok" id= "blockSelect" #blockSelect>
         <ion-select-option *ngFor="let item of blockNames" value={{item}}>{{item}}</ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item  lines="full" class="my-4">
-      <ion-select placeholder="Pilih Progeny" id= "progenySelect" #progenySelect>
+      <ion-select (ionChange)="progenySelectEvent($event)" placeholder="Pilih Progeny" id= "progenySelect" #progenySelect>
         <ion-select-option *ngFor="let item of progenyNames" value={{item}}>{{item}}</ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item  lines="full" class="my-4">
-      <ion-select placeholder="Pilih Pembalut" id= "userSelect" #userSelect>
+      <ion-select (ionChange)="userSelectEvent($event)" placeholder="Pilih Pembalut" id= "userSelect" #userSelect>
         <ion-select-option *ngFor="let item of baggingWorkers" value={{item.id}}>{{item.nama}}</ion-select-option>
       </ion-select>
     </ion-item>

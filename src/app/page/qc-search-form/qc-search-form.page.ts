@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { IonSelect } from '@ionic/angular';
+import { IonSelect, SelectChangeEventDetail } from '@ionic/angular';
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { PokokResponse } from 'src/app/model/pokok-respons';
 import { QcSearchResponse } from 'src/app/model/qc-search-response';
@@ -28,6 +28,8 @@ export class QcSearchFormPage implements OnInit {
   blockNames:String[] = [];
   progenyNames:String[] = [];
   baggingWorkers:User[] = [];
+  listOfBaggingWorkers:User[] = [];
+  listOfTree:PokokResponse[] = [];
   constructor(
     private baggingService:BaggingService,
     private router:Router,
@@ -41,6 +43,7 @@ export class QcSearchFormPage implements OnInit {
   ionViewDidEnter(){
     this.treeService.getAll(
       (res:[PokokResponse])=>{
+        this.listOfTree = res;
         res.forEach(el => {
           if(!this.blockNames.includes(el.blok.trim())){
             this.blockNames.push(el.blok.trim());
@@ -52,6 +55,7 @@ export class QcSearchFormPage implements OnInit {
         );
         this.userService.getByRole(UserRole.petugas_balut,(res1:[User])=>{
           this.baggingWorkers = res1;
+          this.listOfBaggingWorkers = this.baggingWorkers;
         });
       }
     );
@@ -84,5 +88,33 @@ export class QcSearchFormPage implements OnInit {
         }
       ]
     );
+  }
+
+  blockSelectEvent(event){
+    this.block = event.detail.value;
+    if(this.block!=null){
+      this.progenyNames = [];
+      this.baggingWorkers = [];
+      this.listOfTree.forEach(el => {
+        if(el.blok == this.block){
+          if(!this.progenyNames.includes(el.progeny.trim())){
+            this.progenyNames.push(el.progeny.trim());
+          }
+        }
+      });
+      this.listOfBaggingWorkers.forEach(el=>{
+        if(el.blok == this.block){
+          this.baggingWorkers.push(el);
+        }
+      });
+    }
+  }
+
+  progenySelectEvent(event){
+    this.progeny = event.detail.value;
+  }
+
+  userSelectEvent(event){
+    this.baggingWorker = event.detail.value;
   }
 }
