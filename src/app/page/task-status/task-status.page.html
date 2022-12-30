@@ -58,7 +58,7 @@
       <ion-label position="floating">Catatan</ion-label>
       <ion-input type="text" [(ngModel)]="remark" name="remark" [readonly]="userRole!='Petugas Balut & Pendebungaan Terkawal' && userRole!='Petugas Kawalan Kualiti' && userRole!='Petugas Tuai'&& userRole!='Petugas Makmal'"></ion-input>
     </ion-item>
-    <ion-item  lines="full" class="my-4" *ngIf="((userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Makmal') && defect == null)">
+    <ion-item  lines="full" class="my-4" *ngIf="((userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Makmal') )">
       <ion-select placeholder="Pilih Penyelia" id= "id1" #id1 >
         <ion-select-option *ngFor="let sv of userList" value={{sv.id}}>{{sv.nama}}</ion-select-option>
       </ion-select>
