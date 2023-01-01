@@ -135,7 +135,7 @@ export class OfflineModeService {
       var formData = new FormData();
 
       for ( var key in task ) {
-        if(key != 'url_gambar_data' && key != 'url_gambar'){
+        if(key != 'url_gambar_data' && key != 'url_gambar' && key != 'pokok'){
           formData.append(key, task[key]);
         }
       }

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
+import { TaskStatus } from 'src/app/common/task-status';
 import { BaggingModel } from 'src/app/model/bagging';
 import { OfflineControlPollinationModel } from 'src/app/model/offline-control-pollination';
 import { StorageService } from '../storage.service';
-import { BaggingService } from '../tasks/bagging.service';
+import { OfflineTreeService } from './offline-tree.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,8 @@ import { BaggingService } from '../tasks/bagging.service';
 export class OfflineControlPollinationService {
 
   constructor(
-    private storageService:StorageService
+    private storageService:StorageService,
+    private offlineTreeService:OfflineTreeService,
   ) { }
 
   async saveCPTask(task:OfflineControlPollinationModel){
@@ -58,6 +60,35 @@ export class OfflineControlPollinationService {
       }
     });
 
+    return retVal;
+  }
+
+  async getPostponedTask():Promise<OfflineControlPollinationModel[]>{
+    let retArray:OfflineControlPollinationModel[] = [];
+    let tempArray:OfflineControlPollinationModel[] = await this.getSavedCPTasks();
+
+    tempArray.forEach(async el => {
+      if(el.status == TaskStatus.created){
+        let treeInfo = await this.offlineTreeService.getById(el.pokok_id);
+        el.pokok = treeInfo;
+        retArray.push(el);
+      }
+    });
+
+    return retArray;
+  }
+
+  async getPostponedTaskByTandanId( tandanId: string):Promise<OfflineControlPollinationModel>{
+    let retVal:OfflineControlPollinationModel;
+    let tempArray:OfflineControlPollinationModel[] = await this.getSavedCPTasks();
+
+    tempArray.forEach(async el => {
+      if(el.status == TaskStatus.created && el.tandan_id == tandanId){
+        retVal = el;
+      }
+    });
+
+    retVal.pokok = await this.offlineTreeService.getById(retVal.pokok_id);
     return retVal;
   }
 }

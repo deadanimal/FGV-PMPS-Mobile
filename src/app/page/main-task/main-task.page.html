@@ -89,7 +89,7 @@
         <ion-col size="6" size-md="4" size-lg="2">
           <div>
             <button (click)="posponedTask()" class="btn w-100 mx-auto rounded btn-danger text-center text-white p-2">
-              <ion-badge *ngIf="numOfPosponedTask > 0" color="danger">{{numOfPosponedTask}}</ion-badge>
+              <ion-badge *ngIf="posponedTaskList?.length > 0" color="danger">{{posponedTaskList?.length}}</ion-badge>
               <img height="56px" src="../../../assets/posponed_task_icon.png">
               <h5>Tugas Tertunggak</h5>
             </button>
@@ -323,7 +323,8 @@
       <div *ngIf="disablePostponedTaskBtn">
         <div *ngFor="let item of posponedTaskList"class="p-3 my-3 mx-auto w-75 shadow rounded border border-danger d-flex justify-content-between align-items-center">
           <p class="h6">Rekod {{item.id}} ({{item.pokok.progeny}}-{{item.pokok.no_pokok}})</p>
-          <button (click)="viewTask('cp','posponed',item.id,item.pokok_id)" class="btn btn-danger text-white">Info</button>
+          <button *ngIf="item.status != 'dicipta'" (click)="viewTask('cp','posponed',item.id,item.pokok_id)" class="btn btn-danger text-white">Info</button>
+          <button *ngIf="item.status == 'dicipta'" (click)="viewTask('cp','interrupted',item.id,item.tandan_id)" class="btn btn-danger text-white">Info</button>
         </div>
       </div>
       <div *ngIf="disableFinishRecord">

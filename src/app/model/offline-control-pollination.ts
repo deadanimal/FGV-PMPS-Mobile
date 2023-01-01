@@ -1,3 +1,5 @@
+import { PokokResponse } from "./pokok-respons";
+
 export interface OfflineControlPollinationModel {
     tandan_id:String;
     pokok_id:String;
@@ -9,5 +11,6 @@ export interface OfflineControlPollinationModel {
     defect?:string;
     no_pollen?:string;
     peratus_pollen?:string;
+    pokok?:PokokResponse;
     status?:string;
 }

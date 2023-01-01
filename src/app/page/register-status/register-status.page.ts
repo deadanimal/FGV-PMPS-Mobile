@@ -93,6 +93,7 @@ export class RegisterStatusPage implements OnInit {
       if(params['task']!=null){
         this.taskType = params['task'];
       }
+      this.tandanId = params['tandanId'];
 
       if(this.scanInput != null){
         this.tandanId = this.scanInput;
@@ -169,7 +170,7 @@ export class RegisterStatusPage implements OnInit {
   }
 
   _getPostponedCPTask(){
-    this.controlPollinationService.getById(this.taskId,(res:BaggingModel)=>{
+    this.controlPollinationService.getById(this.taskId,(res:ControlPollinationModel)=>{
       this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
         this.regNumber = tandanRes.no_daftar;
         this.cycle = tandanRes.kitaran?.toUpperCase();
@@ -177,6 +178,27 @@ export class RegisterStatusPage implements OnInit {
         this.age=tandanRes.umur? tandanRes.umur.toString(): this._calculateAge(tandanRes.tarikh_daftar).toString();
       });
     },false);
+  }
+
+  async _getInteruptedCPTask(){
+    if(!this.isOfflineMode){
+      this.controlPollinationService.getById(this.taskId,(res:ControlPollinationModel)=>{
+        this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
+          this.regNumber = tandanRes.no_daftar;
+          this.cycle = tandanRes.kitaran?.toUpperCase();
+          this.status=tandanRes.status_tandan?.toUpperCase();
+          this.age=tandanRes.umur? tandanRes.umur.toString(): this._calculateAge(tandanRes.tarikh_daftar).toString();
+        });
+      },false);
+    }else{
+      let task = await this.offlineCPService.getPostponedTaskByTandanId(this.tandanId.toString());
+      let tandan:TandanResponse = await this.offlineTandanService.getById(parseInt(this.tandanId.toString()));
+      this.regNumber = tandan.no_daftar;
+      this.cycle = tandan.kitaran?.toUpperCase();
+      this.status=tandan.status_tandan?.toUpperCase();
+      this.age=tandan.umur? tandan.umur.toString(): this._calculateAge(tandan.tarikh_daftar).toString();
+      this.treeNumberDisplay = task?.pokok?.progeny+'-'+task?.pokok?.no_pokok;
+    }
   }
 
   _calculateAge(prvDate:string){
@@ -191,6 +213,8 @@ export class RegisterStatusPage implements OnInit {
       this._getCPTask();
     }else if(this.taskType == "Pendebungaan Terkawal (CP)posponed"){
       this._getPostponedCPTask();
+    }else if(this.taskType == "Pendebungaan Terkawal (CP)interrupted"){
+      this._getInteruptedCPTask();
     }else if(this.taskType == "Kawalan Kualiti (QC)"){
       this._getQcTask();
     }else if(this.taskType == "Tuai"){
@@ -313,6 +337,15 @@ export class RegisterStatusPage implements OnInit {
             taskId:this.taskId,
             treeNum:this.treeNumber,
             taskType:"debungposponed",
+          }
+        ]
+      );
+    }else if(this.taskType == "Pendebungaan Terkawal (CP)interrupted"){
+      this.router.navigate(
+        [
+          '/app/tabs/tab1/control-pollen-form',
+          {
+            tandanId:this.tandanId,
           }
         ]
       );

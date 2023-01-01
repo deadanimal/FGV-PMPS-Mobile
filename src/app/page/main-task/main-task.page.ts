@@ -144,6 +144,15 @@ export class MainTaskPage implements OnInit {
           taskType:this.task+"posponed",
         }]);
       }
+    }else if( status == 'interrupted'){
+      if(taskId == 'cp'){
+        this.router.navigate(['/app/tabs/tab1/reg-status',
+        {
+          taskId:id,
+          tandanId:param1,
+          taskType:this.task+"interrupted",
+        }]);
+      }
     }else if(status == "activeTask"){
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId,tandanId:id}]);
     }else if(status == "activeTaskSV"){
@@ -490,7 +499,7 @@ export class MainTaskPage implements OnInit {
             if(el.status == TaskStatus.done){
               this.numOfActiveTask++;
               this.activeTaskList.push(el);
-            }else if(el.status == TaskStatus.postpone){
+            }else if(el.status == TaskStatus.postpone || el.status == TaskStatus.created){
               this.numOfPosponedTask++;
               this.posponedTaskList.push(el);
             }else{
@@ -505,7 +514,9 @@ export class MainTaskPage implements OnInit {
         });
       }else{
         this.newTaskList = await this.offlineCPService.getNewCpTaskList();
+        this.posponedTaskList = await this.offlineCPService.getPostponedTask();
         this.numOfNewTask = this.newTaskList.length;
+        this.numOfPosponedTask = this.posponedTaskList.length;
       }
     }else{
       this.controlPollinationService.getAll((res:[ControlPollinationModel])=>{
