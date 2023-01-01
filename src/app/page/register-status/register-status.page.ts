@@ -184,6 +184,7 @@ export class RegisterStatusPage implements OnInit {
     if(!this.isOfflineMode){
       this.controlPollinationService.getById(this.taskId,(res:ControlPollinationModel)=>{
         this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
+          this.treeNumberDisplay = res.pokok?.progeny+'-'+res.pokok?.no_pokok;
           this.regNumber = tandanRes.no_daftar;
           this.cycle = tandanRes.kitaran?.toUpperCase();
           this.status=tandanRes.status_tandan?.toUpperCase();
@@ -341,12 +342,22 @@ export class RegisterStatusPage implements OnInit {
         ]
       );
     }else if(this.taskType == "Pendebungaan Terkawal (CP)interrupted"){
+
+      let navItem = {};
+      if(this.taskId != null){
+        navItem = {
+          taskId:this.taskId
+        }
+      }else{
+        navItem = {
+          tandanId:this.tandanId,
+        }
+      }
+
       this.router.navigate(
         [
           '/app/tabs/tab1/control-pollen-form',
-          {
-            tandanId:this.tandanId,
-          }
+          navItem
         ]
       );
     }else if(this.taskType == "Kawalan Kualiti (QC)"){
