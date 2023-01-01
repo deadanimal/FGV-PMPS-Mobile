@@ -344,7 +344,7 @@ export class RegisterStatusPage implements OnInit {
     }else if(this.taskType == "Pendebungaan Terkawal (CP)interrupted"){
 
       let navItem = {};
-      if(this.taskId != null){
+      if(this.taskId != null && this.taskId != 'undefined'){
         navItem = {
           taskId:this.taskId
         }

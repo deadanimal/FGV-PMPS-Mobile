@@ -66,6 +66,9 @@ export class OfflineControlPollinationService {
   async getPostponedTask():Promise<OfflineControlPollinationModel[]>{
     let retArray:OfflineControlPollinationModel[] = [];
     let tempArray:OfflineControlPollinationModel[] = await this.getSavedCPTasks();
+    if(tempArray == null){
+      tempArray = [];
+    }
 
     tempArray.forEach(async el => {
       if(el.status == TaskStatus.created){
@@ -81,6 +84,9 @@ export class OfflineControlPollinationService {
   async getPostponedTaskByTandanId( tandanId: string):Promise<OfflineControlPollinationModel>{
     let retVal:OfflineControlPollinationModel;
     let tempArray:OfflineControlPollinationModel[] = await this.getSavedCPTasks();
+    if(tempArray == null){
+      tempArray = [];
+    }
 
     tempArray.forEach(async el => {
       if(el.status == TaskStatus.created && el.tandan_id == tandanId){
