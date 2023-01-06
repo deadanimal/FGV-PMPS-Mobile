@@ -3,6 +3,7 @@ export enum InAppTaskCycle {
     posponedbagging = 'balutposponed',
     cp          = 'debung',
     posponedCp  = 'debungposponed',
+    rejectedCp  = 'debungrejected',
     qc          = 'qc',
     qcSv        = 'qcsv',
     harvest     = 'tuai',

@@ -225,6 +225,28 @@ export class RegisterStatusPage implements OnInit {
     }
   }
 
+  async _getRejectedCPTask(){
+    if(!this.isOfflineMode){
+      this.controlPollinationService.getById(this.taskId,(res:ControlPollinationModel)=>{
+        this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
+          this.treeNumberDisplay = res.pokok?.progeny+'-'+res.pokok?.no_pokok;
+          this.regNumber = tandanRes.no_daftar;
+          this.cycle = tandanRes.kitaran?.toUpperCase();
+          this.status=tandanRes.status_tandan?.toUpperCase();
+          this.age=tandanRes.umur? tandanRes.umur.toString(): this._calculateAge(tandanRes.tarikh_daftar).toString();
+        });
+      },false);
+    }else{
+      let task = await this.offlineCPService.getPostponedTaskByTandanId(this.tandanId.toString());
+      let tandan:TandanResponse = await this.offlineTandanService.getById(parseInt(this.tandanId.toString()));
+      this.regNumber = tandan.no_daftar;
+      this.cycle = tandan.kitaran?.toUpperCase();
+      this.status=tandan.status_tandan?.toUpperCase();
+      this.age=tandan.umur? tandan.umur.toString(): this._calculateAge(tandan.tarikh_daftar).toString();
+      this.treeNumberDisplay = task?.pokok?.progeny+'-'+task?.pokok?.no_pokok;
+    }
+  }
+
   _calculateAge(prvDate:string){
     let currentDate = Date.parse(this.datePipe.transform(Date.now(),"yyyy-MM-dd"));
     let prevDate = Date.parse(prvDate);
@@ -239,6 +261,8 @@ export class RegisterStatusPage implements OnInit {
       this._getPostponedCPTask();
     }else if(this.taskType == "Pendebungaan Terkawal (CP)interrupted"){
       this._getInteruptedCPTask();
+    }else if(this.taskType == "Pendebungaan Terkawal (CP)rejected"){
+      this._getRejectedCPTask();
     }else if(this.taskType == "Kawalan Kualiti (QC)"){
       this._getQcTask();
     }else if(this.taskType == "Tuai"){
@@ -363,6 +387,17 @@ export class RegisterStatusPage implements OnInit {
             taskId:this.taskId,
             treeNum:this.treeNumber,
             taskType:"debungposponed",
+          }
+        ]
+      );
+    }else if(this.taskType == "Pendebungaan Terkawal (CP)rejected"){
+      this.router.navigate(
+        [
+          'app/tabs/tab1/defect',
+          {
+            taskId:this.taskId,
+            treeNum:this.treeNumber,
+            taskType:InAppTaskCycle.rejectedCp,
           }
         ]
       );
