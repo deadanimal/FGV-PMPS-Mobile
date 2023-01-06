@@ -571,6 +571,8 @@ export class TaskStatusPage implements OnInit {
         this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
         this.remark = res.catatan;
         this.tandanId = res.tandan_id.toString();
+        this._getTandanInfo(this.tandanId);
+        this.treeNum = res.pokok.progeny+'-'+res.pokok.no_pokok;
       });
     }else{
       if(!this.isOfflineMode){
