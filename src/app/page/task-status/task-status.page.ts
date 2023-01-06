@@ -246,7 +246,7 @@ export class TaskStatusPage implements OnInit {
     formData.append('pokok_id',this.treeId.toString());
     formData.append('tandan_id',this.tandanId.toString());
     formData.append('id_sv_pollen',this.accountService.getSessionDetails().id.toString());
-    formData.append('catatan',this.remark? this.remark.toString().toString() : "");
+    formData.append('catatan',this.remark? this.remark.toString() : "");
     formData.append('pengesah_id',this.id1?.value?.toString());
     formData.append('status',TaskStatus.created);
 
@@ -307,7 +307,7 @@ export class TaskStatusPage implements OnInit {
     const blob = await response.blob();
     formData.append('url_gambar2', blob, "task_"+this.taskId+"."+this.photo.format);
     formData.append('id_sv_pollen',this.accountService.getSessionDetails().id.toString());
-    formData.append('catatan2',this.remark?.toString());
+    formData.append('catatan2',this.remark? this.remark.toString() : "");
     formData.append('pengesah_id',this.id1?.value?.toString());
     formData.append('tarikh_qc', date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate());
     formData.append('_method','PUT');
@@ -388,7 +388,7 @@ export class TaskStatusPage implements OnInit {
       const blob = await response.blob();
       formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
     }
-    formData.append('catatan',this.remark?.toString());
+    formData.append('catatan',this.remark? this.remark.toString() : "");
     formData.append('pengesah_id',this.id1?.value?.toString());
     formData.append('status', status);
     formData.append('_method','PUT');
@@ -421,7 +421,7 @@ export class TaskStatusPage implements OnInit {
       this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
         formData.append('tandan_id',res.tandan_id.toString());
         formData.append('pokok_id',res.pokok_id.toString());
-        formData.append('catatan',this.remark? this.remark.toString().toString() : "");
+        formData.append('catatan',this.remark? this.remark.toString() : "");
         formData.append('id_sv_cp',this.accountService.getSessionDetails().id.toString());
         formData.append('pengesah_id',this.id1?.value?.toString());
           this.controlPollinationService.create(formData,status,(resCP:ControlPollinationModel)=>{
@@ -447,7 +447,7 @@ export class TaskStatusPage implements OnInit {
         url_gambar:"task_"+this.taskId+"."+this.photo.format,
         url_gambar_data:this.photo.dataUrl,
         id_sv_cp:this.accountService.getSessionDetails().id,
-        catatan:this.remark? this.remark.toString().toString() : "",
+        catatan:this.remark? this.remark.toString() : "",
         pengesah_id:this.id1.value?.toString(),
         pokok_id:this.treeId,
         defect:this.defect?.toString(),
@@ -494,7 +494,7 @@ export class TaskStatusPage implements OnInit {
     // for bagging
     formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
     formData.append('id_sv_balut',this.accountService.getSessionDetails().id.toString());
-    formData.append('catatan',this.remark? this.remark.toString().toString() : "");
+    formData.append('catatan',this.remark? this.remark.toString() : "");
     formData.append('pengesah_id',this.id1.value?.toString());
     formData.append('tandan_id',this.tandanId.toString());
 
@@ -539,7 +539,7 @@ export class TaskStatusPage implements OnInit {
         url_gambar:"task_"+this.taskId+"."+this.photo.format,
         url_gambar_data:this.photo.dataUrl,
         id_sv_balut:this.accountService.getSessionDetails().id,
-        catatan:this.remark? this.remark.toString().toString() : "",
+        catatan:this.remark? this.remark.toString() : "",
         pengesah_id:this.id1.value?.toString(),
         tandan_id:this.tandanId.toString(),
       };
@@ -1036,7 +1036,7 @@ export class TaskStatusPage implements OnInit {
       const blob = await response.blob();
       formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
       formData.append('_method','put');
-      formData.append('catatan',this.remark? this.remark.toString().toString() : "");
+      formData.append('catatan',this.remark? this.remark.toString() : "");
       formData.append('status',status);
       this.qualityControlService.update(this.taskId,formData,(res:QualityControlModel)=>{
         if(this.defect == null){
@@ -1053,7 +1053,7 @@ export class TaskStatusPage implements OnInit {
       let data:OfflineQualityControlModel = {
         id:this.taskId,
         tandan_id:this.tandanId.toString(),
-        catatan:this.remark? this.remark.toString().toString() : "",
+        catatan:this.remark? this.remark.toString() : "",
         url_gambar:"task_"+this.taskId+"."+this.photo.format,
         url_gambar_data:this.photo.dataUrl,
         status:status,
@@ -1080,7 +1080,7 @@ export class TaskStatusPage implements OnInit {
       const blob = await response.blob();
       formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
       formData.append('_method','put');
-      formData.append('catatan',this.remark? this.remark.toString().toString() : "");
+      formData.append('catatan',this.remark? this.remark.toString() : "");
       formData.append('berat_tandan',this.weight?.toString());
       formData.append('status',status);
       formData.append('id_sv_harvest',this.accountService.getSessionDetails().id.toString());
@@ -1099,7 +1099,7 @@ export class TaskStatusPage implements OnInit {
       let data:OfflineHarvestModel = {
         id:this.taskId,
         berat_tandan:this.weight?.toString(),
-        catatan:this.remark? this.remark.toString().toString() : "",
+        catatan:this.remark? this.remark.toString() : "",
         url_gambar:"task_"+this.taskId+"."+this.photo.format,
         url_gambar_data:this.photo.dataUrl,
         status:status,
