@@ -482,6 +482,26 @@ export class TaskStatusPage implements OnInit {
     }
   }
 
+  private _successSubmitTask(){
+    this.modalService.continuePrompt().then(
+      (value)=>{
+        if(value['data'] == UserContinueSelection.no){
+          this._promptCompleted();
+        }else{
+          this.router.navigate(
+            [
+              '/app/tabs/tab1/start-work-find',
+              {
+                treeNum:this.treeId,
+                taskType:this.taskType,
+              }
+            ]
+          );
+        }
+      }
+    );
+  }
+
   async submitTask(){
     const formData = new FormData();
     const response = await fetch(this.photo.dataUrl);
@@ -490,7 +510,11 @@ export class TaskStatusPage implements OnInit {
     formData.append('no_daftar',this.regNo.toString());
     formData.append('tarikh_daftar',this.datePipe.transform(Date.now(),"yyyy-MM-dd").toString());
     formData.append('pokok_id',this.treeId.toString());
-    formData.append('kitaran',this.taskType.toString());
+    if(this.taskType == InAppTaskCycle.posponedbagging){
+      formData.append('kitaran',InAppTaskCycle.bagging);
+    }else{
+      formData.append('kitaran',this.taskType.toString());
+    }
     // for bagging
     formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
     formData.append('id_sv_balut',this.accountService.getSessionDetails().id.toString());
@@ -511,23 +535,13 @@ export class TaskStatusPage implements OnInit {
           });
           modal.present();
         }else{
-          this.modalService.continuePrompt().then(
-            (value)=>{
-              if(value['data'] == UserContinueSelection.no){
-                this._promptCompleted();
-              }else{
-                this.router.navigate(
-                  [
-                    '/app/tabs/tab1/start-work-find',
-                    {
-                      treeNum:this.treeId,
-                      taskType:this.taskType,
-                    }
-                  ]
-                );
-              }
-            }
-          );
+          if(this.taskType == InAppTaskCycle.posponedbagging){
+            this.baggingService.update(this.taskId,{status:TaskStatus.redo},(res2:BaggingModel)=>{
+              this._successSubmitTask();
+            });
+          }else{
+            this._successSubmitTask();
+          }
         }
       });
     }else{
@@ -586,6 +600,20 @@ export class TaskStatusPage implements OnInit {
         this._getTandanInfo(this.tandanId);
       }
     }
+  }
+
+  async _getPosponedBaggingTask(){
+    this.enableImgDeleteBtn = true;
+      if(!this.isOfflineMode){
+        this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
+          this.tandanId = res.tandan_id.toString();
+          this._getTandanInfo(this.tandanId);
+        });
+      }else{
+        let newTask:BaggingModel = await this.offlineCpService.getNewTaskById(parseInt(this.taskId.toString()));
+        this.tandanId = newTask.tandan_id.toString();
+        this._getTandanInfo(this.tandanId);
+      }
   }
 
   _getPosponedCPTask(taskId:String){
@@ -667,6 +695,8 @@ export class TaskStatusPage implements OnInit {
   async _getTask(taskId:String){
     if(this.taskType == 'debung'){
       this._getCPTask(taskId);
+    }else if(this.taskType == InAppTaskCycle.posponedbagging){
+      this._getPosponedBaggingTask();
     }else if(this.taskType == 'debungposponed'){
       this._getPosponedCPTask(taskId);
     }else if(this.taskType == 'qc'){

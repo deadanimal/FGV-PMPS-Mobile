@@ -5,4 +5,5 @@ export enum TaskStatus {
     rejected    = 'tolak',
     defect      = 'rosak',
     postpone    = 'anjak',
+    redo        = 'buatsemula',
 }

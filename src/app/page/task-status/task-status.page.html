@@ -98,7 +98,7 @@
       <p class="m-auto">TERIMA</p>
     </button>
 
-    <button [disabled]="!form.valid || photo ==null || id1==null && id1.value==null" (click)="submitTask()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Kawalan Kualiti') && taskType == 'balut'" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="!form.valid || photo ==null || id1==null && id1.value==null" (click)="submitTask()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Kawalan Kualiti') && ( taskType == 'balut' || taskType == 'balutposponed')" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>
