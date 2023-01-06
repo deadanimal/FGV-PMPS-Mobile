@@ -720,6 +720,7 @@ export class TaskStatusPage implements OnInit {
         }
         this._getUserInfo(res.id_sv_balut);
         if(res.tandan_id != null){
+          this.tandanId = res.tandan_id.toString();
           this.treeId = res.pokok_id.toString();
           this._getTandanInfo(res.tandan_id.toString());
         }else{
@@ -873,7 +874,9 @@ export class TaskStatusPage implements OnInit {
         this.svRemark,
         TaskStatus.rejected,
         (res:BaggingModel)=>{
-          this._promptCompleted("Tugasan Telah Berjaya Di Tolak");
+          this.tandanService.updateDefect(this.tandanId,"",()=>{
+            this._promptCompleted("Tugasan Telah Berjaya Di Tolak");
+          });
         }
       );
     }
