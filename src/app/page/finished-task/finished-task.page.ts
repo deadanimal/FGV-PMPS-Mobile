@@ -19,6 +19,7 @@ export class FinishedTaskPage implements OnInit {
   cycle:String;
   status:String;
   age:String;
+  block:String;
   indicator:number;
   constructor(
     private activatedRoute:ActivatedRoute,
@@ -45,6 +46,7 @@ export class FinishedTaskPage implements OnInit {
       this.indicator = this._getStage(res);
       this.treeService.getById(res.pokok_id.toString(),(treeRes:PokokResponse)=>{
         this.treeNumber = treeRes.progeny+"-"+treeRes.no_pokok;
+        this.block = treeRes.blok;
       });
     });
   }

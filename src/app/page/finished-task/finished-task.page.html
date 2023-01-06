@@ -65,6 +65,10 @@
 
   <form #form="ngForm" class="mx-auto my-2" style="max-width: 300px;">
     <ion-item lines="full">
+      <ion-label position="floating">Blok</ion-label>
+      <ion-input type="text" [(ngModel)]="block" name="block" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
       <ion-label position="floating">No Daftar</ion-label>
       <ion-input type="text" [(ngModel)]="regNo" name="regNo" required [readonly]="true"></ion-input>
     </ion-item>
