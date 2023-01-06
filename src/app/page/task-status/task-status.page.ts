@@ -412,35 +412,63 @@ export class TaskStatusPage implements OnInit {
     );
   }
 
+  private _createCpFromBagging(formData:FormData, status:TaskStatus){
+    this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
+      formData.append('tandan_id',res.tandan_id.toString());
+      formData.append('pokok_id',res.pokok_id.toString());
+        this.controlPollinationService.create(formData,status,(resCP:ControlPollinationModel)=>{
+          if(this.defect == null){
+            this.router.navigate(
+              [
+                '/app/tabs/tab1/control-pollen-form',
+                {
+                  taskId:resCP.id,
+                }
+              ]
+              );
+            }else{
+              this._updateDefect(resCP.tandan_id);
+            }
+          }
+        );
+      }
+    );
+  }
+
   async _createCp(status:TaskStatus){
-    const formData = new FormData();
-    const response = await fetch(this.photo.dataUrl);
-    const blob = await response.blob();
-    formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
     if(!this.isOfflineMode){
-      this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
-        formData.append('tandan_id',res.tandan_id.toString());
-        formData.append('pokok_id',res.pokok_id.toString());
-        formData.append('catatan',this.remark? this.remark.toString() : "");
-        formData.append('id_sv_cp',this.accountService.getSessionDetails().id.toString());
-        formData.append('pengesah_id',this.id1?.value?.toString());
+      const formData = new FormData();
+      const response = await fetch(this.photo.dataUrl);
+      const blob = await response.blob();
+      formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
+      formData.append('catatan',this.remark? this.remark.toString() : "");
+      formData.append('id_sv_cp',this.accountService.getSessionDetails().id.toString());
+      formData.append('pengesah_id',this.id1?.value?.toString());
+      if(this.taskType == InAppTaskCycle.rejectedCp){
+        formData.append('tandan_id',this.tandanId.toString());
+        formData.append('pokok_id',this.treeId.toString());
           this.controlPollinationService.create(formData,status,(resCP:ControlPollinationModel)=>{
-            if(this.defect == null){
-              this.router.navigate(
-                [
-                  '/app/tabs/tab1/control-pollen-form',
-                  {
-                    taskId:resCP.id,
+            this.controlPollinationService.update(this.taskId,{status:TaskStatus.redo},()=>{
+              this.tandanService.update(this.tandanId,{status_tandan:'aktif'},()=>{
+                if(this.defect == null){
+                  this.router.navigate(
+                    [
+                      '/app/tabs/tab1/control-pollen-form',
+                      {
+                        taskId:resCP.id,
+                      }
+                    ]
+                    );
+                  }else{
+                    this._updateDefect(resCP.tandan_id);
                   }
-                ]
-                );
-              }else{
-                this._updateDefect(resCP.tandan_id);
-              }
+              });
+            });
             }
           );
-        }
-      );
+      }else{
+        this._createCpFromBagging(formData,status);
+      }
     }else{
       let data:OfflineControlPollinationModel = {
         tandan_id:this.tandanId,
@@ -632,6 +660,17 @@ export class TaskStatusPage implements OnInit {
     });
   }
 
+  _getRejectedCPTask(taskId:String){
+    this.controlPollinationService.getById(taskId,(res:ControlPollinationModel)=>{
+      this.enableImgDeleteBtn = true;
+      this.tandanId = res.tandan_id.toString();
+      this.treeId = res.pokok_id.toString();
+
+      this._getTandanInfo(this.tandanId);
+      this._getTreeNumber();
+    });
+  }
+
   async _getQCTask(taskId:String){
     if(this.userRole == UserRole.penyelia_qc){
       this.qualityControlService.getById(taskId,(res:QualityControlModel)=>{
@@ -699,6 +738,8 @@ export class TaskStatusPage implements OnInit {
       this._getPosponedBaggingTask();
     }else if(this.taskType == 'debungposponed'){
       this._getPosponedCPTask(taskId);
+    }else if(this.taskType == InAppTaskCycle.rejectedCp){
+      this._getRejectedCPTask(taskId);
     }else if(this.taskType == 'qc'){
       this._getQCTask(taskId);
     }else if(this.taskType == InAppTaskCycle.qcSv){

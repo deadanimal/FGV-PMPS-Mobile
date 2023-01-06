@@ -187,6 +187,39 @@ export class TandanService {
       );
   }
 
+  async update(
+    tandanId:String,
+    postObject:Object,
+    callback,
+    loadingAnim = true
+  ){
+    if(loadingAnim){
+      this.loadingModal = await this.showLoading();
+    }
+      this.http.put<TandanResponse>(
+        `${environment.baseUrl}${environment.tandanInfo}${tandanId}`,
+        postObject
+      ).subscribe(
+        async (res:TandanResponse) => {
+          if(loadingAnim){
+            this.loadingModal = await this.loadingCtrl.getTop()
+            if(this.loadingModal != null){
+              this.loadingModal.dismiss();
+            }
+          }
+          callback(res);
+        },
+        async (err:HttpErrorResponse) => {
+          if(loadingAnim){
+            this.loadingModal = await this.loadingCtrl.getTop()
+            if(this.loadingModal != null){
+              this.loadingModal.dismiss();
+            }
+          }
+        }
+      );
+  }
+
   async updateTreeAndCycle(
     tandanId:String,
     kitaran:String,

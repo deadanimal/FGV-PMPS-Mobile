@@ -153,7 +153,7 @@ export class ControlPollinationService {
 
   async update(
     cpId:String,
-    formData:FormData,
+    formData:Object,
     callback
   ){
     this.loadingModal = await this.showLoading();
