@@ -3,10 +3,7 @@ import { Router } from '@angular/router';
 import { AccountService, UserRole } from 'src/app/service/account.service';
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { StorageService } from 'src/app/service/storage.service';
-import { TaskService } from 'src/app/service/task.service';
-import { TaskResponseModel } from 'src/app/model/task-response';
 import { LoadingController } from '@ionic/angular';
-import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
@@ -31,12 +28,14 @@ export class DashboardPage implements OnInit {
     private router:Router,
     private accountService:AccountService,
     private storageService:StorageService,
-    private taskService:TaskService,
     private loadingCtrl: LoadingController,
   ) { }
 
   ngOnInit() {
-    let loginDetails:LoginResponseModel = this.accountService.getSessionDetails();
+  }
+
+  async ionViewWillEnter() {
+    let loginDetails:LoginResponseModel = await this.accountService._getDataFromStorage();
     this.username = loginDetails.nama;
     this.employeeId = loginDetails.no_kakitangan;
     this.role = this.accountService.getUserRole();
@@ -59,9 +58,6 @@ export class DashboardPage implements OnInit {
       this.userIconPath="../../../assets/penyelia_icon.png"
       document.getElementById('iconBg').style.backgroundColor = "rgba(64, 19, 28, 1)";
     }
-  }
-
-  ionViewWillEnter() {
     this.wrapTask = false;
     this.debungTask = false;
     this.qcTask = false;

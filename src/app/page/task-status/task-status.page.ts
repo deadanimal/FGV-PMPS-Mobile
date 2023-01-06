@@ -447,7 +447,7 @@ export class TaskStatusPage implements OnInit {
         url_gambar:"task_"+this.taskId+"."+this.photo.format,
         url_gambar_data:this.photo.dataUrl,
         id_sv_cp:this.accountService.getSessionDetails().id,
-        catatan:this.remark?.toString(),
+        catatan:this.remark? this.remark.toString().toString() : "",
         pengesah_id:this.id1.value?.toString(),
         pokok_id:this.treeId,
         defect:this.defect?.toString(),
@@ -539,7 +539,7 @@ export class TaskStatusPage implements OnInit {
         url_gambar:"task_"+this.taskId+"."+this.photo.format,
         url_gambar_data:this.photo.dataUrl,
         id_sv_balut:this.accountService.getSessionDetails().id,
-        catatan:this.remark?.toString(),
+        catatan:this.remark? this.remark.toString().toString() : "",
         pengesah_id:this.id1.value?.toString(),
         tandan_id:this.tandanId.toString(),
       };
@@ -1053,7 +1053,7 @@ export class TaskStatusPage implements OnInit {
       let data:OfflineQualityControlModel = {
         id:this.taskId,
         tandan_id:this.tandanId.toString(),
-        catatan:this.remark?.toString(),
+        catatan:this.remark? this.remark.toString().toString() : "",
         url_gambar:"task_"+this.taskId+"."+this.photo.format,
         url_gambar_data:this.photo.dataUrl,
         status:status,
@@ -1099,7 +1099,7 @@ export class TaskStatusPage implements OnInit {
       let data:OfflineHarvestModel = {
         id:this.taskId,
         berat_tandan:this.weight?.toString(),
-        catatan:this.remark?.toString(),
+        catatan:this.remark? this.remark.toString().toString() : "",
         url_gambar:"task_"+this.taskId+"."+this.photo.format,
         url_gambar_data:this.photo.dataUrl,
         status:status,
