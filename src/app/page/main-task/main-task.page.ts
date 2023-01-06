@@ -149,6 +149,15 @@ export class MainTaskPage implements OnInit {
           taskType:this.task+"posponed",
         }]);
       }
+    }else if( status == 'rejected'){
+      if(taskId == 'cp'){
+        this.router.navigate(['/app/tabs/tab1/reg-status',
+        {
+          taskId:id,
+          treeNum:param1,
+          taskType:this.task+"rejected",
+        }]);
+      }
     }else if( status == 'interrupted'){
       if(taskId == 'cp'){
         this.router.navigate(['/app/tabs/tab1/reg-status',
@@ -383,7 +392,7 @@ export class MainTaskPage implements OnInit {
             if(el.status == TaskStatus.done){
               this.numOfActiveTask++;
               this.activeTaskList.push(el);
-            }else if(el.status == TaskStatus.postpone || el.status == TaskStatus.created){
+            }else if(el.status == TaskStatus.postpone || el.status == TaskStatus.created || el.status == TaskStatus.rejected){
               this.numOfPosponedTask++;
               this.posponedTaskList.push(el);
             }else{

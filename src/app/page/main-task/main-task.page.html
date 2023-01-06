@@ -321,8 +321,9 @@
       <div *ngIf="disablePostponedTaskBtn">
         <div *ngFor="let item of posponedTaskList"class="p-3 my-3 mx-auto w-75 shadow rounded border border-danger d-flex justify-content-between align-items-center">
           <p class="h6">Rekod {{item.id}} ({{item.pokok.progeny}}-{{item.pokok.no_pokok}})</p>
-          <button *ngIf="item.status != 'dicipta'" (click)="viewTask('cp','posponed',item.id,item.pokok_id)" class="btn btn-danger text-white">Info</button>
+          <button *ngIf="item.status != 'dicipta' && item.status != 'tolak'" (click)="viewTask('cp','posponed',item.id,item.pokok_id)" class="btn btn-danger text-white">Info</button>
           <button *ngIf="item.status == 'dicipta'" (click)="viewTask('cp','interrupted',item.id,item.tandan_id)" class="btn btn-danger text-white">Info</button>
+          <button *ngIf="item.status == 'tolak'" (click)="viewTask('cp','rejected',item.id,item.tandan_id)" class="btn btn-danger text-white">Info</button>
         </div>
       </div>
       <div *ngIf="disableFinishRecord">
