@@ -836,7 +836,9 @@ export class TaskStatusPage implements OnInit {
         this.svRemark,
         TaskStatus.rejected,
         (res:ControlPollinationModel)=>{
-          this._promptCompleted("Tugasan Telah Berjaya Di Tolak");
+          this.tandanService.updateDefect(this.tandanId,"",()=>{
+            this._promptCompleted("Tugasan Telah Berjaya Di Tolak");
+          });
         }
       );
     }else if(this.taskType == InAppTaskCycle.qcSv){
