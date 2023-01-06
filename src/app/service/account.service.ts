@@ -83,5 +83,7 @@ export class AccountService {
   async _getDataFromStorage(){
     let loginDetail:LoginResponseModel = await this.storageService.get(this.storageService.loginDetail);
     this.saveAsSessionDetails(loginDetail);
+
+    return loginDetail;
   }
 }
