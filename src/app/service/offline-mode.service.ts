@@ -184,10 +184,10 @@ export class OfflineModeService {
     },'Fetching Tree List');
   }
 
-  private _syncBaggingAndCp(){
+  private async _syncBaggingAndCp(){
     this._uploadBaggingTasks();
     this._uploadCPTasks();
-    this._getTreeAndTandan(
+    await this._getTreeAndTandan(
       ()=>{
         this.userService.getByRole(UserRole.penyelia_balut,(res3:[User])=>{
           this.baggingSvList = res3;

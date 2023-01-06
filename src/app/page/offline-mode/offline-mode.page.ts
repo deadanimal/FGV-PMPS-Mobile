@@ -68,19 +68,19 @@ export class OfflineModePage implements OnInit {
         this.offlineModeService.sync();
         this.offlineModeService.OfflineMode(start);
         setTimeout(async () => {
-          this._refreshData();
+          await this._refreshData();
           this.modalService.textAndBtnPrompt('Applikasi akan di mula semula','OK').then(
             (value)=>{
               window.location.replace('');
             }
           );
-        }, 500);
+        }, 5000);
       }else if(user_selection == UserContinueSelection.no){
       }
     });
   }
 
-  private async _refreshData(){
+  private async _refreshData():Promise<boolean>{
     this.isOfflineMode = await this.offlineModeService.isOfflineMode();
     this.treeList = await this.offlineModeService.getTreeList();
     this.tandanList = await this.offlineModeService.getTandanList();
@@ -108,6 +108,7 @@ export class OfflineModePage implements OnInit {
     if(this.defectList == null){
       this.defectList = [];
     }
+    return true;
   }
 
   back(){
