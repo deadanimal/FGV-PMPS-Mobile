@@ -83,6 +83,7 @@ export class TaskStatusPage implements OnInit {
   userList:User[] = [];
   defectList:DefectModel[] = [];
   isOfflineMode = false;
+  enableImgDeleteBtn = false;
 
   constructor(
     private photoService:PhotoService,
@@ -119,7 +120,8 @@ export class TaskStatusPage implements OnInit {
     this.isOfflineMode = await this.offlineModeService.isOfflineMode();
     this.date = this.datePipe.transform(Date.now(),"dd-MM-YYYY");
     this.time = this.datePipe.transform(Date.now(),"HH:mm a");
-    this.name = this.accountService.getSessionDetails().nama;
+    let user = await this.accountService._getDataFromStorage();
+    this.name = user.nama;
     this.userRole = this.accountService.getUserRole();
     this.activatedRoute.params.subscribe(params => {
       if(params['viewOnly']!=null){
@@ -187,6 +189,7 @@ export class TaskStatusPage implements OnInit {
 
   erasePicture(){
     this.photo = null;
+    this.serverImage = null;
   }
 
   _promptCompleted(title:string = "Aktiviti anda telah dihantar kepada penyelia"){
@@ -378,12 +381,20 @@ export class TaskStatusPage implements OnInit {
     this.submitCP(TaskStatus.created);
   }
 
-  _updateCP(status:TaskStatus){
-    this.controlPollinationService.updateRemarksNumber(
+  async _updateCP(status:TaskStatus){
+    const formData = new FormData();
+    if(this.photo != null){
+      const response = await fetch(this.photo.dataUrl);
+      const blob = await response.blob();
+      formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
+    }
+    formData.append('catatan',this.remark?.toString());
+    formData.append('pengesah_id',this.id1?.value?.toString());
+    formData.append('status', status);
+    formData.append('_method','PUT');
+    this.controlPollinationService.updateUsingForm(
       this.taskId,
-      this.remark,
-      this.id1?.value?.toString(),
-      status,
+      formData,
       (resCP:ControlPollinationModel)=>{
         if(this.defect == null){
           this.router.navigate(
@@ -577,6 +588,7 @@ export class TaskStatusPage implements OnInit {
 
   _getPosponedCPTask(taskId:String){
     this.controlPollinationService.getById(taskId,(res:ControlPollinationModel)=>{
+      this.enableImgDeleteBtn = true;
       this.tandanId = res.tandan_id.toString();
       this.posponedDay = parseInt(res.tambahan_hari);
       this.numOfCheck = parseInt(res.bil_pemeriksaan);
@@ -584,6 +596,8 @@ export class TaskStatusPage implements OnInit {
       if(res.url_gambar!=null){
         this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
       }
+
+      this._getTandanInfo(this.tandanId);
       this._getTreeNumber();
     });
   }
@@ -857,11 +871,19 @@ export class TaskStatusPage implements OnInit {
     });
   }
 
-  _updateCPPosponed(){
-    this.controlPollinationService.updateAdditionalDaysNumber(
+  async _updateCPPosponed(){
+    const formData = new FormData();
+    if(this.photo != null){
+      const response = await fetch(this.photo.dataUrl);
+      const blob = await response.blob();
+      formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
+    }
+    formData.append('tambahan_hari',this.posponedDay.toString());
+    formData.append('bil_pemeriksaan',this.numOfCheck.toString());
+    formData.append('status', TaskStatus.postpone);
+    this.controlPollinationService.updateUsingForm(
       this.taskId,
-      this.posponedDay.toString(),
-      this.numOfCheck.toString(),
+      formData,
       (resCP:ControlPollinationModel)=>{
         this.modalService.successPrompt("Proses telah berjaya dianjakkan kepada +"+this.posponedDay+" hari").then((value1)=>{
             this.router.navigateByUrl(
@@ -872,7 +894,8 @@ export class TaskStatusPage implements OnInit {
             );
           }
         );
-    });
+      }
+    );
   }
 
   pospone(){

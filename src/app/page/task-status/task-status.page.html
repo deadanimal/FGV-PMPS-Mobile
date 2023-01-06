@@ -14,6 +14,9 @@
       </button>
       <!-- photo from server -->
       <img *ngIf="serverImage!=null" class="rounded mx-auto" [src]="serverImage"/>
+      <button *ngIf="serverImage!=null && enableImgDeleteBtn" (click)="erasePicture()" class="btn-danger">
+        <ion-icon name="trash-outline"></ion-icon>
+      </button>
     </div>
   </div>
 
@@ -22,11 +25,11 @@
       <ion-label position="floating">Petugas Balut</ion-label>
       <ion-input type="text" [(ngModel)]="name" name="name" required [readonly]="true"></ion-input>
     </ion-item>
-    <ion-item *ngIf="taskType == 'balut'" lines="full">
+    <ion-item *ngIf="taskType == 'balut' || treeNum != null" lines="full">
       <ion-label position="floating">No Pokok</ion-label>
       <ion-input type="text" [(ngModel)]="treeNum" name="treeNum" required [readonly]="true"></ion-input>
     </ion-item>
-    <ion-item *ngIf="taskType == 'balut' || taskType == 'qc' || taskType == 'pollenprep'" lines="full">
+    <ion-item *ngIf="taskType == 'balut' || taskType == 'qc' || taskType == 'pollenprep' || regNo != null" lines="full">
       <ion-label position="floating">No Daftar</ion-label>
       <ion-input type="text" [(ngModel)]="regNo" name="regNo" required [readonly]="true"></ion-input>
     </ion-item>

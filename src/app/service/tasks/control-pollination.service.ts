@@ -208,52 +208,15 @@ export class ControlPollinationService {
     );
   }
 
-  async updateAdditionalDaysNumber(
+  async updateUsingForm(
     cpId:String,
-    tambahan_hari:String,
-    bil_pemeriksaan:String,
+    formData:FormData,
     callback
   ){
     this.loadingModal = await this.showLoading();
-    this.http.put<ControlPollinationModel>(
+    this.http.post<ControlPollinationModel>(
       `${environment.baseUrl}${environment.crossPolination}${cpId}`,
-      {
-        tambahan_hari:tambahan_hari,
-        bil_pemeriksaan:bil_pemeriksaan,
-        status:TaskStatus.postpone,
-      }
-    ).subscribe(
-      async (res:ControlPollinationModel) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        if(this.loadingModal != null){
-          this.loadingModal.dismiss();
-        }
-        callback(res);
-      },
-      async (err:HttpErrorResponse) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        if(this.loadingModal != null){
-          this.loadingModal.dismiss();
-        }
-      }
-    );
-  }
-
-  async updateRemarksNumber(
-    cpId:String,
-    remark:String,
-    sv_id:String,
-    status:String,
-    callback
-  ){
-    this.loadingModal = await this.showLoading();
-    this.http.put<ControlPollinationModel>(
-      `${environment.baseUrl}${environment.crossPolination}${cpId}`,
-      {
-        catatan:remark,
-        pengesah_id:sv_id,
-        status:status,
-      }
+      formData,
     ).subscribe(
       async (res:ControlPollinationModel) => {
         this.loadingModal = await this.loadingCtrl.getTop()
