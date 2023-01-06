@@ -39,15 +39,15 @@
             </button>
           </div>
         </ion-col>
-        <!-- <ion-col *ngIf="numOfNewTask > 0" size="6" size-md="4" size-lg="2">
+        <ion-col *ngIf="posponedTaskList.length > 0" size="6" size-md="4" size-lg="2">
           <div>
-            <button (click)="newRecord()" [disabled]="disableNewRecord" class="btn w-100 mx-auto rounded orangeBtn text-center text-white p-2">
-              <ion-badge *ngIf="numOfNewTask > 0" color="danger">{{numOfNewTask}}</ion-badge>
-              <img height="56px" src="../../../assets/new_record_icon.png">
-              <h5>Rekod Baharu</h5>
+            <button (click)="posponedTask()" class="btn w-100 mx-auto rounded btn-danger text-center text-white p-2">
+              <ion-badge *ngIf="posponedTaskList?.length > 0" color="danger">{{posponedTaskList?.length}}</ion-badge>
+              <img height="56px" src="../../../assets/posponed_task_icon.png">
+              <h5>Tugas Tertunggak</h5>
             </button>
           </div>
-        </ion-col> -->
+        </ion-col>
         <ion-col *ngIf="numOfFinishTask > 0" size="6" size-md="4" size-lg="2">
           <div>
             <button (click)="finishRecord()" [disabled]="disableFinishRecord" class="btn w-100 mx-auto rounded greenBtn text-center text-white p-2">
@@ -67,14 +67,6 @@
             </button>
           </div>
         </ion-col>
-        <!-- <ion-col *ngIf="( role == 'Penyelia Kawalan Kualiti' || role == 'Penyelia Balut & Pendebungaan Terkawal' ) && task != 'Balut'" size="6" size-md="4" size-lg="2">
-          <div>
-            <button (click)="newTask()" [disabled]="disableNewTaskBtn" class="btn w-100 mx-auto rounded blueBtn text-center text-white p-2">
-              <img height="56px" src="../../../assets/active_task_icon.png">
-              <h5>Tugas Baharu</h5>
-            </button>
-          </div>
-        </ion-col> -->
       </ion-row>
       <ion-row *ngIf="task == 'Pendebungaan Terkawal (CP)' && role == 'Petugas Balut & Pendebungaan Terkawal'" class="ion-justify-content-center">
         <ion-col size="6" size-md="4" size-lg="2">
@@ -306,6 +298,12 @@
           <button (click)="viewTask('cp','newTask',item.id)" class="btn orangeBtn text-white">Info</button>
         </div>
       </div> -->
+      <div *ngIf="disablePostponedTaskBtn">
+        <div *ngFor="let item of posponedTaskList"class="p-3 my-3 mx-auto w-75 shadow rounded border border-danger d-flex justify-content-between align-items-center">
+          <p class="h6">Rekod {{item.id}} ({{item.pokok.progeny}}-{{item.pokok.no_pokok}})</p>
+          <button (click)="viewTask('bagging','posponed',item.id,item.pokok_id)" class="btn btn-danger text-white">Info</button>
+        </div>
+      </div>
     </div>
     <div *ngIf="task == 'Pendebungaan Terkawal (CP)' && role == 'Petugas Balut & Pendebungaan Terkawal'">
       <div *ngIf="disableNewRecord">

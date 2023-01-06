@@ -1,8 +1,7 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingController, ModalController } from '@ionic/angular';
+import { LoadingController } from '@ionic/angular';
 import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
 import { TaskStatus } from 'src/app/common/task-status';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
@@ -13,7 +12,6 @@ import { LoginResponseModel } from 'src/app/model/login-response';
 import { PokokResponse } from 'src/app/model/pokok-respons';
 import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
 import { QualityControlModel } from 'src/app/model/quality-control';
-import { TaskResponseModel } from 'src/app/model/task-response';
 import { AccountService, UserRole } from 'src/app/service/account.service';
 import { ModalService } from 'src/app/service/modal.service';
 import { OfflineModeService } from 'src/app/service/offline-mode.service';
@@ -137,6 +135,13 @@ export class MainTaskPage implements OnInit {
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId,tandanId:id}]);
     }else if( status == 'posponed'){
       if(taskId == 'cp'){
+        this.router.navigate(['/app/tabs/tab1/reg-status',
+        {
+          taskId:id,
+          treeNum:param1,
+          taskType:this.task+"posponed",
+        }]);
+      }else if(taskId == 'bagging'){
         this.router.navigate(['/app/tabs/tab1/reg-status',
         {
           taskId:id,
@@ -336,6 +341,9 @@ export class MainTaskPage implements OnInit {
             if(el.status == TaskStatus.done){
               this.numOfActiveTask++;
               this.activeTaskList.push(el);
+            }if(el.status == TaskStatus.rejected){
+              this.numOfPosponedTask++;
+              this.posponedTaskList.push(el);
             }else{
               this.numOfFinishTask++;
               this.finishedTaskList.push(el);
