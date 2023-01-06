@@ -1,5 +1,6 @@
 export enum InAppTaskCycle {
     bagging     = 'balut',
+    posponedbagging = 'balutposponed',
     cp          = 'debung',
     posponedCp  = 'debungposponed',
     qc          = 'qc',

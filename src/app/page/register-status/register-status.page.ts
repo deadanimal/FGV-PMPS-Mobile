@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
+import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
 import { TandanCycle } from 'src/app/common/tandan-cycle';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
 import { BaggingModel } from 'src/app/model/bagging';
@@ -14,7 +15,6 @@ import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
 import { QualityControlModel } from 'src/app/model/quality-control';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { TaskResponseModel } from 'src/app/model/task-response';
-import { AccountService } from 'src/app/service/account.service';
 import { ModalService } from 'src/app/service/modal.service';
 import { OfflineModeService } from 'src/app/service/offline-mode.service';
 import { OfflineControlPollinationService } from 'src/app/service/offline/offline-control-pollination.service';
@@ -169,6 +169,28 @@ export class RegisterStatusPage implements OnInit {
     }
   }
 
+  async _getBaggingTask(){
+    if(!this.isOfflineMode){
+      this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
+        this.treeNumberDisplay = res.pokok?.progeny+'-'+res.pokok?.no_pokok;
+        this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
+          this.regNumber = tandanRes.no_daftar;
+          this.cycle = this._getCycleName(tandanRes)?.toUpperCase();
+          this.status=tandanRes.status_tandan?.toUpperCase();
+          this.age=tandanRes.umur? tandanRes.umur.toString(): this._calculateAge(tandanRes.tarikh_daftar).toString();
+        });
+      },false);
+    }else{
+      let baggingTask:BaggingModel = await this.offlineCPService.getNewTaskById(parseInt(this.taskId.toString()));
+      let tandan:TandanResponse = await this.offlineTandanService.getById(baggingTask.tandan_id);
+      this.treeNumberDisplay = baggingTask.pokok?.progeny+'-'+baggingTask.pokok?.no_pokok;
+      this.regNumber = tandan.no_daftar;
+      this.cycle = tandan.kitaran?.toUpperCase();
+      this.status=tandan.status_tandan?.toUpperCase();
+      this.age=tandan.umur? tandan.umur.toString(): this._calculateAge(tandan.tarikh_daftar).toString();
+    }
+  }
+
   _getPostponedCPTask(){
     this.controlPollinationService.getById(this.taskId,(res:ControlPollinationModel)=>{
       this.treeNumberDisplay = res.pokok?.progeny+'-'+res.pokok?.no_pokok;
@@ -223,6 +245,8 @@ export class RegisterStatusPage implements OnInit {
       this._getHarvestTask();
     }else if(this.taskType == "Penyediaan Pollen"){
       this._getPollenPrepTask();
+    }else if(this.taskType == "Balutposponed"){
+      this._getBaggingTask();
     }else{
       this.loadingModal= await this.showLoading();
       this.taskService.getTask(this.taskId).subscribe(
@@ -380,6 +404,17 @@ export class RegisterStatusPage implements OnInit {
             taskId:this.taskId,
             treeNum:this.treeNumber,
             taskType:"tuai",
+          }
+        ]
+      );
+    }else if(this.taskType == "Balutposponed"){
+      this.router.navigate(
+        [
+          'app/tabs/tab1/task-status',
+          {
+            taskId:this.taskId,
+            treeNum:this.treeNumber,
+            taskType:InAppTaskCycle.posponedbagging,
           }
         ]
       );
