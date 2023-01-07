@@ -5,6 +5,7 @@ export enum InAppTaskCycle {
     posponedCp  = 'debungposponed',
     rejectedCp  = 'debungrejected',
     qc          = 'qc',
+    posponedqc  = 'qcposponed',
     qcSv        = 'qcsv',
     harvest     = 'tuai',
     harvestSv   = 'harvestsv',

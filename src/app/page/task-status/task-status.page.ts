@@ -695,6 +695,22 @@ export class TaskStatusPage implements OnInit {
     }
   }
 
+  async _getPosponedQCTask(taskId:String){
+    if(!this.isOfflineMode){
+      this.qualityControlService.getById(taskId,(res:QualityControlModel)=>{
+        this.qcSvId = res.pengesah_id;
+        this.tandanId = res.tandan_id.toString();
+        this._getTandanInfo(this.tandanId);
+        this._getSupervisors();
+      });
+    }else{
+      let newTask:QualityControlModel = await this.offlineQcService.getNewTaskById(parseInt(this.taskId.toString()));
+      this.tandanId = newTask.tandan_id.toString();
+      this.qcSvId = newTask.pengesah_id;
+      this._getTandanInfo(this.tandanId);
+    }
+  }
+
   async _getHarvestTask(taskId:String){
     if(this.userRole == UserRole.penyelia_tuai){
       this.harvestService.getById(taskId,(res:HarvestModel)=>{
@@ -743,6 +759,8 @@ export class TaskStatusPage implements OnInit {
       this._getRejectedCPTask(taskId);
     }else if(this.taskType == 'qc'){
       this._getQCTask(taskId);
+    }else if(this.taskType == InAppTaskCycle.posponedqc){
+      this._getPosponedQCTask(taskId);
     }else if(this.taskType == InAppTaskCycle.qcSv){
       this._getQCTask(taskId);
     }else if(this.taskType == 'tuai'){
@@ -1119,13 +1137,25 @@ export class TaskStatusPage implements OnInit {
       const response = await fetch(this.photo.dataUrl);
       const blob = await response.blob();
       formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
-      formData.append('_method','put');
       formData.append('catatan',this.remark? this.remark.toString() : "");
       formData.append('status',status);
-      formData.append('kerosakan_id',this.remark? this.remark.toString() : "");
-      this.qualityControlService.update(this.taskId,formData,(res:QualityControlModel)=>{
-        this._promptCompleted();
+      formData.append('kerosakan_id',this.defect? this.defect.toString() : "");
+      if(this.taskType == InAppTaskCycle.posponedqc){
+        formData.append('pokok_id',this.treeId.toString());
+        formData.append('tandan_id',this.tandanId.toString());
+        formData.append('id_sv_qc',this.accountService.getSessionDetails().id.toString());
+        formData.append('pengesah_id',this.qcSvId.toString());
+        this.qualityControlService.create(formData,(res:QualityControlModel)=>{
+          this.qualityControlService.update(this.taskId,{status:TaskStatus.redo,_method:"put"},(res:QualityControlModel)=>{
+            this._promptCompleted();
+          });
         });
+      }else{
+        formData.append('_method','put');
+        this.qualityControlService.update(this.taskId,formData,(res:QualityControlModel)=>{
+          this._promptCompleted();
+        });
+      }
     }else{
       let data:OfflineQualityControlModel = {
         id:this.taskId,

@@ -148,6 +148,13 @@ export class MainTaskPage implements OnInit {
           treeNum:param1,
           taskType:this.task+"posponed",
         }]);
+      }else if(taskId == 'qc'){
+        this.router.navigate(['/app/tabs/tab1/reg-status',
+        {
+          taskId:id,
+          treeNum:param1,
+          taskType:this.task+"posponed",
+        }]);
       }
     }else if( status == 'rejected'){
       if(taskId == 'cp'){
@@ -444,6 +451,9 @@ export class MainTaskPage implements OnInit {
             }else if(el.status == TaskStatus.done){
               this.numOfActiveTask++;
               this.activeTaskList.push(el);
+            }else if(el.status == TaskStatus.rejected){
+              this.numOfPosponedTask++;
+              this.posponedTaskList.push(el);
             }else{
               this.numOfFinishTask++;
               this.finishedTaskList.push(el);

@@ -33,7 +33,7 @@
       <ion-label position="floating">No Daftar</ion-label>
       <ion-input type="text" [(ngModel)]="regNo" name="regNo" required [readonly]="true"></ion-input>
     </ion-item>
-    <ion-item *ngIf="taskType == 'qc'" lines="full">
+    <ion-item *ngIf="taskType == 'qc' || qcSv!= null" lines="full">
       <ion-label position="floating">Penyelia QC</ion-label>
       <ion-input type="text" [(ngModel)]="qcSv" name="qcSv" required [readonly]="true"></ion-input>
     </ion-item>
@@ -118,12 +118,12 @@
       <p class="m-auto">Hantar</p>
     </button>
 
-    <button [disabled]="!form.valid || (photo ==null&& serverImage == null)" (click)="submitNormalQc()" *ngIf="(userRole=='Petugas Kawalan Kualiti' ) && (taskType == 'qc') && defect == null" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="!form.valid || (photo ==null&& serverImage == null)" (click)="submitNormalQc()" *ngIf="(userRole=='Petugas Kawalan Kualiti' ) && (taskType == 'qc' || taskType == 'qcposponed') && defect == null" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="checkmark-circle-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>
 
-    <button [disabled]="!form.valid || (photo ==null&& serverImage == null)" (click)="submitQcDefect()" *ngIf="(userRole=='Petugas Kawalan Kualiti' ) && (taskType == 'qc') && defect != null" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="!form.valid || (photo ==null&& serverImage == null)" (click)="submitQcDefect()" *ngIf="(userRole=='Petugas Kawalan Kualiti' ) && (taskType == 'qc' || taskType == 'qcposponed') && defect != null" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="checkmark-circle-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>
