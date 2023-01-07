@@ -609,6 +609,9 @@ export class TaskStatusPage implements OnInit {
         this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
         this.remark = res.catatan;
         this.tandanId = res.tandan_id.toString();
+        if(res.kerosakan_id != null){
+          this._getDefectList(res.kerosakan_id);
+        }
         this._getTandanInfo(this.tandanId);
         this.treeNum = res.pokok.progeny+'-'+res.pokok.no_pokok;
       });
@@ -810,7 +813,13 @@ export class TaskStatusPage implements OnInit {
         this.svRemark,
         TaskStatus.verified,
         (res:ControlPollinationModel)=>{
-          this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
+          if(this.defect != null){
+            this.tandanService.updateDefect(this.tandanId,this.defectId.toString(),()=>{
+              this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
+            });
+          }else{
+            this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
+          }
         }
       );
     }else if(this.taskType == InAppTaskCycle.qcSv){

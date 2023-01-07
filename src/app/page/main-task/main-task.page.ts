@@ -415,7 +415,7 @@ export class MainTaskPage implements OnInit {
       this.controlPollinationService.getAll((res:[ControlPollinationModel])=>{
         res.forEach(el => {
           if(el.pengesah_id == this.accountService.getSessionDetails().id.toString()){
-            if(el.status == TaskStatus.done){
+            if(el.status == TaskStatus.done || el.status == TaskStatus.defect ){
               this.numOfNewTask++;
               this.newTaskList.push(el);
             }else if(el.status == TaskStatus.verified ||
