@@ -676,6 +676,8 @@ export class TaskStatusPage implements OnInit {
         this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
         this.remark = res.catatan;
         this.tandanId = res.tandan_id.toString();
+        this.treeNum = res.pokok.progeny+'-'+res.pokok.no_pokok;
+        this._getTandanInfo(this.tandanId);
       });
     }else{
       if(!this.isOfflineMode){
@@ -1122,20 +1124,7 @@ export class TaskStatusPage implements OnInit {
       formData.append('status',status);
       formData.append('kerosakan_id',this.remark? this.remark.toString() : "");
       this.qualityControlService.update(this.taskId,formData,(res:QualityControlModel)=>{
-        this.router.navigate(
-          [
-            '/app/tabs/tab1'
-          ]
-        );
-        // if(this.defect == null){
-        //   this.router.navigate(
-        //     [
-        //       '/app/tabs/tab1'
-        //     ]
-        //     );
-        //   }else{
-        //     this._updateDefect(res.tandan_id);
-        //   }
+        this._promptCompleted();
         });
     }else{
       let data:OfflineQualityControlModel = {
