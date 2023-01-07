@@ -391,6 +391,7 @@ export class TaskStatusPage implements OnInit {
     formData.append('catatan',this.remark? this.remark.toString() : "");
     formData.append('pengesah_id',this.id1?.value?.toString());
     formData.append('status', status);
+    formData.append('kerosakan_id',this.defectId? this.defectId.toString() : "");
     formData.append('_method','PUT');
     this.controlPollinationService.updateUsingForm(
       this.taskId,
@@ -424,13 +425,11 @@ export class TaskStatusPage implements OnInit {
                 {
                   taskId:resCP.id,
                 }
-              ]
-              );
-            }else{
-              this._updateDefect(resCP.tandan_id);
-            }
+              ]);
+          }else{
+            this._promptCompleted();
           }
-        );
+        });
       }
     );
   }
@@ -444,24 +443,21 @@ export class TaskStatusPage implements OnInit {
       formData.append('catatan',this.remark? this.remark.toString() : "");
       formData.append('id_sv_cp',this.accountService.getSessionDetails().id.toString());
       formData.append('pengesah_id',this.id1?.value?.toString());
+      formData.append('kerosakan_id',this.defectId? this.defectId.toString() : "");
       if(this.taskType == InAppTaskCycle.rejectedCp){
         formData.append('tandan_id',this.tandanId.toString());
         formData.append('pokok_id',this.treeId.toString());
           this.controlPollinationService.create(formData,status,(resCP:ControlPollinationModel)=>{
             this.controlPollinationService.update(this.taskId,{status:TaskStatus.redo},()=>{
               this.tandanService.update(this.tandanId,{status_tandan:'aktif'},()=>{
-                if(this.defect == null){
-                  this.router.navigate(
-                    [
-                      '/app/tabs/tab1/control-pollen-form',
-                      {
-                        taskId:resCP.id,
-                      }
-                    ]
-                    );
-                  }else{
-                    this._updateDefect(resCP.tandan_id);
-                  }
+                this.router.navigate(
+                  [
+                    '/app/tabs/tab1/control-pollen-form',
+                    {
+                      taskId:resCP.id,
+                    }
+                  ]
+                );
               });
             });
             }
@@ -959,6 +955,7 @@ export class TaskStatusPage implements OnInit {
     formData.append('tambahan_hari',this.posponedDay.toString());
     formData.append('bil_pemeriksaan',this.numOfCheck.toString());
     formData.append('status', TaskStatus.postpone);
+    formData.append('kerosakan_id',this.defect? this.defect.toString() : "");
     this.controlPollinationService.updateUsingForm(
       this.taskId,
       formData,
@@ -1114,16 +1111,22 @@ export class TaskStatusPage implements OnInit {
       formData.append('_method','put');
       formData.append('catatan',this.remark? this.remark.toString() : "");
       formData.append('status',status);
+      formData.append('kerosakan_id',this.remark? this.remark.toString() : "");
       this.qualityControlService.update(this.taskId,formData,(res:QualityControlModel)=>{
-        if(this.defect == null){
-          this.router.navigate(
-            [
-              '/app/tabs/tab1'
-            ]
-            );
-          }else{
-            this._updateDefect(res.tandan_id);
-          }
+        this.router.navigate(
+          [
+            '/app/tabs/tab1'
+          ]
+        );
+        // if(this.defect == null){
+        //   this.router.navigate(
+        //     [
+        //       '/app/tabs/tab1'
+        //     ]
+        //     );
+        //   }else{
+        //     this._updateDefect(res.tandan_id);
+        //   }
         });
     }else{
       let data:OfflineQualityControlModel = {
