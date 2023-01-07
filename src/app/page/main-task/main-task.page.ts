@@ -448,7 +448,7 @@ export class MainTaskPage implements OnInit {
             if(el.status == TaskStatus.created){
               this.numOfNewTask++;
               this.newTaskList.push(el);
-            }else if(el.status == TaskStatus.done){
+            }else if(el.status == TaskStatus.done || el.status == TaskStatus.defect){
               this.numOfActiveTask++;
               this.activeTaskList.push(el);
             }else if(el.status == TaskStatus.rejected){
@@ -468,7 +468,7 @@ export class MainTaskPage implements OnInit {
       this.qcService.getAll((res:[QualityControlModel])=>{
         res.forEach(el => {
           if(el.pengesah_id == this.accountService.getSessionDetails().id){
-            if(el.status == TaskStatus.done){
+            if(el.status == TaskStatus.done || el.status == TaskStatus.defect){
               this.numOfNewTask++;
               this.newTaskList.push(el);
             }else if(el.status == TaskStatus.created){

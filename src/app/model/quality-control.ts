@@ -18,6 +18,7 @@ export interface QualityControlModel {
     catatan_pengesah?: string;
     status?: string;
     pokok?:PokokResponse;
+    kerosakan_id?: string;
     created_at: Date;
     updated_at: Date;
 }

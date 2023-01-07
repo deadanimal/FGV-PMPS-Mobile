@@ -678,6 +678,9 @@ export class TaskStatusPage implements OnInit {
         this.tandanId = res.tandan_id.toString();
         this.treeNum = res.pokok.progeny+'-'+res.pokok.no_pokok;
         this._getTandanInfo(this.tandanId);
+        if(res.kerosakan_id != null){
+          this._getDefectList(res.kerosakan_id);
+        }
       });
     }else{
       if(!this.isOfflineMode){
@@ -848,7 +851,13 @@ export class TaskStatusPage implements OnInit {
         this.svRemark,
         TaskStatus.verified,
         (res:QualityControlModel)=>{
-          this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
+          if(this.defect != null){
+            this.tandanService.updateDefect(this.tandanId,this.defectId.toString(),()=>{
+              this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
+            });
+          }else{
+            this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
+          }
         }
       );
     }else if(this.taskType == 'harvestsv'){
@@ -984,7 +993,7 @@ export class TaskStatusPage implements OnInit {
     formData.append('tambahan_hari',this.posponedDay.toString());
     formData.append('bil_pemeriksaan',this.numOfCheck.toString());
     formData.append('status', TaskStatus.postpone);
-    formData.append('kerosakan_id',this.defect? this.defect.toString() : "");
+    formData.append('kerosakan_id',this.defectId? this.defectId.toString() : "");
     this.controlPollinationService.updateUsingForm(
       this.taskId,
       formData,
@@ -1139,7 +1148,7 @@ export class TaskStatusPage implements OnInit {
       formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
       formData.append('catatan',this.remark? this.remark.toString() : "");
       formData.append('status',status);
-      formData.append('kerosakan_id',this.defect? this.defect.toString() : "");
+      formData.append('kerosakan_id',this.defectId? this.defectId.toString() : "");
       if(this.taskType == InAppTaskCycle.posponedqc){
         formData.append('pokok_id',this.treeId.toString());
         formData.append('tandan_id',this.tandanId.toString());
