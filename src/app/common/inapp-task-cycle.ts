@@ -8,6 +8,7 @@ export enum InAppTaskCycle {
     posponedqc  = 'qcposponed',
     qcSv        = 'qcsv',
     harvest     = 'tuai',
+    posponedharvest= 'tuaiposponed',
     harvestSv   = 'harvestsv',
     pp          = 'pollenprep',
     ppSv        = 'pollenprepsv',

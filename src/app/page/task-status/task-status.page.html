@@ -34,7 +34,7 @@
       <ion-input type="text" [(ngModel)]="regNo" name="regNo" required [readonly]="true"></ion-input>
     </ion-item>
     <ion-item *ngIf="taskType == 'qc' || qcSv!= null" lines="full">
-      <ion-label position="floating">Penyelia QC</ion-label>
+      <ion-label position="floating">Penyelia</ion-label>
       <ion-input type="text" [(ngModel)]="qcSv" name="qcSv" required [readonly]="true"></ion-input>
     </ion-item>
     <!-- <ion-item *ngIf="taskType == 'pollenprep'" lines="full">
@@ -53,7 +53,7 @@
       <ion-label position="floating">Kerosakan</ion-label>
       <ion-input type="text" [(ngModel)]="defect" name="defect" required [readonly]="true"></ion-input>
     </ion-item>
-    <ion-item *ngIf="taskType == 'tuai' || taskType == 'harvestsv' && defect == null" lines="full">
+    <ion-item *ngIf="taskType == 'tuai' || taskType == 'tuaiposponed' || taskType == 'harvestsv' && defect == null" lines="full">
       <ion-label position="floating">Berat Tandan</ion-label>
       <ion-input type="text" [(ngModel)]="weight" name="weight" required></ion-input>
     </ion-item>
@@ -133,11 +133,11 @@
       <p class="m-auto">Hantar</p>
     </button>
 
-    <button [disabled]="!form.valid || (photo ==null&& serverImage == null)" (click)="submitHarvestDefect()" *ngIf="(userRole=='Petugas Tuai') && taskType == 'tuai' && defect != null" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="!form.valid || (photo ==null&& serverImage == null)" (click)="submitHarvestDefect()" *ngIf="(userRole=='Petugas Tuai') && ( taskType == 'tuai' || taskType == 'tuaiposponed') && defect != null" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>
-    <button [disabled]="!form.valid || (photo ==null&& serverImage == null)" (click)="submitHarvestNormal()" *ngIf="(userRole=='Petugas Tuai') && taskType == 'tuai' && defect == null" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="!form.valid || (photo ==null&& serverImage == null)" (click)="submitHarvestNormal()" *ngIf="(userRole=='Petugas Tuai') && ( taskType == 'tuai' || taskType == 'tuaiposponed') && defect == null" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>

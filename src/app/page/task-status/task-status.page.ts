@@ -721,6 +721,11 @@ export class TaskStatusPage implements OnInit {
         this.remark = res.catatan;
         this.weight = res.berat_tandan?.toString();
         this.tandanId = res.tandan_id.toString();
+        this.treeId = res.pokok_id.toString();
+        this._getTandanInfo(this.tandanId);
+        if(res.kerosakan_id != null){
+          this._getDefectList(res.kerosakan_id);
+        }
       });
     }else{
       if(!this.isOfflineMode){
@@ -736,6 +741,22 @@ export class TaskStatusPage implements OnInit {
         this.qcSvId = newTask.pengesah_id;
         this._getTandanInfo(this.tandanId);
       }
+    }
+  }
+
+  async _getPostponedHarvestTask(taskId:String){
+    if(!this.isOfflineMode){
+      this.harvestService.getById(taskId,(res:HarvestModel)=>{
+        this.qcSvId = res.pengesah_id;
+        this.tandanId = res.tandan_id.toString();
+        this.treeId = res.pokok_id.toString();
+        this._getTandanInfo(this.tandanId);
+      });
+    }else{
+      let newTask:HarvestModel = await this.offlineHarvestService.getNewTaskById(parseInt(this.taskId.toString()));
+      this.tandanId = newTask.tandan_id.toString();
+      this.qcSvId = newTask.pengesah_id;
+      this._getTandanInfo(this.tandanId);
     }
   }
 
@@ -768,6 +789,8 @@ export class TaskStatusPage implements OnInit {
       this._getQCTask(taskId);
     }else if(this.taskType == 'tuai'){
       this._getHarvestTask(taskId);
+    }else if(this.taskType == InAppTaskCycle.posponedharvest){
+      this._getPostponedHarvestTask(taskId);
     }else if(this.taskType == 'harvestsv'){
       this._getHarvestTask(taskId);
     }else if(this.taskType == InAppTaskCycle.pp || this.taskType == InAppTaskCycle.ppSv){
@@ -867,7 +890,14 @@ export class TaskStatusPage implements OnInit {
         this.accountService.getSessionDetails().id,
         TaskStatus.verified,
         (res:QualityControlModel)=>{
-          this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
+          console.log(this.defect)
+          if(this.defect != null){
+            this.tandanService.updateDefect(this.tandanId,this.defectId.toString(),()=>{
+              this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
+            });
+          }else{
+            this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
+          }
         }
       );
     }else if(this.taskType == InAppTaskCycle.ppSv){
@@ -1108,6 +1138,14 @@ export class TaskStatusPage implements OnInit {
           this.userList = res;
         }
       });
+    }else if(this.userRole == UserRole.petugas_tuai){
+      this.userServices.getByRole(UserRole.penyelia_tuai.toString(),(res:[User])=>{
+        res.forEach(el => {
+          if(el.id == this.qcSvId){
+            this.qcSv = el.nama;
+          }
+        });
+      });
     }
   }
 
@@ -1195,22 +1233,25 @@ export class TaskStatusPage implements OnInit {
       const response = await fetch(this.photo.dataUrl);
       const blob = await response.blob();
       formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
-      formData.append('_method','put');
       formData.append('catatan',this.remark? this.remark.toString() : "");
       formData.append('berat_tandan',this.weight?.toString());
       formData.append('status',status);
+      formData.append('kerosakan_id',this.defectId? this.defectId.toString() : "");
       formData.append('id_sv_harvest',this.accountService.getSessionDetails().id.toString());
-      this.harvestService.update(this.taskId,formData,(res:HarvestModel)=>{
-        if(this.defect == null){
-          this.router.navigate(
-            [
-              '/app/tabs/tab1'
-            ]
-          );
-        }else{
-          this._updateDefect(res.tandan_id);
-        }
-      });
+      if(this.taskType == InAppTaskCycle.harvest){
+        formData.append('_method','put');
+        this.harvestService.update(this.taskId,formData,(res:HarvestModel)=>{
+          this._promptCompleted();
+        });
+      }else{
+        formData.append('pokok_id',this.treeId.toString());
+        formData.append('tandan_id',this.tandanId.toString());
+        formData.append('id_sv_harvest',this.accountService.getSessionDetails().id.toString());
+        formData.append('pengesah_id',this.qcSvId.toString());
+        this.harvestService.create(formData,(res:HarvestModel)=>{
+          this._promptCompleted();
+        });
+      }
     }else{
       let data:OfflineHarvestModel = {
         id:this.taskId,

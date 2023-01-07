@@ -13,7 +13,7 @@ export interface HarvestModel {
     catatan_pengesah?: string;
     jumlah_tandan?: string;
     status?: string;
-    kerosakans_id?: string;
+    kerosakan_id?: string;
     pokok?:PokokResponse;
     created_at: Date;
     updated_at: Date;

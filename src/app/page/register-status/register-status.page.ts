@@ -267,7 +267,7 @@ export class RegisterStatusPage implements OnInit {
       this._getQcTask();
     }else if(this.taskType == "Kawalan Kualiti (QC)posponed"){
       this._getQcTask();
-    }else if(this.taskType == "Tuai"){
+    }else if(this.taskType == "Tuai" || this.taskType == "Tuaiposponed"){
       this._getHarvestTask();
     }else if(this.taskType == "Penyediaan Pollen"){
       this._getPollenPrepTask();
@@ -452,6 +452,17 @@ export class RegisterStatusPage implements OnInit {
             taskId:this.taskId,
             treeNum:this.treeNumber,
             taskType:"tuai",
+          }
+        ]
+      );
+    }else if(this.taskType == "Tuaiposponed"){
+      this.router.navigate(
+        [
+          'app/tabs/tab1/defect',
+          {
+            taskId:this.taskId,
+            treeNum:this.treeNumber,
+            taskType:InAppTaskCycle.posponedharvest,
           }
         ]
       );

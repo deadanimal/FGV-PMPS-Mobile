@@ -155,6 +155,13 @@ export class MainTaskPage implements OnInit {
           treeNum:param1,
           taskType:this.task+"posponed",
         }]);
+      }else if(taskId == 'harvest'){
+        this.router.navigate(['/app/tabs/tab1/reg-status',
+        {
+          taskId:id,
+          treeNum:param1,
+          taskType:this.task+"posponed",
+        }]);
       }
     }else if( status == 'rejected'){
       if(taskId == 'cp'){
@@ -533,9 +540,12 @@ export class MainTaskPage implements OnInit {
             if(el.status == TaskStatus.created){
               this.numOfNewTask++;
               this.newTaskList.push(el);
-            }else if(el.status == TaskStatus.done){
+            }else if(el.status == TaskStatus.done || el.status == TaskStatus.defect){
               this.numOfActiveTask++;
               this.activeTaskList.push(el);
+            }else if(el.status == TaskStatus.rejected){
+              this.numOfPosponedTask++;
+              this.posponedTaskList.push(el);
             }else{
               this.numOfFinishTask++;
               this.finishedTaskList.push(el);
@@ -551,7 +561,7 @@ export class MainTaskPage implements OnInit {
         res.forEach(el => {
           if(el.pengesah_id == this.accountService.getSessionDetails().id ||
              (el.pengesah_id == null && el.pokok?.blok == this.accountService.getSessionDetails().blok) ){
-            if(el.status == TaskStatus.done){
+            if(el.status == TaskStatus.done || el.status == TaskStatus.defect){
               this.numOfNewTask++;
               this.newTaskList.push(el);
             }else if(el.status == TaskStatus.created){
