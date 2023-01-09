@@ -1231,7 +1231,7 @@ export class TaskStatusPage implements OnInit {
       const blob = await response.blob();
       formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
       formData.append('catatan',this.remark? this.remark.toString() : "");
-      formData.append('berat_tandan',this.weight?.toString());
+      formData.append('berat_tandan',this.weight? this.weight.toString() : "");
       formData.append('status',status);
       formData.append('kerosakan_id',this.defectId? this.defectId.toString() : "");
       formData.append('id_sv_harvest',this.accountService.getSessionDetails().id.toString());
@@ -1254,7 +1254,7 @@ export class TaskStatusPage implements OnInit {
     }else{
       let data:OfflineHarvestModel = {
         id:this.taskId,
-        berat_tandan:this.weight?.toString(),
+        berat_tandan:this.weight? this.weight.toString() : "",
         catatan:this.remark? this.remark.toString() : "",
         url_gambar:"task_"+this.taskId+"."+this.photo.format,
         url_gambar_data:this.photo.dataUrl,
