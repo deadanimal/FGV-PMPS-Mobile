@@ -1249,7 +1249,9 @@ export class TaskStatusPage implements OnInit {
         formData.append('id_sv_harvest',this.accountService.getSessionDetails().id.toString());
         formData.append('pengesah_id',this.qcSvId.toString());
         this.harvestService.create(formData,(res:HarvestModel)=>{
-          this._promptCompleted();
+          this.harvestService.update(this.taskId,{status:TaskStatus.redo,_method:"put"},(res:QualityControlModel)=>{
+            this._promptCompleted();
+          });
         });
       }
     }else{
