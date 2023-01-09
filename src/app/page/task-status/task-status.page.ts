@@ -386,7 +386,7 @@ export class TaskStatusPage implements OnInit {
     if(this.photo != null){
       const response = await fetch(this.photo.dataUrl);
       const blob = await response.blob();
-      formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
+      formData.append('url_gambar[]', blob, "task_"+this.taskId+"."+this.photo.format);
     }
     formData.append('catatan',this.remark? this.remark.toString() : "");
     formData.append('pengesah_id',this.id1?.value?.toString());
@@ -439,7 +439,7 @@ export class TaskStatusPage implements OnInit {
       const formData = new FormData();
       const response = await fetch(this.photo.dataUrl);
       const blob = await response.blob();
-      formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
+      formData.append('url_gambar[]', blob, "task_"+this.taskId+"."+this.photo.format);
       formData.append('catatan',this.remark? this.remark.toString() : "");
       formData.append('id_sv_cp',this.accountService.getSessionDetails().id.toString());
       formData.append('pengesah_id',this.id1?.value?.toString());
@@ -650,9 +650,6 @@ export class TaskStatusPage implements OnInit {
       this.posponedDay = parseInt(res.tambahan_hari);
       this.numOfCheck = parseInt(res.bil_pemeriksaan);
       this.treeId = res.pokok_id.toString();
-      if(res.url_gambar!=null){
-        this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
-      }
 
       this._getTandanInfo(this.tandanId);
       this._getTreeNumber();
