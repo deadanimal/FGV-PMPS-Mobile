@@ -50,17 +50,13 @@ export class OfflineControlPollinationService {
     this.storageService.set(this.storageService.offlineNewCp,tasks);
   }
 
-  savePostponedCpTasks(tasks:BaggingModel[]){
-    this.storageService.set(this.storageService.posponedCPTask,tasks);
-  }
-
   async getNewCpTaskList(){
     let retVal = await this.storageService.get(this.storageService.offlineNewCp);
     return retVal;
   }
 
-  async getPosponedCpTaskList(){
-    let retVal = await this.storageService.get(this.storageService.posponedCPTask);
+  async getRejectedCpTaskList(){
+    let retVal = await this.storageService.get(this.storageService.rejectedCPTask);
     return retVal;
   }
 
@@ -76,14 +72,14 @@ export class OfflineControlPollinationService {
   }
 
   async _updateRedoTask(removeTaskId){
-    let tempArr:ControlPollinationModel[] = await this.storageService.get(this.storageService.posponedCPTask);
+    let tempArr:ControlPollinationModel[] = await this.storageService.get(this.storageService.rejectedCPTask);
     let retArr:ControlPollinationModel[] = [];
     tempArr.forEach(el => {
       if(el.id != removeTaskId){
         retArr.push(el);
       }
     });
-    this.storageService.set(this.storageService.posponedCPTask,retArr);
+    this.storageService.set(this.storageService.rejectedCPTask,retArr);
   }
 
   async getNewTaskById(id:number){
@@ -136,7 +132,7 @@ export class OfflineControlPollinationService {
 
   async getRejectedTaskById( taskId: string):Promise<OfflineControlPollinationModel>{
     let retVal:OfflineControlPollinationModel;
-    let tempArray:OfflineControlPollinationModel[] = await this.getPosponedCpTaskList();
+    let tempArray:OfflineControlPollinationModel[] = await this.getRejectedCpTaskList();
     if(tempArray == null){
       tempArray = [];
     }

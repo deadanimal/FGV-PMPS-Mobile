@@ -28,7 +28,7 @@ export class StorageService {
   offlineNewHarvest:string = "offlineNewHarvest";
   harvestOfflineData:string = "harvestOfflineData";
   posponedBaggingTask:string = "posponedBaggingTask";
-  posponedCPTask:string = "posponedCPTask";
+  rejectedCPTask:string = "rejectedCPTask";
   posponedQCTask:string = "posponedQCTask";
   posponedHarvestTask:string = "posponedHarvestTask";
 

@@ -124,7 +124,7 @@ export class OfflineModeService {
   }
 
   async getPosponedCPList(){
-    this.posponedCpTasks = await this.storageService.get(this.storageService.posponedCPTask);
+    this.posponedCpTasks = await this.storageService.get(this.storageService.rejectedCPTask);
     if(this.posponedCpTasks == null){
       this.posponedCpTasks = [];
     }
@@ -280,7 +280,7 @@ export class OfflineModeService {
           this.posponedCpTasks.push(el);
         }
       });
-      this.storageService.set(this.storageService.posponedCPTask,this.posponedCpTasks);
+      this.storageService.set(this.storageService.rejectedCPTask,this.posponedCpTasks);
       this.defectService.getAll((defectRes:[DefectModel])=>{
         this.defectList = defectRes;
         this.storageService.set(this.storageService.offlineDefectList,defectRes);
