@@ -47,6 +47,11 @@ export class OfflineBaggingService {
     return retVal;
   }
 
+  async getSavedRedoBaggingTasks(){
+    let retVal = await this.storageService.get(this.storageService.redoBaggingOfflineData);
+    return retVal;
+  }
+
   async getPosponedBaggingTasks(){
     let retVal = await this.storageService.get(this.storageService.posponedBaggingTask);
     return retVal;

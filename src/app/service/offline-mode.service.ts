@@ -139,6 +139,8 @@ export class OfflineModeService {
 
   async _uploadBaggingTasks(){
     let tasks:OfflineBaggingModel[] = await this.offlineBaggingService.getSavedBaggingTasks();
+    let redoTasks:OfflineBaggingModel[] = await this.offlineBaggingService.getSavedRedoBaggingTasks();
+    //upload normal bagging task
     while(tasks.length > 0){
       let task:OfflineBaggingModel = tasks.pop();
       var formData = new FormData();
@@ -154,6 +156,24 @@ export class OfflineModeService {
       formData.append('url_gambar', blob, task.url_gambar);
       this.baggingService.createTask(formData,async (res:BaggingModel)=>{},false);
       this.storageService.set(this.storageService.baggingOfflineData,tasks);
+    }
+    // upload redo bagging task
+    while(redoTasks.length > 0){
+      let task:OfflineBaggingModel = redoTasks.pop();
+      var formData = new FormData();
+
+      for ( var key in task ) {
+        if(key != 'url_gambar_data' && key != 'url_gambar' && key != 'pokok' && key != 'id'){
+          formData.append(key, task[key]);
+        }
+      }
+
+      const response = await fetch(task.url_gambar_data);
+      const blob = await response.blob();
+      formData.append('url_gambar', blob, task.url_gambar);
+      this.baggingService.createTask(formData,async (res:BaggingModel)=>{},false);
+      this.baggingService.update(task.id,{status:TaskStatus.redo},()=>{});
+      this.storageService.set(this.storageService.redoBaggingOfflineData,redoTasks);
     }
   }
 

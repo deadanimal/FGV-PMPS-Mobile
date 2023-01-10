@@ -191,24 +191,31 @@ export class BaggingService {
   async update(
     taskId:String,
     postData:Object,
-    callback
+    callback,
+    loadingAnim = true,
   ){
-    this.loadingModal = await this.showLoading();
+    if(loadingAnim){
+      this.loadingModal = await this.showLoading();
+    }
     this.http.put<BaggingModel>(
       `${environment.baseUrl}${environment.bagging}${taskId}`,
       postData
     ).subscribe(
       async (res:BaggingModel) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        if(this.loadingModal != null){
-          this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(res);
       },
       async (err:HttpErrorResponse) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        if(this.loadingModal != null){
-          this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
       }
     );
