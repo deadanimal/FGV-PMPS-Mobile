@@ -3,6 +3,7 @@ import { LoadingController } from '@ionic/angular';
 import { TandanCycle } from '../common/tandan-cycle';
 import { TaskStatus } from '../common/task-status';
 import { BaggingModel } from '../model/bagging';
+import { ControlPollinationModel } from '../model/control-pollination';
 import { DefectModel } from '../model/defect';
 import { HarvestModel } from '../model/harvest';
 import { OfflineBaggingModel } from '../model/offline-bagging';
@@ -40,6 +41,9 @@ export class OfflineModeService {
   baggingSvList:User[] = [];
   newCpTaskList:BaggingModel[] = [];
   posponedBaggingTasks:BaggingModel[] = [];
+  posponedCpTasks:ControlPollinationModel[] = [];
+  posponedQcTasks:QualityControlModel[] = [];
+  posponedHarvestTasks:HarvestModel[] = [];
   defectList:DefectModel[] = [];
   qcList:QualityControlModel[] = [];
   harvestList:HarvestModel[] = [];
@@ -117,6 +121,14 @@ export class OfflineModeService {
       this.posponedBaggingTasks = [];
     }
     return this.posponedBaggingTasks;
+  }
+
+  async getPosponedCPList(){
+    this.posponedCpTasks = await this.storageService.get(this.storageService.posponedCPTask);
+    if(this.posponedCpTasks == null){
+      this.posponedCpTasks = [];
+    }
+    return this.posponedCpTasks;
   }
 
   sync(){
@@ -222,6 +234,19 @@ export class OfflineModeService {
         }
       });
       this.storageService.set(this.storageService.posponedBaggingTask,this.posponedBaggingTasks);
+      this._getPosponedCPTask();
+    })
+  }
+
+  private async _getPosponedCPTask(){
+    this.posponedCpTasks = [];
+    this.controlPollinationService.getByUserId(this.accountService.getSessionDetails().id,(res:[ControlPollinationModel])=>{
+      res.forEach(el => {
+        if(el.status == TaskStatus.rejected || el.status == TaskStatus.postpone){
+          this.posponedCpTasks.push(el);
+        }
+      });
+      this.storageService.set(this.storageService.posponedCPTask,this.posponedCpTasks);
       this.defectService.getAll((defectRes:[DefectModel])=>{
         this.defectList = defectRes;
         this.storageService.set(this.storageService.offlineDefectList,defectRes);

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserContinueSelection } from 'src/app/component/continue-prompt/continue-prompt.component';
 import { BaggingModel } from 'src/app/model/bagging';
+import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { DefectModel } from 'src/app/model/defect';
 import { HarvestModel } from 'src/app/model/harvest';
 import { OfflineBaggingModel } from 'src/app/model/offline-bagging';
@@ -32,6 +33,9 @@ export class OfflineModePage implements OnInit {
   newQcTaskList:QualityControlModel[] = [];
   newHarvestTaskList:HarvestModel[] = [];
   posponedBaggingTaskList:BaggingModel[] = [];
+  posponedCpTaskList:ControlPollinationModel[] = [];
+  posponedQcTaskList:QualityControlModel[] = [];
+  posponedHarvestTaskList:HarvestModel[] = [];
   baggingTaskDone:OfflineBaggingModel[] = [];
   redoBaggingTaskDone:OfflineBaggingModel[] = [];
   qcTaskDone:OfflineBaggingModel[] = [];
@@ -94,6 +98,7 @@ export class OfflineModePage implements OnInit {
     this.qcTaskDone = await this.offlineQcService.getSavedQcTasks();
     this.newHarvestTaskList = await this.offlineModeService.getNewHarvestList();
     this.posponedBaggingTaskList = await this.offlineModeService.getPosponedBaggingList();
+    this.posponedCpTaskList = await this.offlineModeService.getPosponedCPList();
     this.harvestTaskDone = await this.offlineHarvestService.getSavedHarvestTasks();
     if(this.baggingTaskDone == null){
       this.baggingTaskDone = [];

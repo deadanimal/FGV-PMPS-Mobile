@@ -424,6 +424,8 @@ export class MainTaskPage implements OnInit {
       }else{
         this.newTaskList = await this.offlineCPService.getNewCpTaskList();
         this.posponedTaskList = await this.offlineCPService.getPostponedTask();
+        let tempList = await this.offlineCPService.getPosponedCpTaskList();
+        this.posponedTaskList.push(...tempList);
         this.numOfNewTask = this.newTaskList.length;
         this.numOfPosponedTask = this.posponedTaskList.length;
       }
