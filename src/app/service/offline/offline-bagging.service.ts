@@ -21,6 +21,27 @@ export class OfflineBaggingService {
     this.storageService.set(this.storageService.baggingOfflineData,currentTask);
   }
 
+  async saveRedoBaggingTask(task:OfflineBaggingModel){
+    let currentTask = await this.storageService.get(this.storageService.redoBaggingOfflineData);
+    if(currentTask == null){
+      currentTask = [];
+    }
+    currentTask.push(task);
+    this.storageService.set(this.storageService.redoBaggingOfflineData,currentTask);
+    this._updateNewTask(task.id);
+  }
+
+  async _updateNewTask(removeId){
+    let tempArr:BaggingModel[] = await this.storageService.get(this.storageService.posponedBaggingTask);
+    let retArr:BaggingModel[] = [];
+    tempArr.forEach(el => {
+      if(el.id != removeId){
+        retArr.push(el);
+      }
+    });
+    this.storageService.set(this.storageService.posponedBaggingTask,retArr);
+  }
+
   async getSavedBaggingTasks(){
     let retVal = await this.storageService.get(this.storageService.baggingOfflineData);
     return retVal;

@@ -1,4 +1,5 @@
 export interface OfflineBaggingModel {
+    id?:string;
     no_daftar:string;
     tarikh_daftar:string;
     pokok_id:string;

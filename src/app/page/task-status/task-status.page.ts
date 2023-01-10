@@ -581,7 +581,12 @@ export class TaskStatusPage implements OnInit {
         pengesah_id:this.id1.value?.toString(),
         tandan_id:this.tandanId.toString(),
       };
-      this.offlineBaggingService.saveBaggingTask(data);
+      if(this.taskType == InAppTaskCycle.posponedbagging){
+        data.id = this.taskId.toString();
+        this.offlineBaggingService.saveRedoBaggingTask(data);
+      }else{
+        this.offlineBaggingService.saveBaggingTask(data);
+      }
 
       this.modalService.continuePrompt().then(
         (value)=>{
@@ -637,7 +642,7 @@ export class TaskStatusPage implements OnInit {
           this._getTandanInfo(this.tandanId);
         });
       }else{
-        let newTask:BaggingModel = await this.offlineCpService.getNewTaskById(parseInt(this.taskId.toString()));
+        let newTask:BaggingModel = await this.offlineBaggingService.getPosponedBaggingTaskById(parseInt(this.taskId.toString()));
         this.tandanId = newTask.tandan_id.toString();
         this._getTandanInfo(this.tandanId);
       }

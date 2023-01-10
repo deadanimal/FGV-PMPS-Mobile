@@ -18,6 +18,7 @@ export class StorageService {
   offlineNewCp:string = "offlineNewCp";
   offlineDefectList:string = "offlineDefectList";
   baggingOfflineData:string = "baggingOffline";
+  redoBaggingOfflineData:string = "redoBaggingOfflineData";
   controlPollinationOfflineData:string = "cpOffline";
   offlineNewQc:string = "offlineNewQc";
   qcOfflineData:string = "qcOffline";
