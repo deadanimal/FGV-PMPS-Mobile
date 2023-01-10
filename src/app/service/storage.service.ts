@@ -23,6 +23,7 @@ export class StorageService {
   qcOfflineData:string = "qcOffline";
   offlineNewHarvest:string = "offlineNewHarvest";
   harvestOfflineData:string = "harvestOfflineData";
+  posponedBaggingTask:string = "posponedBaggingTask";
 
   constructor(private storage: Storage) {
     this.init();

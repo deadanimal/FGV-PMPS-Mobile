@@ -375,7 +375,9 @@ export class MainTaskPage implements OnInit {
         });
       }else{
         this.activeTaskList = await this.offlineBaggingService.getSavedBaggingTasks();
+        this.posponedTaskList = await this.offlineBaggingService.getPosponedBaggingTasks();
         this.numOfActiveTask = this.activeTaskList.length;
+        this.numOfPosponedTask = this.posponedTaskList.length;
       }
     }else{
       this.baggingService.getAll((res:[BaggingModel])=>{

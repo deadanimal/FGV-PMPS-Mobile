@@ -39,6 +39,7 @@ export class OfflineModeService {
   treeList:PokokResponse[] = [];
   baggingSvList:User[] = [];
   newCpTaskList:BaggingModel[] = [];
+  posponedBaggingTasks:BaggingModel[] = [];
   defectList:DefectModel[] = [];
   qcList:QualityControlModel[] = [];
   harvestList:HarvestModel[] = [];
@@ -108,6 +109,14 @@ export class OfflineModeService {
       this.harvestList = [];
     }
     return this.harvestList;
+  }
+
+  async getPosponedBaggingList(){
+    this.posponedBaggingTasks = await this.storageService.get(this.storageService.posponedBaggingTask);
+    if(this.posponedBaggingTasks == null){
+      this.posponedBaggingTasks = [];
+    }
+    return this.posponedBaggingTasks;
   }
 
   sync(){
@@ -184,6 +193,25 @@ export class OfflineModeService {
     },'Fetching Tree List');
   }
 
+  private async _getPosponedBaggingTask(){
+    this.posponedBaggingTasks = [];
+    this.baggingService.getByUserId(this.accountService.getSessionDetails().id,(res:[BaggingModel])=>{
+      res.forEach(el => {
+        if(el.status == TaskStatus.rejected){
+          this.posponedBaggingTasks.push(el);
+        }
+      });
+      this.storageService.set(this.storageService.posponedBaggingTask,this.posponedBaggingTasks);
+      this.defectService.getAll((defectRes:[DefectModel])=>{
+        this.defectList = defectRes;
+        this.storageService.set(this.storageService.offlineDefectList,defectRes);
+        this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+          v.dismiss();
+        });
+      });
+    })
+  }
+
   private async _syncBaggingAndCp(){
     this._uploadBaggingTasks();
     this._uploadCPTasks();
@@ -197,13 +225,7 @@ export class OfflineModeService {
             (res1:[BaggingModel])=>{
             this.newCpTaskList = res1;
             this.storageService.set(this.storageService.offlineNewCp,this.newCpTaskList);
-            this.defectService.getAll((defectRes:[DefectModel])=>{
-              this.defectList = defectRes;
-              this.storageService.set(this.storageService.offlineDefectList,defectRes);
-              this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
-                v.dismiss();
-              });
-            });
+            this._getPosponedBaggingTask();
           },false);
         },'Fetching Supervisor List');
       }

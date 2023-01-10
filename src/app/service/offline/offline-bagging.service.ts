@@ -24,4 +24,9 @@ export class OfflineBaggingService {
     let retVal = await this.storageService.get(this.storageService.baggingOfflineData);
     return retVal;
   }
+
+  async getPosponedBaggingTasks(){
+    let retVal = await this.storageService.get(this.storageService.posponedBaggingTask);
+    return retVal;
+  }
 }
