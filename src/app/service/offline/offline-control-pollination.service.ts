@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TaskStatus } from 'src/app/common/task-status';
 import { BaggingModel } from 'src/app/model/bagging';
+import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { OfflineControlPollinationModel } from 'src/app/model/offline-control-pollination';
 import { StorageService } from '../storage.service';
 import { OfflineTreeService } from './offline-tree.service';
@@ -73,11 +74,12 @@ export class OfflineControlPollinationService {
     });
     this.storageService.set(this.storageService.offlineNewCp,retArr);
   }
-async _updateRedoTask(removeTaskId){
-    let tempArr:BaggingModel[] = await this.storageService.get(this.storageService.posponedCPTask);
-    let retArr:BaggingModel[] = [];
+
+  async _updateRedoTask(removeTaskId){
+    let tempArr:ControlPollinationModel[] = await this.storageService.get(this.storageService.posponedCPTask);
+    let retArr:ControlPollinationModel[] = [];
     tempArr.forEach(el => {
-      if(el.tandan_id != removeTaskId){
+      if(el.id != removeTaskId){
         retArr.push(el);
       }
     });
@@ -138,7 +140,6 @@ async _updateRedoTask(removeTaskId){
     if(tempArray == null){
       tempArray = [];
     }
-    console.log(tempArray)
 
     tempArray.forEach(async el => {
       if(el.id == taskId){

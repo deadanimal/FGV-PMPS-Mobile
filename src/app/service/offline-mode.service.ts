@@ -152,6 +152,11 @@ export class OfflineModeService {
   async _uploadBaggingTasks(){
     let tasks:OfflineBaggingModel[] = await this.offlineBaggingService.getSavedBaggingTasks();
     let redoTasks:OfflineBaggingModel[] = await this.offlineBaggingService.getSavedRedoBaggingTasks();
+    if(tasks == null){
+      tasks = [];
+    }if(redoTasks == null){
+      redoTasks = [];
+    }
     //upload normal bagging task
     while(tasks.length > 0){
       let task:OfflineBaggingModel = tasks.pop();
@@ -191,6 +196,13 @@ export class OfflineModeService {
 
   async _uploadCPTasks(){
     let tasks:OfflineControlPollinationModel[] = await this.offlineCpService.getSavedCPTasks();
+    let redoTasks:OfflineControlPollinationModel[] = await this.offlineCpService.getSavedRedoCPTasks();
+    if(tasks == null){
+      tasks = [];
+    }if(redoTasks == null){
+      redoTasks = [];
+    }
+    // normal task
     while(tasks.length > 0){
       let task:OfflineControlPollinationModel = tasks.pop();
       var formData = new FormData();
@@ -203,13 +215,35 @@ export class OfflineModeService {
 
       const response = await fetch(task.url_gambar_data);
       const blob = await response.blob();
-      formData.append('url_gambar', blob, task.url_gambar);
-      this.controlPollinationService.create(formData,task.status ,async (res:BaggingModel)=>{
+      formData.append('url_gambar[]', blob, task.url_gambar);
+      this.controlPollinationService.create(formData,task.status ,async (res:ControlPollinationModel)=>{
         this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
           v.dismiss();
         });
       });
       this.storageService.set(this.storageService.controlPollinationOfflineData,tasks);
+    }
+    //redo task
+    while(redoTasks.length > 0){
+      let task:OfflineControlPollinationModel = redoTasks.pop();
+      var formData = new FormData();
+
+      for ( var key in task ) {
+        if(key != 'url_gambar_data' && key != 'url_gambar' && key != 'id'){
+          formData.append(key, task[key]);
+        }
+      }
+
+      const response = await fetch(task.url_gambar_data);
+      const blob = await response.blob();
+      formData.append('url_gambar[]', blob, task.url_gambar);
+      this.controlPollinationService.create(formData,task.status ,async (res:ControlPollinationModel)=>{
+        this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+          v.dismiss();
+        });
+      });
+      this.controlPollinationService.update(task.id,{status:TaskStatus.redo},()=>{});
+      this.storageService.set(this.storageService.redoCPOfflineData,redoTasks);
     }
   }
 
