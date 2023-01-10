@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonSelect } from '@ionic/angular';
+import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
 import { TaskStatus } from 'src/app/common/task-status';
 import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { OfflineControlPollinationModel } from 'src/app/model/offline-control-pollination';
@@ -22,6 +23,7 @@ export class ControlPollinationFormPage implements OnInit {
   pollenNumber:String;
   taskId:String;
   tandanId:String;
+  taskType:String;
   isOfflineMode:boolean;
   constructor(
     private activatedRoute:ActivatedRoute,
@@ -39,6 +41,8 @@ export class ControlPollinationFormPage implements OnInit {
         this.taskId = params['taskId'];
       }if(params['tandanId']!=null){
         this.tandanId = params['tandanId'];
+      }if(params['taskType']!=null){
+        this.taskType = params['taskType'];
       }
     });
   }
@@ -61,23 +65,43 @@ export class ControlPollinationFormPage implements OnInit {
         }
       );
     }else{
-      let tasks:OfflineControlPollinationModel[] = await this.offlineCPService.getSavedCPTasks();
-      tasks.forEach(el => {
-        if(el.tandan_id == this.tandanId){
-          el.no_pollen = this.pollenNumber.toString();
-          el.peratus_pollen=this.id1?.value?.toString();
-          el.status=TaskStatus.done;
-        }
-      });
-      this.storageService.set(this.storageService.controlPollinationOfflineData,tasks);
-      this.modalService.successPrompt("Borang Anda Telah Berjaya Dihantar Ke Penyelia").then(()=>{
-        this.router.navigateByUrl(
-          '/app/tabs/tab1',
-          {
-            replaceUrl : true
+      if(this.taskType == InAppTaskCycle.rejectedCp){
+        let tasks:OfflineControlPollinationModel[] = await this.offlineCPService.getSavedRedoCPTasks();
+        tasks.forEach(el => {
+          if(el.id == this.taskId){
+            el.no_pollen = this.pollenNumber.toString();
+            el.peratus_pollen=this.id1?.value?.toString();
+            el.status=TaskStatus.done;
           }
+        });
+        this.storageService.set(this.storageService.redoCPOfflineData,tasks);
+        this.modalService.successPrompt("Borang Anda Telah Berjaya Dihantar Ke Penyelia").then(()=>{
+          this.router.navigateByUrl(
+            '/app/tabs/tab1',
+            {
+              replaceUrl : true
+            }
           );
         });
+      }else{
+        let tasks:OfflineControlPollinationModel[] = await this.offlineCPService.getSavedCPTasks();
+        tasks.forEach(el => {
+          if(el.tandan_id == this.tandanId){
+            el.no_pollen = this.pollenNumber.toString();
+            el.peratus_pollen=this.id1?.value?.toString();
+            el.status=TaskStatus.done;
+          }
+        });
+        this.storageService.set(this.storageService.controlPollinationOfflineData,tasks);
+        this.modalService.successPrompt("Borang Anda Telah Berjaya Dihantar Ke Penyelia").then(()=>{
+          this.router.navigateByUrl(
+            '/app/tabs/tab1',
+            {
+              replaceUrl : true
+            }
+          );
+        });
+      }
     }
   }
 

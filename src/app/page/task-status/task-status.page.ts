@@ -477,14 +477,20 @@ export class TaskStatusPage implements OnInit {
         defect:this.defect?.toString(),
         status:status,
       };
-
-      this.offlineCpService.saveCPTask(data);
+      if(this.taskType == InAppTaskCycle.rejectedCp){
+        data.id = this.taskId;
+        this.offlineCpService.saveRedoCPTask(data);
+      }else{
+        this.offlineCpService.saveCPTask(data);
+      }
       if(this.defect == null){
         this.router.navigate(
           [
             '/app/tabs/tab1/control-pollen-form',
             {
               tandanId:this.tandanId,
+              taskId:this.taskId,
+              taskType:this.taskType,
             }
           ]
         );
@@ -661,15 +667,22 @@ export class TaskStatusPage implements OnInit {
     });
   }
 
-  _getRejectedCPTask(taskId:String){
-    this.controlPollinationService.getById(taskId,(res:ControlPollinationModel)=>{
-      this.enableImgDeleteBtn = true;
-      this.tandanId = res.tandan_id.toString();
-      this.treeId = res.pokok_id.toString();
+  async _getRejectedCPTask(taskId:String){
+    if(!this.isOfflineMode){
+      this.controlPollinationService.getById(taskId,(res:ControlPollinationModel)=>{
+        this.enableImgDeleteBtn = true;
+        this.tandanId = res.tandan_id.toString();
+        this.treeId = res.pokok_id.toString();
 
+        this._getTandanInfo(this.tandanId);
+        this._getTreeNumber();
+      });
+    }else{
+      let newTask:OfflineControlPollinationModel = await this.offlineCpService.getRejectedTaskById(this.taskId.toString());
+      this.tandanId = newTask.tandan_id.toString();
+      this.treeId = newTask.pokok_id.toString();
       this._getTandanInfo(this.tandanId);
-      this._getTreeNumber();
-    });
+    }
   }
 
   async _getQCTask(taskId:String){
@@ -892,7 +905,6 @@ export class TaskStatusPage implements OnInit {
         this.accountService.getSessionDetails().id,
         TaskStatus.verified,
         (res:QualityControlModel)=>{
-          console.log(this.defect)
           if(this.defect != null){
             this.tandanService.updateDefect(this.tandanId,this.defectId.toString(),()=>{
               this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
