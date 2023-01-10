@@ -17,6 +17,7 @@ import { TandanResponse } from 'src/app/model/tandan-response';
 import { TaskResponseModel } from 'src/app/model/task-response';
 import { ModalService } from 'src/app/service/modal.service';
 import { OfflineModeService } from 'src/app/service/offline-mode.service';
+import { OfflineBaggingService } from 'src/app/service/offline/offline-bagging.service';
 import { OfflineControlPollinationService } from 'src/app/service/offline/offline-control-pollination.service';
 import { OfflineHarvestService } from 'src/app/service/offline/offline-harvest.service';
 import { OfflineQcService } from 'src/app/service/offline/offline-qc.service';
@@ -66,6 +67,7 @@ export class RegisterStatusPage implements OnInit {
     private datePipe: DatePipe,
     private offlineModeService: OfflineModeService,
     private offlineCPService: OfflineControlPollinationService,
+    private offlineBaggingService: OfflineBaggingService,
     private offlineTandanService: OfflineTandanService,
     private offlineQCService: OfflineQcService,
     private offlineHarvestService: OfflineHarvestService,
@@ -181,7 +183,7 @@ export class RegisterStatusPage implements OnInit {
         });
       },false);
     }else{
-      let baggingTask:BaggingModel = await this.offlineCPService.getNewTaskById(parseInt(this.taskId.toString()));
+      let baggingTask:BaggingModel = await this.offlineBaggingService.getPosponedBaggingTaskById(parseInt(this.taskId.toString()));
       let tandan:TandanResponse = await this.offlineTandanService.getById(baggingTask.tandan_id);
       this.treeNumberDisplay = baggingTask.pokok?.progeny+'-'+baggingTask.pokok?.no_pokok;
       this.regNumber = tandan.no_daftar;

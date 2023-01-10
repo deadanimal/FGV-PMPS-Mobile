@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BaggingModel } from 'src/app/model/bagging';
 import { OfflineBaggingModel } from 'src/app/model/offline-bagging';
 import { StorageService } from '../storage.service';
 
@@ -27,6 +28,18 @@ export class OfflineBaggingService {
 
   async getPosponedBaggingTasks(){
     let retVal = await this.storageService.get(this.storageService.posponedBaggingTask);
+    return retVal;
+  }
+  async getPosponedBaggingTaskById(id:number){
+    let tempArr:BaggingModel[] = await this.storageService.get(this.storageService.posponedBaggingTask);
+    let retVal:BaggingModel;
+
+    tempArr.forEach(el => {
+      if(el.id == id){
+        retVal = el;
+      }
+    });
+
     return retVal;
   }
 }
