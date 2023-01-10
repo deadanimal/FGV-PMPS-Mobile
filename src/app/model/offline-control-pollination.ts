@@ -1,6 +1,7 @@
 import { PokokResponse } from "./pokok-respons";
 
 export interface OfflineControlPollinationModel {
+    id?:String;
     tandan_id:String;
     pokok_id:String;
     catatan:String;

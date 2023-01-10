@@ -19,12 +19,18 @@ export class StorageService {
   offlineDefectList:string = "offlineDefectList";
   baggingOfflineData:string = "baggingOffline";
   redoBaggingOfflineData:string = "redoBaggingOfflineData";
+  redoCPOfflineData:string = "redoBaggingOfflineData";
+  redoQCOfflineData:string = "redoQCOfflineData";
+  redoHarvestOfflineData:string = "redoHarvestOfflineData";
   controlPollinationOfflineData:string = "cpOffline";
   offlineNewQc:string = "offlineNewQc";
   qcOfflineData:string = "qcOffline";
   offlineNewHarvest:string = "offlineNewHarvest";
   harvestOfflineData:string = "harvestOfflineData";
   posponedBaggingTask:string = "posponedBaggingTask";
+  posponedCPTask:string = "posponedCPTask";
+  posponedQCTask:string = "posponedQCTask";
+  posponedHarvestTask:string = "posponedHarvestTask";
 
   constructor(private storage: Storage) {
     this.init();

@@ -25,8 +25,23 @@ export class OfflineControlPollinationService {
     this._updateNewTask(task.tandan_id);
   }
 
+  async saveRedoCPTask(task:OfflineControlPollinationModel){
+    let currentTask = await this.storageService.get(this.storageService.redoCPOfflineData);
+    if(currentTask == null){
+      currentTask = [];
+    }
+    currentTask.push(task);
+    this.storageService.set(this.storageService.redoCPOfflineData,currentTask);
+    this._updateRedoTask(task.id);
+  }
+
   async getSavedCPTasks():Promise<OfflineControlPollinationModel[]>{
     let retVal = await this.storageService.get(this.storageService.controlPollinationOfflineData);
+    return retVal;
+  }
+
+  async getSavedRedoCPTasks():Promise<OfflineControlPollinationModel[]>{
+    let retVal = await this.storageService.get(this.storageService.redoCPOfflineData);
     return retVal;
   }
 
@@ -34,8 +49,17 @@ export class OfflineControlPollinationService {
     this.storageService.set(this.storageService.offlineNewCp,tasks);
   }
 
+  savePostponedCpTasks(tasks:BaggingModel[]){
+    this.storageService.set(this.storageService.posponedCPTask,tasks);
+  }
+
   async getNewCpTaskList(){
     let retVal = await this.storageService.get(this.storageService.offlineNewCp);
+    return retVal;
+  }
+
+  async getPosponedCpTaskList(){
+    let retVal = await this.storageService.get(this.storageService.posponedCPTask);
     return retVal;
   }
 
@@ -48,6 +72,16 @@ export class OfflineControlPollinationService {
       }
     });
     this.storageService.set(this.storageService.offlineNewCp,retArr);
+  }
+async _updateRedoTask(removeTaskId){
+    let tempArr:BaggingModel[] = await this.storageService.get(this.storageService.posponedCPTask);
+    let retArr:BaggingModel[] = [];
+    tempArr.forEach(el => {
+      if(el.tandan_id != removeTaskId){
+        retArr.push(el);
+      }
+    });
+    this.storageService.set(this.storageService.posponedCPTask,retArr);
   }
 
   async getNewTaskById(id:number){
