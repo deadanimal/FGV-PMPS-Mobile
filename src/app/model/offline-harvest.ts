@@ -8,4 +8,7 @@ export interface OfflineHarvestModel {
     id_sv_harvest:string;
     status?:string;
     defectId?:number;
+    pengesah_id?:string;
+    currentStatus?:string;
+    pokok_id?:string;
 }

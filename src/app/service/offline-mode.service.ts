@@ -323,7 +323,7 @@ export class OfflineModeService {
       const response = await fetch(task.url_gambar_data);
       const blob = await response.blob();
       formData.append('url_gambar', blob, task.url_gambar);
-      if(task.id == null){
+      if(task.currentStatus != TaskStatus.rejected){
         formData.append('_method','put');
         this.qualityControlService.update(task.id,formData,async (res:QualityControlModel)=>{
           this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
@@ -389,27 +389,34 @@ export class OfflineModeService {
     while(tasks.length > 0){
       let task:OfflineHarvestModel = tasks.pop();
       var formData = new FormData();
-      formData.append('_method','put');
-      formData.append('catatan',task.catatan);
+      formData.append('catatan',task.catatan? task.catatan :"");
       formData.append('status',task.status);
+      formData.append('kerosakan_id',task.defectId? task.defectId.toString() : "");
       formData.append('berat_tandan',task.berat_tandan.toString());
       formData.append('id_sv_harvest',task.id_sv_harvest.toString());
       const response = await fetch(task.url_gambar_data);
       const blob = await response.blob();
       formData.append('url_gambar', blob, task.url_gambar);
-      this.harvestService.update(task.id,formData,async (res:HarvestModel)=>{
-        if(task.defectId != null){
-          this.tandanService.updateDefect(task.tandan_id.toString(),task.defectId.toString(),(resDefect:TandanResponse)=>{
+      if(task.currentStatus != TaskStatus.rejected){
+        formData.append('_method','put');
+        this.harvestService.update(task.id,formData,async (res:HarvestModel)=>{
+          this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+            v.dismiss();
+          });
+        });
+      }else{
+        formData.append('pokok_id',task.pokok_id.toString());
+        formData.append('tandan_id',task.tandan_id.toString());
+        formData.append('id_sv_harvest',this.accountService.getSessionDetails().id.toString());
+        formData.append('pengesah_id',task.pengesah_id.toString());
+        this.harvestService.create(formData,async (res:QualityControlModel)=>{
+          this.harvestService.update(task.id,{status:TaskStatus.redo,_method:"put"},(res:QualityControlModel)=>{
             this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
               v.dismiss();
             });
           });
-        }else{
-          this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
-            v.dismiss();
-          });
-        }
-      });
+        });
+      }
       this.storageService.set(this.storageService.harvestOfflineData,tasks);
     }
   }
@@ -424,7 +431,7 @@ export class OfflineModeService {
           (res:HarvestModel[])=>{
             this.harvestList = [];
             res.forEach(el => {
-              if(el.status == TaskStatus.created){
+              if(el.status == TaskStatus.created || el.status == TaskStatus.rejected){
                 this.harvestList.push(el);
               }
             });

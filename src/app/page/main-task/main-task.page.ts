@@ -565,8 +565,22 @@ export class MainTaskPage implements OnInit {
           });
         });
       }else{
-        this.newTaskList = await this.offlineHarvestService.getNewHarvestTaskList();
-        this.numOfNewTask = this.newTaskList.length;
+        let tasksList = await this.offlineHarvestService.getNewHarvestTaskList();
+        tasksList.forEach(el => {
+          if(el.status == TaskStatus.created){
+            this.numOfNewTask++;
+            this.newTaskList.push(el);
+          }else if(el.status == TaskStatus.done || el.status == TaskStatus.defect){
+            this.numOfActiveTask++;
+            this.activeTaskList.push(el);
+          }else if(el.status == TaskStatus.rejected){
+            this.numOfPosponedTask++;
+            this.posponedTaskList.push(el);
+          }else{
+            this.numOfFinishTask++;
+            this.finishedTaskList.push(el);
+          }
+        });
       }
     }else{
       this.harvestService.getAll((res:[HarvestModel])=>{

@@ -1218,6 +1218,7 @@ export class TaskStatusPage implements OnInit {
         });
       }
     }else{
+      let task = await this.offlineQcService.getNewTaskById(parseInt(this.taskId.toString()));
       let data:OfflineQualityControlModel = {
         id:this.taskId,
         tandan_id:this.tandanId.toString(),
@@ -1228,6 +1229,7 @@ export class TaskStatusPage implements OnInit {
         defectId:this.defectId,
         pengesah_id:this.qcSvId.toString(),
         pokok_id:this.treeId.toString(),
+        currentStatus:task.status,
       };
       this.offlineQcService.saveQCTask(data);
       
@@ -1271,6 +1273,7 @@ export class TaskStatusPage implements OnInit {
         });
       }
     }else{
+      let task = await this.offlineHarvestService.getNewTaskById(parseInt(this.taskId.toString()));
       let data:OfflineHarvestModel = {
         id:this.taskId,
         berat_tandan:this.weight? this.weight.toString() : "",
@@ -1281,6 +1284,9 @@ export class TaskStatusPage implements OnInit {
         defectId:this.defectId,
         tandan_id:this.tandanId,
         id_sv_harvest:this.accountService.getSessionDetails().id.toString(),
+        pokok_id:this.treeId.toString(),
+        currentStatus:task.status,
+        pengesah_id:this.qcSvId.toString(),
       };
       this.offlineHarvestService.saveHarvestTask(data);
       
