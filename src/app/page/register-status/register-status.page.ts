@@ -165,7 +165,7 @@ export class RegisterStatusPage implements OnInit {
       let tandan:TandanResponse = await this.offlineTandanService.getById(baggingTask.tandan_id);
       this.treeNumberDisplay = baggingTask.pokok?.progeny+'-'+baggingTask.pokok?.no_pokok;
       this.regNumber = tandan.no_daftar;
-      this.cycle = tandan.kitaran?.toUpperCase();
+      this.cycle = this._getCycleName(tandan)?.toUpperCase();
       this.status=tandan.status_tandan?.toUpperCase();
       this.age=tandan.umur? tandan.umur.toString(): this._calculateAge(tandan.tarikh_daftar).toString();
     }
@@ -187,7 +187,7 @@ export class RegisterStatusPage implements OnInit {
       let tandan:TandanResponse = await this.offlineTandanService.getById(baggingTask.tandan_id);
       this.treeNumberDisplay = baggingTask.pokok?.progeny+'-'+baggingTask.pokok?.no_pokok;
       this.regNumber = tandan.no_daftar;
-      this.cycle = tandan.kitaran?.toUpperCase();
+      this.cycle = this._getCycleName(tandan)?.toUpperCase();
       this.status=tandan.status_tandan?.toUpperCase();
       this.age=tandan.umur? tandan.umur.toString(): this._calculateAge(tandan.tarikh_daftar).toString();
     }
@@ -211,7 +211,7 @@ export class RegisterStatusPage implements OnInit {
         this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
           this.treeNumberDisplay = res.pokok?.progeny+'-'+res.pokok?.no_pokok;
           this.regNumber = tandanRes.no_daftar;
-          this.cycle = tandanRes.kitaran?.toUpperCase();
+          this.cycle = this._getCycleName(tandanRes)?.toUpperCase();
           this.status=tandanRes.status_tandan?.toUpperCase();
           this.age=tandanRes.umur? tandanRes.umur.toString(): this._calculateAge(tandanRes.tarikh_daftar).toString();
         });
@@ -220,7 +220,7 @@ export class RegisterStatusPage implements OnInit {
       let task = await this.offlineCPService.getPostponedTaskByTandanId(this.tandanId.toString());
       let tandan:TandanResponse = await this.offlineTandanService.getById(parseInt(this.tandanId.toString()));
       this.regNumber = tandan.no_daftar;
-      this.cycle = tandan.kitaran?.toUpperCase();
+      this.cycle = this._getCycleName(tandan)?.toUpperCase();
       this.status=tandan.status_tandan?.toUpperCase();
       this.age=tandan.umur? tandan.umur.toString(): this._calculateAge(tandan.tarikh_daftar).toString();
       this.treeNumberDisplay = task?.pokok?.progeny+'-'+task?.pokok?.no_pokok;
@@ -233,16 +233,17 @@ export class RegisterStatusPage implements OnInit {
         this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
           this.treeNumberDisplay = res.pokok?.progeny+'-'+res.pokok?.no_pokok;
           this.regNumber = tandanRes.no_daftar;
-          this.cycle = tandanRes.kitaran?.toUpperCase();
+          this.cycle = this._getCycleName(tandanRes)?.toUpperCase();;
           this.status=tandanRes.status_tandan?.toUpperCase();
           this.age=tandanRes.umur? tandanRes.umur.toString(): this._calculateAge(tandanRes.tarikh_daftar).toString();
         });
       },false);
     }else{
-      let task = await this.offlineCPService.getPostponedTaskByTandanId(this.tandanId.toString());
-      let tandan:TandanResponse = await this.offlineTandanService.getById(parseInt(this.tandanId.toString()));
+      let task = await this.offlineCPService.getRejectedTaskById(this.taskId.toString());
+      console.log(task)
+      let tandan:TandanResponse = await this.offlineTandanService.getById(parseInt(task.tandan_id.toString()));
       this.regNumber = tandan.no_daftar;
-      this.cycle = tandan.kitaran?.toUpperCase();
+      this.cycle = this._getCycleName(tandan)?.toUpperCase();;
       this.status=tandan.status_tandan?.toUpperCase();
       this.age=tandan.umur? tandan.umur.toString(): this._calculateAge(tandan.tarikh_daftar).toString();
       this.treeNumberDisplay = task?.pokok?.progeny+'-'+task?.pokok?.no_pokok;

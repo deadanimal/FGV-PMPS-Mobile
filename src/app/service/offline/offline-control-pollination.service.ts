@@ -131,4 +131,22 @@ async _updateRedoTask(removeTaskId){
     retVal.pokok = await this.offlineTreeService.getById(retVal.pokok_id);
     return retVal;
   }
+
+  async getRejectedTaskById( taskId: string):Promise<OfflineControlPollinationModel>{
+    let retVal:OfflineControlPollinationModel;
+    let tempArray:OfflineControlPollinationModel[] = await this.getPosponedCpTaskList();
+    if(tempArray == null){
+      tempArray = [];
+    }
+    console.log(tempArray)
+
+    tempArray.forEach(async el => {
+      if(el.id == taskId){
+        retVal = el;
+      }
+    });
+
+    retVal.pokok = await this.offlineTreeService.getById(retVal.pokok_id);
+    return retVal;
+  }
 }
