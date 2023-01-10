@@ -472,8 +472,16 @@ export class MainTaskPage implements OnInit {
           });
         });
       }else{
-        this.newTaskList = await this.offlineQCService.getNewQCTaskList();
-        this.numOfNewTask = this.newTaskList.length;
+        let taskList = await this.offlineQCService.getNewQCTaskList();
+        taskList.forEach(el => {
+          if(el.status == TaskStatus.created){
+            this.numOfNewTask++;
+            this.newTaskList.push(el);
+          }else if(el.status == TaskStatus.rejected){
+            this.numOfPosponedTask++;
+            this.posponedTaskList.push(el);
+          }
+        });
       }
     }else{
       this.qcService.getAll((res:[QualityControlModel])=>{

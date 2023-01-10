@@ -1226,6 +1226,8 @@ export class TaskStatusPage implements OnInit {
         url_gambar_data:this.photo.dataUrl,
         status:status,
         defectId:this.defectId,
+        pengesah_id:this.qcSvId.toString(),
+        pokok_id:this.treeId.toString(),
       };
       this.offlineQcService.saveQCTask(data);
       

@@ -316,27 +316,34 @@ export class OfflineModeService {
     while(tasks.length > 0){
       let task:OfflineQualityControlModel = tasks.pop();
       var formData = new FormData();
-      formData.append('_method','put');
       formData.append('catatan',task.catatan);
       formData.append('status',task.status);
+      formData.append('kerosakan_id',task.defectId? task.defectId.toString() : "");
 
       const response = await fetch(task.url_gambar_data);
       const blob = await response.blob();
       formData.append('url_gambar', blob, task.url_gambar);
-      this.qualityControlService.update(task.id,formData,async (res:BaggingModel)=>{
-        if(task.defectId != null){
-          this.tandanService.updateDefect(task.tandan_id.toString(),task.defectId.toString(),(resDefect:TandanResponse)=>{
+      if(task.id == null){
+        formData.append('_method','put');
+        this.qualityControlService.update(task.id,formData,async (res:QualityControlModel)=>{
+          this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+            v.dismiss();
+          });
+        });
+      }else{
+        formData.append('pokok_id',task.pokok_id.toString());
+        formData.append('tandan_id',task.tandan_id.toString());
+        formData.append('id_sv_qc',this.accountService.getSessionDetails().id.toString());
+        formData.append('pengesah_id',task.pengesah_id.toString());
+        this.qualityControlService.create(formData,async (res:QualityControlModel)=>{
+          this.qualityControlService.update(task.id,{status:TaskStatus.redo,_method:"put"},(res:QualityControlModel)=>{
             this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
               v.dismiss();
             });
           });
-        }else{
-          this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
-            v.dismiss();
-          });
-        }
-      });
-      this.storageService.set(this.storageService.controlPollinationOfflineData,tasks);
+        });
+      }
+      this.storageService.set(this.storageService.qcOfflineData,tasks);
     }
   }
 
@@ -352,7 +359,7 @@ export class OfflineModeService {
           (res:QualityControlModel[])=>{
             this.qcList = [];
             res.forEach(el => {
-              if(el.status == TaskStatus.created){
+              if(el.status == TaskStatus.created || el.status == TaskStatus.rejected){
                 this.qcList.push(el);
               }
             });
