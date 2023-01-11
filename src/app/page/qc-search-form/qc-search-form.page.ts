@@ -59,6 +59,9 @@ export class QcSearchFormPage implements OnInit {
         });
       }
     );
+    if(this.blockSelect?.value != null){
+      this.submit(null);
+    }
   }
 
   submit(form:NgForm){

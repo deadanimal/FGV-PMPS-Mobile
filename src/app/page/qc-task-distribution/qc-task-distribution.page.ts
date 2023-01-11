@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { TaskStatus } from 'src/app/common/task-status';
 import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { QualityControlModel } from 'src/app/model/quality-control';
@@ -29,6 +30,7 @@ export class QcTaskDistributionPage implements OnInit {
     private qualityControlService:QualityControlService,
     private baggingService:BaggingService,
     private accountService:AccountService,
+    private navCtrl:NavController,
   ) { }
 
   ngOnInit() {
@@ -61,16 +63,7 @@ export class QcTaskDistributionPage implements OnInit {
     formData.append('pengesah_id',this.accountService.getSessionDetails().id.toString());
     this.qualityControlService.create(formData,(res:QualityControlModel)=>{
       this.modalService.successPrompt("Anda telah mengagihkan tugas kepada pekerja yang dipilih").then(()=>{
-        this.router.navigate(
-          [
-            '/app/tabs/tab1',
-            {
-            }
-          ],
-          {
-            replaceUrl : true
-          }
-        );
+        this.navCtrl.back();
       });
     });
   }

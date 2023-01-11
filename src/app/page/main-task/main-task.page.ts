@@ -437,7 +437,8 @@ export class MainTaskPage implements OnInit {
               this.numOfNewTask++;
               this.newTaskList.push(el);
             }else if(el.status == TaskStatus.verified ||
-                      el.status == TaskStatus.rejected ){
+                      el.status == TaskStatus.rejected ||
+                      el.status == TaskStatus.redo){
               this.numOfFinishTask++;
               this.finishedTaskList.push(el);
             }
