@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { TaskStatus } from 'src/app/common/task-status';
 import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { HarvestModel } from 'src/app/model/harvest';
@@ -8,7 +9,6 @@ import { AccountService } from 'src/app/service/account.service';
 import { ModalService } from 'src/app/service/modal.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
 import { HarvestService } from 'src/app/service/tasks/harvest.service';
-import { QualityControlService } from 'src/app/service/tasks/quality-control.service';
 
 @Component({
   selector: 'app-harvest-task-distribution',
@@ -25,11 +25,10 @@ export class HarvestTaskDistributionPage implements OnInit {
   constructor(
     private activatedRoute:ActivatedRoute,
     private modalService:ModalService,
-    private router:Router,
-    private qualityControlService:QualityControlService,
     private baggingService:BaggingService,
     private accountService:AccountService,
     private harvestService:HarvestService,
+    private navCtrl:NavController,
   ) { }
 
   ngOnInit() {
@@ -62,16 +61,7 @@ export class HarvestTaskDistributionPage implements OnInit {
     formData.append('pengesah_id',this.accountService.getSessionDetails().id.toString());
     this.harvestService.create(formData,(res:HarvestModel)=>{
       this.modalService.successPrompt("Anda telah mengagihkan tugas kepada pekerja yang dipilih").then(()=>{
-        this.router.navigate(
-          [
-            '/app/tabs/tab1',
-            {
-            }
-          ],
-          {
-            replaceUrl : true
-          }
-        );
+        this.navCtrl.back();
       });
     });
   }

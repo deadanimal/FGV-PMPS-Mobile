@@ -56,9 +56,13 @@ export class HarvestSearchFormPage implements OnInit {
         });
       }
     );
+    if(this.blockSelect?.value != null){
+      this.submit(null);
+    }
   }
 
   submit(form:NgForm){
+    this.searchResult = [];
     this.baggingService.searchByTreeInfo(
       this.blockSelect?.value?.toString(),
       this.progenySelect?.value?.toString(),

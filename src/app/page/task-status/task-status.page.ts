@@ -200,7 +200,7 @@ export class TaskStatusPage implements OnInit {
           let url:string;
           if( this.accountService.getUserRole() == UserRole.penyelia_balut ||
               this.accountService.getUserRole() == UserRole.penyelia_qc ||
-              this.accountService.getUserRole() == UserRole.penyelia_qc ||
+              this.accountService.getUserRole() == UserRole.penyelia_tuai ||
               this.accountService.getUserRole() == UserRole.penyelia_makmal ){
               if(this.taskType == InAppTaskCycle.bagging){
                 task = "wrap"
