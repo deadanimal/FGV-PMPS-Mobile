@@ -98,7 +98,7 @@
       <p class="m-auto">TERIMA</p>
     </button>
 
-    <button [disabled]="!form.valid || photo ==null || id1==null && id1.value==null" (click)="submitTask()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Kawalan Kualiti') && ( taskType == 'balut' || taskType == 'balutposponed')" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="!form.valid ||((userRole=='Petugas Balut & Pendebungaan Terkawal' && id1?.value == null)) || photo ==null || id1==null && id1.value==null" (click)="submitTask()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Kawalan Kualiti') && ( taskType == 'balut' || taskType == 'balutposponed')" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>
@@ -108,12 +108,12 @@
       <p class="m-auto">Anjak</p>
     </button>
 
-    <button [disabled]="!form.valid || (photo ==null&& serverImage == null)" (click)="submitNormalCp()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' ) && (taskType == 'debung' || taskType == 'debungposponed' || taskType == 'debungrejected') && defect == null" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="!form.valid ||((userRole=='Petugas Balut & Pendebungaan Terkawal' && id1?.value == null))|| (photo ==null&& serverImage == null)" (click)="submitNormalCp()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' ) && (taskType == 'debung' || taskType == 'debungposponed' || taskType == 'debungrejected') && defect == null" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="checkmark-circle-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>
   
-    <button [disabled]="!form.valid || (photo ==null&& serverImage == null)" (click)="submitCPDefect()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' ) && (taskType == 'debung' || taskType == 'debungposponed' || taskType == 'debungrejected') && defect != null" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="!form.valid ||((userRole=='Petugas Balut & Pendebungaan Terkawal' && id1?.value == null))|| (photo ==null&& serverImage == null)" (click)="submitCPDefect()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' ) && (taskType == 'debung' || taskType == 'debungposponed' || taskType == 'debungrejected') && defect != null" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="checkmark-circle-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>

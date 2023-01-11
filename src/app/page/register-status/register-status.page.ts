@@ -97,10 +97,10 @@ export class RegisterStatusPage implements OnInit {
       }
       this.tandanId = params['tandanId'];
 
-      if(this.scanInput != null){
-        this.tandanId = this.scanInput;
-        this._proceedToWork();
-      }
+      // if(this.scanInput != null){
+      //   this.tandanId = this.scanInput;
+      //   this._proceedToWork();
+      // }
     });
   }
 
@@ -114,10 +114,12 @@ export class RegisterStatusPage implements OnInit {
   async _getQcTask(){
     if(!this.isOfflineMode){
       this.qualityControlService.getById(this.taskId,(res:QualityControlModel)=>{
+        this.tandanId = res.tandan_id.toString();
         this._getTandanInfo(res.tandan_id.toString());
       });
     }else{
       let qcTask:QualityControlModel = await this.offlineQCService.getNewTaskById(parseInt(this.taskId.toString()));
+      this.tandanId = qcTask.tandan_id.toString();
       let tandan:TandanResponse = await this.offlineTandanService.getById(qcTask.tandan_id);
       this.treeNumberDisplay = qcTask.pokok?.progeny+'-'+qcTask.pokok?.no_pokok;
       this.regNumber = tandan.no_daftar;
@@ -129,6 +131,7 @@ export class RegisterStatusPage implements OnInit {
 
   _getPollenPrepTask(){
     this.pollenPrepService.getById(this.taskId,(res:PollenPreparationModel)=>{
+      this.tandanId = res.tandan_id.toString();
       this._getTandanInfo(res.tandan_id.toString());
     });
   }
@@ -136,10 +139,12 @@ export class RegisterStatusPage implements OnInit {
   async _getHarvestTask(){
     if(!this.isOfflineMode){
       this.harvestService.getById(this.taskId,(res:HarvestModel)=>{
+        this.tandanId = res.tandan_id.toString();
         this._getTandanInfo(res.tandan_id.toString());
       });
     }else{
       let qcTask:HarvestModel = await this.offlineHarvestService.getNewTaskById(parseInt(this.taskId.toString()));
+      this.tandanId = qcTask.tandan_id.toString();
       let tandanRes:TandanResponse = await this.offlineTandanService.getById(qcTask.tandan_id);
       this.treeNumberDisplay = qcTask.pokok?.progeny+'-'+qcTask.pokok?.no_pokok;
       this.regNumber = tandanRes.no_daftar;
@@ -153,6 +158,7 @@ export class RegisterStatusPage implements OnInit {
     if(!this.isOfflineMode){
       this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
         this.treeNumberDisplay = res.pokok?.progeny+'-'+res.pokok?.no_pokok;
+        this.tandanId = res.tandan_id.toString();
         this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
           this.regNumber = tandanRes.no_daftar;
           this.cycle = this._getCycleName(tandanRes)?.toUpperCase();
@@ -163,6 +169,7 @@ export class RegisterStatusPage implements OnInit {
     }else{
       let baggingTask:BaggingModel = await this.offlineCPService.getNewTaskById(parseInt(this.taskId.toString()));
       let tandan:TandanResponse = await this.offlineTandanService.getById(baggingTask.tandan_id);
+      this.tandanId = baggingTask.tandan_id.toString();
       this.treeNumberDisplay = baggingTask.pokok?.progeny+'-'+baggingTask.pokok?.no_pokok;
       this.regNumber = tandan.no_daftar;
       this.cycle = this._getCycleName(tandan)?.toUpperCase();
@@ -174,6 +181,7 @@ export class RegisterStatusPage implements OnInit {
   async _getBaggingTask(){
     if(!this.isOfflineMode){
       this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
+        this.tandanId = res.tandan_id.toString();
         this.treeNumberDisplay = res.pokok?.progeny+'-'+res.pokok?.no_pokok;
         this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
           this.regNumber = tandanRes.no_daftar;
@@ -184,6 +192,7 @@ export class RegisterStatusPage implements OnInit {
       },false);
     }else{
       let baggingTask:BaggingModel = await this.offlineBaggingService.getPosponedBaggingTaskById(parseInt(this.taskId.toString()));
+      this.tandanId = baggingTask.tandan_id.toString();
       let tandan:TandanResponse = await this.offlineTandanService.getById(baggingTask.tandan_id);
       this.treeNumberDisplay = baggingTask.pokok?.progeny+'-'+baggingTask.pokok?.no_pokok;
       this.regNumber = tandan.no_daftar;
@@ -196,6 +205,7 @@ export class RegisterStatusPage implements OnInit {
   _getPostponedCPTask(){
     this.controlPollinationService.getById(this.taskId,(res:ControlPollinationModel)=>{
       this.treeNumberDisplay = res.pokok?.progeny+'-'+res.pokok?.no_pokok;
+      this.tandanId = res.tandan_id.toString();
       this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
         this.regNumber = tandanRes.no_daftar;
         this.cycle = this._getCycleName(tandanRes)?.toUpperCase();
@@ -208,6 +218,7 @@ export class RegisterStatusPage implements OnInit {
   async _getInteruptedCPTask(){
     if(!this.isOfflineMode){
       this.controlPollinationService.getById(this.taskId,(res:ControlPollinationModel)=>{
+        this.tandanId = res.tandan_id.toString();
         this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
           this.treeNumberDisplay = res.pokok?.progeny+'-'+res.pokok?.no_pokok;
           this.regNumber = tandanRes.no_daftar;
@@ -230,6 +241,7 @@ export class RegisterStatusPage implements OnInit {
   async _getRejectedCPTask(){
     if(!this.isOfflineMode){
       this.controlPollinationService.getById(this.taskId,(res:ControlPollinationModel)=>{
+        this.tandanId = res.tandan_id.toString();
         this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
           this.treeNumberDisplay = res.pokok?.progeny+'-'+res.pokok?.no_pokok;
           this.regNumber = tandanRes.no_daftar;
@@ -240,7 +252,7 @@ export class RegisterStatusPage implements OnInit {
       },false);
     }else{
       let task = await this.offlineCPService.getRejectedTaskById(this.taskId.toString());
-      console.log(task)
+      this.tandanId = task.tandan_id.toString();
       let tandan:TandanResponse = await this.offlineTandanService.getById(parseInt(task.tandan_id.toString()));
       this.regNumber = tandan.no_daftar;
       this.cycle = this._getCycleName(tandan)?.toUpperCase();;
@@ -281,6 +293,7 @@ export class RegisterStatusPage implements OnInit {
       this.taskService.getTask(this.taskId).subscribe(
         (res:TaskResponseModel) => {
           this.loadingModal.dismiss();
+          this.tandanId = res.tandan_id.toString();
           this._getTandanInfo(res.tandan_id.toString());
         },
         (err:HttpErrorResponse) => {
@@ -288,6 +301,16 @@ export class RegisterStatusPage implements OnInit {
         }
       );
     }
+    setTimeout(()=>{
+      if(this.scanInput != null && (this.tandanId == this.scanInput)){
+        // this.tandanId = this.scanInput;
+        this._proceedToWork();
+      }else if(this.scanInput != null){
+        this.scanInput = null;
+        this.modalService.textAndBtnPrompt('Tandan salah',"OK");
+      }
+    },3000);
+    
   }
 
   _getPokokInfo(){
@@ -366,8 +389,11 @@ export class RegisterStatusPage implements OnInit {
         let form:NgForm;
         form = value['data'];
         // todo: check for regNumber before proceed to next step
-        this.regNumber = form.value.value;
-        this._proceedToWork();
+        if( this.regNumber == form.value.value){
+          this._proceedToWork();
+        }else{
+          this.modalService.textAndBtnPrompt('Tandan salah',"OK");
+        }
       }
     );
   }

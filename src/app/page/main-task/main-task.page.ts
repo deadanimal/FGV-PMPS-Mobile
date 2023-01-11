@@ -364,7 +364,7 @@ export class MainTaskPage implements OnInit {
             if(el.status == TaskStatus.done){
               this.numOfActiveTask++;
               this.activeTaskList.push(el);
-            }if(el.status == TaskStatus.rejected){
+            }else if(el.status == TaskStatus.rejected){
               this.numOfPosponedTask++;
               this.posponedTaskList.push(el);
             }else{
