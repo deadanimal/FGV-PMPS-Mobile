@@ -1,3 +1,4 @@
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { fromEvent, merge, Observable, of } from 'rxjs';
@@ -7,6 +8,7 @@ import { BaggingModel } from 'src/app/model/bagging';
 import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { DefectModel } from 'src/app/model/defect';
 import { HarvestModel } from 'src/app/model/harvest';
+import { LoginResponseModel } from 'src/app/model/login-response';
 import { OfflineBaggingModel } from 'src/app/model/offline-bagging';
 import { OfflineControlPollinationModel } from 'src/app/model/offline-control-pollination';
 import { PokokResponse } from 'src/app/model/pokok-respons';
@@ -20,6 +22,7 @@ import { OfflineControlPollinationService } from 'src/app/service/offline/offlin
 import { OfflineDefectService } from 'src/app/service/offline/offline-defect.service';
 import { OfflineHarvestService } from 'src/app/service/offline/offline-harvest.service';
 import { OfflineQcService } from 'src/app/service/offline/offline-qc.service';
+import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-offline-mode',
   templateUrl: './offline-mode.page.html',
@@ -56,6 +59,7 @@ export class OfflineModePage implements OnInit {
     private offlineCPService:OfflineControlPollinationService,
     private offlineQcService:OfflineQcService,
     private offlineHarvestService:OfflineHarvestService,
+    private http:HttpClient,
   ) { }
 
   async ngOnInit() {
@@ -65,14 +69,32 @@ export class OfflineModePage implements OnInit {
       this._refreshData();
     }, 500);
     this.appIsOnline$.subscribe(async online => {
-      console.log("here")
-      console.log(online)
       if (online) {
-        this.hasInternetConnection = true;
+        setTimeout(()=>{
+          this._pingServer();
+        },3000);
       } else {
         this.hasInternetConnection = false;
       }
     });
+  }
+
+  private _pingServer(){
+    // Ping server to make sure can reach=
+    this.http.get<LoginResponseModel>(
+      `https://fgv.prototype.com.my/api/profil/1`,
+    ).subscribe(
+      async (res:LoginResponseModel) => {
+        if(res.id != null){
+          this.hasInternetConnection = true;
+        }else{
+          setTimeout(this._pingServer,1000);
+        }
+      },
+      async (err:HttpErrorResponse) => {
+        setTimeout(this._pingServer,1000);
+      }
+    );
   }
 
   private _isInOfflineMode(){
