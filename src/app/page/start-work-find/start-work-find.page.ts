@@ -133,11 +133,19 @@ export class StartWorkFindPage implements OnInit {
   async _getRegNumber(){
     if(!this.isOfflineMode){
       this.tandanService.getById(this.tandanId,(res:TandanResponse)=>{
-        this.regNumber = res.no_daftar;
+        if(res.pokok_id != null && this.taskType == "Balut"){
+          this.modalService.textAndBtnPrompt("Tandan telah didaftar, Sila guna QR lain","OK");
+        }else{
+          this.regNumber = res.no_daftar;
+        }
       });
     }else{
       let tandanInfo = await this.offlineTandanService.getById(parseInt(this.tandanId.toString()));
-      this.regNumber = tandanInfo.no_daftar;
+      if(tandanInfo.pokok_id != null && this.taskType == "Balut"){
+        this.modalService.textAndBtnPrompt("Tandan telah didaftar, Sila guna QR lain","OK");
+      }else{
+        this.regNumber = tandanInfo.no_daftar;
+      }
     }
   }
 
