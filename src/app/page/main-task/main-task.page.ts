@@ -376,6 +376,12 @@ export class MainTaskPage implements OnInit {
       }else{
         this.activeTaskList = await this.offlineBaggingService.getSavedBaggingTasks();
         this.posponedTaskList = await this.offlineBaggingService.getPosponedBaggingTasks();
+        if(this.activeTaskList == null){
+          this.activeTaskList = [];
+        }
+        if(this.posponedTaskList == null){
+          this.activeTaskList = [];
+        }
         this.numOfActiveTask = this.activeTaskList.length;
         this.numOfPosponedTask = this.posponedTaskList.length;
       }
@@ -425,6 +431,13 @@ export class MainTaskPage implements OnInit {
         this.newTaskList = await this.offlineCPService.getNewCpTaskList();
         this.posponedTaskList = await this.offlineCPService.getPostponedTask();
         let tempList = await this.offlineCPService.getRejectedCpTaskList();
+        if(this.newTaskList == null){
+          this.newTaskList = []
+        }if(this.posponedTaskList == null){
+          this.posponedTaskList = []
+        }if(tempList == null){
+          tempList = []
+        }
         this.posponedTaskList.push(...tempList);
         this.numOfNewTask = this.newTaskList.length;
         this.numOfPosponedTask = this.posponedTaskList.length;
@@ -474,6 +487,9 @@ export class MainTaskPage implements OnInit {
         });
       }else{
         let taskList = await this.offlineQCService.getNewQCTaskList();
+        if(taskList == null){
+          taskList = [];
+        }
         taskList.forEach(el => {
           if(el.status == TaskStatus.created){
             this.numOfNewTask++;

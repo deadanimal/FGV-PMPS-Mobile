@@ -28,4 +28,14 @@ export class OfflineTandanService {
 
     return retVal;
   }
+
+  async updateTreeId(tandanId,treeId){
+    let tempArray:TandanResponse[] = await this.storageService.get(this.storageService.offlineTandanList);
+    tempArray.forEach(el => {
+      if(el.id == tandanId){
+        el.pokok_id = treeId;
+      }
+    });
+    await this.storageService.set(this.storageService.offlineTandanList,tempArray);
+  }
 }

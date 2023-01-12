@@ -591,7 +591,8 @@ export class TaskStatusPage implements OnInit {
         data.id = this.taskId.toString();
         this.offlineBaggingService.saveRedoBaggingTask(data);
       }else{
-        this.offlineBaggingService.saveBaggingTask(data);
+        await this.offlineBaggingService.saveBaggingTask(data);
+        await this.offlineTandanService.updateTreeId(this.tandanId,this.treeId);
       }
 
       this.modalService.continuePrompt().then(
