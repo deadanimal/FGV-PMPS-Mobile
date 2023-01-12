@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { fromEvent, merge, Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { UserContinueSelection } from 'src/app/component/continue-prompt/continue-prompt.component';
 import { BaggingModel } from 'src/app/model/bagging';
 import { ControlPollinationModel } from 'src/app/model/control-pollination';
@@ -43,6 +45,8 @@ export class OfflineModePage implements OnInit {
   cpTaskDone:OfflineControlPollinationModel[] = [];
   defectList:DefectModel[] = [];
   harvestTaskDone:OfflineHarvestService[] = [];
+  public appIsOnline$: Observable<boolean>;
+  hasInternetConnection:boolean;
   constructor(
     private offlineModeService:OfflineModeService,
     private router:Router,
@@ -55,9 +59,24 @@ export class OfflineModePage implements OnInit {
   ) { }
 
   async ngOnInit() {
+    this.hasInternetConnection = true;
+    this.initConnectivityMonitoring();
     setTimeout( () => {
       this._refreshData();
     }, 500);
+    this.appIsOnline$.subscribe(async online => {
+      console.log("here")
+      console.log(online)
+      if (online) {
+        this.hasInternetConnection = true;
+      } else {
+        this.hasInternetConnection = false;
+      }
+    });
+  }
+
+  private _isInOfflineMode(){
+    return this.offlineModeService.isOfflineMode();
   }
 
   sync(){
@@ -128,6 +147,15 @@ export class OfflineModePage implements OnInit {
     this.router.navigateByUrl('/app/tabs/tab1',{
       replaceUrl : true
     });
+  }
+
+  private initConnectivityMonitoring() {
+    if (!window || !navigator || !('onLine' in navigator)) return;
+    this.appIsOnline$ = merge(
+      of(null),
+      fromEvent(window, 'online'),
+      fromEvent(window, 'offline')
+    ).pipe(map(() => navigator.onLine))
   }
 
 }

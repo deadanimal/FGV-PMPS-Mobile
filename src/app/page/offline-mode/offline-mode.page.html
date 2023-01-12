@@ -66,9 +66,10 @@
       <div class="col-9 text-start">Kerosakan Tandan:</div>
       <div class="col-3 text-start">{{defectList?.length}}</div>
     </div>
-    <button class="btn btn-outline-danger w-75 mt-4" (click)="sync()">Sync</button>
-    <button *ngIf="!isOfflineMode" class="btn btn-outline-danger w-75 mt-4" (click)="offline(true)">Hidupkan Fungsi Offline</button>
-    <button *ngIf="isOfflineMode" class="btn btn-outline-danger w-75 mt-4" (click)="offline(false)">Matikan Fungsi Offline</button>
+    <p *ngIf="!hasInternetConnection" class="mt-3 h-3 text-danger">Tiada talian internet</p>
+    <button [disabled]="!hasInternetConnection" class="btn btn-outline-danger w-75 mt-4" (click)="sync()">Sync</button>
+    <button [disabled]="!hasInternetConnection" *ngIf="!isOfflineMode" class="btn btn-outline-danger w-75 mt-4" (click)="offline(true)">Hidupkan Fungsi Offline</button>
+    <button [disabled]="!hasInternetConnection" *ngIf="isOfflineMode" class="btn btn-outline-danger w-75 mt-4" (click)="offline(false)">Matikan Fungsi Offline</button>
     <button class="btn btn-danger w-75 mt-4" (click)="back()">Kembali</button>
   </div>
 </ion-content>
