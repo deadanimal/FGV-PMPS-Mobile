@@ -94,18 +94,23 @@ export class ControlPollinationService {
   async create(
     formData:FormData,
     status:string,
-    callback
+    callback,
+    loadingAnim = true
   ){
     formData.append('status',status);
-    this.loadingModal = await this.showLoading();
+    if(loadingAnim){
+      this.loadingModal = await this.showLoading();
+    }
     this.http.post<ControlPollinationModel>(
       `${environment.baseUrl}${environment.crossPolination}`,
       formData
     ).subscribe(
       async (res:ControlPollinationModel) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        if(this.loadingModal != null){
-          this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         this.tandanService.updateCycle(res.tandan_id.toString(),"debung",async (resTandan:TandanResponse)=>{
           callback(res);
@@ -154,17 +159,22 @@ export class ControlPollinationService {
   async update(
     cpId:String,
     formData:Object,
-    callback
+    callback,
+    loadingAnim = true,
   ){
-    this.loadingModal = await this.showLoading();
+    if(loadingAnim){
+      this.loadingModal = await this.showLoading();
+    }
     this.http.put<ControlPollinationModel>(
       `${environment.baseUrl}${environment.crossPolination}${cpId}`,
       formData
     ).subscribe(
       async (res:ControlPollinationModel) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        if(this.loadingModal != null){
-          this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(res);
       },

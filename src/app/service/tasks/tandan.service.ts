@@ -210,11 +210,9 @@ export class TandanService {
           callback(res);
         },
         async (err:HttpErrorResponse) => {
-          if(loadingAnim){
-            this.loadingModal = await this.loadingCtrl.getTop()
-            if(this.loadingModal != null){
-              this.loadingModal.dismiss();
-            }
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
           }
         }
       );

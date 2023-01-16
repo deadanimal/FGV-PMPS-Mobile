@@ -192,7 +192,8 @@ export class TaskStatusPage implements OnInit {
     this.serverImage = null;
   }
 
-  _promptCompleted(title:string = "Aktiviti anda telah dihantar kepada penyelia"){
+  async _promptCompleted(title:string = "Aktiviti anda telah dihantar kepada penyelia"){
+    (await this.loadingCtrl.getTop())?.dismiss();
     this.modalService.successPrompt(title).then(
       (value)=>{
         setTimeout(() => {
@@ -417,8 +418,9 @@ export class TaskStatusPage implements OnInit {
     this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
       formData.append('tandan_id',res.tandan_id.toString());
       formData.append('pokok_id',res.pokok_id.toString());
-        this.controlPollinationService.create(formData,status,(resCP:ControlPollinationModel)=>{
+        this.controlPollinationService.create(formData,status,async (resCP:ControlPollinationModel)=>{
           if(this.defect == null){
+            (await this.loadingCtrl.getTop())?.dismiss();
             this.router.navigate(
               [
                 '/app/tabs/tab1/control-pollen-form',
@@ -429,13 +431,14 @@ export class TaskStatusPage implements OnInit {
           }else{
             this._promptCompleted();
           }
-        });
-      }
+        },false);
+      },false
     );
   }
 
   async _createCp(status:TaskStatus){
     if(!this.isOfflineMode){
+      this._showSubmitTaskAlert();
       const formData = new FormData();
       const response = await fetch(this.photo.dataUrl);
       const blob = await response.blob();
@@ -449,7 +452,8 @@ export class TaskStatusPage implements OnInit {
         formData.append('pokok_id',this.treeId.toString());
           this.controlPollinationService.create(formData,status,(resCP:ControlPollinationModel)=>{
             this.controlPollinationService.update(this.taskId,{status:TaskStatus.redo},()=>{
-              this.tandanService.update(this.tandanId,{status_tandan:'aktif'},()=>{
+              this.tandanService.update(this.tandanId,{status_tandan:'aktif'},async ()=>{
+                (await this.loadingCtrl.getTop())?.dismiss();
                 this.router.navigate(
                   [
                     '/app/tabs/tab1/control-pollen-form',
@@ -458,9 +462,9 @@ export class TaskStatusPage implements OnInit {
                     }
                   ]
                 );
-              });
-            });
-            }
+              },false);
+            },false);
+            },false
           );
       }else{
         this._createCpFromBagging(formData,status);
@@ -512,7 +516,8 @@ export class TaskStatusPage implements OnInit {
     }
   }
 
-  private _successSubmitTask(){
+  private async _successSubmitTask(){
+    (await this.loadingCtrl.getTop())?.dismiss();
     this.modalService.continuePrompt().then(
       (value)=>{
         if(value['data'] == UserContinueSelection.no){
@@ -530,6 +535,11 @@ export class TaskStatusPage implements OnInit {
         }
       }
     );
+  }
+
+  private async _showSubmitTaskAlert(){
+    const modal= await this.loadingCtrl.create({message:"Tugas Sedang Dihantar"});
+    modal.present();
   }
 
   async submitTask(){
@@ -553,8 +563,10 @@ export class TaskStatusPage implements OnInit {
     formData.append('tandan_id',this.tandanId.toString());
 
     if(!this.isOfflineMode){
+      await this._showSubmitTaskAlert();
       this.baggingService.createTask(formData,async (res:BaggingModel)=>{
         if(res==null){
+          this.loadingCtrl.dismiss();
           const modal= await this.modalCtrl.create({
             component: GenericTextModalComponent,
             componentProps:{
@@ -573,7 +585,7 @@ export class TaskStatusPage implements OnInit {
             this._successSubmitTask();
           }
         }
-      });
+      },false);
     }else{
       let data:OfflineBaggingModel = {
         no_daftar:this.regNo.toString(),
