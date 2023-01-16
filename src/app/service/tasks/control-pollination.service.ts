@@ -221,17 +221,22 @@ export class ControlPollinationService {
   async updateUsingForm(
     cpId:String,
     formData:FormData,
-    callback
+    callback,
+    loadingAnim = true
   ){
-    this.loadingModal = await this.showLoading();
+    if(loadingAnim){
+      this.loadingModal = await this.showLoading();
+    }
     this.http.post<ControlPollinationModel>(
       `${environment.baseUrl}${environment.crossPolination}${cpId}`,
       formData,
     ).subscribe(
       async (res:ControlPollinationModel) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        if(this.loadingModal != null){
-          this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(res);
       },

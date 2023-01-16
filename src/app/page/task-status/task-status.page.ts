@@ -383,6 +383,7 @@ export class TaskStatusPage implements OnInit {
   }
 
   async _updateCP(status:TaskStatus){
+    this._showSubmitTaskAlert();
     const formData = new FormData();
     if(this.photo != null){
       const response = await fetch(this.photo.dataUrl);
@@ -397,20 +398,18 @@ export class TaskStatusPage implements OnInit {
     this.controlPollinationService.updateUsingForm(
       this.taskId,
       formData,
-      (resCP:ControlPollinationModel)=>{
-        if(this.defect == null){
-          this.router.navigate(
-            [
-              '/app/tabs/tab1/control-pollen-form',
-              {
-                taskId:resCP.id,
-              }
-            ]
-          );
-        }else{
-          this._updateDefect(resCP.tandan_id);
-        }
-      }
+      async (resCP:ControlPollinationModel)=>{
+        (await this.loadingCtrl.getTop()).dismiss();
+        this.router.navigate(
+          [
+            '/app/tabs/tab1/control-pollen-form',
+            {
+              taskId:resCP.id,
+            }
+          ]
+        );
+      },
+      false
     );
   }
 
