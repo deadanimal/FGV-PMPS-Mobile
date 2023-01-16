@@ -27,6 +27,7 @@ export class HarvestSearchFormPage implements OnInit {
   baggingWorkers:User[] = [];
   listOfBaggingWorkers:User[] = [];
   listOfTree:PokokResponse[] = [];
+  firstTimeEnter:boolean;
   constructor(
     private baggingService:BaggingService,
     private router:Router,
@@ -35,6 +36,7 @@ export class HarvestSearchFormPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.firstTimeEnter = true
   }
 
   ionViewDidEnter(){
@@ -56,8 +58,10 @@ export class HarvestSearchFormPage implements OnInit {
         });
       }
     );
-    if(this.blockSelect?.value != null){
+    if(!this.firstTimeEnter){
       this.submit(null);
+    }else{
+      this.firstTimeEnter = false;
     }
   }
 
