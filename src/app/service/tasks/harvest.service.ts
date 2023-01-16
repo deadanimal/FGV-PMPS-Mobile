@@ -86,17 +86,22 @@ export class HarvestService {
 
   async create(
     formData:FormData,
-    callback
+    callback,
+    loadingAnim = true
   ){
-    this.loadingModal = await this.showLoading();
+    if(loadingAnim){
+      this.loadingModal = await this.showLoading();
+    }
     this.http.post<HarvestModel>(
       `${environment.baseUrl}${environment.harvest}`,
       formData
     ).subscribe(
       async (res:HarvestModel) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        if(this.loadingModal != null){
-          this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         this.tandanService.updateCycle(res.tandan_id.toString(),TandanCycle.harvest,async (resTandan:TandanResponse)=>{
           callback(res);
@@ -115,16 +120,21 @@ export class HarvestService {
     harvestId:String,
     updateObject:any,
     callback,
+    loadingAnim = true,
   ){
-    this.loadingModal = await this.showLoading();
+    if(loadingAnim){
+      this.loadingModal = await this.showLoading();
+    }
     this.http.post<HarvestModel>(
       `${environment.baseUrl}${environment.harvest}${harvestId}`,
       updateObject
     ).subscribe(
       async (res:HarvestModel) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        if(this.loadingModal != null){
-          this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(res);
       },

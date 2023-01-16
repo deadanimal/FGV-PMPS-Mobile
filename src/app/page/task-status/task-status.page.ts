@@ -1260,6 +1260,7 @@ export class TaskStatusPage implements OnInit {
 
   async _submitHarvest(status:TaskStatus){
     if(!this.isOfflineMode){
+      this._showSubmitTaskAlert();
       const formData = new FormData();
       const response = await fetch(this.photo.dataUrl);
       const blob = await response.blob();
@@ -1273,7 +1274,7 @@ export class TaskStatusPage implements OnInit {
         formData.append('_method','put');
         this.harvestService.update(this.taskId,formData,(res:HarvestModel)=>{
           this._promptCompleted();
-        });
+        },false);
       }else{
         formData.append('pokok_id',this.treeId.toString());
         formData.append('tandan_id',this.tandanId.toString());
@@ -1282,8 +1283,8 @@ export class TaskStatusPage implements OnInit {
         this.harvestService.create(formData,(res:HarvestModel)=>{
           this.harvestService.update(this.taskId,{status:TaskStatus.redo,_method:"put"},(res:QualityControlModel)=>{
             this._promptCompleted();
-          });
-        });
+          },false);
+        },false);
       }
     }else{
       let task = await this.offlineHarvestService.getNewTaskById(parseInt(this.taskId.toString()));
