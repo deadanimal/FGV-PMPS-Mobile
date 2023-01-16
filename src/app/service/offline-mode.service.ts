@@ -476,6 +476,7 @@ export class OfflineModeService {
               this.userService.getByRole(
                 UserRole.penyelia_qc,
                 (res3:[User])=>{
+                  this.modalService.successPrompt("Tugas Kawalan Kualiti Berjaya di sync").then();
                   this.baggingSvList = res3;
                   this.storageService.set(this.storageService.baggingSvList,this.baggingSvList);
                   this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
@@ -546,6 +547,7 @@ export class OfflineModeService {
             });
             this.storageService.set(this.storageService.offlineNewHarvest,this.harvestList);
             this.defectService.getAll((defectRes:[DefectModel])=>{
+              this.modalService.successPrompt("Tugas Tuai Berjaya di sync").then();
               this.defectList = defectRes;
               this.storageService.set(this.storageService.offlineDefectList,defectRes);
               this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
