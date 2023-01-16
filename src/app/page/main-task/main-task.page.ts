@@ -132,7 +132,11 @@ export class MainTaskPage implements OnInit {
 
   viewTask(taskId:String,status:String,id:number,param1:string = ""){
     if(status == "completed"){
-      this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskId,tandanId:id}]);
+      if(taskId == 'balut' || taskId == 'cp'){
+        this.router.navigate(['app/tabs/tab1/task-finished',{taskId:id,taskType:this.task}]);
+      }else{
+        this.router.navigate(['app/tabs/tab1/task-finished',{tandanId:id}]);
+      }
     }else if( status == 'posponed'){
       if(taskId == 'cp'){
         this.router.navigate(['/app/tabs/tab1/reg-status',
@@ -375,15 +379,15 @@ export class MainTaskPage implements OnInit {
         });
       }else{
         this.activeTaskList = await this.offlineBaggingService.getSavedBaggingTasks();
-        this.posponedTaskList = await this.offlineBaggingService.getPosponedBaggingTasks();
+        // this.posponedTaskList = await this.offlineBaggingService.getPosponedBaggingTasks();
         if(this.activeTaskList == null){
           this.activeTaskList = [];
         }
-        if(this.posponedTaskList == null){
-          this.activeTaskList = [];
-        }
-        this.numOfActiveTask = this.activeTaskList.length;
-        this.numOfPosponedTask = this.posponedTaskList.length;
+        // if(this.posponedTaskList == null){
+        //   this.posponedTaskList = [];
+        // }
+        // this.numOfActiveTask = this.activeTaskList.length;
+        // this.numOfPosponedTask = this.posponedTaskList.length;
       }
     }else{
       this.baggingService.getAll((res:[BaggingModel])=>{

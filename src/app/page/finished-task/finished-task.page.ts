@@ -2,8 +2,17 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TandanCycle } from 'src/app/common/tandan-cycle';
+import { BaggingModel } from 'src/app/model/bagging';
+import { ControlPollinationModel } from 'src/app/model/control-pollination';
+import { DefectModel } from 'src/app/model/defect';
+import { LoginResponseModel } from 'src/app/model/login-response';
 import { PokokResponse } from 'src/app/model/pokok-respons';
 import { TandanResponse } from 'src/app/model/tandan-response';
+import { AccountService, UserRole } from 'src/app/service/account.service';
+import { TaskService } from 'src/app/service/task.service';
+import { BaggingService } from 'src/app/service/tasks/bagging.service';
+import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
+import { DefectService } from 'src/app/service/tasks/defect.service';
 import { TandanService } from 'src/app/service/tasks/tandan.service';
 import { TreeService } from 'src/app/service/tasks/tree.service';
 
@@ -21,10 +30,21 @@ export class FinishedTaskPage implements OnInit {
   age:String;
   block:String;
   indicator:number;
+  taskType:string;
+  taskId:string;
+  workerName:string;
+  defect:string;
+  workerRemark:string;
+  svRemark:string;
   constructor(
     private activatedRoute:ActivatedRoute,
     private tandanService: TandanService,
+    private baggingService: BaggingService,
+    private cpService: ControlPollinationService,
+    private accountService: AccountService,
     private treeService: TreeService,
+    private taskService: TaskService,
+    private defectService: DefectService,
     private datePipe: DatePipe,
   ) { }
 
@@ -33,7 +53,59 @@ export class FinishedTaskPage implements OnInit {
       if(params['tandanId']!=null){
         this._getTandanInfo(params['tandanId']);
       }
+      if(params['taskType']!=null){
+        this.taskType = (params['taskType']);
+      }
+      if(params['taskId']!=null){
+        this.taskId = (params['taskId']);
+      }
+
+      if(this.taskId != null && this.taskType != null){
+        this._getTaskInfo();
+      }
     });
+  }
+
+  private _getTaskInfo(){
+    if(this.taskType == 'Balut'){
+      this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
+        this._getTandanInfo(res.tandan_id.toString());
+        if(this.accountService.getUserRole() == UserRole.penyelia_balut){
+          this.workerRemark = res.catatan;
+          this.svRemark = res.catatan_pengesah;
+          this._getUser(res.id_sv_balut);
+          if(res.kerosakans_id != null){
+            this._getDefect(parseInt(res.kerosakans_id));
+          }
+        }
+      });
+    }else if(this.taskType == 'Pendebungaan Terkawal (CP)'){
+      this.cpService.getById(this.taskId,(res:ControlPollinationModel)=>{
+        this._getTandanInfo(res.tandan_id.toString());
+        if(this.accountService.getUserRole() == UserRole.penyelia_balut){
+          this.workerRemark = res.catatan;
+          this.svRemark = res.catatan_pengesah;
+          this._getUser(res.id_sv_cp);
+          if(res.kerosakan_id != null){
+            this._getDefect(parseInt(res.kerosakan_id));
+          }
+        }
+      });
+    }
+  }
+
+  private _getDefect(id:number){
+    this.defectService.getById(id,(res:DefectModel)=>{
+      this.defect = res.nama;
+    });
+  }
+
+  private _getUser(id:number){
+    this.taskService.getUserById(id).subscribe(
+      (res:LoginResponseModel) => {
+        this.workerName = res.nama;
+      }
+    );
   }
 
   async _getTandanInfo(tandanId:String){

@@ -50,4 +50,31 @@ export class DefectService {
       }
     );
   }
+  
+  async getById(id:number, callback,loadingAnim = true){
+    if(loadingAnim){
+      this.loadingModal = await this.showLoading();
+    }
+    this.http.get<[DefectModel]>(
+      `${environment.baseUrl}${environment.defect}${id}`
+    ).subscribe(
+      async (res:[DefectModel]) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
+        }
+        callback(res);
+      },
+      async (err:HttpErrorResponse) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
+        }
+      }
+    );
+  }
 }

@@ -84,5 +84,21 @@
       <ion-label position="floating">Umur Tandan (Hari)</ion-label>
       <ion-input type="text" [(ngModel)]="age" name="age" required [readonly]="true"></ion-input>
     </ion-item>
+    <ion-item lines="full" *ngIf="workerName!= null">
+      <ion-label position="floating">Nama Pembalut</ion-label>
+      <ion-input type="text" [(ngModel)]="workerName" name="workerName" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="defect!= null">
+      <ion-label position="floating">Jenis Kerosakan</ion-label>
+      <ion-input type="text" [(ngModel)]="defect" name="defect" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="workerRemark!= null">
+      <ion-label position="floating">Catatan Pekerja</ion-label>
+      <ion-input type="text" [(ngModel)]="workerRemark" name="workerRemark" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full mb-4" *ngIf="svRemark!= null">
+      <ion-label position="floating">Catatan Penyelia</ion-label>
+      <ion-input type="text" [(ngModel)]="svRemark" name="svRemark" required [readonly]="true"></ion-input>
+    </ion-item>
   </form>
 </ion-content>

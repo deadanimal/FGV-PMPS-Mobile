@@ -277,8 +277,8 @@
       <div *ngIf="disableFinishRecord">
         <div *ngFor="let item of finishedTaskList" class="p-3 my-3 mx-auto w-75 shadow rounded border border-success d-flex justify-content-between align-items-center">
           <p class="h6">Rekod {{item.id}} ({{item.pokok.progeny}}-{{item.pokok.no_pokok}})</p>
-          <button *ngIf="item.status == 'tolak'" (click)="viewTask('balut','completed',item.tandan_id)" class="btn btn-danger text-white">Info</button>
-          <button *ngIf="item.status != 'tolak'" (click)="viewTask('balut','completed',item.tandan_id)" class="btn greenBtn text-white">Info</button>
+          <button *ngIf="item.status == 'tolak'" (click)="viewTask('balut','completed',item.id)" class="btn btn-danger text-white">Info</button>
+          <button *ngIf="item.status != 'tolak'" (click)="viewTask('balut','completed',item.id)" class="btn greenBtn text-white">Info</button>
         </div>
       </div>
       <div *ngIf="disableActiveTaskBtn">
@@ -316,7 +316,7 @@
       <div *ngIf="disableActiveTaskBtn">
         <div *ngFor="let item of activeTaskList"class="p-3 my-3 mx-auto w-75 shadow rounded border border-warning d-flex justify-content-between align-items-center">
           <p class="h6">Rekod {{item.id}} ({{item.pokok.progeny}}-{{item.pokok.no_pokok}})</p>
-          <button (click)="viewTask('cp','completed',item.tandan_id)" class="btn blueBtn text-white">Info</button>
+          <button (click)="viewTask('cp','completed',item.id)" class="btn blueBtn text-white">Info</button>
         </div>
       </div>
       <div *ngIf="disablePostponedTaskBtn">
@@ -330,8 +330,8 @@
       <div *ngIf="disableFinishRecord">
         <div *ngFor="let item of finishedTaskList" class="p-3 my-3 mx-auto w-75 shadow rounded border border-success d-flex justify-content-between align-items-center">
           <p class="h6">Rekod {{item.id}} ({{item.pokok.progeny}}-{{item.pokok.no_pokok}})</p>
-          <button *ngIf="item.status == 'sah' && item.kerosakan_id != null" (click)="viewTask('balut','completed',item.tandan_id)" class="btn btn-danger text-white">Info</button>
-          <button *ngIf="item.status != 'sah' || item.kerosakan_id == null"(click)="viewTask('balut','completed',item.tandan_id)" class="btn greenBtn text-white">Info</button>
+          <button *ngIf="item.status == 'sah' && item.kerosakan_id != null" (click)="viewTask('cp','completed',item.id)" class="btn btn-danger text-white">Info</button>
+          <button *ngIf="item.status != 'sah' || item.kerosakan_id == null"(click)="viewTask('cp','completed',item.id)" class="btn greenBtn text-white">Info</button>
         </div>
       </div>
     </div>
