@@ -5,6 +5,7 @@ import { TandanCycle } from 'src/app/common/tandan-cycle';
 import { BaggingModel } from 'src/app/model/bagging';
 import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { DefectModel } from 'src/app/model/defect';
+import { HarvestModel } from 'src/app/model/harvest';
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { PokokResponse } from 'src/app/model/pokok-respons';
 import { QualityControlModel } from 'src/app/model/quality-control';
@@ -14,6 +15,7 @@ import { TaskService } from 'src/app/service/task.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
 import { DefectService } from 'src/app/service/tasks/defect.service';
+import { HarvestService } from 'src/app/service/tasks/harvest.service';
 import { QualityControlService } from 'src/app/service/tasks/quality-control.service';
 import { TandanService } from 'src/app/service/tasks/tandan.service';
 import { TreeService } from 'src/app/service/tasks/tree.service';
@@ -44,6 +46,7 @@ export class FinishedTaskPage implements OnInit {
     private baggingService: BaggingService,
     private cpService: ControlPollinationService,
     private qcService: QualityControlService,
+    private harvestService: HarvestService,
     private accountService: AccountService,
     private treeService: TreeService,
     private taskService: TaskService,
@@ -101,6 +104,18 @@ export class FinishedTaskPage implements OnInit {
           this.workerRemark = res.catatan;
           this.svRemark = res.catatan_pengesah;
           this._getUser(res.id_sv_qc);
+          if(res.kerosakan_id != null){
+            this._getDefect(parseInt(res.kerosakan_id));
+          }
+        }
+      });
+    }else if(this.taskType == 'Tuai'){
+      this.harvestService.getById(this.taskId,(res:HarvestModel)=>{
+        this._getTandanInfo(res.tandan_id.toString());
+        if(this.accountService.getUserRole() == UserRole.penyelia_tuai){
+          this.workerRemark = res.catatan;
+          this.svRemark = res.catatan_pengesah;
+          this._getUser(res.id_sv_harvest);
           if(res.kerosakan_id != null){
             this._getDefect(parseInt(res.kerosakan_id));
           }
