@@ -113,7 +113,7 @@ export class OfflineModePage implements OnInit {
     this.modalService.yesNoPrompt(prompt).then((value)=>{
       let user_selection:UserContinueSelection = value['data'];
       if(user_selection == UserContinueSelection.yes){
-        this.offlineModeService.sync();
+        // this.offlineModeService.sync();
         this.offlineModeService.OfflineMode(start);
         setTimeout(async () => {
           await this._refreshData();
@@ -122,7 +122,7 @@ export class OfflineModePage implements OnInit {
               window.location.replace('');
             }
           );
-        }, 5000);
+        }, 50);
       }else if(user_selection == UserContinueSelection.no){
       }
     });

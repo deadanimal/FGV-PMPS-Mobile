@@ -15,6 +15,7 @@ import { QualityControlModel } from '../model/quality-control';
 import { TandanResponse } from '../model/tandan-response';
 import { User } from '../model/user';
 import { AccountService, UserRole } from './account.service';
+import { ModalService } from './modal.service';
 import { OfflineBaggingService } from './offline/offline-bagging.service';
 import { OfflineControlPollinationService } from './offline/offline-control-pollination.service';
 import { OfflineHarvestService } from './offline/offline-harvest.service';
@@ -47,6 +48,10 @@ export class OfflineModeService {
   defectList:DefectModel[] = [];
   qcList:QualityControlModel[] = [];
   harvestList:HarvestModel[] = [];
+  finishedBaggingUpload:boolean;
+  finishedCPRedoUpload:boolean;
+  finishedNormalCPUpload:boolean;
+  finishedBaggingDownload:boolean;
   constructor(
     private storageService:StorageService,
     private tandanService:TandanService,
@@ -64,6 +69,7 @@ export class OfflineModeService {
     private qualityControlService:QualityControlService,
     private harvestService:HarvestService,
     private offlineHarvestService:OfflineHarvestService,
+    private modalService:ModalService,
   ) {
   }
 
@@ -151,12 +157,14 @@ export class OfflineModeService {
 
   async _uploadBaggingTasks(){
     let tasks:OfflineBaggingModel[] = await this.offlineBaggingService.getSavedBaggingTasks();
-    let redoTasks:OfflineBaggingModel[] = await this.offlineBaggingService.getSavedRedoBaggingTasks();
+    // let redoTasks:OfflineBaggingModel[] = await this.offlineBaggingService.getSavedRedoBaggingTasks();
     if(tasks == null){
       tasks = [];
-    }if(redoTasks == null){
-      redoTasks = [];
+      this._baggingCpSyncComplete('baggingUpload');
     }
+    // if(redoTasks == null){
+    //   redoTasks = [];
+    // }
     //upload normal bagging task
     while(tasks.length > 0){
       let task:OfflineBaggingModel = tasks.pop();
@@ -171,27 +179,28 @@ export class OfflineModeService {
       const response = await fetch(task.url_gambar_data);
       const blob = await response.blob();
       formData.append('url_gambar', blob, task.url_gambar);
-      this.baggingService.createTask(formData,async (res:BaggingModel)=>{},false);
-      this.storageService.set(this.storageService.baggingOfflineData,tasks);
+      this.baggingService.createTask(formData,async (res:BaggingModel)=>{
+        this._uploadBaggingCallback(task.tandan_id,"bagging")
+      },false);
     }
     // upload redo bagging task
-    while(redoTasks.length > 0){
-      let task:OfflineBaggingModel = redoTasks.pop();
-      var formData = new FormData();
+    // while(redoTasks.length > 0){
+    //   let task:OfflineBaggingModel = redoTasks.pop();
+    //   var formData = new FormData();
 
-      for ( var key in task ) {
-        if(key != 'url_gambar_data' && key != 'url_gambar' && key != 'pokok' && key != 'id'){
-          formData.append(key, task[key]);
-        }
-      }
+    //   for ( var key in task ) {
+    //     if(key != 'url_gambar_data' && key != 'url_gambar' && key != 'pokok' && key != 'id'){
+    //       formData.append(key, task[key]);
+    //     }
+    //   }
 
-      const response = await fetch(task.url_gambar_data);
-      const blob = await response.blob();
-      formData.append('url_gambar', blob, task.url_gambar);
-      this.baggingService.createTask(formData,async (res:BaggingModel)=>{},false);
-      this.baggingService.update(task.id,{status:TaskStatus.redo},()=>{});
-      this.storageService.set(this.storageService.redoBaggingOfflineData,redoTasks);
-    }
+    //   const response = await fetch(task.url_gambar_data);
+    //   const blob = await response.blob();
+    //   formData.append('url_gambar', blob, task.url_gambar);
+    //   this.baggingService.createTask(formData,async (res:BaggingModel)=>{},false);
+    //   this.baggingService.update(task.id,{status:TaskStatus.redo},()=>{});
+    //   this.storageService.set(this.storageService.redoBaggingOfflineData,redoTasks);
+    // }
   }
 
   async _uploadCPTasks(){
@@ -201,6 +210,12 @@ export class OfflineModeService {
       tasks = [];
     }if(redoTasks == null){
       redoTasks = [];
+    }
+
+    if(tasks.length == 0){
+      this._baggingCpSyncComplete('cpNormalUpload');
+    }if(redoTasks.length == 0){
+      this._baggingCpSyncComplete('cpRedoUpload');
     }
     // normal task
     while(tasks.length > 0){
@@ -217,11 +232,11 @@ export class OfflineModeService {
       const blob = await response.blob();
       formData.append('url_gambar[]', blob, task.url_gambar);
       this.controlPollinationService.create(formData,task.status ,async (res:ControlPollinationModel)=>{
+        this._uploadCpCallback(task.tandan_id.toString(),'cpNormal');
         this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
           v.dismiss();
         });
       });
-      this.storageService.set(this.storageService.controlPollinationOfflineData,tasks);
     }
     //redo task
     while(redoTasks.length > 0){
@@ -238,12 +253,13 @@ export class OfflineModeService {
       const blob = await response.blob();
       formData.append('url_gambar[]', blob, task.url_gambar);
       this.controlPollinationService.create(formData,task.status ,async (res:ControlPollinationModel)=>{
-        this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
-          v.dismiss();
+        this.controlPollinationService.update(task.id,{status:TaskStatus.redo},()=>{
+          this._uploadCpCallback(task.id.toString(),'cpRedo');
+          this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+            v.dismiss();
+          });
         });
       });
-      this.controlPollinationService.update(task.id,{status:TaskStatus.redo},()=>{});
-      this.storageService.set(this.storageService.redoCPOfflineData,redoTasks);
     }
   }
 
@@ -269,7 +285,7 @@ export class OfflineModeService {
       });
       this.storageService.set(this.storageService.posponedBaggingTask,this.posponedBaggingTasks);
       this._getPosponedCPTask();
-    })
+    },false)
   }
 
   private async _getPosponedCPTask(){
@@ -284,26 +300,116 @@ export class OfflineModeService {
       this.defectService.getAll((defectRes:[DefectModel])=>{
         this.defectList = defectRes;
         this.storageService.set(this.storageService.offlineDefectList,defectRes);
+        this._baggingCpSyncComplete('download');
         this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
           v.dismiss();
         });
+      },false);
+    },false)
+  }
+
+  private _baggingCpSyncComplete(syncItem:string){
+    this.finishedBaggingUpload = true;
+    if(syncItem == 'baggingUpload'){
+      this.finishedBaggingUpload = true;
+    }else if(syncItem == 'cpRedoUpload'){
+      this.finishedCPRedoUpload = true;
+    }else if(syncItem == 'cpNormalUpload'){
+      this.finishedNormalCPUpload = true;
+    }else{
+      this.finishedBaggingDownload = true;
+    }
+    if( this.finishedBaggingUpload &&
+        this.finishedBaggingDownload && 
+        this.finishedCPRedoUpload && 
+        this.finishedNormalCPUpload
+      ){
+      this.modalService.successPrompt("Tugas Balut dan Kawalan Pendebungaan Berjaya di sync").then();
+    }
+  }
+
+  private async _uploadBaggingCallback(id:string, taskType:string){
+    if(taskType == 'bagging'){
+      let tasks:OfflineBaggingModel[] = await this.offlineBaggingService.getSavedBaggingTasks();
+      if(tasks == null){
+        tasks = [];
+      }
+      let retArray:OfflineBaggingModel[] = [];
+      tasks.forEach(el => {
+        if(el.tandan_id != id){
+          retArray.push(el);
+        }
       });
-    })
+      await this.storageService.set(this.storageService.baggingOfflineData,retArray);
+      if(retArray.length == 0){
+        this._baggingCpSyncComplete('baggingUpload');
+      }
+    }
+  }
+
+  private async _uploadCpCallback(id:string, taskType){
+    if(taskType == 'cpNormal'){
+      let tasks:OfflineControlPollinationModel[] = await this.offlineCpService.getSavedCPTasks();
+      if(tasks == null){
+        tasks = [];
+      }
+      let retArray:OfflineControlPollinationModel[] = [];
+      tasks.forEach(el => {
+        if(el.tandan_id != id){
+          retArray.push(el);
+        }
+      });
+      this.storageService.set(this.storageService.controlPollinationOfflineData,retArray);
+      if(retArray.length == 0){
+        this._baggingCpSyncComplete('cpNormalUpload');
+      }
+    }else if(taskType == 'cpRedo'){
+      let tasks:OfflineControlPollinationModel[] = await this.offlineCpService.getSavedRedoCPTasks();
+      if(tasks == null){
+        tasks = [];
+      }
+      let retArray:OfflineControlPollinationModel[] = [];
+      tasks.forEach(el => {
+        if(el.id != id){
+          retArray.push(el);
+        }
+      });
+      this.storageService.set(this.storageService.redoCPOfflineData,retArray);
+      if(retArray.length == 0){
+        this._baggingCpSyncComplete('cpRedoUpload');
+      }
+    }
   }
 
   private async _syncBaggingAndCp(){
+    this.finishedBaggingUpload = false;
+    this.finishedCPRedoUpload = false;
+    this.finishedNormalCPUpload = false;
+    this.finishedBaggingDownload = false;
+    setTimeout(async ()=>{
+      if( !this.finishedBaggingUpload ||
+          !this.finishedBaggingDownload ||
+          !this.finishedNormalCPUpload ||
+          !this.finishedCPRedoUpload
+        ){
+        this.modalService.successPrompt("Gagal Sync Tugas Balut dan Kawalan Pendebungaan").then();
+        (await this.loadingCtrl.getTop())?.dismiss();
+      }
+    },120000)
     this._uploadBaggingTasks();
     this._uploadCPTasks();
     await this._getTreeAndTandan(
       ()=>{
-        this.userService.getByRole(UserRole.penyelia_balut,(res3:[User])=>{
+        this.userService.getByRole(UserRole.penyelia_balut,async (res3:[User])=>{
           this.baggingSvList = res3;
           this.storageService.set(this.storageService.baggingSvList,this.baggingSvList);
+          (await this.loadingCtrl.create({message:"Sila Tunggu"})).present();
           this.controlPollinationService.getNewlyCreatedTask(
             this.accountService.getSessionDetails().id,
-            (res1:[BaggingModel])=>{
+            async (res1:[BaggingModel])=>{
             this.newCpTaskList = res1;
             this.storageService.set(this.storageService.offlineNewCp,this.newCpTaskList);
+            (await this.loadingCtrl.create({message:"Sila Tunggu"})).present();
             this._getPosponedBaggingTask();
           },false);
         },'Fetching Supervisor List');

@@ -33,9 +33,12 @@ export class BaggingService {
 
   async getByUserId(
     userId:number,
-    callback
+    callback,
+    loadingAnim = true
   ){
-    this.loadingModal = await this.showLoading();
+    if(loadingAnim){
+      this.loadingModal = await this.showLoading();
+    }
     this.http.get<[BaggingModel]>(
       `${environment.baseUrl}${environment.bagging}` // get all id first
       // `${environment.baseUrl}${environment.bagging}${userId}`
@@ -47,9 +50,11 @@ export class BaggingService {
             callbackParam.push(el);
           }
         });
-        this.loadingModal = await this.loadingCtrl.getTop()
-        if(this.loadingModal != null){
-          this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(callbackParam);
       },

@@ -19,7 +19,7 @@ export class StorageService {
   offlineDefectList:string = "offlineDefectList";
   baggingOfflineData:string = "baggingOffline";
   redoBaggingOfflineData:string = "redoBaggingOfflineData";
-  redoCPOfflineData:string = "redoBaggingOfflineData";
+  redoCPOfflineData:string = "redoCPOfflineData";
   redoQCOfflineData:string = "redoQCOfflineData";
   redoHarvestOfflineData:string = "redoHarvestOfflineData";
   controlPollinationOfflineData:string = "cpOffline";
