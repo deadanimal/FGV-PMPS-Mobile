@@ -124,21 +124,26 @@ export class QualityControlService {
 
   async create(
     formData:FormData,
-    callback
+    callback,
+    loadingAnim = true,
   ){
-    this.loadingModal = await this.showLoading();
+    if(loadingAnim){
+      this.loadingModal = await this.showLoading();
+    }
     this.http.post<QualityControlModel>(
       `${environment.baseUrl}${environment.qualityControl}`,
       formData
     ).subscribe(
       async (res:QualityControlModel) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        if(this.loadingModal != null){
-          this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         this.tandanService.updateCycle(res.tandan_id.toString(),TandanCycle.qc,async (resTandan:TandanResponse)=>{
           callback(res);
-        });
+        },loadingAnim);
       },
       async (err:HttpErrorResponse) => {
         this.loadingModal = await this.loadingCtrl.getTop()
@@ -153,16 +158,21 @@ export class QualityControlService {
     qcId:String,
     updateObject:any,
     callback,
+    loadingAnim = true
   ){
-    this.loadingModal = await this.showLoading();
+    if(loadingAnim){
+      this.loadingModal = await this.showLoading();
+    }
     this.http.post<QualityControlModel>(
       `${environment.baseUrl}${environment.qualityControl}${qcId}`,
       updateObject
     ).subscribe(
       async (res:QualityControlModel) => {
-        this.loadingModal = await this.loadingCtrl.getTop()
-        if(this.loadingModal != null){
-          this.loadingModal.dismiss();
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
         }
         callback(res);
       },

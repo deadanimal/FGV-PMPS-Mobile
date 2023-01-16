@@ -1206,6 +1206,7 @@ export class TaskStatusPage implements OnInit {
 
   async _submitQc(status:TaskStatus){
     if(!this.isOfflineMode){
+      this._showSubmitTaskAlert();
       const formData = new FormData();
       const response = await fetch(this.photo.dataUrl);
       const blob = await response.blob();
@@ -1221,13 +1222,13 @@ export class TaskStatusPage implements OnInit {
         this.qualityControlService.create(formData,(res:QualityControlModel)=>{
           this.qualityControlService.update(this.taskId,{status:TaskStatus.redo,_method:"put"},(res:QualityControlModel)=>{
             this._promptCompleted();
-          });
-        });
+          },false);
+        },false);
       }else{
         formData.append('_method','put');
         this.qualityControlService.update(this.taskId,formData,(res:QualityControlModel)=>{
           this._promptCompleted();
-        });
+        },false);
       }
     }else{
       let task = await this.offlineQcService.getNewTaskById(parseInt(this.taskId.toString()));
