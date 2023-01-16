@@ -132,7 +132,7 @@ export class MainTaskPage implements OnInit {
 
   viewTask(taskId:String,status:String,id:number,param1:string = ""){
     if(status == "completed"){
-      if(taskId == 'balut' || taskId == 'cp'){
+      if(taskId == 'balut' || taskId == 'cp' || taskId == 'qcSv'){
         this.router.navigate(['app/tabs/tab1/task-finished',{taskId:id,taskType:this.task}]);
       }else{
         this.router.navigate(['app/tabs/tab1/task-finished',{tandanId:id}]);

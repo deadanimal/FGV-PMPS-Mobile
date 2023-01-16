@@ -7,12 +7,14 @@ import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { DefectModel } from 'src/app/model/defect';
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { PokokResponse } from 'src/app/model/pokok-respons';
+import { QualityControlModel } from 'src/app/model/quality-control';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { AccountService, UserRole } from 'src/app/service/account.service';
 import { TaskService } from 'src/app/service/task.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
 import { DefectService } from 'src/app/service/tasks/defect.service';
+import { QualityControlService } from 'src/app/service/tasks/quality-control.service';
 import { TandanService } from 'src/app/service/tasks/tandan.service';
 import { TreeService } from 'src/app/service/tasks/tree.service';
 
@@ -41,6 +43,7 @@ export class FinishedTaskPage implements OnInit {
     private tandanService: TandanService,
     private baggingService: BaggingService,
     private cpService: ControlPollinationService,
+    private qcService: QualityControlService,
     private accountService: AccountService,
     private treeService: TreeService,
     private taskService: TaskService,
@@ -86,6 +89,18 @@ export class FinishedTaskPage implements OnInit {
           this.workerRemark = res.catatan;
           this.svRemark = res.catatan_pengesah;
           this._getUser(res.id_sv_cp);
+          if(res.kerosakan_id != null){
+            this._getDefect(parseInt(res.kerosakan_id));
+          }
+        }
+      });
+    }else if(this.taskType == 'Kawalan Kualiti (QC)'){
+      this.qcService.getById(this.taskId,(res:QualityControlModel)=>{
+        this._getTandanInfo(res.tandan_id.toString());
+        if(this.accountService.getUserRole() == UserRole.penyelia_qc){
+          this.workerRemark = res.catatan;
+          this.svRemark = res.catatan_pengesah;
+          this._getUser(res.id_sv_qc);
           if(res.kerosakan_id != null){
             this._getDefect(parseInt(res.kerosakan_id));
           }
