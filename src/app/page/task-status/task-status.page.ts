@@ -84,6 +84,7 @@ export class TaskStatusPage implements OnInit {
   defectList:DefectModel[] = [];
   isOfflineMode = false;
   enableImgDeleteBtn = false;
+  submitClicked = false;
 
   constructor(
     private photoService:PhotoService,
@@ -117,6 +118,7 @@ export class TaskStatusPage implements OnInit {
   }
 
   async ionViewDidEnter(){
+    this.submitClicked = false;
     this.isOfflineMode = await this.offlineModeService.isOfflineMode();
     this.date = this.datePipe.transform(Date.now(),"dd-MM-YYYY");
     this.time = this.datePipe.transform(Date.now(),"HH:mm a");
@@ -227,11 +229,12 @@ export class TaskStatusPage implements OnInit {
                 replaceUrl : true
               }
             );
-          },500);
+          },50);
       }
     );
   }
   submitPollenPrep(){
+    this.submitClicked = true;
     if(this.taskId != null){
       this.updatePollenPrep();
     }else{
@@ -290,7 +293,7 @@ export class TaskStatusPage implements OnInit {
                     }
                     );
                   },
-                  500
+                  50
                 );
               }
             );
@@ -338,7 +341,7 @@ export class TaskStatusPage implements OnInit {
                       ]
                     );
                   },
-                  500
+                  50
                 );
               }
             );
@@ -353,7 +356,7 @@ export class TaskStatusPage implements OnInit {
                     }
                     );
                   },
-                  500
+                  50
                 );
               }
             );
@@ -508,6 +511,7 @@ export class TaskStatusPage implements OnInit {
   }
 
   async submitCP(status:TaskStatus){
+    this.submitClicked = true;
     if(this.taskType == 'debungposponed'){
       this._updateCP(status);
     }else{
@@ -542,6 +546,7 @@ export class TaskStatusPage implements OnInit {
   }
 
   async submitTask(){
+    this.submitClicked = true;
     const formData = new FormData();
     const response = await fetch(this.photo.dataUrl);
     const blob = await response.blob();
@@ -636,6 +641,7 @@ export class TaskStatusPage implements OnInit {
           this._getDefectList(res.kerosakan_id);
         }
         this._getTandanInfo(this.tandanId);
+        this._getUserInfo(res.id_sv_cp);
         this.treeNum = res.pokok.progeny+'-'+res.pokok.no_pokok;
       });
     }else{
@@ -708,6 +714,7 @@ export class TaskStatusPage implements OnInit {
         if(res.kerosakan_id != null){
           this._getDefectList(res.kerosakan_id);
         }
+        this._getUserInfo(res.id_sv_qc);
       });
     }else{
       if(!this.isOfflineMode){
@@ -753,6 +760,7 @@ export class TaskStatusPage implements OnInit {
         if(res.kerosakan_id != null){
           this._getDefectList(res.kerosakan_id);
         }
+        this._getUserInfo(res.id_sv_harvest);
       });
     }else{
       if(!this.isOfflineMode){
@@ -1205,6 +1213,7 @@ export class TaskStatusPage implements OnInit {
   }
 
   async _submitQc(status:TaskStatus){
+    this.submitClicked = true;
     if(!this.isOfflineMode){
       this._showSubmitTaskAlert();
       const formData = new FormData();
@@ -1259,6 +1268,7 @@ export class TaskStatusPage implements OnInit {
   }
 
   async _submitHarvest(status:TaskStatus){
+    this.submitClicked = true;
     if(!this.isOfflineMode){
       this._showSubmitTaskAlert();
       const formData = new FormData();
