@@ -386,34 +386,68 @@ export class TaskStatusPage implements OnInit {
   }
 
   async _updateCP(status:TaskStatus){
-    this._showSubmitTaskAlert();
-    const formData = new FormData();
-    if(this.photo != null){
-      const response = await fetch(this.photo.dataUrl);
-      const blob = await response.blob();
-      formData.append('url_gambar[]', blob, "task_"+this.taskId+"."+this.photo.format);
+    if(!this.isOfflineMode){
+      this._showSubmitTaskAlert();
+      const formData = new FormData();
+      if(this.photo != null){
+        const response = await fetch(this.photo.dataUrl);
+        const blob = await response.blob();
+        formData.append('url_gambar[]', blob, "task_"+this.taskId+"."+this.photo.format);
+      }
+      formData.append('catatan',this.remark? this.remark.toString() : "");
+      formData.append('pengesah_id',this.id1?.value?.toString());
+      formData.append('status', status);
+      formData.append('kerosakan_id',this.defectId? this.defectId.toString() : "");
+      formData.append('_method','PUT');
+      this.controlPollinationService.updateUsingForm(
+        this.taskId,
+        formData,
+        async (resCP:ControlPollinationModel)=>{
+          (await this.loadingCtrl.getTop()).dismiss();
+          this.router.navigate(
+            [
+              '/app/tabs/tab1/control-pollen-form',
+              {
+                taskId:resCP.id,
+              }
+            ]
+          );
+        },
+        false
+      );
+    }else{
+    let data:OfflineControlPollinationModel = {
+      id:this.taskId,
+      tandan_id:this.tandanId,
+      url_gambar:"task_"+this.taskId+"."+this.photo.format,
+      url_gambar_data:this.photo.dataUrl,
+      id_sv_cp:this.accountService.getSessionDetails().id,
+      catatan:this.remark? this.remark.toString() : "",
+      pengesah_id:this.id1.value?.toString(),
+      pokok_id:this.treeId,
+      defect:this.defect?.toString(),
+      status:status,
+    };
+    this.offlineCpService.savePosponedCPTask(data);
+    if(this.defect == null){
+      this.router.navigate(
+        [
+          '/app/tabs/tab1/control-pollen-form',
+          {
+            tandanId:this.tandanId,
+            taskId:this.taskId,
+            taskType:this.taskType,
+          }
+        ]
+      );
+    }else{
+      this.router.navigate(
+        [
+          '/app/tabs/tab1/'
+        ]
+      );
     }
-    formData.append('catatan',this.remark? this.remark.toString() : "");
-    formData.append('pengesah_id',this.id1?.value?.toString());
-    formData.append('status', status);
-    formData.append('kerosakan_id',this.defectId? this.defectId.toString() : "");
-    formData.append('_method','PUT');
-    this.controlPollinationService.updateUsingForm(
-      this.taskId,
-      formData,
-      async (resCP:ControlPollinationModel)=>{
-        (await this.loadingCtrl.getTop()).dismiss();
-        this.router.navigate(
-          [
-            '/app/tabs/tab1/control-pollen-form',
-            {
-              taskId:resCP.id,
-            }
-          ]
-        );
-      },
-      false
-    );
+    }
   }
 
   private _createCpFromBagging(formData:FormData, status:TaskStatus){

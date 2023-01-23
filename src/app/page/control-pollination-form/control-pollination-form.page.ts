@@ -83,6 +83,24 @@ export class ControlPollinationFormPage implements OnInit {
             }
           );
         });
+      }else if(this.taskType == InAppTaskCycle.posponedCp){
+        let tasks:OfflineControlPollinationModel[] = await this.offlineCPService.getSavedPosponed2CPTasks();
+        tasks.forEach(el => {
+          if(el.id == this.taskId){
+            el.no_pollen = this.pollenNumber.toString();
+            el.peratus_pollen=this.id1?.value?.toString();
+            el.status=TaskStatus.done;
+          }
+        });
+        this.storageService.set(this.storageService.posponedCPOfflineData,tasks);
+        this.modalService.successPrompt("Borang Anda Telah Berjaya Dihantar Ke Penyelia").then(()=>{
+          this.router.navigateByUrl(
+            '/app/tabs/tab1',
+            {
+              replaceUrl : true
+            }
+          );
+        });
       }else{
         let tasks:OfflineControlPollinationModel[] = await this.offlineCPService.getSavedCPTasks();
         tasks.forEach(el => {
