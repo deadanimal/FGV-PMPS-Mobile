@@ -36,6 +36,16 @@ export class OfflineControlPollinationService {
     this._updateRedoTask(task.id);
   }
 
+  async savePosponedCPTask(task:OfflineControlPollinationModel){
+    let currentTask = await this.storageService.get(this.storageService.posponedCPOfflineData);
+    if(currentTask == null){
+      currentTask = [];
+    }
+    currentTask.push(task);
+    this.storageService.set(this.storageService.posponedCPOfflineData,currentTask);
+    this._updateRedoTask(task.id);
+  }
+
   async getSavedCPTasks():Promise<OfflineControlPollinationModel[]>{
     let retVal = await this.storageService.get(this.storageService.controlPollinationOfflineData);
     return retVal;
@@ -43,6 +53,11 @@ export class OfflineControlPollinationService {
 
   async getSavedRedoCPTasks():Promise<OfflineControlPollinationModel[]>{
     let retVal = await this.storageService.get(this.storageService.redoCPOfflineData);
+    return retVal;
+  }
+
+  async getSavedPosponed2CPTasks():Promise<OfflineControlPollinationModel[]>{
+    let retVal = await this.storageService.get(this.storageService.posponedCPOfflineData);
     return retVal;
   }
 
@@ -111,6 +126,24 @@ export class OfflineControlPollinationService {
     });
 
     return retArray;
+  }
+
+  async getPostponedTaskById( taskId: string):Promise<OfflineControlPollinationModel>{
+    let retVal:OfflineControlPollinationModel;
+    let tempArray:OfflineControlPollinationModel[] = await this.getRejectedCpTaskList();
+    if(tempArray == null){
+      tempArray = [];
+    }
+
+    tempArray.forEach(async el => {
+      if(el.id == taskId){
+        retVal = el;
+      }
+    });
+    console.log(retVal);
+    console.log(tempArray);
+    retVal.pokok = await this.offlineTreeService.getById(retVal.pokok_id);
+    return retVal;
   }
 
   async getPostponedTaskByTandanId( tandanId: string):Promise<OfflineControlPollinationModel>{

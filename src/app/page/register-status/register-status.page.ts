@@ -202,17 +202,28 @@ export class RegisterStatusPage implements OnInit {
     }
   }
 
-  _getPostponedCPTask(){
-    this.controlPollinationService.getById(this.taskId,(res:ControlPollinationModel)=>{
-      this.treeNumberDisplay = res.pokok?.progeny+'-'+res.pokok?.no_pokok;
-      this.tandanId = res.tandan_id.toString();
-      this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
-        this.regNumber = tandanRes.no_daftar;
-        this.cycle = this._getCycleName(tandanRes)?.toUpperCase();
-        this.status=tandanRes.status_tandan?.toUpperCase();
-        this.age=tandanRes.umur? tandanRes.umur.toString(): this._calculateAge(tandanRes.tarikh_daftar).toString();
-      });
-    },false);
+  async _getPostponedCPTask(){
+    if(!this.isOfflineMode){
+      this.controlPollinationService.getById(this.taskId,(res:ControlPollinationModel)=>{
+        this.treeNumberDisplay = res.pokok?.progeny+'-'+res.pokok?.no_pokok;
+        this.tandanId = res.tandan_id.toString();
+        this.tandanService.getById(res.tandan_id.toString(),(tandanRes:TandanResponse)=>{
+          this.regNumber = tandanRes.no_daftar;
+          this.cycle = this._getCycleName(tandanRes)?.toUpperCase();
+          this.status=tandanRes.status_tandan?.toUpperCase();
+          this.age=tandanRes.umur? tandanRes.umur.toString(): this._calculateAge(tandanRes.tarikh_daftar).toString();
+        });
+      },false);
+    }else{
+      let task = await this.offlineCPService.getPostponedTaskById(this.taskId.toString());
+      this.tandanId = task.tandan_id.toString();
+      let tandan:TandanResponse = await this.offlineTandanService.getById(parseInt(this.tandanId.toString()));
+      this.regNumber = tandan.no_daftar;
+      this.cycle = this._getCycleName(tandan)?.toUpperCase();
+      this.status=tandan.status_tandan?.toUpperCase();
+      this.age=tandan.umur? tandan.umur.toString(): this._calculateAge(tandan.tarikh_daftar).toString();
+      this.treeNumberDisplay = task?.pokok?.progeny+'-'+task?.pokok?.no_pokok;
+    }
   }
 
   async _getInteruptedCPTask(){

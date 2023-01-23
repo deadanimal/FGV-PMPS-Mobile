@@ -44,6 +44,7 @@ export class OfflineModePage implements OnInit {
   baggingTaskDone:OfflineBaggingModel[] = [];
   redoBaggingTaskDone:OfflineBaggingModel[] = [];
   redoCPTaskDone:OfflineControlPollinationModel[] = [];
+  posponedCPTaskDone:OfflineControlPollinationModel[] = [];
   qcTaskDone:OfflineBaggingModel[] = [];
   cpTaskDone:OfflineControlPollinationModel[] = [];
   defectList:DefectModel[] = [];
@@ -138,6 +139,7 @@ export class OfflineModePage implements OnInit {
     this.baggingTaskDone = await this.offlineBaggingService.getSavedBaggingTasks();
     this.redoBaggingTaskDone = await this.offlineBaggingService.getSavedRedoBaggingTasks();
     this.redoCPTaskDone = await this.offlineCPService.getSavedRedoCPTasks();
+    this.posponedCPTaskDone = await this.offlineCPService.getSavedPosponed2CPTasks();
     this.qcTaskDone = await this.offlineQcService.getSavedQcTasks();
     this.newHarvestTaskList = await this.offlineModeService.getNewHarvestList();
     this.posponedBaggingTaskList = await this.offlineModeService.getPosponedBaggingList();

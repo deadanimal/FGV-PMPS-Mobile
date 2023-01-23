@@ -672,17 +672,27 @@ export class TaskStatusPage implements OnInit {
       }
   }
 
-  _getPosponedCPTask(taskId:String){
-    this.controlPollinationService.getById(taskId,(res:ControlPollinationModel)=>{
-      this.enableImgDeleteBtn = true;
-      this.tandanId = res.tandan_id.toString();
-      this.posponedDay = parseInt(res.tambahan_hari);
-      this.numOfCheck = parseInt(res.bil_pemeriksaan);
-      this.treeId = res.pokok_id.toString();
+  async _getPosponedCPTask(taskId:String){
+    if(!this.isOfflineMode){
+      this.controlPollinationService.getById(taskId,(res:ControlPollinationModel)=>{
+        this.enableImgDeleteBtn = true;
+        this.tandanId = res.tandan_id.toString();
+        this.posponedDay = parseInt(res.tambahan_hari);
+        this.numOfCheck = parseInt(res.bil_pemeriksaan);
+        this.treeId = res.pokok_id.toString();
 
+        this._getTandanInfo(this.tandanId);
+        this._getTreeNumber();
+      });
+    }else{
+      let newTask:OfflineControlPollinationModel = await this.offlineCpService.getPostponedTaskById(this.taskId.toString());
+      this.tandanId = newTask.tandan_id.toString();
+      this.treeId = newTask.pokok_id.toString();
+      this.enableImgDeleteBtn = true;
+      this.posponedDay = parseInt(newTask.tambahan_hari);
+      this.numOfCheck = parseInt(newTask.bil_pemeriksaan);
       this._getTandanInfo(this.tandanId);
-      this._getTreeNumber();
-    });
+    }
   }
 
   async _getRejectedCPTask(taskId:String){
@@ -1028,23 +1038,48 @@ export class TaskStatusPage implements OnInit {
     const response = await fetch(this.photo.dataUrl);
     const blob = await response.blob();
     formData.append('url_gambar', blob, "task_"+this.taskId+"."+this.photo.format);
-    this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
-      formData.append('tambahan_hari',this.posponedDay.toString());
-      formData.append('bil_pemeriksaan',"1");
-      formData.append('id_sv_cp',this.accountService.getSessionDetails().id.toString());
-      formData.append('tandan_id',res.tandan_id.toString());
-      formData.append('pokok_id',res.pokok_id.toString());
+    formData.append('tambahan_hari',this.posponedDay.toString());
+    formData.append('bil_pemeriksaan',"1");
+    formData.append('id_sv_cp',this.accountService.getSessionDetails().id.toString());
+    formData.append('tandan_id',this.tandanId.toString());
+    formData.append('pokok_id',this.treeId.toString());
+    if(!this.isOfflineMode){
       this.controlPollinationService.create(formData,TaskStatus.postpone,(resCP:ControlPollinationModel)=>{
         this.modalService.successPrompt("Proses telah berjaya dianjakkan kepada +"+this.posponedDay+" hari").then((value1)=>{
-            this.router.navigateByUrl(
-              '/app/tabs/tab1',
-              {
-                replaceUrl : true
-              }
-            );
-          });
+          this.router.navigateByUrl(
+            '/app/tabs/tab1',
+            {
+              replaceUrl : true
+            }
+          );
+        });
       });
-    });
+    }else{
+      let data:OfflineControlPollinationModel = {
+        tandan_id:this.tandanId,
+        url_gambar:"task_"+this.taskId+"."+this.photo.format,
+        url_gambar_data:this.photo.dataUrl,
+        id_sv_cp:this.accountService.getSessionDetails().id,
+        catatan:this.remark? this.remark.toString() : "",
+        pengesah_id:this.id1.value?.toString(),
+        pokok_id:this.treeId,
+        defect:this.defect?.toString(),
+        bil_pemeriksaan:'1',
+        tambahan_hari:this.posponedDay.toString(),
+        status:TaskStatus.postpone,
+      };
+      if(this.taskType == InAppTaskCycle.rejectedCp){
+        data.id = this.taskId;
+        this.offlineCpService.saveRedoCPTask(data);
+      }else{
+        this.offlineCpService.saveCPTask(data);
+      }
+      this.router.navigate(
+        [
+          '/app/tabs/tab1/'
+        ]
+      );
+    }
   }
 
   async _updateCPPosponed(){
@@ -1058,21 +1093,45 @@ export class TaskStatusPage implements OnInit {
     formData.append('bil_pemeriksaan',this.numOfCheck.toString());
     formData.append('status', TaskStatus.postpone);
     formData.append('kerosakan_id',this.defectId? this.defectId.toString() : "");
-    this.controlPollinationService.updateUsingForm(
-      this.taskId,
-      formData,
-      (resCP:ControlPollinationModel)=>{
-        this.modalService.successPrompt("Proses telah berjaya dianjakkan kepada +"+this.posponedDay+" hari").then((value1)=>{
-            this.router.navigateByUrl(
-              '/app/tabs/tab1',
-              {
-                replaceUrl : true
-              }
-            );
-          }
-        );
-      }
-    );
+    if(!this.isOfflineMode){
+      this.controlPollinationService.updateUsingForm(
+        this.taskId,
+        formData,
+        (resCP:ControlPollinationModel)=>{
+          this.modalService.successPrompt("Proses telah berjaya dianjakkan kepada +"+this.posponedDay+" hari").then((value1)=>{
+              this.router.navigateByUrl(
+                '/app/tabs/tab1',
+                {
+                  replaceUrl : true
+                }
+              );
+            }
+          );
+        }
+      );
+    }else{
+      let data:OfflineControlPollinationModel = {
+        id:this.taskId,
+        tandan_id:this.tandanId,
+        url_gambar:"task_"+this.taskId+"."+this.photo.format,
+        url_gambar_data:this.photo.dataUrl,
+        id_sv_cp:this.accountService.getSessionDetails().id,
+        catatan:this.remark? this.remark.toString() : "",
+        pengesah_id:this.id1.value?.toString(),
+        pokok_id:this.treeId,
+        defect:this.defect?.toString(),
+        bil_pemeriksaan:this.numOfCheck.toString(),
+        tambahan_hari:this.posponedDay.toString(),
+        status:TaskStatus.postpone,
+      };
+      data.id = this.taskId;
+      this.offlineCpService.savePosponedCPTask(data);
+      this.router.navigate(
+        [
+          '/app/tabs/tab1/'
+        ]
+      );
+    }
   }
 
   pospone(){

@@ -43,7 +43,7 @@ export class ModalService {
         value:defaultValue,
       },
       cssClass:"small-modal",
-      backdropDismiss:true,
+      backdropDismiss:false,
     });
     retVal = modal.onDidDismiss();
     await modal.present();

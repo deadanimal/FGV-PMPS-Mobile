@@ -14,4 +14,6 @@ export interface OfflineControlPollinationModel {
     peratus_pollen?:string;
     pokok?:PokokResponse;
     status?:string;
+    bil_pemeriksaan?:string;
+    tambahan_hari?:string;
 }

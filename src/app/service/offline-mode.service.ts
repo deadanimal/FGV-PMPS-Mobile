@@ -206,6 +206,7 @@ export class OfflineModeService {
   async _uploadCPTasks(){
     let tasks:OfflineControlPollinationModel[] = await this.offlineCpService.getSavedCPTasks();
     let redoTasks:OfflineControlPollinationModel[] = await this.offlineCpService.getSavedRedoCPTasks();
+    let posponed2xTasks:OfflineControlPollinationModel[] = await this.offlineCpService.getSavedPosponed2CPTasks();
     if(tasks == null){
       tasks = [];
     }if(redoTasks == null){
@@ -258,6 +259,28 @@ export class OfflineModeService {
           this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
             v.dismiss();
           });
+        });
+      });
+    }
+    //posponed update task
+    while(posponed2xTasks.length > 0){
+      let task:OfflineControlPollinationModel = posponed2xTasks.pop();
+      var formData = new FormData();
+
+      for ( var key in task ) {
+        if(key != 'url_gambar_data' && key != 'url_gambar' && key != 'id'){
+          formData.append(key, task[key]);
+        }
+      }
+
+      const response = await fetch(task.url_gambar_data);
+      const blob = await response.blob();
+      formData.append('url_gambar[]', blob, task.url_gambar);
+      formData.append('_method','PUT');
+      this.controlPollinationService.updateUsingForm(task.id,formData,()=>{
+        this._uploadCpCallback(task.id.toString(),'cpPosponed');
+        this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+          v.dismiss();
         });
       });
     }
@@ -377,6 +400,21 @@ export class OfflineModeService {
       this.storageService.set(this.storageService.redoCPOfflineData,retArray);
       if(retArray.length == 0){
         this._baggingCpSyncComplete('cpRedoUpload');
+      }
+    }else if(taskType == 'cpPosponed'){
+      let tasks:OfflineControlPollinationModel[] = await this.offlineCpService.getSavedPosponed2CPTasks();
+      if(tasks == null){
+        tasks = [];
+      }
+      let retArray:OfflineControlPollinationModel[] = [];
+      tasks.forEach(el => {
+        if(el.id != id){
+          retArray.push(el);
+        }
+      });
+      this.storageService.set(this.storageService.posponedCPOfflineData,retArray);
+      if(retArray.length == 0){
+        this._baggingCpSyncComplete('cpPosponedUpload');
       }
     }
   }

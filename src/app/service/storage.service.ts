@@ -31,6 +31,7 @@ export class StorageService {
   rejectedCPTask:string = "rejectedCPTask";
   posponedQCTask:string = "posponedQCTask";
   posponedHarvestTask:string = "posponedHarvestTask";
+  posponedCPOfflineData:string = "posponedCPOfflineData";
 
   constructor(private storage: Storage) {
     this.init();

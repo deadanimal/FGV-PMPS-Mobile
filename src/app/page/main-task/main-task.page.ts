@@ -91,21 +91,21 @@ export class MainTaskPage implements OnInit {
     this.activatedRoute.params.subscribe(params => {
       if(params['task']!=null){
         this.task = params['task'];
-        if(params['task'] == "wrap"){
+        if(params['task'] == "wrap" || params['task'] == "Balut"){
           this.task = "Balut";
           this.taskBtnName = "Balut";
-          this.taskIconPath = "../../../assets/balut_icon.png";
+          this.taskIconPath = "/assets/balut_icon.png";
         }else if(params['task'] == "cp"){
           this.task = "Pendebungaan Terkawal (CP)";
           this.taskBtnName = "CP";
-          this.taskIconPath = "../../../assets/cp_icon.png";
+          this.taskIconPath = "/assets/cp_icon.png";
         }else if(params['task'] == "Kawalan Kualiti (QC)"){
           this.taskBtnName = "QC";
-          this.taskIconPath = "../../../assets/qc_icon.png";
+          this.taskIconPath = "/assets/qc_icon.png";
         }
         else if(params['task'] == "Tuai"){
           this.taskBtnName = "Tuai";
-          this.taskIconPath = "../../../assets/tuai_icon.png";
+          this.taskIconPath = "/assets/tuai_icon.png";
         }
       }
       if(params['scanInput']!=null){
@@ -118,6 +118,7 @@ export class MainTaskPage implements OnInit {
     this.employeeId = user.id;
     this.isOfflineMode = await this.offlineModeService.isOfflineMode();
     this._getTask();
+    console.log(this.scanInput)
     if(this.scanInput != null){
       if(!this.isOfflineMode){
         this.treeService.getById(this.scanInput,(res:PokokResponse)=>{
@@ -326,7 +327,7 @@ export class MainTaskPage implements OnInit {
       (value)=>{
         let form:NgForm;
         form = value['data'];
-        let tree_number = form.value.value;
+        let tree_number = form?.value?.value;
         if(this.scanInput == null || this.scanInput == ""){
           this.treeService.getIdByName(tree_number,(res:PokokResponse)=>{
             this.scanInput = res.id.toString();
