@@ -141,7 +141,7 @@ export class StartWorkFindPage implements OnInit {
       });
     }else{
       let tandanInfo = await this.offlineTandanService.getById(parseInt(this.tandanId.toString()));
-      if(tandanInfo.pokok_id != null && this.taskType == "Balut" || this.taskType == "balut"){
+      if(tandanInfo.pokok_id != null && (this.taskType == "Balut" || this.taskType == "balut")){
         this.modalService.textAndBtnPrompt("Tandan telah didaftar, Sila guna QR lain","OK");
       }else{
         this.regNumber = tandanInfo.no_daftar;
