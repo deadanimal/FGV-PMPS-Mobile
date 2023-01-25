@@ -684,4 +684,12 @@ export class MainTaskPage implements OnInit {
     );
   }
 
+  taskDistributed(){
+    this.router.navigate(
+      [
+        '/app/tabs/tab1/task-distributed'
+      ]
+    );
+  }
+
 }

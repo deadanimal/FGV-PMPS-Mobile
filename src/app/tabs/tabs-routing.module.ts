@@ -97,6 +97,10 @@ const routes: Routes = [
         loadChildren: () => import('../page/pollen-prep-test/pollen-prep-test.module').then(m => m.PollenPrepTestPageModule)
       },
       {
+        path: 'tab1/task-distributed',
+        loadChildren: () => import('../page/task-distributed/task-distributed.module').then( m => m.TaskDistributedPageModule)
+      },
+      {
         path: '',
         redirectTo: 'tabs/tab1/',
         pathMatch: 'full'

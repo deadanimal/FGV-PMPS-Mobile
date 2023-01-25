@@ -134,6 +134,14 @@
             </button>
           </div>
         </ion-col>
+        <ion-col size="6" size-md="4" size-lg="2">
+          <div>
+            <button (click)="taskDistributed()" class="btn w-100 mx-auto rounded btn-info text-center text-white p-2">
+              <img height="56px" src="/assets/record_icon.png">
+              <h5>Senarai Pekerja</h5>
+            </button>
+          </div>
+        </ion-col>
       </ion-row>
       <ion-row *ngIf="task == 'Kawalan Kualiti (QC)' && role == 'Petugas Kawalan Kualiti'" class="ion-justify-content-center">
         <ion-col size="6" size-md="4" size-lg="2">
@@ -198,6 +206,14 @@
               <ion-badge *ngIf="numOfActiveTask > 0" color="danger">{{numOfActiveTask}}</ion-badge>
               <img height="56px" src="/assets/active_task_icon.png">
               <h5>Tugas Baharu</h5>
+            </button>
+          </div>
+        </ion-col>
+        <ion-col size="6" size-md="4" size-lg="2">
+          <div>
+            <button (click)="taskDistributed()" class="btn w-100 mx-auto rounded btn-info text-center text-white p-2">
+              <img height="56px" src="/assets/record_icon.png">
+              <h5>Senarai Pekerja</h5>
             </button>
           </div>
         </ion-col>

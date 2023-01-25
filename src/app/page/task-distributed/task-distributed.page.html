@@ -1,0 +1,45 @@
+<ion-content>
+  <app-offline-header></app-offline-header>
+  <app-logout-button></app-logout-button>
+  <app-user-info-header></app-user-info-header>
+
+  <div class="w-75 mx-auto">
+    <p class="h4 mb-3">{{title}}</p>
+    <div class="row border-bottom">
+      <div class="col-6">
+        Nama
+      </div>
+      <div class="col-6 text-end">
+        Jumlah Tugasan
+      </div>
+    </div>
+    <div *ngIf="qcWorker?.length != 0">
+      <div *ngFor="let worker of qcWorker"  class="row my-3 align-items-center">
+        <div class="col-12 rounded bg-light shadow p-3">
+          <div class="row">
+            <small class="col-9" style="font-size: 15px; font-weight: 600; color: rgba(57.37, 57.37, 57.37, 1);">
+              {{worker.nama}}<br/>{{worker.no_kakitangan}}
+            </small>
+            <small class="col-3 text-center my-auto" style="font-size: 15px; font-weight: 600; color: rgba(57.37, 57.37, 57.37, 1);">
+              {{worker.quality_control?.length}}
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="harvestWorker?.length != 0">
+      <div *ngFor="let worker of harvestWorker"  class="row my-3 align-items-center">
+        <div class="col-12 rounded bg-light shadow p-3">
+          <div class="row">
+            <small class="col-9" style="font-size: 15px; font-weight: 600; color: rgba(57.37, 57.37, 57.37, 1);">
+              {{worker.nama}}<br/>{{worker.no_kakitangan}}
+            </small>
+            <small class="col-3 text-center my-auto" style="font-size: 15px; font-weight: 600; color: rgba(57.37, 57.37, 57.37, 1);">
+              {{worker.harvest?.length}}
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
