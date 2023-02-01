@@ -608,7 +608,7 @@ export class MainTaskPage implements OnInit {
       this.harvestService.getAll((res:[HarvestModel])=>{
         res.forEach(el => {
           if(el.pengesah_id == this.accountService.getSessionDetails().id ||
-             (el.pengesah_id == null && el.pokok?.blok == this.accountService.getSessionDetails().blok) ){
+             (el.pengesah_id == null && this.accountService.getSessionDetails().blok.includes(el.pokok?.blok)) ){
             if(el.status == TaskStatus.done || el.status == TaskStatus.defect){
               this.numOfNewTask++;
               this.newTaskList.push(el);

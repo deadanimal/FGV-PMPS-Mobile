@@ -109,7 +109,7 @@ export class HarvestSearchFormPage implements OnInit {
         }
       });
       this.listOfBaggingWorkers.forEach(el=>{
-        if(el.blok == event.detail.value){
+        if(el.blok.includes(event.detail.value)){
           this.baggingWorkers.push(el);
         }
       });

@@ -110,7 +110,7 @@ export class QcSearchFormPage implements OnInit {
         }
       });
       this.listOfBaggingWorkers.forEach(el=>{
-        if(el.blok == this.block){
+        if(el.blok.includes(this.block.toString())){
           this.baggingWorkers.push(el);
         }
       });

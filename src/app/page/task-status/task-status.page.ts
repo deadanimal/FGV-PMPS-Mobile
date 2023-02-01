@@ -1212,7 +1212,7 @@ export class TaskStatusPage implements OnInit {
     let svList = await this.offlineModeService.getBaggingSvList();
     if(this.userRole == UserRole.petugas_balut){
       svList.forEach(el => {
-        if(el.blok == this.treeBlock){
+        if(el.blok.includes(this.treeBlock.toString())){
           this.userList.push(el);
         }
       });
@@ -1230,7 +1230,7 @@ export class TaskStatusPage implements OnInit {
       this.userServices.getByRole(UserRole.penyelia_balut.toString(),(res:[User])=>{
         if(this.treeBlock != null){
           res.forEach(el => {
-            if(el.blok == this.treeBlock){
+            if(el.blok.includes(this.treeBlock.toString())){
               this.userList.push(el);
             }
           });
@@ -1254,7 +1254,7 @@ export class TaskStatusPage implements OnInit {
       this.userServices.getByRole(UserRole.penyelia_makmal.toString(),(res:[User])=>{
         if(this.treeBlock != null){
           res.forEach(el => {
-            if(el.blok == this.treeBlock){
+            if(el.blok.includes(this.treeBlock.toString())){
               this.userList.push(el);
             }
           });
