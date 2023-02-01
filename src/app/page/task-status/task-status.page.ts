@@ -205,6 +205,7 @@ export class TaskStatusPage implements OnInit {
           if( this.accountService.getUserRole() == UserRole.penyelia_balut ||
               this.accountService.getUserRole() == UserRole.penyelia_qc ||
               this.accountService.getUserRole() == UserRole.penyelia_tuai ||
+              this.accountService.getUserRole() == UserRole.penyelia_fatherpalm ||
               this.accountService.getUserRole() == UserRole.penyelia_makmal ){
               if(this.taskType == InAppTaskCycle.bagging){
                 task = "wrap"
@@ -794,7 +795,7 @@ export class TaskStatusPage implements OnInit {
   }
 
   async _getHarvestTask(taskId:String){
-    if(this.userRole == UserRole.penyelia_tuai){
+    if(this.userRole == UserRole.penyelia_tuai || this.userRole == UserRole.penyelia_fatherpalm){
       this.harvestService.getById(taskId,(res:HarvestModel)=>{
         this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
         this.remark = res.catatan;
@@ -1005,6 +1006,8 @@ export class TaskStatusPage implements OnInit {
             formData.append('pokok_id',res.pokok_id.toString());
             formData.append('tandan_id',res.tandan_id.toString());
             formData.append('status',TaskStatus.created);
+            formData.append('id_sv_harvest',res.id_sv_balut.toString());
+            formData.append('pengesah_id',this.accountService.getSessionDetails().id.toString());
             this.harvestService.create(formData,(res:HarvestModel)=>{
               this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
             });
@@ -1252,14 +1255,23 @@ export class TaskStatusPage implements OnInit {
       this.userServices.getByRole(UserRole.penyelia_fatherpalm.toString(),(res:[User])=>{
         if(this.treeBlock != null){
           res.forEach(el => {
-            if(el.blok.includes(this.treeBlock.toString())){
-              this.userList.push(el);
+            if(this.taskType == InAppTaskCycle.harvest ||
+            this.taskType == InAppTaskCycle.posponedharvest ){
+              if(this.qcSvId != null && el.id == this.qcSvId){
+                this.qcSv = el.nama;
+              }
+            }else{
+              if(el.blok.includes(this.treeBlock.toString())){
+                this.userList.push(el);
+              }
             }
           });
         }else{
           this.userList = res;
         }
-        if(this.userList.length == 0){
+        if((this.taskType != InAppTaskCycle.harvest &&
+          this.taskType != InAppTaskCycle.posponedharvest) &&
+          this.userList.length == 0){
           this.userList = res;
         }
         this._getTandanId();

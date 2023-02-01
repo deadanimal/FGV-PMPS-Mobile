@@ -61,7 +61,7 @@
       <ion-label position="floating">Catatan</ion-label>
       <ion-input type="text" [(ngModel)]="remark" name="remark" [readonly]="userRole!='Petugas Balut & Pendebungaan Terkawal' && userRole != roles.petugas_balut_fatherpalm && userRole!='Petugas Kawalan Kualiti' && userRole!='Petugas Tuai'&& userRole!='Petugas Makmal'"></ion-input>
     </ion-item>
-    <ion-item  lines="full" class="my-4" *ngIf="((userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Makmal' || userRole == roles.petugas_balut_fatherpalm) )">
+    <ion-item  lines="full" class="my-4" *ngIf="((userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Makmal' || (userRole == roles.petugas_balut_fatherpalm && (taskType != 'tuai' && taskType != 'tuaiposponed'))) )">
       <ion-select placeholder="Pilih Penyelia" id= "id1" #id1 >
         <ion-select-option *ngFor="let sv of userList" value={{sv.id}}>{{sv.nama}}</ion-select-option>
       </ion-select>
@@ -70,6 +70,7 @@
           userRole=='Penyelia Balut & Pendebungaan Terkawal' ||
           userRole=='Penyelia Kawalan Kualiti' ||
           userRole=='Penyelia Tuai' ||
+          userRole== roles.penyelia_fatherpalm ||
           userRole=='Penyelia Makmal'"
           lines="full">
       <ion-label position="floating">Catatan Penyelia</ion-label>
@@ -135,11 +136,11 @@
       <p class="m-auto">Hantar</p>
     </button>
 
-    <button [disabled]="!form.valid || submitClicked || (photo ==null&& serverImage == null)" (click)="submitHarvestDefect()" *ngIf="(userRole=='Petugas Tuai') && ( taskType == 'tuai' || taskType == 'tuaiposponed') && defect != null" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="!form.valid || submitClicked || (photo ==null&& serverImage == null)" (click)="submitHarvestDefect()" *ngIf="(userRole=='Petugas Tuai' || userRole == roles.petugas_balut_fatherpalm) && ( taskType == 'tuai' || taskType == 'tuaiposponed') && defect != null" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>
-    <button [disabled]="!form.valid || submitClicked || (photo ==null&& serverImage == null)" (click)="submitHarvestNormal()" *ngIf="(userRole=='Petugas Tuai') && ( taskType == 'tuai' || taskType == 'tuaiposponed') && defect == null" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="!form.valid || submitClicked || (photo ==null&& serverImage == null)" (click)="submitHarvestNormal()" *ngIf="(userRole=='Petugas Tuai' || userRole == roles.petugas_balut_fatherpalm) && ( taskType == 'tuai' || taskType == 'tuaiposponed') && defect == null" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>
