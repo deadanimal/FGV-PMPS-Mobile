@@ -140,6 +140,8 @@ export class OfflineModeService {
   sync(){
     if(this.accountService.getUserRole() == UserRole.petugas_balut){
       this._syncBaggingAndCp();
+    }else if(this.accountService.getUserRole() == UserRole.petugas_balut_fatherpalm){
+      this._syncBaggingAndHarvestFatherpalm();
     }else if(this.accountService.getUserRole() == UserRole.petugas_qc){
       this._syncQC();
     }else if(this.accountService.getUserRole() == UserRole.petugas_tuai){
@@ -347,7 +349,11 @@ export class OfflineModeService {
         this.finishedCPRedoUpload && 
         this.finishedNormalCPUpload
       ){
-      this.modalService.successPrompt("Tugas Balut dan Kawalan Pendebungaan Berjaya di sync").then();
+        if(this.accountService.getUserRole() == UserRole.petugas_balut_fatherpalm){
+          this.modalService.successPrompt("Tugas Balut dan Tuai Berjaya di sync").then();
+        }else{
+          this.modalService.successPrompt("Tugas Balut dan Kawalan Pendebungaan Berjaya di sync").then();
+        }
     }
   }
 
@@ -596,6 +602,59 @@ export class OfflineModeService {
         );
       }
     );
+  }
+
+  private async _syncBaggingAndHarvestFatherpalm(){
+    this.finishedBaggingUpload = false;
+    this.finishedCPRedoUpload = false;
+    this.finishedNormalCPUpload = false;
+    this.finishedBaggingDownload = false;
+    setTimeout(async ()=>{
+      if( !this.finishedBaggingUpload ||
+          !this.finishedBaggingDownload ||
+          !this.finishedNormalCPUpload ||
+          !this.finishedCPRedoUpload
+        ){
+        this.modalService.successPrompt("Gagal Sync Tugas Balut dan Tuai").then();
+        (await this.loadingCtrl.getTop())?.dismiss();
+      }
+    },120000)
+    this._uploadBaggingTasks();
+    this._uploadCPTasks();
+    this._uploadHarvestTasks();
+    await this._getTreeAndTandan(
+      ()=>{
+        this.userService.getByRole(UserRole.penyelia_fatherpalm,async (res3:[User])=>{
+          this.baggingSvList = res3;
+          this.storageService.set(this.storageService.baggingSvList,this.baggingSvList);
+          (await this.loadingCtrl.create({message:"Sila Tunggu"})).present();
+          this.controlPollinationService.getNewlyCreatedTask(
+            this.accountService.getSessionDetails().id,
+            async (res1:[BaggingModel])=>{
+            this.newCpTaskList = res1;
+            this.storageService.set(this.storageService.offlineNewCp,this.newCpTaskList);
+            (await this.loadingCtrl.create({message:"Sila Tunggu"})).present();
+            this.harvestService.getByUserId(
+              this.accountService.getSessionDetails().id,
+              this.accountService.getSessionDetails().blok,
+              (res:HarvestModel[])=>{
+                this.harvestList = [];
+                res.forEach(el => {
+                  if(el.status == TaskStatus.created || el.status == TaskStatus.rejected){
+                    this.harvestList.push(el);
+                  }
+                });
+                this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+                  v.dismiss();
+                });
+                this.storageService.set(this.storageService.offlineNewHarvest,this.harvestList);
+                this._getPosponedBaggingTask();
+              }
+            );
+          },false);
+        },'Fetching Supervisor List');
+      }
+    )
   }
 
 }

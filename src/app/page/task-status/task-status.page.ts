@@ -44,6 +44,7 @@ import { OfflineQcService } from 'src/app/service/offline/offline-qc.service';
 import { OfflineQualityControlModel } from 'src/app/model/offline-quality-control';
 import { OfflineHarvestService } from 'src/app/service/offline/offline-harvest.service';
 import { OfflineHarvestModel } from 'src/app/model/offline-harvest';
+import { OfflineDefectService } from 'src/app/service/offline/offline-defect.service';
 
 @Component({
   selector: 'app-task-status',
@@ -114,6 +115,7 @@ export class TaskStatusPage implements OnInit {
     private offlineCpService: OfflineControlPollinationService,
     private offlineQcService: OfflineQcService,
     private offlineHarvestService: OfflineHarvestService,
+    private offlineDefectService: OfflineDefectService,
   ) { }
 
   ngOnInit() {
@@ -162,14 +164,19 @@ export class TaskStatusPage implements OnInit {
     });
   }
 
-  _getDefectList(defectCode){
+  async _getDefectList(defectCode){
     this.defectId = defectCode;
-    this.defectService.getAll((res:[DefectModel])=>{
-      res.forEach(el => {
-        this.defectList.push(el);
-      });
+    if(!this.isOfflineMode){
+      this.defectService.getAll((res:[DefectModel])=>{
+        res.forEach(el => {
+          this.defectList.push(el);
+        });
+        this.defect = this._getDefectName(defectCode);
+      },false);
+    }else{
+      this.defectList = await this.offlineDefectService.getAll();
       this.defect = this._getDefectName(defectCode);
-    },false);
+    }
   }
 
   _getDefectName(code){
@@ -240,7 +247,6 @@ export class TaskStatusPage implements OnInit {
   }
   submitPollenPrep(){
     this.submitClicked = true;
-    console.log(this.taskId)
     if(this.taskId != null && this.taskId != "null"){
       this.updatePollenPrep();
     }else{
@@ -1224,7 +1230,7 @@ export class TaskStatusPage implements OnInit {
 
   async _getOfflineSupervisors(){
     let svList = await this.offlineModeService.getBaggingSvList();
-    if(this.userRole == UserRole.petugas_balut){
+    if(this.userRole == UserRole.petugas_balut || this.userRole == UserRole.petugas_balut_fatherpalm){
       svList.forEach(el => {
         if(el.blok.includes(this.treeBlock.toString())){
           this.userList.push(el);

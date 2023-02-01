@@ -47,6 +47,8 @@ export class DashboardPage implements OnInit {
       this.roleShort = "Penyelia Balut";
     }else if(this.role == UserRole.petugas_qc){
       this.roleShort = "Petugas QC";
+    }else if(this.role == UserRole.petugas_balut_fatherpalm){
+      this.roleShort = "Petugas Fatherpalm";
     }
     if( this.role == UserRole.general_worker || 
         this.role == UserRole.petugas_balut || 
