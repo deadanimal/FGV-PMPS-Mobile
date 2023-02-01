@@ -58,6 +58,7 @@ export class MainTaskPage implements OnInit {
   newTaskList:any[];
   posponedTaskList:any[];
   isOfflineMode = false;
+  roles = UserRole;
 
   constructor(
     private activatedRoute:ActivatedRoute,
@@ -361,6 +362,7 @@ export class MainTaskPage implements OnInit {
     if(
       this.role == UserRole.general_worker || 
       this.role == UserRole.petugas_balut || 
+      this.role == UserRole.petugas_balut_fatherpalm || 
       this.role == UserRole.petugas_qc
     ){
       if(!this.isOfflineMode){
@@ -563,7 +565,8 @@ export class MainTaskPage implements OnInit {
 
   async _getHarvestTask(){
     if(
-      this.role == UserRole.petugas_tuai
+      this.role == UserRole.petugas_tuai ||
+      this.role == UserRole.petugas_balut_fatherpalm
     ){
       if(!this.isOfflineMode){
         this.harvestService.getByUserId(

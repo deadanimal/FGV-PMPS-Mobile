@@ -59,9 +59,9 @@
     </ion-item>
     <ion-item lines="full">
       <ion-label position="floating">Catatan</ion-label>
-      <ion-input type="text" [(ngModel)]="remark" name="remark" [readonly]="userRole!='Petugas Balut & Pendebungaan Terkawal' && userRole!='Petugas Kawalan Kualiti' && userRole!='Petugas Tuai'&& userRole!='Petugas Makmal'"></ion-input>
+      <ion-input type="text" [(ngModel)]="remark" name="remark" [readonly]="userRole!='Petugas Balut & Pendebungaan Terkawal' && userRole != roles.petugas_balut_fatherpalm && userRole!='Petugas Kawalan Kualiti' && userRole!='Petugas Tuai'&& userRole!='Petugas Makmal'"></ion-input>
     </ion-item>
-    <ion-item  lines="full" class="my-4" *ngIf="((userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Makmal') )">
+    <ion-item  lines="full" class="my-4" *ngIf="((userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Makmal' || userRole == roles.petugas_balut_fatherpalm) )">
       <ion-select placeholder="Pilih Penyelia" id= "id1" #id1 >
         <ion-select-option *ngFor="let sv of userList" value={{sv.id}}>{{sv.nama}}</ion-select-option>
       </ion-select>
@@ -82,6 +82,7 @@
           *ngIf=" userRole=='Penyelia Balut & Pendebungaan Terkawal' ||
                   userRole=='Penyelia Kawalan Kualiti' ||
                   userRole=='Penyelia Tuai' ||
+                  userRole==roles.penyelia_fatherpalm ||
                   userRole=='Penyelia Makmal'
                   " class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="close-circle-outline"></ion-icon>
@@ -92,13 +93,14 @@
           *ngIf=" userRole=='Penyelia Balut & Pendebungaan Terkawal' ||
                   userRole=='Penyelia Kawalan Kualiti' ||
                   userRole=='Penyelia Tuai' ||
+                  userRole==roles.penyelia_fatherpalm ||
                   userRole=='Penyelia Makmal'
                   " class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="checkmark-circle-outline"></ion-icon>
       <p class="m-auto">TERIMA</p>
     </button>
 
-    <button [disabled]="!form.valid || submitClicked ||((userRole=='Petugas Balut & Pendebungaan Terkawal' && id1?.value == null)) || photo ==null || id1==null && id1.value==null" (click)="submitTask()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Kawalan Kualiti') && ( taskType == 'balut' || taskType == 'balutposponed')" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="!form.valid || submitClicked ||((( userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole == roles.petugas_balut_fatherpalm ) && id1?.value == null)) || photo ==null || id1==null && id1.value==null" (click)="submitTask()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Kawalan Kualiti'|| userRole==roles.petugas_balut_fatherpalm) && ( taskType == 'balut' || taskType == 'balutposponed')" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>

@@ -85,6 +85,7 @@ export class TaskStatusPage implements OnInit {
   isOfflineMode = false;
   enableImgDeleteBtn = false;
   submitClicked = false;
+  roles = UserRole;
 
   constructor(
     private photoService:PhotoService,
@@ -876,7 +877,11 @@ export class TaskStatusPage implements OnInit {
       this._getPollenPrepTask();
     }else if(this.taskType == InAppTaskCycle.pollenPrepForm){
       this._getPollenPrepTask();
-    }else if(this.taskType == InAppTaskCycle.bagging && this.accountService.getUserRole() == UserRole.penyelia_balut){
+    }else if(this.taskType == InAppTaskCycle.bagging && 
+              ( this.accountService.getUserRole() == UserRole.penyelia_balut ||
+                this.accountService.getUserRole() == UserRole.penyelia_fatherpalm
+              )
+            ){
       this.baggingService.getById(taskId,(res:BaggingModel)=>{
         this.date = this.datePipe.transform(Date.parse(res.created_at.toString()),"yyyy-MM-dd");
         this.remark = res.catatan;
@@ -1228,6 +1233,22 @@ export class TaskStatusPage implements OnInit {
   _getSupervisors(){
     if(this.userRole == UserRole.petugas_balut){
       this.userServices.getByRole(UserRole.penyelia_balut.toString(),(res:[User])=>{
+        if(this.treeBlock != null){
+          res.forEach(el => {
+            if(el.blok.includes(this.treeBlock.toString())){
+              this.userList.push(el);
+            }
+          });
+        }else{
+          this.userList = res;
+        }
+        if(this.userList.length == 0){
+          this.userList = res;
+        }
+        this._getTandanId();
+      });
+    }else if(this.userRole == UserRole.petugas_balut_fatherpalm){
+      this.userServices.getByRole(UserRole.penyelia_fatherpalm.toString(),(res:[User])=>{
         if(this.treeBlock != null){
           res.forEach(el => {
             if(el.blok.includes(this.treeBlock.toString())){
