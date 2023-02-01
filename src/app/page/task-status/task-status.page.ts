@@ -999,6 +999,7 @@ export class TaskStatusPage implements OnInit {
         this.svRemark,
         TaskStatus.verified,
         (res:BaggingModel)=>{
+          //todo: remove this when server can handle using cron
           if(this.treeType == TreeType.Fatherpalm){
             const formData = new FormData();
             formData.append('pokok_id',res.pokok_id.toString());

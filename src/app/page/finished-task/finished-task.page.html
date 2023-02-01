@@ -10,7 +10,7 @@
         </div>
         <small class="font-weight-light">Balut</small>
       </div>
-      <div class="col text-center">
+      <div *ngIf="treeType != 'Fatherpalm'" class="col text-center">
         <div *ngIf="indicator < 1" style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
           <p class="m-auto">2</p>
         </div>
@@ -19,7 +19,7 @@
         </div>
         <small class="font-weight-light">Kerosakan Sebelum CP</small>
       </div>
-      <div class="col text-center">
+      <div  *ngIf="treeType != 'Fatherpalm'" class="col text-center">
         <div *ngIf="indicator < 2" style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
           <p class="m-auto">3</p>
         </div>
@@ -28,7 +28,7 @@
         </div>
         <small class="font-weight-light">CP</small>
       </div>
-      <div class="col text-center">
+      <div *ngIf="treeType != 'Fatherpalm'"  class="col text-center">
         <div *ngIf="indicator < 3" style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
           <p class="m-auto">4</p>
         </div>
@@ -37,7 +37,7 @@
         </div>
         <small class="font-weight-light">QC</small>
       </div>
-      <div class="col text-center">
+      <div *ngIf="treeType != 'Fatherpalm'" class="col text-center">
         <div *ngIf="indicator < 4" style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
           <p class="m-auto">5</p>
         </div>
@@ -48,10 +48,12 @@
       </div>
       <div class="col text-center">
         <div *ngIf="indicator < 5" style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
-          <p class="m-auto">6</p>
+          <p *ngIf="treeType != 'Fatherpalm'" class="m-auto">6</p>
+          <p *ngIf="treeType == 'Fatherpalm'" class="m-auto">2</p>
         </div>
         <div *ngIf="indicator >= 5" style="height: 32px; width: 32px; background-color: #40131C;" class="mx-auto rounded-circle text-center text-white p-auto">
-          <p class="m-auto">6</p>
+          <p *ngIf="treeType != 'Fatherpalm'" class="m-auto">6</p>
+          <p *ngIf="treeType == 'Fatherpalm'" class="m-auto">2</p>
         </div>
         <small class="font-weight-light">Tuai</small>
       </div>

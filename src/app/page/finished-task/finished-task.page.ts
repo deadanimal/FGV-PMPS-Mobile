@@ -40,6 +40,7 @@ export class FinishedTaskPage implements OnInit {
   defect:string;
   workerRemark:string;
   svRemark:string;
+  treeType:string;
   constructor(
     private activatedRoute:ActivatedRoute,
     private tandanService: TandanService,
@@ -149,6 +150,7 @@ export class FinishedTaskPage implements OnInit {
       this.treeService.getById(res.pokok_id.toString(),(treeRes:PokokResponse)=>{
         this.treeNumber = treeRes.progeny+"-"+treeRes.no_pokok;
         this.block = treeRes.blok;
+        this.treeType = treeRes.jantina;
       });
     });
   }
