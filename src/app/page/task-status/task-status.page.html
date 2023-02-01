@@ -14,6 +14,7 @@
       </button>
       <!-- photo from server -->
       <img *ngIf="serverImage!=null" class="rounded mx-auto" [src]="serverImage"/>
+      <img *ngIf="serverImage2!=null" class="rounded mx-auto" [src]="serverImage2"/>
       <button *ngIf="serverImage!=null && enableImgDeleteBtn" (click)="erasePicture()" class="btn-danger">
         <ion-icon name="trash-outline"></ion-icon>
       </button>
@@ -131,7 +132,7 @@
       <p class="m-auto">Hantar</p>
     </button>
 
-    <button [disabled]="!form.valid || submitClicked || photo ==null || id1==null && id1.value==null" (click)="submitPollenPrep()" *ngIf="(userRole=='Petugas Makmal')" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="!form.valid || submitClicked || photo ==null || id1==null && id1.value==null" (click)="submitPollenPrep()" *ngIf="(userRole=='Petugas Makmal' || userRole == roles.petugas_balut_fatherpalm)" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>

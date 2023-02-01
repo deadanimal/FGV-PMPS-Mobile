@@ -64,6 +64,7 @@ export class TaskStatusPage implements OnInit {
   viewOnly:boolean = false;
   loadingModal:any;
   serverImage:String;
+  serverImage2:String;
   taskId:String;
   taskType:String;
   time:String;
@@ -215,6 +216,8 @@ export class TaskStatusPage implements OnInit {
                 task = "Tuai"
               }else if(this.taskType == InAppTaskCycle.cp){
                 task = "cp"
+              }else if(this.taskType == InAppTaskCycle.ppSv){
+                task = "Penyediaan Pollen"
               }
               url = '/app/tabs/tab1/main-task';
             }else{
@@ -237,7 +240,8 @@ export class TaskStatusPage implements OnInit {
   }
   submitPollenPrep(){
     this.submitClicked = true;
-    if(this.taskId != null){
+    console.log(this.taskId)
+    if(this.taskId != null && this.taskId != "null"){
       this.updatePollenPrep();
     }else{
       this.createPollenPrep();
@@ -842,9 +846,10 @@ export class TaskStatusPage implements OnInit {
   }
 
   _getPollenPrepTask(){
-    if(this.userRole == UserRole.penyelia_makmal){
+    if(this.userRole == UserRole.penyelia_makmal || this.userRole == UserRole.penyelia_fatherpalm){
       this.pollenPrepService.getById(this.taskId,(res:PollenPreparationModel)=>{
         this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
+        this.serverImage2 = `${environment.storageUrl}${res.url_gambar2}`;
         this.remark = res.catatan;
         this.tandanId = res.tandan_id.toString();
       });

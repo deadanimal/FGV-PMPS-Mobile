@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
 import { TandanCycle } from 'src/app/common/tandan-cycle';
+import { HarvestModel } from 'src/app/model/harvest';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { NavigationService } from 'src/app/service/navigation.service';
+import { PollenPreparationService } from 'src/app/service/tasks/pollen-preparation.service';
 import { TandanService } from 'src/app/service/tasks/tandan.service';
 
 @Component({
@@ -20,6 +22,7 @@ export class PollenPrepTandanListPage implements OnInit {
     private activatedRoute:ActivatedRoute,
     private tandanService:TandanService,
     private navService:NavigationService,
+    private pollenPrepService:PollenPreparationService,
   ) { }
 
   ngOnInit() {
@@ -52,11 +55,21 @@ export class PollenPrepTandanListPage implements OnInit {
   }
 
   _getTandanByTreeId(){
-    this.tandanService.getAll((res:[TandanResponse])=>{
+    let completedHarvestList:HarvestModel[] = [];
+    this.pollenPrepService.getNewTask((res:[HarvestModel])=>{
       res.forEach(el => {
-        if(el.pokok_id?.toString() == this.treeId && el.kitaran == TandanCycle.harvest){
-          this.tandanList.push(el);
+        if(el.pokok_id?.toString() == this.treeId){
+          completedHarvestList.push(el);
         }
+      });
+      this.tandanService.getAll((res:[TandanResponse])=>{
+        res.forEach(el => {
+          completedHarvestList.forEach(harvestItem => {
+            if(harvestItem.tandan_id == el.id){
+                this.tandanList.push(el);
+            }
+          });
+        });
       });
     });
   }

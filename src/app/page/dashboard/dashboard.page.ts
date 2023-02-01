@@ -113,7 +113,11 @@ export class DashboardPage implements OnInit {
   }
 
   task(task:String){
-    if(task == "Penyediaan Pollen" && this.role == UserRole.petugas_makmal){
+    if(task == "Penyediaan Pollen" && 
+        ( this.role == UserRole.petugas_makmal ||
+          this.role == UserRole.petugas_balut_fatherpalm 
+        )
+    ){
       this.pollenPrepTask();
     }else{
       this.router.navigate(['app/tabs/tab1/main-task',{task:task}]);

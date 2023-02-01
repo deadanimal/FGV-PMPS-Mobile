@@ -5,10 +5,12 @@ import { TandanCycle } from 'src/app/common/tandan-cycle';
 import { TaskStatus } from 'src/app/common/task-status';
 import { TreeType } from 'src/app/common/tree-type';
 import { BaggingModel } from 'src/app/model/bagging';
+import { HarvestModel } from 'src/app/model/harvest';
 import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { environment } from 'src/environments/environment';
 import { BaggingService } from './bagging.service';
+import { HarvestService } from './harvest.service';
 import { TandanService } from './tandan.service';
 
 @Injectable({
@@ -22,6 +24,7 @@ export class PollenPreparationService {
     private loadingCtrl: LoadingController,
     private tandanService: TandanService,
     private baggingService: BaggingService,
+    private harvestService: HarvestService,
   ) { }
 
   async showLoading():Promise<HTMLIonLoadingElement> {
@@ -188,11 +191,12 @@ export class PollenPreparationService {
   getNewTask(callback){
     this.getAll(
       (res2:[PollenPreparationModel])=>{
-        this.baggingService.getAll((res:[BaggingModel])=>{
-          let retVal:BaggingModel[] = [];
+        this.harvestService.getAll((res:[HarvestModel])=>{
+          let retVal:HarvestModel[] = [];
           res.forEach(el => {
             if( el.pokok.jantina == TreeType.Fatherpalm && 
                 el.status == TaskStatus.verified &&
+                el.kerosakan_id == null &&
                 !this._alreadyHasPPTask(el.tandan_id,res2)){
               retVal.push(el);
             }

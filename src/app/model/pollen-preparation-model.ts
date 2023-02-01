@@ -1,3 +1,5 @@
+import { PokokResponse } from "./pokok-respons";
+
 export interface PollenPreparationModel {
     id: number;
     no_pollen?: string;
@@ -28,5 +30,6 @@ export interface PollenPreparationModel {
     updated_at: Date;
     jenis: string;
     url_gambar2: string;
+    pokok?:PokokResponse;
     catatan2: string;
 }

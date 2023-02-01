@@ -545,7 +545,7 @@ export class MainTaskPage implements OnInit {
 
   _getPollenPrepTask(){
     if(
-      this.role == UserRole.penyelia_makmal
+      this.role == UserRole.penyelia_makmal || this.role == UserRole.penyelia_fatherpalm
     ){
       this.pollenPrepService.getAll((res:[PollenPreparationModel])=>{
         res.forEach(el => {

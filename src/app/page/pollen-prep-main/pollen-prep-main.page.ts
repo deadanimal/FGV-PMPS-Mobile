@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
 import { TaskStatus } from 'src/app/common/task-status';
 import { BaggingModel } from 'src/app/model/bagging';
+import { HarvestModel } from 'src/app/model/harvest';
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
 import { AccountService, UserRole } from 'src/app/service/account.service';
@@ -30,6 +31,7 @@ export class PollenPrepMainPage implements OnInit {
   newTaskList:any[];
   posponedTaskList:any[];
   role:UserRole;
+  roles = UserRole;
 
   constructor(
     private router:Router,
@@ -41,9 +43,9 @@ export class PollenPrepMainPage implements OnInit {
   ngOnInit() {
   }
 
-  ionViewDidEnter(){
-    let user:LoginResponseModel = this.accountService.getSessionDetails();
-    this.role = this.accountService.getUserRole();
+  async ionViewDidEnter(){
+    let user:LoginResponseModel = await this.accountService._getDataFromStorage();
+    this.role =  this.accountService.getUserRole();
     this.activeTaskList = [];
     this.finishedTaskList = [];
     this.newTaskList = [];
@@ -90,7 +92,7 @@ export class PollenPrepMainPage implements OnInit {
   }
 
   _getTask(){
-    if(this.role == UserRole.petugas_makmal){
+    if(this.role == UserRole.petugas_makmal || this.role == UserRole.petugas_balut_fatherpalm){
       this._getNewTask();
     }else{
       this._getSvTask();
@@ -126,7 +128,7 @@ export class PollenPrepMainPage implements OnInit {
   }
 
   _getNewTask(){
-    this.pollenPrepService.getNewTask((res:[BaggingModel])=>{
+    this.pollenPrepService.getNewTask((res:[HarvestModel])=>{
       this.numOfNewTask = res.length;
       this.newTaskList = res;
       this._getPPTask();

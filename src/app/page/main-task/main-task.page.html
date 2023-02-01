@@ -257,7 +257,7 @@
         </ion-col>
       </ion-row>
 
-      <ion-row *ngIf="(task == 'Penyediaan Pollen' && role == 'Penyelia Makmal')" class="ion-justify-content-center">
+      <ion-row *ngIf="(task == 'Penyediaan Pollen' && ( role == 'Penyelia Makmal' || role == roles.penyelia_fatherpalm))" class="ion-justify-content-center">
         <ion-col size="6" size-md="4" size-lg="2">
           <div>
             <button (click)="newRecord()" [disabled]="disableNewRecord" class="btn w-100 mx-auto rounded orangeBtn text-center text-white p-2">
@@ -459,7 +459,7 @@
         </div>
       </div>
     </div>
-    <div *ngIf="task == 'Penyediaan Pollen' && role == 'Penyelia Makmal'">
+    <div *ngIf="task == 'Penyediaan Pollen' && (role == 'Penyelia Makmal' || role== roles.penyelia_fatherpalm)">
       <div *ngIf="disableNewRecord">
         <div *ngFor="let item of newTaskList"class="p-3 my-3 mx-auto w-75 shadow rounded border border-warning d-flex justify-content-between align-items-center">
           <p class="h6">Rekod {{item.id}} ({{item.pokok.progeny}}-{{item.pokok.no_pokok}})</p>
