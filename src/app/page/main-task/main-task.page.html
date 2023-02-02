@@ -286,6 +286,26 @@
           </div>
         </ion-col>
       </ion-row>
+      <ion-row *ngIf="(task == 'Penggunaan Pollen' && role == roles.petugas_makmal)" class="ion-justify-content-center">
+        <ion-col size="6" size-md="4" size-lg="2">
+          <div>
+            <button (click)="newPUTask()" [disabled]="disableNewRecord" class="btn w-100 mx-auto rounded orangeBtn text-center text-white p-2">
+              <ion-badge *ngIf="numOfNewTask > 0"  color="danger">{{numOfNewTask}}</ion-badge>
+              <img height="56px" src="/assets/new_record_icon.png">
+              <h5>Pengeluaran</h5>
+            </button>
+          </div>
+        </ion-col>
+        <ion-col size="6" size-md="4" size-lg="2">
+          <div>
+            <button (click)="finishRecord()" [disabled]="disableFinishRecord" class="btn w-100 mx-auto rounded greenBtn text-center text-white p-2">
+              <ion-badge *ngIf="numOfFinishTask > 0" color="danger">{{numOfFinishTask}}</ion-badge>
+              <img height="56px" src="/assets/finished_record_icon.png">
+              <h5>Pemulangan</h5>
+            </button>
+          </div>
+        </ion-col>
+      </ion-row>
     </ion-grid>
 
     <p *ngIf="disableFinishRecord || disableActiveTaskBtn || disableNewRecord || disableTaskBtn" style="font-size: 14px; font-weight: 600; line-height: 100%; text-align: center; color: rgba(57.37, 57.37, 57.37, 1);">Senarai Rekod</p>

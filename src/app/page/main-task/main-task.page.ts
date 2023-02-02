@@ -695,4 +695,12 @@ export class MainTaskPage implements OnInit {
     );
   }
 
+  newPUTask(){
+    this.router.navigate(
+      [
+        '/app/tabs/tab1/stok-pollen-form'
+      ]
+    );
+  }
+
 }

@@ -101,6 +101,10 @@ const routes: Routes = [
         loadChildren: () => import('../page/task-distributed/task-distributed.module').then( m => m.TaskDistributedPageModule)
       },
       {
+        path: 'tab1/stok-pollen-form',
+        loadChildren: () => import('../page/stok-pollen-form/stok-pollen-form.module').then( m => m.StokPollenFormPageModule)
+      },
+      {
         path: '',
         redirectTo: 'tabs/tab1/',
         pathMatch: 'full'

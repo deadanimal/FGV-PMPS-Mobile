@@ -17,6 +17,7 @@ export const environment = {
   defect:'/kerosakan/',
   harvest:'/harvest/',
   pollen:'/pollen/',
+  stockPollen:'/stok_pollen/',
   crossPolination:'/control_pollination/',
   qualityControl:'/quality_control/',
   userByRole:'/users/peranan/',
