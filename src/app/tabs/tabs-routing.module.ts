@@ -109,6 +109,10 @@ const routes: Routes = [
         loadChildren: () => import('../page/stok-pollen-list/stok-pollen-list.module').then( m => m.StokPollenListPageModule)
       },
       {
+        path: 'tab1/stok-pollen-viability-check',
+        loadChildren: () => import('../page/stok-pollen-viability-check/stok-pollen-viability-check.module').then( m => m.StokPollenViabilityCheckPageModule)
+      },
+      {
         path: '',
         redirectTo: 'tabs/tab1/',
         pathMatch: 'full'

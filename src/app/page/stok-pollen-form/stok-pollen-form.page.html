@@ -31,7 +31,12 @@
       <ion-input type="text" [(ngModel)]="pollen_weight" name="pollen_weight" required [disabled]="isReturn"></ion-input>
     </ion-item>
 
-    <ion-item  lines="full" class="mt-4">
+    <ion-item *ngIf="viability != null" lines="full">
+      <ion-label position="floating">Viabiliti. Pollen</ion-label>
+      <ion-input type="text" [(ngModel)]="viability" name="viability" required [disabled]="isReturn"></ion-input>
+    </ion-item>
+
+    <ion-item *ngIf="viability == null" lines="full" class="mt-4">
       <ion-select placeholder="Viabiliti Pollen" id= "id1" #id1 required [disabled]="isReturn">
         <ion-select-option value=0%-59%>0%-59%</ion-select-option>
         <ion-select-option value=60%-69%>60%-69%</ion-select-option>

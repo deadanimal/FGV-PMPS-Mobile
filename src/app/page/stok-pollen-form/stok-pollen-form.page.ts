@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IonSelect, NavController } from '@ionic/angular';
 import { TaskStatus } from 'src/app/common/task-status';
 import { HarvestModel } from 'src/app/model/harvest';
@@ -24,8 +24,9 @@ export class StokPollenFormPage implements OnInit {
   outgoing_amount:string;
   returned_ammount:string;
   current_ammount:string;
+  viability:string;
   @ViewChild("id1") id1!: IonSelect;
-  pollenId:number;
+  stockPollenId:number;
   isReturn:boolean = false;
   pollenList:PollenPreparationModel[];
   availableBlock:string[];
@@ -41,13 +42,14 @@ export class StokPollenFormPage implements OnInit {
     private harvestService:HarvestService,
     private modalService:ModalService,
     private navCtrl:NavController,
+    private router:Router,
   ) { }
 
   ngOnInit() {
     this.pollenList = [];
     this.activatedRoute.params.subscribe(params => {
       if(params['pollenId']!=null){
-        this.pollenId = params['pollenId'];
+        this.stockPollenId = params['pollenId'];
         this.isReturn = true;
        }
       this.getPollenList();
@@ -58,7 +60,11 @@ export class StokPollenFormPage implements OnInit {
   }
 
   submit(){
-    this.create();
+    if(this.isReturn){
+      this.update();
+    }else{
+      this.create();
+    }
   }
 
   async create(){
@@ -87,13 +93,50 @@ export class StokPollenFormPage implements OnInit {
     });
   }
 
-  populateData(){
-    this.pollenList.forEach(el => {
-      if(el.id == this.pollenId){
-        this.block = el.pokok.blok;
-        this.no_pollen = el.id.toString();
-        this.getHarvestTask(el.tandan_id);
+  async update(){
+    let user = await this.accountService._getDataFromStorage();
+    let stokPollen:StokPollenModel = {
+      amaun_keluar:parseInt(this.returned_ammount),
+      amaun_semasa:parseInt(this.current_ammount),
+      dikemaskini_oleh:user.no_kakitangan,
+      status:TaskStatus.done,
+      pollen_id:this.selectedPollen.id,
+    };
+    this.pollenUsageService.update(this.stockPollenId,stokPollen,(res:StokPollenModel)=>{
+      if(res.id != null){
+        this.modalService.successPrompt("Aktiviti anda telah berjaya disimpan").then(
+          (value)=>{
+            this.router.navigate(
+              [
+                '/app/tabs/tab1/stok-pollen-viability-check',
+                {stokPollenId:this.stockPollenId}
+              ]
+            );
+          }
+        );
+      }else{
+        this.modalService.successPrompt("Ralat, Sila cuba lagi").then(
+        (value)=>{
+        }
+      );
       }
+    });
+
+  }
+
+  populateData(){
+    this.pollenUsageService.getById(this.stockPollenId,(res:StokPollenModel)=>{
+      this.outgoing_amount = res.amaun_keluar.toString();
+      this.current_ammount = res.amaun_semasa.toString();
+      this.pollenList.forEach(el => {
+        if(el.id == res.pollen_id){
+          this.selectedPollen = el;
+          this.block = el.pokok.blok;
+          this.no_pollen = el.id.toString();
+          this.viability = el.viabiliti_pollen;
+          this.getHarvestTask(el.tandan_id);
+        }
+      });
     });
   }
 
@@ -111,7 +154,7 @@ export class StokPollenFormPage implements OnInit {
     this.pollenPrepService.getAll((res:PollenPreparationModel[])=>{
       this.pollenList = res;
       this.filterAvailableBlock();
-      if(this.pollenId != null){
+      if(this.stockPollenId != null){
         this.populateData();
       }
     });

@@ -102,7 +102,7 @@ export class PollenUsageService {
   }
 
   async update(
-    puId:String,
+    puId:number,
     updateObject:any,
     callback,
   ){
