@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { StokPollenModel } from 'src/app/model/stok-pollen';
+import { PollenUsageService } from 'src/app/service/tasks/pollen-usage.service';
 
 @Component({
   selector: 'app-stok-pollen-list',
@@ -8,11 +10,16 @@ import { Router } from '@angular/router';
 })
 export class StokPollenListPage implements OnInit {
 
+  pollenUsageList:StokPollenModel[];
+
   constructor(
     private router:Router,
+    private pollenUsageService:PollenUsageService,
   ) { }
 
   ngOnInit() {
+    this.pollenUsageList = [];
+    this.getPollenUsageList();
   }
   
   returnSelectedPollen(id:number){
@@ -22,6 +29,12 @@ export class StokPollenListPage implements OnInit {
         {pollenId:id}
       ]
     );
+  }
+
+  getPollenUsageList(){
+    this.pollenUsageService.getAll((res:StokPollenModel[])=>{
+      this.pollenUsageList = res;
+    });
   }
 
 }
