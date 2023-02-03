@@ -1296,7 +1296,7 @@ export class TaskStatusPage implements OnInit {
         });
       });
     }else if(this.userRole == UserRole.petugas_makmal){
-      this.userServices.getByRole(UserRole.penyelia_makmal.toString(),(res:[User])=>{
+      this.userServices.getByRole(UserRole.penyelia_fatherpalm.toString(),(res:[User])=>{
         if(this.treeBlock != null){
           res.forEach(el => {
             if(el.blok.includes(this.treeBlock.toString())){

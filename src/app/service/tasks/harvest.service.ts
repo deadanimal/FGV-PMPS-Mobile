@@ -224,4 +224,35 @@ export class HarvestService {
     );
   }
 
+  async getByTandanId(
+    tandanId:string,
+    callback,
+    loadingAnim = true,
+  ){
+    if(loadingAnim){
+      this.loadingModal = await this.showLoading();
+    }
+    this.http.get<HarvestModel[]>(
+      `${environment.baseUrl}${environment.tandanInfo}${tandanId}/harvest`
+    ).subscribe(
+      async (res:HarvestModel[]) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
+        }
+        callback(res);
+      },
+      async (err:HttpErrorResponse) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
+        }
+      }
+    );
+  }
+
 }
