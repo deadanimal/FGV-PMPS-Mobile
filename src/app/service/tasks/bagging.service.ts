@@ -288,4 +288,35 @@ export class BaggingService {
       }
     );
   }
+
+  async getByTandanId(
+    tandanId:number,
+    callback,
+    loadingAnim = true,
+  ){
+    if(loadingAnim){
+      this.loadingModal = await this.showLoading();
+    }
+    this.http.get<BaggingModel[]>(
+      `${environment.baseUrl}${environment.tandanInfo}${tandanId}/bagging`
+    ).subscribe(
+      async (res:BaggingModel[]) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
+        }
+        callback(res);
+      },
+      async (err:HttpErrorResponse) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
+        }
+      }
+    );
+  }
 }

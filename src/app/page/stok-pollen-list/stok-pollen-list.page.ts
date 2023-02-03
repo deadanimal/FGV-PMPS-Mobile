@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { TaskStatus } from 'src/app/common/task-status';
 import { StokPollenModel } from 'src/app/model/stok-pollen';
 import { PollenUsageService } from 'src/app/service/tasks/pollen-usage.service';
 
@@ -33,7 +34,11 @@ export class StokPollenListPage implements OnInit {
 
   getPollenUsageList(){
     this.pollenUsageService.getAll((res:StokPollenModel[])=>{
-      this.pollenUsageList = res;
+      res.forEach(el => {
+        if(el.status == TaskStatus.created){
+          this.pollenUsageList.push(el);
+        }
+      });
     });
   }
 

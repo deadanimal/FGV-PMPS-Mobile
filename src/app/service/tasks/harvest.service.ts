@@ -225,7 +225,7 @@ export class HarvestService {
   }
 
   async getByTandanId(
-    tandanId:string,
+    tandanId:number,
     callback,
     loadingAnim = true,
   ){

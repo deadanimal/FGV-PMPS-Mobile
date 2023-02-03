@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { StokPollenViabilityCheckPageRoutingModule } from './stok-pollen-viability-check-routing.module';
 
 import { StokPollenViabilityCheckPage } from './stok-pollen-viability-check.page';
+import { SharedComponentModule } from 'src/app/modules/shared-component/shared-component.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    StokPollenViabilityCheckPageRoutingModule
+    StokPollenViabilityCheckPageRoutingModule,
+    SharedComponentModule,
   ],
   declarations: [StokPollenViabilityCheckPage]
 })

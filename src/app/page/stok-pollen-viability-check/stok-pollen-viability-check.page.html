@@ -1,9 +1,43 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>stok-pollen-viability-check</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
+  <app-offline-header></app-offline-header>
+  <app-logout-button></app-logout-button>
+  <app-user-info-header></app-user-info-header>
 
+  <form #form="ngForm" class="mx-auto my-2" style="max-width: 300px;" (ngSubmit)="submit()">
+    <ion-item *ngIf="testTime != null" lines="full">
+      <ion-label position="floating">Masa & Tarikh Uji</ion-label>
+      <ion-input type="text" [(ngModel)]="testTime" name="testTime" required [disabled]='true'></ion-input>
+    </ion-item>
+    <ion-item *ngIf="pollenType != null" lines="full">
+      <ion-label position="floating">Jenis Pollen</ion-label>
+      <ion-input type="text" [(ngModel)]="pollenType" name="pollenType" required [disabled]='true'></ion-input>
+    </ion-item>
+    <ion-item *ngIf="baggingTime != null" lines="full">
+      <ion-label position="floating">Masa & Tarikh Balut</ion-label>
+      <ion-input type="text" [(ngModel)]="baggingTime" name="baggingTime" required [disabled]='true'></ion-input>
+    </ion-item>
+    <ion-item *ngIf="harvestTime != null" lines="full">
+      <ion-label position="floating">Masa & Tarikh Tuai</ion-label>
+      <ion-input type="text" [(ngModel)]="harvestTime" name="harvestTime" required [disabled]='true'></ion-input>
+    </ion-item>
+    <ion-item lines="full" class="mt-4">
+      <ion-select placeholder="Viabiliti Pollen" id= "id1" #id1 required>
+        <ion-select-option value=0%-59%>0%-59%</ion-select-option>
+        <ion-select-option value=60%-69%>60%-69%</ion-select-option>
+        <ion-select-option value=70%-79%>70%-79%</ion-select-option>
+        <ion-select-option value=80%-89%>80%-89%</ion-select-option>
+        <ion-select-option value=90%-100%>90%-100%</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <div class="text-center mx-auto mt-4 w-100 d-flex">
+      <button [disabled]="id1.value == null" (click)="removePollen()" type="button" class="btn btn-outline-danger d-flex flex-row px-4 py-2 mx-auto">
+        <ion-icon size="large" color="white" name="trash-outline"></ion-icon>
+        <p class="m-auto">Lupus</p>
+      </button>
+      <button [disabled]="id1.value == null" type="submit" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-auto">
+        <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
+        <p class="m-auto">Hantar</p>
+      </button>
+    </div>
+  </form>
 </ion-content>
