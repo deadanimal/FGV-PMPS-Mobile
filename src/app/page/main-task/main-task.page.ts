@@ -702,5 +702,13 @@ export class MainTaskPage implements OnInit {
       ]
     );
   }
+  
+  returnPUTask(){
+    this.router.navigate(
+      [
+        '/app/tabs/tab1/stok-pollen-list'
+      ]
+    );
+  }
 
 }

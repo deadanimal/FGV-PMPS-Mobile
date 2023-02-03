@@ -105,6 +105,10 @@ const routes: Routes = [
         loadChildren: () => import('../page/stok-pollen-form/stok-pollen-form.module').then( m => m.StokPollenFormPageModule)
       },
       {
+        path: 'tab1/stok-pollen-list',
+        loadChildren: () => import('../page/stok-pollen-list/stok-pollen-list.module').then( m => m.StokPollenListPageModule)
+      },
+      {
         path: '',
         redirectTo: 'tabs/tab1/',
         pathMatch: 'full'
