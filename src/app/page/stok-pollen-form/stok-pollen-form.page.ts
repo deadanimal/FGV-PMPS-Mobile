@@ -152,7 +152,11 @@ export class StokPollenFormPage implements OnInit {
 
   getPollenList(){
     this.pollenPrepService.getAll((res:PollenPreparationModel[])=>{
-      this.pollenList = res;
+      res.forEach(el => {
+        if(el.status_pollen != 'lupus'){
+          this.pollenList.push(el);
+        }
+      });
       this.filterAvailableBlock();
       if(this.stockPollenId != null){
         this.populateData();
