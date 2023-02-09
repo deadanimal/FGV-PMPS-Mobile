@@ -106,6 +106,7 @@ export class QrScannerPage implements OnInit {
               scanInput:scanResult,
               expactedTandanId:this.expactedTandanId,
               var1:this.var1,
+              redirect:this.redirect,
             }
           ]
         );

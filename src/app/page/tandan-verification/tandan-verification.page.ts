@@ -97,9 +97,10 @@ export class TandanVerificationPage implements OnInit {
 
   _getRegNumber(){
     if(this.scanInput != null && this.scanInput != ''){
+      this.regNumber = 'Sila Tunggu...'
       this.tandanService.getById(this.scanInput,(res:TandanResponse)=>{
         this.regNumber = res.no_daftar;
-      });
+      },false);
     }
   }
 
