@@ -81,9 +81,9 @@ export class FinishedTaskPage implements OnInit {
           this.workerRemark = res.catatan;
           this.svRemark = res.catatan_pengesah;
           this._getUser(res.id_sv_balut);
-          if(res.kerosakans_id != null){
-            this._getDefect(parseInt(res.kerosakans_id));
-          }
+        }
+        if(res.kerosakans_id != null){
+          this._getDefect(parseInt(res.kerosakans_id));
         }
       });
     }else if(this.taskType == 'Pendebungaan Terkawal (CP)'){
@@ -93,9 +93,9 @@ export class FinishedTaskPage implements OnInit {
           this.workerRemark = res.catatan;
           this.svRemark = res.catatan_pengesah;
           this._getUser(res.id_sv_cp);
-          if(res.kerosakan_id != null){
-            this._getDefect(parseInt(res.kerosakan_id));
-          }
+        }
+        if(res.kerosakan_id != null){
+          this._getDefect(parseInt(res.kerosakan_id));
         }
       });
     }else if(this.taskType == 'Kawalan Kualiti (QC)'){
@@ -105,9 +105,9 @@ export class FinishedTaskPage implements OnInit {
           this.workerRemark = res.catatan;
           this.svRemark = res.catatan_pengesah;
           this._getUser(res.id_sv_qc);
-          if(res.kerosakan_id != null){
-            this._getDefect(parseInt(res.kerosakan_id));
-          }
+        }
+        if(res.kerosakan_id != null){
+          this._getDefect(parseInt(res.kerosakan_id));
         }
       });
     }else if(this.taskType == 'Tuai'){
@@ -117,9 +117,9 @@ export class FinishedTaskPage implements OnInit {
           this.workerRemark = res.catatan;
           this.svRemark = res.catatan_pengesah;
           this._getUser(res.id_sv_harvest);
-          if(res.kerosakan_id != null){
-            this._getDefect(parseInt(res.kerosakan_id));
-          }
+        }
+        if(res.kerosakan_id != null){
+          this._getDefect(parseInt(res.kerosakan_id));
         }
       });
     }
