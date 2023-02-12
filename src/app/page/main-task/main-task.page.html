@@ -209,7 +209,7 @@
             </button>
           </div>
         </ion-col>
-        <ion-col size="6" size-md="4" size-lg="2">
+        <ion-col *ngIf="role != roles.penyelia_fatherpalm" size="6" size-md="4" size-lg="2">
           <div>
             <button (click)="taskDistributed()" class="btn w-100 mx-auto rounded btn-info text-center text-white p-2">
               <img height="56px" src="/assets/record_icon.png">

@@ -324,9 +324,14 @@ export class TaskStatusPage implements OnInit {
     formData.append('url_gambar2', blob, "task_"+this.taskId+"."+this.photo.format);
     formData.append('id_sv_pollen',this.accountService.getSessionDetails().id.toString());
     formData.append('catatan2',this.remark? this.remark.toString() : "");
+    formData.append('kerosakan_id',this.defectId? this.defectId.toString() : "");
     formData.append('pengesah_id',this.id1?.value?.toString());
     formData.append('tarikh_qc', date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate());
     formData.append('_method','PUT');
+
+    if(this.defectId != null){
+      formData.append('status',TaskStatus.defect);
+    }
 
     this.pollenPrepService.updatePost(this.taskId,formData,
       (res:PollenPreparationModel)=>{
