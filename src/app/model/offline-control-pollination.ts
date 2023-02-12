@@ -16,4 +16,5 @@ export interface OfflineControlPollinationModel {
     status?:string;
     bil_pemeriksaan?:string;
     tambahan_hari?:string;
+    catatan_pengesah?:string;
 }

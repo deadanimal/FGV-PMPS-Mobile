@@ -49,6 +49,7 @@ export class RegisterStatusPage implements OnInit {
   tandanId:String;
   loadingModal:any;
   treeNumberDisplay:String;
+  svComment:String;
   isOfflineMode = false;
 
   constructor(
@@ -116,6 +117,7 @@ export class RegisterStatusPage implements OnInit {
       this.qualityControlService.getById(this.taskId,(res:QualityControlModel)=>{
         this.tandanId = res.tandan_id.toString();
         this._getTandanInfo(res.tandan_id.toString());
+        this.svComment = res.catatan_pengesah;
       });
     }else{
       let qcTask:QualityControlModel = await this.offlineQCService.getNewTaskById(parseInt(this.taskId.toString()));
@@ -126,6 +128,7 @@ export class RegisterStatusPage implements OnInit {
       this.cycle = this._getCycleName(tandan)?.toUpperCase();
       this.status=tandan.status_tandan?.toUpperCase();
       this.age=tandan.umur? tandan.umur.toString(): this._calculateAge(tandan.tarikh_daftar).toString();
+      this.svComment = qcTask.catatan_pengesah;
     }
   }
 
@@ -141,16 +144,18 @@ export class RegisterStatusPage implements OnInit {
       this.harvestService.getById(this.taskId,(res:HarvestModel)=>{
         this.tandanId = res.tandan_id.toString();
         this._getTandanInfo(res.tandan_id.toString());
+        this.svComment = res.catatan_pengesah;
       });
     }else{
-      let qcTask:HarvestModel = await this.offlineHarvestService.getNewTaskById(parseInt(this.taskId.toString()));
-      this.tandanId = qcTask.tandan_id.toString();
-      let tandanRes:TandanResponse = await this.offlineTandanService.getById(qcTask.tandan_id);
-      this.treeNumberDisplay = qcTask.pokok?.progeny+'-'+qcTask.pokok?.no_pokok;
+      let harvestTask:HarvestModel = await this.offlineHarvestService.getNewTaskById(parseInt(this.taskId.toString()));
+      this.tandanId = harvestTask.tandan_id.toString();
+      let tandanRes:TandanResponse = await this.offlineTandanService.getById(harvestTask.tandan_id);
+      this.treeNumberDisplay = harvestTask.pokok?.progeny+'-'+harvestTask.pokok?.no_pokok;
       this.regNumber = tandanRes.no_daftar;
       this.cycle = this._getCycleName(tandanRes)?.toUpperCase();
       this.status=tandanRes.status_tandan?.toUpperCase();
       this.age=tandanRes.umur? tandanRes.umur.toString(): this._calculateAge(tandanRes.tarikh_daftar).toString();
+      this.svComment = harvestTask.catatan_pengesah;
     }
   }
 
@@ -259,6 +264,7 @@ export class RegisterStatusPage implements OnInit {
           this.cycle = this._getCycleName(tandanRes)?.toUpperCase();;
           this.status=tandanRes.status_tandan?.toUpperCase();
           this.age=tandanRes.umur? tandanRes.umur.toString(): this._calculateAge(tandanRes.tarikh_daftar).toString();
+          this.svComment = res.catatan_pengesah;
         });
       },false);
     }else{
@@ -270,6 +276,7 @@ export class RegisterStatusPage implements OnInit {
       this.status=tandan.status_tandan?.toUpperCase();
       this.age=tandan.umur? tandan.umur.toString(): this._calculateAge(tandan.tarikh_daftar).toString();
       this.treeNumberDisplay = task?.pokok?.progeny+'-'+task?.pokok?.no_pokok;
+      this.svComment = task?.catatan_pengesah;
     }
   }
 
