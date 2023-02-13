@@ -11,4 +11,6 @@ export interface OfflineHarvestModel {
     pengesah_id?:string;
     currentStatus?:string;
     pokok_id?:string;
+    number_of_postponed_field?: string;
+    tambah_hari?: string;
 }

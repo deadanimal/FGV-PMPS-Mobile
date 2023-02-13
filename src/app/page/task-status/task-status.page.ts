@@ -830,11 +830,15 @@ export class TaskStatusPage implements OnInit {
           this.tandanId = res.tandan_id.toString();
           this.treeId = res.pokok_id.toString();
           this._getTandanInfo(this.tandanId);
+          this.numOfCheck = res.number_of_postponed_field != null ? parseInt(res.number_of_postponed_field):null;
+          this.posponedDay = res.tambah_hari != null ?parseInt(res.tambah_hari):null;
         });
       }else{
         let newTask:HarvestModel = await this.offlineHarvestService.getNewTaskById(parseInt(this.taskId.toString()));
         this.tandanId = newTask.tandan_id.toString();
         this.qcSvId = newTask.pengesah_id;
+        this.numOfCheck = newTask.number_of_postponed_field != null ? parseInt(newTask.number_of_postponed_field):null;
+        this.posponedDay = newTask.tambah_hari != null ?parseInt(newTask.tambah_hari):null;
         this._getTandanInfo(this.tandanId);
       }
     }
@@ -847,12 +851,16 @@ export class TaskStatusPage implements OnInit {
         this.tandanId = res.tandan_id.toString();
         this.treeId = res.pokok_id.toString();
         this._getTandanInfo(this.tandanId);
+        this.numOfCheck = res.number_of_postponed_field != null ? parseInt(res.number_of_postponed_field):null;
+        this.posponedDay = res.tambah_hari != null ?parseInt(res.tambah_hari):null;
       });
     }else{
       let newTask:HarvestModel = await this.offlineHarvestService.getNewTaskById(parseInt(this.taskId.toString()));
       this.tandanId = newTask.tandan_id.toString();
       this.qcSvId = newTask.pengesah_id;
       this._getTandanInfo(this.tandanId);
+      this.numOfCheck = newTask.number_of_postponed_field != null ? parseInt(newTask.number_of_postponed_field):null;
+      this.posponedDay = newTask.tambah_hari != null ?parseInt(newTask.tambah_hari):null;
     }
   }
 
@@ -887,6 +895,8 @@ export class TaskStatusPage implements OnInit {
     }else if(this.taskType == 'tuai'){
       this._getHarvestTask(taskId);
     }else if(this.taskType == InAppTaskCycle.posponedharvest){
+      this._getPostponedHarvestTask(taskId);
+    }else if(this.taskType == InAppTaskCycle.anjakharvest){
       this._getPostponedHarvestTask(taskId);
     }else if(this.taskType == 'harvestsv'){
       this._getHarvestTask(taskId);
@@ -1201,11 +1211,22 @@ export class TaskStatusPage implements OnInit {
           if(value1['data'] != null){
             if(this.posponedDay== null){
               this.posponedDay = value1['data'];
-              this._createCPPosponed();
+              if(this.taskType != InAppTaskCycle.harvest && this.taskType != InAppTaskCycle.anjakharvest){
+                this._createCPPosponed();
+              }
             }else{
               this.posponedDay = this.posponedDay+parseInt(value1['data']);
               this.numOfCheck++;
-              this._updateCPPosponed();
+              if(this.taskType != InAppTaskCycle.harvest && this.taskType != InAppTaskCycle.anjakharvest){
+                this._updateCPPosponed();
+              }
+            }
+
+            if(this.taskType == InAppTaskCycle.harvest || this.taskType == InAppTaskCycle.anjakharvest){
+              if (this.numOfCheck == null){
+                this.numOfCheck = 1;
+              }
+              this._submitHarvest(TaskStatus.postpone);
             }
           }
         });
@@ -1412,6 +1433,8 @@ export class TaskStatusPage implements OnInit {
 
   async _submitHarvest(status:TaskStatus){
     this.submitClicked = true;
+    console.log(this.numOfCheck)
+    console.log(this.posponedDay)
     if(!this.isOfflineMode){
       this._showSubmitTaskAlert();
       const formData = new FormData();
@@ -1422,8 +1445,10 @@ export class TaskStatusPage implements OnInit {
       formData.append('berat_tandan',this.weight? this.weight.toString() : "");
       formData.append('status',status);
       formData.append('kerosakan_id',this.defectId? this.defectId.toString() : "");
+      formData.append('number_of_postponed_field',this.numOfCheck? this.numOfCheck.toString() : "");
+      formData.append('tambah_hari',this.posponedDay? this.posponedDay.toString() : "");
       formData.append('id_sv_harvest',this.accountService.getSessionDetails().id.toString());
-      if(this.taskType == InAppTaskCycle.harvest){
+      if(this.taskType == InAppTaskCycle.harvest || this.taskType == InAppTaskCycle.anjakharvest){
         formData.append('_method','put');
         this.harvestService.update(this.taskId,formData,(res:HarvestModel)=>{
           this._promptCompleted();
@@ -1454,6 +1479,8 @@ export class TaskStatusPage implements OnInit {
         pokok_id:this.treeId.toString(),
         currentStatus:task.status,
         pengesah_id:this.qcSvId.toString(),
+        tambah_hari:this.posponedDay? this.posponedDay.toString() : "",
+        number_of_postponed_field:this.numOfCheck? this.numOfCheck.toString() : "",
       };
       this.offlineHarvestService.saveHarvestTask(data);
       

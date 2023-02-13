@@ -253,6 +253,13 @@ export class MainTaskPage implements OnInit {
       this.router.navigate(['app/tabs/tab1/create-new-task',{taskType:this.task}]);
     }else if(status == "overdueTask"){
       this.router.navigate(['app/tabs/tab1/defect',{taskType:this.task}]);
+    }else if(status == 'anjak' && taskId == 'harvest'){
+      this.router.navigate(['/app/tabs/tab1/reg-status',
+      {
+        taskId:id,
+        treeNum:param1,
+        taskType:this.task+"anjak",
+      }]);
     }
   }
 
@@ -580,7 +587,7 @@ export class MainTaskPage implements OnInit {
             }else if(el.status == TaskStatus.done || el.status == TaskStatus.defect){
               this.numOfActiveTask++;
               this.activeTaskList.push(el);
-            }else if(el.status == TaskStatus.rejected){
+            }else if(el.status == TaskStatus.rejected || el.status == TaskStatus.postpone){
               this.numOfPosponedTask++;
               this.posponedTaskList.push(el);
             }else{
@@ -598,7 +605,7 @@ export class MainTaskPage implements OnInit {
           }else if(el.status == TaskStatus.done || el.status == TaskStatus.defect){
             this.numOfActiveTask++;
             this.activeTaskList.push(el);
-          }else if(el.status == TaskStatus.rejected){
+          }else if(el.status == TaskStatus.rejected || el.status == TaskStatus.postpone){
             this.numOfPosponedTask++;
             this.posponedTaskList.push(el);
           }else{
@@ -615,7 +622,7 @@ export class MainTaskPage implements OnInit {
             if(el.status == TaskStatus.done || el.status == TaskStatus.defect){
               this.numOfNewTask++;
               this.newTaskList.push(el);
-            }else if(el.status == TaskStatus.created){
+            }else if(el.status == TaskStatus.created || el.status == TaskStatus.postpone){
 
             }else{
               this.numOfFinishTask++;

@@ -6,4 +6,5 @@ export enum TaskStatus {
     defect      = 'rosak',
     postpone    = 'anjak',
     redo        = 'buatsemula',
+    delete      = 'lupus',
 }

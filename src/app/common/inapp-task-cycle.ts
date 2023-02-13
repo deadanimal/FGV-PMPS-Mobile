@@ -9,6 +9,7 @@ export enum InAppTaskCycle {
     qcSv        = 'qcsv',
     harvest     = 'tuai',
     posponedharvest= 'tuaiposponed',
+    anjakharvest= 'tuaianjak',
     harvestSv   = 'harvestsv',
     pp          = 'pollenprep',
     ppSv        = 'pollenprepsv',

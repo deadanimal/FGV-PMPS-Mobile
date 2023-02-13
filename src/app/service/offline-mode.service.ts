@@ -640,7 +640,9 @@ export class OfflineModeService {
               (res:HarvestModel[])=>{
                 this.harvestList = [];
                 res.forEach(el => {
-                  if(el.status == TaskStatus.created || el.status == TaskStatus.rejected){
+                  if(el.status == TaskStatus.created ||
+                      el.status == TaskStatus.rejected ||
+                      el.status == TaskStatus.postpone){
                     this.harvestList.push(el);
                   }
                 });

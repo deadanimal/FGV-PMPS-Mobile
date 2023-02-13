@@ -18,4 +18,6 @@ export interface HarvestModel {
     created_at: string;
     updated_at: string;
     jenis: string;
+    number_of_postponed_field?: string;
+    tambah_hari?: string;
 }
