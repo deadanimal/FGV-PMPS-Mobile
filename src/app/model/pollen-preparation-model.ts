@@ -32,4 +32,5 @@ export interface PollenPreparationModel {
     url_gambar2: string;
     pokok?:PokokResponse;
     catatan2: string;
+    kerosakan_id?: number;
 }

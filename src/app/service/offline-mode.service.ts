@@ -11,6 +11,7 @@ import { OfflineControlPollinationModel } from '../model/offline-control-pollina
 import { OfflineHarvestModel } from '../model/offline-harvest';
 import { OfflineQualityControlModel } from '../model/offline-quality-control';
 import { PokokResponse } from '../model/pokok-respons';
+import { PollenPreparationModel } from '../model/pollen-preparation-model';
 import { QualityControlModel } from '../model/quality-control';
 import { TandanResponse } from '../model/tandan-response';
 import { User } from '../model/user';
@@ -25,6 +26,7 @@ import { BaggingService } from './tasks/bagging.service';
 import { ControlPollinationService } from './tasks/control-pollination.service';
 import { DefectService } from './tasks/defect.service';
 import { HarvestService } from './tasks/harvest.service';
+import { PollenPreparationService } from './tasks/pollen-preparation.service';
 import { QualityControlService } from './tasks/quality-control.service';
 import { TandanService } from './tasks/tandan.service';
 import { TreeService } from './tasks/tree.service';
@@ -70,6 +72,7 @@ export class OfflineModeService {
     private harvestService:HarvestService,
     private offlineHarvestService:OfflineHarvestService,
     private modalService:ModalService,
+    private pollenPrepService:PollenPreparationService,
   ) {
   }
 
@@ -325,10 +328,21 @@ export class OfflineModeService {
       this.defectService.getAll((defectRes:[DefectModel])=>{
         this.defectList = defectRes;
         this.storageService.set(this.storageService.offlineDefectList,defectRes);
-        this._baggingCpSyncComplete('download');
-        this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
-          v.dismiss();
-        });
+        this.pollenPrepService.getAll(
+          (res:PollenPreparationModel[])=>{
+            let pollenList:PollenPreparationModel[] = [];
+            res.forEach(el => {
+              if(el.status == TaskStatus.verified && el.kerosakan_id == null){
+                pollenList.push(el);
+              }
+            });
+            this.storageService.set(this.storageService.pollenPrep,pollenList);
+            this._baggingCpSyncComplete('download');
+            this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
+              v.dismiss();
+            });
+          }
+        );
       },false);
     },false)
   }

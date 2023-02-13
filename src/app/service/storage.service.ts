@@ -32,6 +32,7 @@ export class StorageService {
   posponedQCTask:string = "posponedQCTask";
   posponedHarvestTask:string = "posponedHarvestTask";
   posponedCPOfflineData:string = "posponedCPOfflineData";
+  pollenPrep:string = "pollenPrep";
 
   constructor(private storage: Storage) {
     this.init();

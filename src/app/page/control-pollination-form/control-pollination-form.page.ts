@@ -9,8 +9,11 @@ import { OfflineControlPollinationModel } from 'src/app/model/offline-control-po
 import { ModalService } from 'src/app/service/modal.service';
 import { OfflineModeService } from 'src/app/service/offline-mode.service';
 import { OfflineControlPollinationService } from 'src/app/service/offline/offline-control-pollination.service';
+import { PollenPreparationService } from 'src/app/service/tasks/pollen-preparation.service';
 import { StorageService } from 'src/app/service/storage.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
+import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
+import { OfflinePollenPrepService } from 'src/app/service/offline/offline-pollen-prep.service';
 
 @Component({
   selector: 'app-control-pollination-form',
@@ -20,11 +23,12 @@ import { ControlPollinationService } from 'src/app/service/tasks/control-pollina
 export class ControlPollinationFormPage implements OnInit {
 
   @ViewChild("id1") id1!: IonSelect;
-  pollenNumber:String;
+  @ViewChild("pollenNumber") pollenNumber!: IonSelect;
   taskId:String;
   tandanId:String;
   taskType:String;
   isOfflineMode:boolean;
+  pollenList:PollenPreparationModel[];
   constructor(
     private activatedRoute:ActivatedRoute,
     private controlPollinationService:ControlPollinationService,
@@ -33,6 +37,8 @@ export class ControlPollinationFormPage implements OnInit {
     private offlineModeService:OfflineModeService,
     private offlineCPService:OfflineControlPollinationService,
     private storageService:StorageService,
+    private pollenPrepService:PollenPreparationService,
+    private offlinePollenPrepService:OfflinePollenPrepService,
   ) { }
 
   ngOnInit() {
@@ -49,11 +55,14 @@ export class ControlPollinationFormPage implements OnInit {
 
   async ionViewDidEnter(){
     this.isOfflineMode = await this.offlineModeService.isOfflineMode();
+    this._getPollen();
   }
 
   async btnClick(form:NgForm){
+    console.log(this.pollenNumber?.value?.toString())
+    console.log(this.id1?.value?.toString())
     if(!this.isOfflineMode){
-      this.controlPollinationService.updatePollenNumber(this.taskId,this.pollenNumber,this.id1?.value?.toString(),(res:ControlPollinationModel)=>{
+      this.controlPollinationService.updatePollenNumber(this.taskId,this.pollenNumber?.value?.toString(),this.id1?.value?.toString(),(res:ControlPollinationModel)=>{
         this.modalService.successPrompt("Borang Anda Telah Berjaya Dihantar Ke Penyelia").then(()=>{
           this.router.navigateByUrl(
             '/app/tabs/tab1',
@@ -69,7 +78,7 @@ export class ControlPollinationFormPage implements OnInit {
         let tasks:OfflineControlPollinationModel[] = await this.offlineCPService.getSavedRedoCPTasks();
         tasks.forEach(el => {
           if(el.id == this.taskId){
-            el.no_pollen = this.pollenNumber.toString();
+            el.no_pollen = this.pollenNumber?.value?.toString();
             el.peratus_pollen=this.id1?.value?.toString();
             el.status=TaskStatus.done;
           }
@@ -87,7 +96,7 @@ export class ControlPollinationFormPage implements OnInit {
         let tasks:OfflineControlPollinationModel[] = await this.offlineCPService.getSavedPosponed2CPTasks();
         tasks.forEach(el => {
           if(el.id == this.taskId){
-            el.no_pollen = this.pollenNumber.toString();
+            el.no_pollen = this.pollenNumber?.value?.toString();
             el.peratus_pollen=this.id1?.value?.toString();
             el.status=TaskStatus.done;
           }
@@ -105,7 +114,7 @@ export class ControlPollinationFormPage implements OnInit {
         let tasks:OfflineControlPollinationModel[] = await this.offlineCPService.getSavedCPTasks();
         tasks.forEach(el => {
           if(el.tandan_id == this.tandanId){
-            el.no_pollen = this.pollenNumber.toString();
+            el.no_pollen = this.pollenNumber?.value?.toString();
             el.peratus_pollen=this.id1?.value?.toString();
             el.status=TaskStatus.done;
           }
@@ -119,6 +128,26 @@ export class ControlPollinationFormPage implements OnInit {
             }
           );
         });
+      }
+    }
+  }
+
+  async _getPollen(){
+    this.pollenList = [];
+    if(!this.isOfflineMode){
+      this.pollenPrepService.getAll(
+        (res:PollenPreparationModel[])=>{
+          res.forEach(el => {
+            if(el.status == TaskStatus.verified && el.kerosakan_id == null){
+              this.pollenList.push(el);
+            }
+          });
+        }
+      );
+    }else{
+      this.pollenList = await this.offlinePollenPrepService.getAll();
+      if(this.pollenList == null){
+        this.pollenList = [];
       }
     }
   }
