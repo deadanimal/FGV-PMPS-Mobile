@@ -265,6 +265,10 @@ export class TaskStatusPage implements OnInit {
     formData.append('catatan',this.remark? this.remark.toString() : "");
     formData.append('pengesah_id',this.id1?.value?.toString());
     formData.append('status',TaskStatus.created);
+    formData.append('kerosakan_id',this.defectId? this.defectId.toString() : "");
+    if(this.defectId != null){
+      formData.append('status',TaskStatus.defect);
+    }
 
     this.pollenPrepService.create(formData,
       (res:PollenPreparationModel)=>{

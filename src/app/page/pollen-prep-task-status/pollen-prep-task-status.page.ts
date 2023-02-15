@@ -40,8 +40,8 @@ export class PollenPrepTaskStatusPage implements OnInit {
   }
 
 
-  _successPrompt(){
-    let title = "Tarikh dan masa telah berjaya direkod, Sila tunggu 4 Jam untuk proses seterusnya"
+  _successPrompt(hour = 4){
+    let title = "Tarikh dan masa telah berjaya direkod, Sila tunggu "+hour+" Jam untuk proses seterusnya"
     this.modalService.successPrompt(title);
   }
 
@@ -68,7 +68,7 @@ export class PollenPrepTaskStatusPage implements OnInit {
         tarikh_ketuk : date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()
       }
     }else if(this.taskPhase == PollenPrepPhase.HotRoom2In){
-      this._successPrompt();
+      this._successPrompt(24);
       retVal = {
         masa_masuk_kedua : dateString
       }

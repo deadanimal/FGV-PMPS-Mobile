@@ -165,6 +165,8 @@ export class FinishedTaskPage implements OnInit {
       retVal = "Kawalan Kualiti"
     }else if(res.kitaran == TandanCycle.harvest){
       retVal = "Tuai"
+    }else if(res.kitaran == TandanCycle.pp){
+      retVal = "Penyediaan Pollen"
     }
 
     return retVal;
@@ -188,6 +190,8 @@ export class FinishedTaskPage implements OnInit {
       }else{
         retVal = 4;
       }
+    }else{
+      retVal = 5;
     }
 
     return retVal;
