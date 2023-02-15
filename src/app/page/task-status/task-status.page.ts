@@ -689,7 +689,8 @@ export class TaskStatusPage implements OnInit {
   async _getCPTask(taskId:String){
     if(this.userRole == UserRole.penyelia_balut){
       this.controlPollinationService.getById(taskId,(res:ControlPollinationModel)=>{
-        this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
+        let imageUrl = res.url_gambar.split(",");
+        this.serverImage = `${environment.storageUrl}${imageUrl[imageUrl.length-1]}`;
         this.remark = res.catatan;
         this.tandanId = res.tandan_id.toString();
         if(res.kerosakan_id != null){

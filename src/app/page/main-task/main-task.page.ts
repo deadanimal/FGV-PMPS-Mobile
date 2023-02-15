@@ -119,7 +119,6 @@ export class MainTaskPage implements OnInit {
     this.employeeId = user.id;
     this.isOfflineMode = await this.offlineModeService.isOfflineMode();
     this._getTask();
-    console.log(this.scanInput)
     if(this.scanInput != null){
       if(!this.isOfflineMode){
         this.treeService.getById(this.scanInput,(res:PokokResponse)=>{

@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
@@ -37,7 +38,7 @@ export class PollenPrepMainPage implements OnInit {
     private router:Router,
     private pollenPrepService:PollenPreparationService,
     private accountService:AccountService,
-    private navigationService:NavigationService,
+    private datePipe:DatePipe,
   ) { }
 
   ngOnInit() {
@@ -141,8 +142,18 @@ export class PollenPrepMainPage implements OnInit {
         res.forEach(el => {
           if(el.id_sv_pollen == this.accountService.getSessionDetails().id){
             if(el.status == TaskStatus.created){
-              this.posponedTaskList.push(el);
-              this.numOfPosponedTask++;
+              if(this.role == UserRole.petugas_balut_fatherpalm){
+                if(el.tarikh_ayak == null){
+                  this.posponedTaskList.push(el);
+                  this.numOfPosponedTask++;
+                }else{
+                  this.activeTaskList.push(el);
+                  this.numOfActiveTask++;
+                }
+              }else{
+                this.posponedTaskList.push(el);
+                this.numOfPosponedTask++;
+              }
             }else if(el.status == TaskStatus.done){
               this.activeTaskList.push(el);
               this.numOfActiveTask++;
@@ -150,10 +161,20 @@ export class PollenPrepMainPage implements OnInit {
               this.finishedTaskList.push(el);
               this.numOfFinishTask++;
             }
+          }else if(this.role == UserRole.petugas_makmal){
+            if(el.status ==TaskStatus.created && el.tarikh_ayak != null){
+              this.posponedTaskList.push(el);
+              this.numOfPosponedTask++;
+            }
+          }else{
           }
         });
       }
     );
+  }
+
+  getDateString(rawDate){
+    return this.datePipe.transform(rawDate, 'dd-MM-yyyy')
   }
 
 }
