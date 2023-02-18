@@ -1166,6 +1166,7 @@ export class TaskStatusPage implements OnInit {
     formData.append('tambahan_hari',this.posponedDay.toString());
     formData.append('bil_pemeriksaan',this.numOfCheck.toString());
     formData.append('status', TaskStatus.postpone);
+    formData.append('_method', 'put');
     formData.append('kerosakan_id',this.defectId? this.defectId.toString() : "");
     if(!this.isOfflineMode){
       this.controlPollinationService.updateUsingForm(
