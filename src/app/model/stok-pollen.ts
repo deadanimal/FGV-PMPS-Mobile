@@ -1,4 +1,5 @@
 import { PokokResponse } from "./pokok-respons";
+import { PollenPreparationModel } from "./pollen-preparation-model";
 
 export interface StokPollenModel {
     id?: number;
@@ -12,4 +13,5 @@ export interface StokPollenModel {
     pokok?:PokokResponse;
     created_at?: Date;
     updated_at?: Date;
+    pollen?:PollenPreparationModel
 }
