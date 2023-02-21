@@ -21,6 +21,8 @@ export class PollenPrepTestPage implements OnInit {
   dateAndTimeBagging:String;
   dateAndTimeHarvest:String;
   numberOfTest:String;
+  pollenNo:string;
+  tandan:string;
 
   constructor(
     private activatedRoute:ActivatedRoute,
@@ -52,7 +54,9 @@ export class PollenPrepTestPage implements OnInit {
                     + date.getSeconds();
       
       this.dateAndTimeTest = dateString;
-      this.pollenType = res.jenis;
+      this.pollenType = 'TUAI';
+      this.pollenNo = res.pokok.progeny+'-'+res.pokok.id;
+      this.tandan = res.tandan.no_daftar;
       this.dateAndTimeBagging = dateString;
       this.dateAndTimeHarvest = dateString;
       this.numberOfTest = res.bil_uji == null? '1':(parseInt(res.bil_uji)+1).toString();

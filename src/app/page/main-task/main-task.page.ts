@@ -133,7 +133,15 @@ export class MainTaskPage implements OnInit {
 
   viewTask(taskId:String,status:String,id:number,param1:string = ""){
     if(status == "completed"){
-      if(taskId == 'balut' || taskId == 'qc' || taskId == 'cp' || taskId == 'qcSv'|| taskId == 'harvestSv'|| taskId == 'harvest'){
+      if(
+          taskId == 'balut' ||
+          taskId == 'qc' ||
+          taskId == 'cp' ||
+          taskId == 'qcSv'||
+          taskId == 'harvestSv'||
+          taskId == 'harvest'||
+          taskId == 'pollen_use'
+        ){
         this.router.navigate(['app/tabs/tab1/task-finished',{taskId:id,taskType:this.task}]);
       }else{
         this.router.navigate(['app/tabs/tab1/task-finished',{tandanId:id}]);
@@ -569,6 +577,17 @@ export class MainTaskPage implements OnInit {
     }
   }
 
+  _getPollenUseTask(){
+    this.pollenPrepService.getAll((res:[PollenPreparationModel])=>{
+      res.forEach(el => {
+        if(el.status_pollen == 'lupus'){
+          this.numOfFinishTask++;
+          this.finishedTaskList.push(el);
+        }
+      });
+    });
+  }
+
   async _getHarvestTask(){
     if(
       this.role == UserRole.petugas_tuai ||
@@ -666,6 +685,8 @@ export class MainTaskPage implements OnInit {
       this._getHarvestTask();
     }else if(this.task == 'Penyediaan Pollen'){
       this._getPollenPrepTask();
+    }else if(this.task == 'Penggunaan Pollen'){
+      this._getPollenUseTask();
     }
   }
 

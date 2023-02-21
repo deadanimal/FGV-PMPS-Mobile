@@ -19,6 +19,7 @@ import { PollenUsageService } from 'src/app/service/tasks/pollen-usage.service';
 export class StokPollenFormPage implements OnInit {
 
   block:string;
+  tandan:string;
   no_pollen:string;
   pollen_weight:string;
   outgoing_amount:string;
@@ -30,8 +31,10 @@ export class StokPollenFormPage implements OnInit {
   isReturn:boolean = false;
   pollenList:PollenPreparationModel[];
   availableBlock:string[];
+  availableTandan:string[];
 
   selectedBlock:string;
+  selectedTandan:string;
   selectedPollen:PollenPreparationModel;
 
   constructor(
@@ -132,6 +135,7 @@ export class StokPollenFormPage implements OnInit {
         if(el.id == res.pollen_id){
           this.selectedPollen = el;
           this.block = el.pokok.blok;
+          this.tandan = el.tandan.no_daftar;
           this.no_pollen = el.id.toString();
           this.viability = el.viabiliti_pollen;
           this.getHarvestTask(el.tandan_id);
@@ -144,7 +148,7 @@ export class StokPollenFormPage implements OnInit {
     this.harvestService.getByTandanId(tandanId,(res:HarvestModel[])=>{
       res.forEach(el => {
         if(el.status == TaskStatus.verified){
-          this.pollen_weight = el.berat_tandan +" KG";
+          this.pollen_weight = el.berat_tandan +" g";
         }
       });
     }, false);
@@ -166,23 +170,49 @@ export class StokPollenFormPage implements OnInit {
 
   filterAvailableBlock(){
     this.availableBlock = [];
+    this.availableTandan = [];
     this.pollenList.forEach(el => {
       if(!this.availableBlock.includes(el.pokok.blok)){
         this.availableBlock.push(el.pokok.blok);
+      }if(!this.availableTandan.includes(el.tandan?.no_daftar)){
+        this.availableTandan.push(el.tandan?.no_daftar);
       }
     });
   }
 
+  filterAvailableTandan(){
+    this.availableTandan = [];
+    if(this.selectedBlock != null){
+      this.pollenList.forEach(el => {
+        if(el.pokok.blok == this.selectedBlock && !this.availableTandan.includes(el.tandan?.no_daftar)){
+          this.availableTandan.push(el.tandan?.no_daftar);
+        }
+      });
+    }
+
+  }
+
   getFilteredPollenList(){
     let retVal:PollenPreparationModel[] = [];
+    let tempArray:PollenPreparationModel[] = [];
     if(this.selectedBlock!= null){
       this.pollenList.forEach(el => {
         if(el.pokok.blok == this.selectedBlock){
+          tempArray.push(el);
+        }
+      });
+    }else{
+      tempArray = this.pollenList;
+    }
+
+    if(this.selectedTandan != null){
+      tempArray.forEach(el => {
+        if(el.tandan.no_daftar == this.selectedTandan){
           retVal.push(el);
         }
       });
     }else{
-      retVal = this.pollenList;
+      retVal = tempArray;
     }
     
     return retVal;
@@ -191,6 +221,11 @@ export class StokPollenFormPage implements OnInit {
   
   blockChange(e) {
     this.selectedBlock = e.detail.value;
+    this.filterAvailableTandan();
+  }
+  
+  tandanhange(e) {
+    this.selectedTandan = e.detail.value;
   }
 
   pollenChange(e){

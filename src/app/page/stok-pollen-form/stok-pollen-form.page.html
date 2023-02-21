@@ -8,6 +8,11 @@
       <ion-label position="floating">Blok</ion-label>
       <ion-input type="text" [(ngModel)]="block" name="block" required [disabled]="isReturn"></ion-input>
     </ion-item>
+  
+    <ion-item *ngIf="tandan != null" lines="full">
+      <ion-label position="floating">Tandan</ion-label>
+      <ion-input type="text" [(ngModel)]="tandan" name="tandan" required [disabled]="isReturn"></ion-input>
+    </ion-item>
 
     <ion-item *ngIf="block == null" lines="full" class="mt-4">
       <ion-select (ionChange)="blockChange($event)" placeholder="Blok" id="block" #block required [disabled]="isReturn">
@@ -15,19 +20,30 @@
       </ion-select>
     </ion-item>
 
+    <ion-item *ngIf="tandan == null" lines="full" class="mt-4">
+      <ion-select (ionChange)="tandanhange($event)" placeholder="Tandan" id="tandan" #tandan required [disabled]="isReturn">
+        <ion-select-option *ngFor="let tandan of availableTandan" value={{tandan}}>{{tandan}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
     <ion-item *ngIf="no_pollen != null" lines="full">
       <ion-label position="floating">No. Pollen</ion-label>
       <ion-input type="text" [(ngModel)]="no_pollen" name="no_pollen" required [disabled]="isReturn"></ion-input>
     </ion-item>
+  
+    <ion-item *ngIf="isReturn" lines="full">
+      <ion-label position="floating">Proses</ion-label>
+      <ion-input type="text" value="Pendebungaan Terkawal" required [disabled]="isReturn"></ion-input>
+    </ion-item>
 
     <ion-item *ngIf="no_pollen == null" lines="full" class="mt-4">
       <ion-select (ionChange)="pollenChange($event)" placeholder="No. Pollen" id="block" #block required [disabled]="isReturn">
-        <ion-select-option *ngFor="let pollen of getFilteredPollenList()" value={{pollen?.id}}>{{pollen?.id}}</ion-select-option>
+        <ion-select-option *ngFor="let pollen of getFilteredPollenList()" value={{pollen?.id}}>{{pollen?.pokok?.progeny}} - {{pollen?.pokok?.id}}</ion-select-option>
       </ion-select>
     </ion-item>
 
     <ion-item lines="full">
-      <ion-label position="floating">Berat Pollen</ion-label>
+      <ion-label position="floating">Berat Pollen (gram)</ion-label>
       <ion-input type="text" [(ngModel)]="pollen_weight" name="pollen_weight" required [disabled]="isReturn"></ion-input>
     </ion-item>
 

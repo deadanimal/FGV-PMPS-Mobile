@@ -102,5 +102,9 @@
       <ion-label position="floating">Catatan Penyelia</ion-label>
       <ion-input type="text" [(ngModel)]="svRemark" name="svRemark" required [readonly]="true"></ion-input>
     </ion-item>
+    <ion-item lines="full mb-4" *ngIf="pollenDiscarded">
+      <ion-label position="floating">Status Pollen</ion-label>
+      <ion-input type="text" value="TELAH DILUPUS" required [readonly]="true"></ion-input>
+    </ion-item>
   </form>
 </ion-content>

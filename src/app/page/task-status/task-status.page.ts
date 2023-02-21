@@ -280,7 +280,7 @@ export class TaskStatusPage implements OnInit {
             url = 'app/tabs/tab1/'+this.returnPage.toString();
           }
           if(this.tandanStatus == "ok"){
-            this.modalService.successPrompt("QC telah berjaya dihantar kepada Penyelia").then(
+            this.modalService.successPrompt("sub-QC telah berjaya dihantar kepada Penyelia").then(
               (value)=>{
                 setTimeout(
                   () => {
@@ -347,7 +347,7 @@ export class TaskStatusPage implements OnInit {
             url = 'app/tabs/tab1/'+this.returnPage.toString();
           }
           if(this.tandanStatus == "ok"){
-            this.modalService.successPrompt("QC telah berjaya dihantar kepada Penyelia").then(
+            this.modalService.successPrompt("sub-QC telah berjaya dihantar kepada Penyelia").then(
               (value)=>{
                 setTimeout(
                   () => {
@@ -1457,7 +1457,11 @@ export class TaskStatusPage implements OnInit {
       if(this.taskType == InAppTaskCycle.harvest || this.taskType == InAppTaskCycle.anjakharvest){
         formData.append('_method','put');
         this.harvestService.update(this.taskId,formData,(res:HarvestModel)=>{
-          this._promptCompleted();
+          if(TaskStatus.postpone == status){
+            this._promptCompleted('Tugas berjaya dianjak');
+          }else{
+            this._promptCompleted();
+          }
         },false);
       }else{
         formData.append('pokok_id',this.treeId.toString());

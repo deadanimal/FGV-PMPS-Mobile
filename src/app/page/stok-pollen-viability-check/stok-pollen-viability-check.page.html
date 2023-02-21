@@ -9,8 +9,12 @@
       <ion-input type="text" [(ngModel)]="testTime" name="testTime" required [disabled]='true'></ion-input>
     </ion-item>
     <ion-item *ngIf="pollenType != null" lines="full">
-      <ion-label position="floating">Jenis Pollen</ion-label>
+      <ion-label position="floating">Proses</ion-label>
       <ion-input type="text" [(ngModel)]="pollenType" name="pollenType" required [disabled]='true'></ion-input>
+    </ion-item>
+    <ion-item *ngIf="pollenNo != null" lines="full">
+      <ion-label position="floating">No Pollen</ion-label>
+      <ion-input type="text" [(ngModel)]="pollenNo" name="pollenNo" required [disabled]='true'></ion-input>
     </ion-item>
     <ion-item *ngIf="baggingTime != null" lines="full">
       <ion-label position="floating">Masa & Tarikh Balut</ion-label>

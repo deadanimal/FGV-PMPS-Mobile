@@ -1,4 +1,5 @@
 import { PokokResponse } from "./pokok-respons";
+import { TandanResponse } from "./tandan-response";
 
 export interface PollenPreparationModel {
     id: number;
@@ -31,6 +32,7 @@ export interface PollenPreparationModel {
     jenis: string;
     url_gambar2: string;
     pokok?:PokokResponse;
+    tandan?:TandanResponse;
     catatan2: string;
     kerosakan_id?: number;
 }

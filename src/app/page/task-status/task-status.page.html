@@ -55,7 +55,7 @@
       <ion-input type="text" [(ngModel)]="defect" name="defect" required [readonly]="true"></ion-input>
     </ion-item>
     <ion-item *ngIf="(taskType == 'tuai' || taskType == 'tuaiposponed' || taskType == 'harvestsv') && defect == null && userRole != roles.petugas_balut_fatherpalm && userRole != roles.penyelia_fatherpalm" lines="full">
-      <ion-label position="floating">Berat Tandan (KG)</ion-label>
+      <ion-label position="floating">Berat Tandan (gram)</ion-label>
       <ion-input type="text" [(ngModel)]="weight" name="weight" required></ion-input>
     </ion-item>
     <ion-item lines="full">

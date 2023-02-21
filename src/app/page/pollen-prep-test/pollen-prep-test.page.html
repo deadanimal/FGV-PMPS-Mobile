@@ -5,12 +5,20 @@
 
   <form #form="ngForm" class="mx-auto my-2" style="max-width: 300px;">
     <ion-item lines="full">
-      <ion-label position="floating">Masa Dan Tarikh Uji</ion-label>
-      <ion-input type="text" [(ngModel)]="dateAndTimeTest" name="dateAndTimeTest" required [readonly]="true"></ion-input>
+      <ion-label position="floating">No Pollen</ion-label>
+      <ion-input type="text" [(ngModel)]="pollenNo" name="pollenNo" required [readonly]="true"></ion-input>
     </ion-item>
     <ion-item lines="full">
-      <ion-label position="floating">Jenis Polen</ion-label>
+      <ion-label position="floating">Tandan</ion-label>
+      <ion-input type="text" [(ngModel)]="tandan" name="tandan" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Proses</ion-label>
       <ion-input type="text" [(ngModel)]="pollenType" name="pollenType" required></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label position="floating">Masa Dan Tarikh Uji</ion-label>
+      <ion-input type="text" [(ngModel)]="dateAndTimeTest" name="dateAndTimeTest" required [readonly]="true"></ion-input>
     </ion-item>
     <ion-item lines="full">
       <ion-label position="floating">Masa Dan Tarikh Balut</ion-label>

@@ -26,6 +26,7 @@ export class StokPollenViabilityCheckPage implements OnInit {
   pollenType:string;
   baggingTime:string;
   harvestTime:string;
+  pollenNo:string;
   @ViewChild("id1") id1!: IonSelect;
 
   constructor(
@@ -53,7 +54,8 @@ export class StokPollenViabilityCheckPage implements OnInit {
     this.stockPollenService.getById(this.stockPollenId,(res:StokPollenModel)=>{
       this.stockPollen = res;
       this.pollenPrepService.getById(res.pollen_id.toString(),(res1:PollenPreparationModel)=>{
-        this.pollenType = res1.jenis;
+        this.pollenNo = res1.pokok?.progeny+"-"+res1.pokok?.id;
+        this.pollenType = 'Pendebungaan Terkawal';
         this.baggingService.getByTandanId(res1.tandan_id,(res2:BaggingModel[])=>{
           res2.forEach(el => {
             if(el.status == TaskStatus.verified){

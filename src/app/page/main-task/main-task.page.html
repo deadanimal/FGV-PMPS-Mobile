@@ -298,10 +298,18 @@
         </ion-col>
         <ion-col size="6" size-md="4" size-lg="2">
           <div>
-            <button (click)="returnPUTask()" [disabled]="disableFinishRecord" class="btn w-100 mx-auto rounded greenBtn text-center text-white p-2">
-              <ion-badge *ngIf="numOfFinishTask > 0" color="danger">{{numOfFinishTask}}</ion-badge>
+            <button (click)="returnPUTask()" class="btn w-100 mx-auto rounded blueBtn text-center text-white p-2">
               <img height="56px" src="/assets/finished_record_icon.png">
               <h5>Pemulangan</h5>
+            </button>
+          </div>
+        </ion-col>
+        <ion-col size="6" size-md="4" size-lg="2">
+          <div>
+            <button (click)="finishRecord()" [disabled]="disableFinishRecord" class="btn w-100 mx-auto rounded greenBtn text-center text-white p-2">
+              <ion-badge *ngIf="numOfFinishTask > 0" color="danger">{{numOfFinishTask}}</ion-badge>
+              <img height="56px" src="/assets/finished_record_icon.png">
+              <h5>Tugas Selesai</h5>
             </button>
           </div>
         </ion-col>
@@ -309,7 +317,7 @@
     </ion-grid>
 
     <p *ngIf="disableFinishRecord || disableActiveTaskBtn || disableNewRecord || disableTaskBtn" style="font-size: 14px; font-weight: 600; line-height: 100%; text-align: center; color: rgba(57.37, 57.37, 57.37, 1);">Senarai Rekod</p>
-    <div *ngIf="!(task == 'Tuai') && !(task == 'Kawalan Kualiti (QC)') && !(task == 'Penyediaan Pollen') && !(task == 'Pendebungaan Terkawal (CP)' && (role == roles.petugas_balut || role == roles.petugas_balut_fatherpalm))">
+    <div *ngIf="!(task == 'Tuai') && !(task == 'Kawalan Kualiti (QC)') && !(task == 'Penggunaan Pollen') && !(task == 'Penyediaan Pollen') && !(task == 'Pendebungaan Terkawal (CP)' && (role == roles.petugas_balut || role == roles.petugas_balut_fatherpalm))">
       <div *ngIf="disableFinishRecord">
         <div *ngFor="let item of finishedTaskList" class="p-3 my-3 mx-auto w-75 shadow rounded border border-success d-flex justify-content-between align-items-center">
           <p class="h6">Rekod {{item.id}} ({{item.pokok.progeny}}-{{item.pokok.no_pokok}})</p>
@@ -502,6 +510,14 @@
         <div *ngFor="let item of finishedTaskList" class="p-3 my-3 mx-auto w-75 shadow rounded border border-success d-flex justify-content-between align-items-center">
           <p class="h6">Rekod {{item.id}} ({{item.pokok.progeny}}-{{item.pokok.no_pokok}})</p>
           <button (click)="viewTask('pollenPrep','completed',item.tandan_id)" class="btn greenBtn text-white">Info</button>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="task == 'Penggunaan Pollen' && (role == roles.petugas_makmal)">
+      <div *ngIf="disableFinishRecord">
+        <div *ngFor="let item of finishedTaskList" class="p-3 my-3 mx-auto w-75 shadow rounded border border-success d-flex justify-content-between align-items-center">
+          <p class="h6">Rekod {{item.id}} ({{item.pokok.progeny}}-{{item.pokok.no_pokok}})</p>
+          <button (click)="viewTask('pollen_use','completed',item.id)" class="btn greenBtn text-white">Info</button>
         </div>
       </div>
     </div>

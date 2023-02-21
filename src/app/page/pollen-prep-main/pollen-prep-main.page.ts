@@ -88,7 +88,7 @@ export class PollenPrepMainPage implements OnInit {
       }]);
     }
     else{
-      // this.router.navigate(['app/tabs/tab1/task-finished',{taskId:taskStatus,tandanId:id}]);
+      this.router.navigate(['app/tabs/tab1/task-finished',{taskId:id,taskType:InAppTaskCycle.pp}]);
     }
   }
 
