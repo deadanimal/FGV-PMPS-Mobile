@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
 import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
+import { PollenStatus } from 'src/app/common/pollen-status';
 import { TaskStatus } from 'src/app/common/task-status';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
 import { BaggingModel } from 'src/app/model/bagging';
@@ -565,6 +566,15 @@ export class MainTaskPage implements OnInit {
         res.forEach(el => {
           if(el.pengesah_id == this.accountService.getSessionDetails().id){
             if(el.status == TaskStatus.done){
+              this.numOfNewTask++;
+              this.newTaskList.push(el);
+            }else if(el.status == TaskStatus.created && ( 
+              el.status_pollen == PollenStatus.qc1 || 
+              el.status_pollen == PollenStatus.qc2 || 
+              el.status_pollen == PollenStatus.qc3 )){
+              this.numOfNewTask++;
+              this.newTaskList.push(el);
+            }else if(el.status == TaskStatus.defect){
               this.numOfNewTask++;
               this.newTaskList.push(el);
             }else if(el.status == TaskStatus.verified || el.status == TaskStatus.rejected){

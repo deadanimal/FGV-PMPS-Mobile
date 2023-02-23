@@ -45,6 +45,7 @@ import { OfflineQualityControlModel } from 'src/app/model/offline-quality-contro
 import { OfflineHarvestService } from 'src/app/service/offline/offline-harvest.service';
 import { OfflineHarvestModel } from 'src/app/model/offline-harvest';
 import { OfflineDefectService } from 'src/app/service/offline/offline-defect.service';
+import { PollenStatus } from 'src/app/common/pollen-status';
 
 @Component({
   selector: 'app-task-status',
@@ -88,6 +89,8 @@ export class TaskStatusPage implements OnInit {
   enableImgDeleteBtn = false;
   submitClicked = false;
   roles = UserRole;
+  currentPollenPrepStatus:PollenStatus;
+  pollenStatus = PollenStatus;
 
   constructor(
     private photoService:PhotoService,
@@ -265,6 +268,7 @@ export class TaskStatusPage implements OnInit {
     formData.append('catatan',this.remark? this.remark.toString() : "");
     formData.append('pengesah_id',this.id1?.value?.toString());
     formData.append('status',TaskStatus.created);
+    formData.append('status_pollen',PollenStatus.qc1);
     formData.append('kerosakan_id',this.defectId? this.defectId.toString() : "");
     if(this.defectId != null){
       formData.append('status',TaskStatus.defect);
@@ -275,12 +279,12 @@ export class TaskStatusPage implements OnInit {
         if(res.id != null){
           let url:string;
           if(this.returnPage == null || this.returnPage == "" || this.returnPage == undefined){
-            url = 'app/tabs/tab1/pollen-prep-form';
+            url = 'app/tabs/tab1/pollen-preps';
           }else{
             url = 'app/tabs/tab1/'+this.returnPage.toString();
           }
           if(this.tandanStatus == "ok"){
-            this.modalService.successPrompt("sub-QC telah berjaya dihantar kepada Penyelia").then(
+            this.modalService.successPrompt("Sub-QC telah berjaya dihantar kepada Penyelia").then(
               (value)=>{
                 setTimeout(
                   () => {
@@ -347,7 +351,7 @@ export class TaskStatusPage implements OnInit {
             url = 'app/tabs/tab1/'+this.returnPage.toString();
           }
           if(this.tandanStatus == "ok"){
-            this.modalService.successPrompt("sub-QC telah berjaya dihantar kepada Penyelia").then(
+            this.modalService.successPrompt("Sub-QC telah berjaya dihantar kepada Penyelia").then(
               (value)=>{
                 setTimeout(
                   () => {
@@ -872,14 +876,41 @@ export class TaskStatusPage implements OnInit {
   _getPollenPrepTask(){
     if(this.userRole == UserRole.penyelia_makmal || this.userRole == UserRole.penyelia_fatherpalm){
       this.pollenPrepService.getById(this.taskId,(res:PollenPreparationModel)=>{
-        this.serverImage = `${environment.storageUrl}${res.url_gambar}`;
-        this.serverImage2 = `${environment.storageUrl}${res.url_gambar2}`;
         this.remark = res.catatan;
         this.tandanId = res.tandan_id.toString();
+        this.currentPollenPrepStatus = this.getStatusPollen(res);
+        this.getServerImagePollenPrepTask(res);
+        if(res.kerosakan_id != null){
+          this._getDefectList(res.kerosakan_id);
+        }
       });
     }else{
       this._getTandanInfo(this.tandanId);
     }
+  }
+
+  getServerImagePollenPrepTask(pollen:PollenPreparationModel){
+    if(pollen.status_pollen == PollenStatus.qc1){
+      this.serverImage = `${environment.storageUrl}${pollen.url_gambar}`;
+    }else if(pollen.status_pollen == PollenStatus.qc2){
+      this.serverImage = `${environment.storageUrl}${pollen.url_gambar2}`;
+    }else if(pollen.status_pollen == PollenStatus.qc3){
+      this.serverImage = `${environment.storageUrl}${pollen.url_gambar3}`;
+    }else{
+      this.serverImage = `${environment.storageUrl}${pollen.url_gambar}`;
+    }
+  }
+
+  getStatusPollen(pollen:PollenPreparationModel){
+    let retVal:PollenStatus;
+    if(pollen.status_pollen == PollenStatus.qc1){
+      retVal = PollenStatus.qc1;
+    }else if(pollen.status_pollen == PollenStatus.qc2){
+      retVal = PollenStatus.qc2;
+    }else if(pollen.status_pollen == PollenStatus.qc3){
+      retVal = PollenStatus.qc3;
+    } 
+    return retVal;
   }
 
   async _getTask(taskId:String){
@@ -1016,10 +1047,30 @@ export class TaskStatusPage implements OnInit {
         }
       );
     }else if(this.taskType == InAppTaskCycle.ppSv){
-      this.pollenPrepService.updateVerify(
+      let updateData = {};
+      if(this.currentPollenPrepStatus == PollenStatus.qc1){
+        updateData = {
+          status_pollen:PollenStatus.approved1,
+          catatan_pengesah:this.svRemark,
+        }
+      }else if(this.currentPollenPrepStatus == PollenStatus.qc2){
+        updateData = {
+          status_pollen:PollenStatus.approved2,
+          catatan_pengesah2:this.svRemark,
+        }
+      }else if(this.currentPollenPrepStatus == PollenStatus.qc3){
+        updateData = {
+          status_pollen:PollenStatus.approved3,
+          catatan_pengesah3:this.svRemark,
+          status:TaskStatus.verified,
+        }
+      }
+      if(this.defect != null){
+        updateData['status'] = TaskStatus.verified;
+      }
+      this.pollenPrepService.update(
         this.taskId,
-        this.svRemark,
-        TaskStatus.verified,
+        updateData,
         (res:PollenPreparationModel)=>{
           this._promptCompleted("Tugasan Telah Berjaya Di Sahkan");
         }

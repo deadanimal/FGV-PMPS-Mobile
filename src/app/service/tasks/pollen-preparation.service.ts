@@ -181,7 +181,7 @@ export class PollenPreparationService {
   ){
     let retVal = false;
     ppTaskList.forEach(el => {
-      if(el.tandan_id == tandan_id){
+      if(el.tandan_id == tandan_id && el.status != TaskStatus.rejected){
         retVal = true;
       }
     });

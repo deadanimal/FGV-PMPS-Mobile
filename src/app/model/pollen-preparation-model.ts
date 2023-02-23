@@ -31,8 +31,10 @@ export interface PollenPreparationModel {
     updated_at: Date;
     jenis: string;
     url_gambar2: string;
+    url_gambar3: string;
     pokok?:PokokResponse;
     tandan?:TandanResponse;
     catatan2: string;
+    catatan3: string;
     kerosakan_id?: number;
 }

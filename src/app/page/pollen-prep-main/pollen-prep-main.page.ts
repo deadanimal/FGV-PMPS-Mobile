@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
+import { PollenStatus } from 'src/app/common/pollen-status';
 import { TaskStatus } from 'src/app/common/task-status';
 import { BaggingModel } from 'src/app/model/bagging';
 import { HarvestModel } from 'src/app/model/harvest';
@@ -143,7 +144,11 @@ export class PollenPrepMainPage implements OnInit {
           if(el.id_sv_pollen == this.accountService.getSessionDetails().id){
             if(el.status == TaskStatus.created){
               if(this.role == UserRole.petugas_balut_fatherpalm){
-                if(el.tarikh_ayak == null){
+                if(el.tarikh_ayak == null &&
+                    el.kerosakan_id == null && ( 
+                      el.status_pollen == PollenStatus.approved1 || 
+                      el.status_pollen == PollenStatus.approved2 || 
+                      el.status_pollen == PollenStatus.approved3 )){
                   this.posponedTaskList.push(el);
                   this.numOfPosponedTask++;
                 }else{
@@ -155,6 +160,9 @@ export class PollenPrepMainPage implements OnInit {
                 this.numOfPosponedTask++;
               }
             }else if(el.status == TaskStatus.done){
+              this.activeTaskList.push(el);
+              this.numOfActiveTask++;
+            }else if(el.status == TaskStatus.defect){
               this.activeTaskList.push(el);
               this.numOfActiveTask++;
             }else{
