@@ -126,8 +126,12 @@ export class MainTaskPage implements OnInit {
           this._manualInput(res.progeny+"-"+res.no_pokok);
         },false);
       }else{
-        let treeNumber = await this.offlineTreeService.getById(this.scanInput);
-        this._manualInput(treeNumber.progeny+"-"+treeNumber.no_pokok);
+        try{
+            let treeNumber = await this.offlineTreeService.getById(this.scanInput);
+            this._manualInput(treeNumber.progeny+"-"+treeNumber.no_pokok);
+          }catch{
+            this.modalService.successPrompt('Tiada data, Sila sync dahulu');
+          }
       }
     }
   }
