@@ -40,6 +40,7 @@ export class PollenPrepMainPage implements OnInit {
     private pollenPrepService:PollenPreparationService,
     private accountService:AccountService,
     private datePipe:DatePipe,
+    private navService:NavigationService,
   ) { }
 
   ngOnInit() {
@@ -87,6 +88,13 @@ export class PollenPrepMainPage implements OnInit {
       this.router.navigate(['app/tabs/tab1/pollen-prep-form',{
         taskId:id,tandanId:value
       }]);
+    }else if(taskStatus == 'continue'){
+      this.navService.tandanVerification(
+        id,
+        InAppTaskCycle.pp,
+        value,
+        "app/tabs/tab1/defect"
+      );
     }
     else{
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:id,taskType:InAppTaskCycle.pp}]);
@@ -130,11 +138,15 @@ export class PollenPrepMainPage implements OnInit {
   }
 
   _getNewTask(){
-    this.pollenPrepService.getNewTask((res:[HarvestModel])=>{
-      this.numOfNewTask = res.length;
-      this.newTaskList = res;
+    if(this.role == UserRole.petugas_balut_fatherpalm){
+      this.pollenPrepService.getNewTask((res:[HarvestModel])=>{
+        this.numOfNewTask = res.length;
+        this.newTaskList = res;
+        this._getPPTask();
+      });
+    }else{
       this._getPPTask();
-    });
+    }
   }
 
   _getPPTask(){
@@ -156,8 +168,13 @@ export class PollenPrepMainPage implements OnInit {
                   this.numOfActiveTask++;
                 }
               }else{
-                this.posponedTaskList.push(el);
-                this.numOfPosponedTask++;
+                if(el.status_pollen == PollenStatus.approved2){
+                  this.posponedTaskList.push(el);
+                  this.numOfPosponedTask++;
+                }else{
+                  this.activeTaskList.push(el);
+                  this.numOfActiveTask++;
+                }
               }
             }else if(el.status == TaskStatus.done){
               this.activeTaskList.push(el);
@@ -171,8 +188,13 @@ export class PollenPrepMainPage implements OnInit {
             }
           }else if(this.role == UserRole.petugas_makmal){
             if(el.status ==TaskStatus.created && el.tarikh_ayak != null){
-              this.posponedTaskList.push(el);
-              this.numOfPosponedTask++;
+              if(el.status_pollen == PollenStatus.approved1){
+                this.newTaskList.push(el);
+                this.numOfNewTask++;
+              }else if(el.status_pollen == PollenStatus.approved2){
+                this.posponedTaskList.push(el);
+                this.numOfPosponedTask++;
+              }
             }
           }else{
           }

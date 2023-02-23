@@ -91,6 +91,7 @@ export class TaskStatusPage implements OnInit {
   roles = UserRole;
   currentPollenPrepStatus:PollenStatus;
   pollenStatus = PollenStatus;
+  pollenViability:String;
 
   constructor(
     private photoService:PhotoService,
@@ -332,6 +333,7 @@ export class TaskStatusPage implements OnInit {
     formData.append('url_gambar2', blob, "task_"+this.taskId+"."+this.photo.format);
     formData.append('id_sv_pollen',this.accountService.getSessionDetails().id.toString());
     formData.append('catatan2',this.remark? this.remark.toString() : "");
+    formData.append('status_pollen',PollenStatus.qc2);
     formData.append('kerosakan_id',this.defectId? this.defectId.toString() : "");
     formData.append('pengesah_id',this.id1?.value?.toString());
     formData.append('tarikh_qc', date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate());
@@ -876,7 +878,11 @@ export class TaskStatusPage implements OnInit {
   _getPollenPrepTask(){
     if(this.userRole == UserRole.penyelia_makmal || this.userRole == UserRole.penyelia_fatherpalm){
       this.pollenPrepService.getById(this.taskId,(res:PollenPreparationModel)=>{
-        this.remark = res.catatan;
+        if(res.viabiliti_pollen != null){
+          this.pollenViability = res.viabiliti_pollen;
+        }else{
+          this.remark = res.catatan;
+        }
         this.tandanId = res.tandan_id.toString();
         this.currentPollenPrepStatus = this.getStatusPollen(res);
         this.getServerImagePollenPrepTask(res);
@@ -894,10 +900,11 @@ export class TaskStatusPage implements OnInit {
       this.serverImage = `${environment.storageUrl}${pollen.url_gambar}`;
     }else if(pollen.status_pollen == PollenStatus.qc2){
       this.serverImage = `${environment.storageUrl}${pollen.url_gambar2}`;
-    }else if(pollen.status_pollen == PollenStatus.qc3){
-      this.serverImage = `${environment.storageUrl}${pollen.url_gambar3}`;
+    // }else if(pollen.status_pollen == PollenStatus.qc3){
+    //   this.serverImage = `${environment.storageUrl}${pollen.url_gambar3}`;
     }else{
       this.serverImage = `${environment.storageUrl}${pollen.url_gambar}`;
+      this.serverImage2 = `${environment.storageUrl}${pollen.url_gambar2}`;
     }
   }
 

@@ -9,7 +9,7 @@
 
   <ion-grid class="my-5">
     <ion-row *ngIf="role == 'Petugas Makmal' || role == roles.petugas_balut_fatherpalm" class="ion-justify-content-center">
-      <ion-col *ngIf="role == roles.petugas_balut_fatherpalm" size="6" size-md="4" size-lg="2">
+      <ion-col *ngIf="role == roles.petugas_balut_fatherpalm || role == roles.petugas_makmal" size="6" size-md="4" size-lg="2">
         <div>
           <button (click)="view('new')" [disabled]="disableNewTaskBtn" class="btn w-100 mx-auto rounded orangeBtn text-center text-white p-2">
             <ion-badge *ngIf="numOfNewTask > 0" color="danger">{{numOfNewTask}}</ion-badge>
@@ -86,7 +86,8 @@
       <div *ngIf="disableNewTaskBtn">
         <div *ngFor="let item of newTaskList" class="p-3 my-3 mx-auto w-75 shadow rounded border border-warning d-flex justify-content-between align-items-center">
           <p class="h5">Rekod {{item.id}} ({{item.pokok.progeny}}-{{item.pokok.no_pokok}})</p>
-          <button (click)="viewTask('new',item.id,item.pokok_id)" class="btn orangeBtn text-white">Info</button>
+          <button *ngIf="role == roles.petugas_balut_fatherpalm" (click)="viewTask('new',item.id,item.pokok_id)" class="btn orangeBtn text-white">Info</button>
+          <button *ngIf="role != roles.petugas_balut_fatherpalm" (click)="viewTask('continue',item.id,item.tandan_id)" class="btn orangeBtn text-white">Info</button>
         </div>
       </div>
       <div *ngIf="disablePosponedTaskBtn">

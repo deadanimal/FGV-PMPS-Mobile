@@ -58,7 +58,11 @@
       <ion-label position="floating">Berat Tandan (gram)</ion-label>
       <ion-input type="text" [(ngModel)]="weight" name="weight" required></ion-input>
     </ion-item>
-    <ion-item lines="full">
+    <ion-item lines="full" *ngIf="pollenViability != null">
+      <ion-label position="floating">Peratusan Pollen</ion-label>
+      <ion-input type="text" [(ngModel)]="pollenViability" name="pollenViability" [readonly]="userRole!='Petugas Balut & Pendebungaan Terkawal' && userRole != roles.petugas_balut_fatherpalm && userRole!='Petugas Kawalan Kualiti' && userRole!='Petugas Tuai'&& userRole!='Petugas Makmal'"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="pollenViability == null">
       <ion-label position="floating">Catatan</ion-label>
       <ion-input type="text" [(ngModel)]="remark" name="remark" [readonly]="userRole!='Petugas Balut & Pendebungaan Terkawal' && userRole != roles.petugas_balut_fatherpalm && userRole!='Petugas Kawalan Kualiti' && userRole!='Petugas Tuai'&& userRole!='Petugas Makmal'"></ion-input>
     </ion-item>
