@@ -136,7 +136,7 @@ export class StokPollenFormPage implements OnInit {
           this.selectedPollen = el;
           this.block = el.pokok.blok;
           this.tandan = el.tandan.no_daftar;
-          this.no_pollen = el.id.toString();
+          this.no_pollen = el.pokok.progeny+'-'+el.pokok.no_pokok;
           this.viability = el.viabiliti_pollen;
           this.getHarvestTask(el.tandan_id);
         }

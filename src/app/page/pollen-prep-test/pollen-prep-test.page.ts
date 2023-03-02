@@ -52,22 +52,13 @@ export class PollenPrepTestPage implements OnInit {
 
   _getTask(){
     this.pollenPrepService.getById(this.taskId,(res:PollenPreparationModel)=>{
-      let date = new Date();
-      let minute:String = date.getMinutes() < 10? ("0"+date.getMinutes()): date.getMinutes().toString();
-      let hour:String = date.getHours() < 10? ("0"+date.getHours()): date.getHours().toString();
-      let dateString = date.getDate() < 10? ("0"+(date.getDate())): date.getDate() + "-" 
-                    + (date.getMonth()+1 < 10? ("0"+(date.getMonth()+1)): date.getMonth()+1) + "-"
-                    + date.getFullYear() + " "
-                    + hour + ":"
-                    + minute + ":"
-                    + date.getSeconds();
       
-      this.dateAndTimeTest = dateString;
+      this.dateAndTimeTest = this.datePipe.transform(Date.now(), 'dd-MM-yyyy HH:mm:ss');
       this.pollenType = 'TUAI';
-      this.pollenNo = res.pokok.progeny+'-'+res.pokok.id;
+      this.pollenNo = res.pokok.progeny+'-'+res.pokok.no_pokok;
       this.tandan = res.tandan.no_daftar;
-      this.dateAndTimeBagging = dateString;
-      this.dateAndTimeHarvest = dateString;
+      this.dateAndTimeBagging = this.datePipe.transform(Date.now(), 'dd-MM-yyyy HH:mm:ss');
+      this.dateAndTimeHarvest = this.datePipe.transform(Date.now(), 'dd-MM-yyyy HH:mm:ss');
       this.numberOfTest = res.bil_uji == null? '1':(parseInt(res.bil_uji)+1).toString();
       this.id1.value = res.viabiliti_pollen??"";
       this._getBaggingTask(res.tandan_id);

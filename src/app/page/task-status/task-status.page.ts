@@ -1214,7 +1214,7 @@ export class TaskStatusPage implements OnInit {
     }
   }
 
-  async _updateCPPosponed(){
+  async _updateCPPosponed(addDay:number){
     const formData = new FormData();
     if(this.photo != null){
       const response = await fetch(this.photo.dataUrl);
@@ -1231,7 +1231,7 @@ export class TaskStatusPage implements OnInit {
         this.taskId,
         formData,
         (resCP:ControlPollinationModel)=>{
-          this.modalService.successPrompt("Proses telah berjaya dianjakkan kepada +"+this.posponedDay+" hari").then((value1)=>{
+          this.modalService.successPrompt("Proses telah berjaya dianjakkan kepada +"+addDay+" hari").then((value1)=>{
               this.router.navigateByUrl(
                 '/app/tabs/tab1',
                 {
@@ -1280,9 +1280,10 @@ export class TaskStatusPage implements OnInit {
               }
             }else{
               this.posponedDay = this.posponedDay+parseInt(value1['data']);
+              let addDay = parseInt(value1['data']);
               this.numOfCheck++;
               if(this.taskType != InAppTaskCycle.harvest && this.taskType != InAppTaskCycle.anjakharvest){
-                this._updateCPPosponed();
+                this._updateCPPosponed(addDay);
               }
             }
 
@@ -1497,8 +1498,6 @@ export class TaskStatusPage implements OnInit {
 
   async _submitHarvest(status:TaskStatus){
     this.submitClicked = true;
-    console.log(this.numOfCheck)
-    console.log(this.posponedDay)
     if(!this.isOfflineMode){
       this._showSubmitTaskAlert();
       const formData = new FormData();
