@@ -40,6 +40,7 @@ export class FinishedTaskPage implements OnInit {
   taskType:string;
   taskId:string;
   workerName:string;
+  baggingWorkerName:string;
   defect:string;
   workerRemark:string;
   svRemark:string;
@@ -165,6 +166,14 @@ export class FinishedTaskPage implements OnInit {
     );
   }
 
+  private _getBaggingUsername(id:number){
+    this.taskService.getUserById(id).subscribe(
+      (res:LoginResponseModel) => {
+        this.baggingWorkerName = res.nama;
+      }
+    );
+  }
+
   async _getTandanInfo(tandanId:String){
     this.tandanService.getById(tandanId,(res:TandanResponse)=>{
       this.regNo = res.no_daftar;
@@ -177,6 +186,14 @@ export class FinishedTaskPage implements OnInit {
         this.treeNumber = treeRes.progeny+"-"+treeRes.no_pokok;
         this.block = treeRes.blok;
         this.treeType = treeRes.jantina;
+        this.baggingService.getByTandanId(
+          parseInt(tandanId.toString()),
+          (res2:BaggingModel[])=>{
+            res2.forEach(el => {
+              this._getBaggingUsername(el.id_sv_balut);
+            });
+          }
+        );
       });
     });
   }

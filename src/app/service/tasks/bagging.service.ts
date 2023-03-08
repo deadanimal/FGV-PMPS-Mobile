@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { TaskStatus } from 'src/app/common/task-status';
+import { OfflineBaggingResponseModel } from 'src/app/model/offline-bagging-response';
 import { QcSearchResponse } from 'src/app/model/qc-search-response';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { environment } from 'src/environments/environment';
@@ -301,6 +302,38 @@ export class BaggingService {
       `${environment.baseUrl}${environment.tandanInfo}${tandanId}/bagging`
     ).subscribe(
       async (res:BaggingModel[]) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
+        }
+        callback(res);
+      },
+      async (err:HttpErrorResponse) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
+        }
+      }
+    );
+  }
+
+  async OfflineUpload(
+    formData:FormData,
+    callback,
+    loadingAnim = true,
+  ){
+    if(loadingAnim){
+      this.loadingModal = await this.showLoading();
+    }
+    this.http.post<OfflineBaggingResponseModel>(
+      `${environment.baseUrl}${environment.offlineBagging}`,
+      formData
+    ).subscribe(
+      async (res:OfflineBaggingResponseModel) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
           if(this.loadingModal != null){
