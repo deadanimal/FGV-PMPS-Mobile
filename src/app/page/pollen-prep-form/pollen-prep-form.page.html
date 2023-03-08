@@ -3,6 +3,14 @@
   <app-logout-button></app-logout-button>
   <app-user-info-header></app-user-info-header>
 
+  <div *ngIf="tandanReqNumber!= null" class="w-75 mx-auto my-4">
+
+    <div class="w-100 text-center mt-5">
+      <p style="color: #626262;">No Daftar Tandan:</p>
+      <p class="font-weight-bold h2">{{tandanReqNumber}}</p>
+    </div>
+  </div>
+
   <div class="w-75 mx-auto my-2">
     <div class="rounded border border-danger p-2">
       <div class="row border-bottom mx-1">

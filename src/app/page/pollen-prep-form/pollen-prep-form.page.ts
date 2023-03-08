@@ -3,9 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
 import { PollenPrepPhase } from 'src/app/common/pollen-preparation-phase';
 import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
+import { TandanResponse } from 'src/app/model/tandan-response';
 import { ModalService } from 'src/app/service/modal.service';
 import { NavigationService } from 'src/app/service/navigation.service';
 import { PollenPreparationService } from 'src/app/service/tasks/pollen-preparation.service';
+import { TandanService } from 'src/app/service/tasks/tandan.service';
 
 @Component({
   selector: 'app-pollen-prep-form',
@@ -24,10 +26,11 @@ export class PollenPrepFormPage implements OnInit {
   btn7:boolean;
   taskId:String;
   tandanId:String;
+  tandanReqNumber:String;
   qcDone:Boolean;
   constructor(
     private router:Router,
-    private modalService:ModalService,
+    private tandanService:TandanService,
     private activatedRoute:ActivatedRoute,
     private pollenPrepService:PollenPreparationService,
     private navService:NavigationService,
@@ -38,7 +41,17 @@ export class PollenPrepFormPage implements OnInit {
       this.taskId = params['taskId'];
       this.tandanId = params['tandanId'];
       this.qcDone = params['qcDone'];
+
+      if(this.tandanId != null){
+        this.getTandanInfo();
+      }
     });
+  }
+
+  getTandanInfo(){
+    this.tandanService.getById(this.tandanId,(res:TandanResponse)=>{
+      this.tandanReqNumber = res.no_daftar;
+    },false);
   }
 
   ionViewWillEnter(){

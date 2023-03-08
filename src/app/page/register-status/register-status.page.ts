@@ -302,7 +302,7 @@ export class RegisterStatusPage implements OnInit {
       this._getQcTask();
     }else if(this.taskType == "Tuai" || this.taskType == "Tuaiposponed" || this.taskType == "Tuaianjak"){
       this._getHarvestTask();
-    }else if(this.taskType == "Penyediaan Pollen"){
+    }else if(this.taskType == "Penyediaan Pollen" || this.taskType == InAppTaskCycle.posponedpp){
       this._getPollenPrepTask();
     }else if(this.taskType == "Balutposponed"){
       this._getBaggingTask();
@@ -343,6 +343,7 @@ export class RegisterStatusPage implements OnInit {
       (res:TandanResponse) => {
         this.loadingModal.dismiss();
         this.regNumber = res.no_daftar;
+        this.treeNumber = res.pokok_id.toString();
         this.cycle = this._getCycleName(res)?.toUpperCase();
         this.status=res.status_tandan?.toUpperCase();
         this.age=res.umur? res.umur.toString(): this._calculateAge(res.tarikh_daftar).toString();
@@ -364,6 +365,8 @@ export class RegisterStatusPage implements OnInit {
       retVal = "Kawalan Kualiti"
     }else if(res.kitaran == TandanCycle.harvest){
       retVal = "Tuai"
+    }else if(res.kitaran == TandanCycle.pp){
+      retVal = "Penyediaan Pollen"
     }
 
     return retVal;
@@ -532,6 +535,16 @@ export class RegisterStatusPage implements OnInit {
             taskId:this.taskId,
             treeNum:this.treeNumber,
             taskType:InAppTaskCycle.posponedbagging,
+          }
+        ]
+      );
+    }else if(this.taskType == InAppTaskCycle.posponedpp){
+      this.router.navigate(
+        [
+          'app/tabs/tab1/pollen-prep-form',
+          {
+            taskId:this.taskId,
+            tandanId:this.tandanId
           }
         ]
       );
