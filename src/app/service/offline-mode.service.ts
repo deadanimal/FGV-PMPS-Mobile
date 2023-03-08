@@ -7,6 +7,7 @@ import { ControlPollinationModel } from '../model/control-pollination';
 import { DefectModel } from '../model/defect';
 import { HarvestModel } from '../model/harvest';
 import { OfflineBaggingModel } from '../model/offline-bagging';
+import { OfflineBaggingResponseModel } from '../model/offline-bagging-response';
 import { OfflineControlPollinationModel } from '../model/offline-control-pollination';
 import { OfflineHarvestModel } from '../model/offline-harvest';
 import { OfflineQualityControlModel } from '../model/offline-quality-control';
@@ -142,7 +143,7 @@ export class OfflineModeService {
 
   sync(){
     if(this.accountService.getUserRole() == UserRole.petugas_balut){
-      this._syncBaggingAndCp();
+      this._syncBaggingTask();
     }else if(this.accountService.getUserRole() == UserRole.petugas_balut_fatherpalm){
       this._syncBaggingAndHarvestFatherpalm();
     }else if(this.accountService.getUserRole() == UserRole.petugas_qc){
@@ -671,6 +672,85 @@ export class OfflineModeService {
         },'Fetching Supervisor List');
       }
     )
+  }
+
+  private async _syncBaggingTask(){
+    let tasks:OfflineBaggingModel[] = await this.offlineBaggingService.getSavedBaggingTasks();
+    if(tasks == null){
+      tasks = [];
+    }
+    var formData = new FormData();
+    formData.append('user_id', this.accountService.getSessionDetails().id.toString());
+
+    for(let i=0; i<tasks.length; i++){
+      for ( var key in tasks[i] ) {
+        if(key != 'url_gambar_data' && key != 'url_gambar' && key != 'pokok'){
+          formData.append(key+'['+i+']', tasks[i][key]);
+        }
+      }
+      let response = await fetch(tasks[i].url_gambar_data);
+      let blob = await response.blob();
+      formData.append('url_gambar['+i+']', blob, tasks[i].url_gambar);
+      formData.append('status['+i+']', TaskStatus.done);
+    }
+
+    this.baggingService.OfflineUpload(formData,async (res:OfflineBaggingResponseModel)=>{
+      await this._removeUploadedBaggingTask(res);
+      await this._saveOfflineBaggingInf(res);
+    });
+  }
+
+  private async _removeUploadedBaggingTask(res:OfflineBaggingResponseModel){
+    let tasks:OfflineBaggingModel[] = await this.offlineBaggingService.getSavedBaggingTasks();
+    let tempTasks:OfflineBaggingModel[] = [];
+    let tempTandanId:string[] = [];
+    if(tasks == null){
+      tasks = [];
+    }
+    
+    res.bagging.forEach(el => {
+      tempTandanId.push(el.tandan_id.toString());
+    });
+
+    console.log(tempTandanId);
+    console.log(tasks);
+
+    tasks.forEach(el => {
+      if(!tempTandanId.includes(el.tandan_id)){
+        tempTasks.push(el);
+      }
+    });
+
+    await this.storageService.set(this.storageService.baggingOfflineData,tempTasks);
+
+    if(tempTasks.length == 0){
+      this.modalService.successPrompt("Tugas Balut dan Kawalan Pendebungaan Berjaya di sync").then();
+    }else{
+      this.modalService.successPrompt("Terdapat tugas balut yang tidak berjaya di muat naik. Jumlah tugas tidak berjaya:"+tempTasks.length).then();
+    }
+  }
+
+  private async _saveOfflineBaggingInf(res:OfflineBaggingResponseModel){
+    this.baggingSvList = res.user;
+    await this.storageService.set(this.storageService.baggingSvList,this.baggingSvList);
+
+    this.newCpTaskList = res.newCP;
+    await this.storageService.set(this.storageService.offlineNewCp,this.newCpTaskList);
+
+    this.treeList = res.pokok;
+    await this.storageService.set(this.storageService.offlineTreeList,this.treeList);
+
+    this.tandanList = res.tandan;
+    await this.storageService.set(this.storageService.offlineTandanList,this.tandanList);
+
+    this.posponedCpTasks = res.posponedCP;
+    await this.storageService.set(this.storageService.rejectedCPTask,this.posponedCpTasks);
+
+    this.defectList = res.kerosakan;
+    await this.storageService.set(this.storageService.offlineDefectList,this.defectList);
+
+    let pollenList:PollenPreparationModel[] = res.pollen;
+    await this.storageService.set(this.storageService.pollenPrep,pollenList);
   }
 
 }

@@ -107,6 +107,21 @@ export class OfflineModePage implements OnInit {
     setTimeout(async () => {
       this._refreshData();
     }, 500);
+    setTimeout(async () => {
+      this._refreshData();
+    }, 1000);
+    setTimeout(async () => {
+      this._refreshData();
+    }, 2000);
+    setTimeout(async () => {
+      this._refreshData();
+    }, 3000);
+    setTimeout(async () => {
+      this._refreshData();
+    }, 5000);
+    setTimeout(async () => {
+      this._refreshData();
+    }, 10000);
   }
 
   offline(start){
