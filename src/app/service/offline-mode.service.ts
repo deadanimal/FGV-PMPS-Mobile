@@ -11,6 +11,7 @@ import { OfflineBaggingResponseModel } from '../model/offline-bagging-response';
 import { OfflineControlPollinationModel } from '../model/offline-control-pollination';
 import { OfflineHarvestModel } from '../model/offline-harvest';
 import { OfflineQualityControlModel } from '../model/offline-quality-control';
+import { OfflineQCResponseModel } from '../model/offline-quality-control-response';
 import { PokokResponse } from '../model/pokok-respons';
 import { PollenPreparationModel } from '../model/pollen-preparation-model';
 import { QualityControlModel } from '../model/quality-control';
@@ -415,163 +416,113 @@ export class OfflineModeService {
     }
   }
 
-  private async _uploadCpCallback(id:string, taskType){
-    if(taskType == 'cpNormal'){
-      let tasks:OfflineControlPollinationModel[] = await this.offlineCpService.getSavedCPTasks();
-      if(tasks == null){
-        tasks = [];
-      }
-      let retArray:OfflineControlPollinationModel[] = [];
-      tasks.forEach(el => {
-        if(el.tandan_id != id){
-          retArray.push(el);
-        }
-      });
-      this.storageService.set(this.storageService.controlPollinationOfflineData,retArray);
-      if(retArray.length == 0){
-        this._baggingCpSyncComplete('cpNormalUpload');
-      }
-    }else if(taskType == 'cpRedo'){
-      let tasks:OfflineControlPollinationModel[] = await this.offlineCpService.getSavedRedoCPTasks();
-      if(tasks == null){
-        tasks = [];
-      }
-      let retArray:OfflineControlPollinationModel[] = [];
-      tasks.forEach(el => {
-        if(el.id != id){
-          retArray.push(el);
-        }
-      });
-      this.storageService.set(this.storageService.redoCPOfflineData,retArray);
-      if(retArray.length == 0){
-        this._baggingCpSyncComplete('cpRedoUpload');
-      }
-    }else if(taskType == 'cpPosponed'){
-      let tasks:OfflineControlPollinationModel[] = await this.offlineCpService.getSavedPosponed2CPTasks();
-      if(tasks == null){
-        tasks = [];
-      }
-      let retArray:OfflineControlPollinationModel[] = [];
-      tasks.forEach(el => {
-        if(el.id != id){
-          retArray.push(el);
-        }
-      });
-      this.storageService.set(this.storageService.posponedCPOfflineData,retArray);
-      if(retArray.length == 0){
-        this._baggingCpSyncComplete('cpPosponedUpload');
-      }
+  private async _syncQC(){
+    let tasksList:OfflineQualityControlModel[] = await this.offlineQCService.getSavedQcTasks();
+    let normalTasks:OfflineQualityControlModel[] = [];
+    let rejectedTasks:OfflineQualityControlModel[] = [];
+    let formData = new FormData();
+    let index = 0;
+    formData.append('user_id', this.accountService.getSessionDetails().id.toString());
+
+    if(tasksList == null){
+      tasksList = [];
     }
-  }
 
-  private async _syncBaggingAndCp(){
-    this.finishedBaggingUpload = false;
-    this.finishedCPRedoUpload = false;
-    this.finishedNormalCPUpload = false;
-    this.finishedBaggingDownload = false;
-    setTimeout(async ()=>{
-      if( !this.finishedBaggingUpload ||
-          !this.finishedBaggingDownload ||
-          !this.finishedNormalCPUpload ||
-          !this.finishedCPRedoUpload
-        ){
-        this.modalService.successPrompt("Gagal Sync Tugas Balut dan Kawalan Pendebungaan").then();
-        (await this.loadingCtrl.getTop())?.dismiss();
-      }
-    },120000)
-    this._uploadBaggingTasks();
-    this._uploadCPTasks();
-    await this._getTreeAndTandan(
-      ()=>{
-        this.userService.getByRole(UserRole.penyelia_balut,async (res3:[User])=>{
-          this.baggingSvList = res3;
-          this.storageService.set(this.storageService.baggingSvList,this.baggingSvList);
-          (await this.loadingCtrl.create({message:"Sila Tunggu"})).present();
-          this.controlPollinationService.getNewlyCreatedTask(
-            this.accountService.getSessionDetails().id,
-            async (res1:[BaggingModel])=>{
-            this.newCpTaskList = res1;
-            this.storageService.set(this.storageService.offlineNewCp,this.newCpTaskList);
-            (await this.loadingCtrl.create({message:"Sila Tunggu"})).present();
-            this._getPosponedBaggingTask();
-          },false);
-        },'Fetching Supervisor List');
-      }
-    )
-  }
-
-  async _uploadQCTasks(){
-    let tasks:OfflineQualityControlModel[] = await this.offlineQCService.getSavedQcTasks();
-    while(tasks.length > 0){
-      let task:OfflineQualityControlModel = tasks.pop();
-      var formData = new FormData();
-      formData.append('catatan',task.catatan);
-      formData.append('status',task.status);
-      formData.append('kerosakan_id',task.defectId? task.defectId.toString() : "");
-
-      const response = await fetch(task.url_gambar_data);
-      const blob = await response.blob();
-      formData.append('url_gambar', blob, task.url_gambar);
-      if(task.currentStatus != TaskStatus.rejected){
-        formData.append('_method','put');
-        this.qualityControlService.update(task.id,formData,async (res:QualityControlModel)=>{
-          this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
-            v.dismiss();
-          });
-        });
+    tasksList.forEach(el => {
+      if(el.currentStatus == TaskStatus.rejected){
+        rejectedTasks.push(el);
       }else{
-        formData.append('pokok_id',task.pokok_id.toString());
-        formData.append('tandan_id',task.tandan_id.toString());
-        formData.append('id_sv_qc',this.accountService.getSessionDetails().id.toString());
-        formData.append('pengesah_id',task.pengesah_id.toString());
-        this.qualityControlService.create(formData,async (res:QualityControlModel)=>{
-          this.qualityControlService.update(task.id,{status:TaskStatus.redo,_method:"put"},(res:QualityControlModel)=>{
-            this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
-              v.dismiss();
-            });
-          });
-        });
+        normalTasks.push(el);
       }
-      this.storageService.set(this.storageService.qcOfflineData,tasks);
+    });
+
+    for(let i=0;i<normalTasks.length;i++){
+      formData.append('id['+index+']',normalTasks[i].id.toString());
+      formData.append('catatan['+index+']',normalTasks[i].catatan);
+      formData.append('status['+index+']',normalTasks[i].status);
+      formData.append('pokok_id['+index+']',normalTasks[i].pokok_id.toString());
+      formData.append('kerosakan_id['+index+']',normalTasks[i].defectId? normalTasks[i].defectId.toString() : "");
+
+      const response = await fetch(normalTasks[i].url_gambar_data);
+      const blob = await response.blob();
+      formData.append('url_gambar['+index+']', blob, normalTasks[i].url_gambar);
+      index++;
+    }
+
+    for(let i=0;i<rejectedTasks.length;i++){
+      formData.append('catatan['+index+']',rejectedTasks[i].catatan);
+      formData.append('status['+index+']',rejectedTasks[i].status);
+      formData.append('kerosakan_id['+index+']',rejectedTasks[i].defectId? rejectedTasks[i].defectId.toString() : "");
+
+      const response = await fetch(rejectedTasks[i].url_gambar_data);
+      const blob = await response.blob();
+      formData.append('url_gambar['+index+']', blob, rejectedTasks[i].url_gambar);
+      formData.append('pokok_id['+index+']',rejectedTasks[i].pokok_id.toString());
+      formData.append('tandan_id['+index+']',rejectedTasks[i].tandan_id.toString());
+      formData.append('id_sv_qc['+index+']',this.accountService.getSessionDetails().id.toString());
+      formData.append('pengesah_id['+index+']',rejectedTasks[i].pengesah_id.toString());
+      index++;
+    }
+
+    for(let i=0;i<rejectedTasks.length;i++){
+      formData.append('id['+index+']',rejectedTasks[i].id.toString());
+      formData.append('status['+index+']',TaskStatus.redo);
+      formData.append('pokok_id['+index+']',rejectedTasks[i].pokok_id.toString());
+      index++;
+    }
+
+    this.qcService.OfflineUpload(formData,(res)=>{
+      this._saveOfflineQcInfo(res);
+      this._removeUploadedQcData(res);
+    })
+  }
+
+  private async _removeUploadedQcData(res:OfflineQCResponseModel){
+    let tasks:OfflineQualityControlModel[] = await this.offlineQCService.getSavedQcTasks();
+    let tempTasks:OfflineQualityControlModel[] = [];
+    let tempIds:String[] = [];
+
+    if(res.QC == null){
+      res.QC = [];
+    }
+    if(tasks == null){
+      tasks = [];
+    }
+
+    res.QC.forEach(el => {
+      tempIds.push(el.id.toString());
+    });
+
+    tasks.forEach(el => {
+      if(!tempIds.includes(el.id)){
+        tempTasks.push(el);
+      }
+    });
+
+    await this.storageService.set(this.storageService.qcOfflineData,tempTasks);
+
+    if(tempTasks.length == 0){
+      this.modalService.successPrompt("Tugas Kawalan Kualiti Berjaya di sync").then();
+    }else{
+      this.modalService.successPrompt("Terdapat tugas Kawalan Kualiti yang tidak berjaya di muat naik. Jumlah tugas tidak berjaya:"+tempTasks.length).then();
     }
   }
 
-  private _syncQC(){
-    this._uploadQCTasks();
-    this._getTreeAndTandan(
-      ()=>{
-        this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
-          v.dismiss();
-        });
-        this.qcService.getByUserId(
-          this.accountService.getSessionDetails().id,
-          (res:QualityControlModel[])=>{
-            this.qcList = [];
-            res.forEach(el => {
-              if(el.status == TaskStatus.created || el.status == TaskStatus.rejected){
-                this.qcList.push(el);
-              }
-            });
-            this.storageService.set(this.storageService.offlineNewQc,this.qcList);
-            this.defectService.getAll((defectRes:[DefectModel])=>{
-              this.defectList = defectRes;
-              this.storageService.set(this.storageService.offlineDefectList,defectRes);
-              this.userService.getByRole(
-                UserRole.penyelia_qc,
-                (res3:[User])=>{
-                  this.modalService.successPrompt("Tugas Kawalan Kualiti Berjaya di sync").then();
-                  this.baggingSvList = res3;
-                  this.storageService.set(this.storageService.baggingSvList,this.baggingSvList);
-                  this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
-                    v.dismiss();
-                  });
-                }
-              ),'Fetching Supervisor List';
-            });
-          }
-        );
-      }
-    );
+  private async _saveOfflineQcInfo(res:OfflineQCResponseModel){
+    this.qcList = res.newQc;
+    await this.storageService.set(this.storageService.offlineNewQc,this.qcList);
+
+    this.baggingSvList = res.penyeliakk;
+    await this.storageService.set(this.storageService.baggingSvList,this.baggingSvList);
+
+    this.treeList = res.pokoks;
+    await this.storageService.set(this.storageService.offlineTreeList,this.treeList);
+
+    this.tandanList = res.tandans;
+    await this.storageService.set(this.storageService.offlineTandanList,this.tandanList);
+
+    this.defectList = res.korosakans;
+    await this.storageService.set(this.storageService.offlineDefectList,this.defectList);
   }
 
   async _uploadHarvestTasks(){

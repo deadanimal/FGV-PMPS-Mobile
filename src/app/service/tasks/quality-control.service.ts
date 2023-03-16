@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { TandanCycle } from 'src/app/common/tandan-cycle';
+import { OfflineQCResponseModel } from 'src/app/model/offline-quality-control-response';
 import { QualityControlModel } from 'src/app/model/quality-control';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { User } from 'src/app/model/user';
@@ -219,5 +220,37 @@ export class QualityControlService {
     this.userService.getByRole(UserRole.petugas_qc,(res:[User])=>{
       callback(res);
     });
+  }
+
+  async OfflineUpload(
+    formData:FormData,
+    callback,
+    loadingAnim = true,
+  ){
+    if(loadingAnim){
+      this.loadingModal = await this.showLoading();
+    }
+    this.http.post<OfflineQCResponseModel>(
+      `${environment.baseUrl}${environment.offlineQc}`,
+      formData
+    ).subscribe(
+      async (res:OfflineQCResponseModel) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
+        }
+        callback(res);
+      },
+      async (err:HttpErrorResponse) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
+        }
+      }
+    );
   }
 }
