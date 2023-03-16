@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { TandanCycle } from 'src/app/common/tandan-cycle';
 import { HarvestModel } from 'src/app/model/harvest';
+import { OfflineHarvestResponseModel } from 'src/app/model/offline-harvest-response';
 import { TandanResponse } from 'src/app/model/tandan-response';
 import { User } from 'src/app/model/user';
 import { environment } from 'src/environments/environment';
@@ -236,6 +237,38 @@ export class HarvestService {
       `${environment.baseUrl}${environment.tandanInfo}${tandanId}/harvest`
     ).subscribe(
       async (res:HarvestModel[]) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
+        }
+        callback(res);
+      },
+      async (err:HttpErrorResponse) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
+        }
+      }
+    );
+  }
+
+  async OfflineUpload(
+    formData:FormData,
+    callback,
+    loadingAnim = true,
+  ){
+    if(loadingAnim){
+      this.loadingModal = await this.showLoading();
+    }
+    this.http.post<OfflineHarvestResponseModel>(
+      `${environment.baseUrl}${environment.offlineHarvest}`,
+      formData
+    ).subscribe(
+      async (res:OfflineHarvestResponseModel) => {
         if(loadingAnim){
           this.loadingModal = await this.loadingCtrl.getTop()
           if(this.loadingModal != null){

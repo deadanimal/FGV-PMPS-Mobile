@@ -10,6 +10,7 @@ import { OfflineBaggingModel } from '../model/offline-bagging';
 import { OfflineBaggingResponseModel } from '../model/offline-bagging-response';
 import { OfflineControlPollinationModel } from '../model/offline-control-pollination';
 import { OfflineHarvestModel } from '../model/offline-harvest';
+import { OfflineHarvestResponseModel } from '../model/offline-harvest-response';
 import { OfflineQualityControlModel } from '../model/offline-quality-control';
 import { OfflineQCResponseModel } from '../model/offline-quality-control-response';
 import { PokokResponse } from '../model/pokok-respons';
@@ -510,6 +511,9 @@ export class OfflineModeService {
 
   private async _saveOfflineQcInfo(res:OfflineQCResponseModel){
     this.qcList = res.newQc;
+    if(this.qcList == null){
+      this.qcList = [];
+    }
     await this.storageService.set(this.storageService.offlineNewQc,this.qcList);
 
     this.baggingSvList = res.penyeliakk;
@@ -562,36 +566,124 @@ export class OfflineModeService {
     }
   }
 
-  private _syncHarvest(){
-    this._uploadHarvestTasks();
-    this._getTreeAndTandan(
-      ()=>{
-        this.harvestService.getByUserId(
-          this.accountService.getSessionDetails().id,
-          this.accountService.getSessionDetails().blok,
-          (res:HarvestModel[])=>{
-            this.harvestList = [];
-            res.forEach(el => {
-              if(el.status == TaskStatus.created || el.status == TaskStatus.rejected){
-                this.harvestList.push(el);
-              }
-            });
-            this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
-              v.dismiss();
-            });
-            this.storageService.set(this.storageService.offlineNewHarvest,this.harvestList);
-            this.defectService.getAll((defectRes:[DefectModel])=>{
-              this.modalService.successPrompt("Tugas Tuai Berjaya di sync").then();
-              this.defectList = defectRes;
-              this.storageService.set(this.storageService.offlineDefectList,defectRes);
-              this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
-                v.dismiss();
-              });
-            });
-          }
-        );
+  private async _syncHarvest(){
+    let tasksList:OfflineHarvestModel[] = await this.offlineHarvestService.getSavedHarvestTasks();
+    let normalTasks:OfflineHarvestModel[] = [];
+    let rejectedTasks:OfflineHarvestModel[] = [];
+    let formData = new FormData();
+    let index = 0;
+
+    if(tasksList == null){
+      tasksList = [];
+    }
+
+    tasksList.forEach(el => {
+      if(el.currentStatus == TaskStatus.rejected){
+        rejectedTasks.push(el);
+      }else{
+        normalTasks.push(el);
       }
-    );
+    });
+
+    formData.append('user_id', this.accountService.getSessionDetails().id.toString());
+
+    for(let i=0;i<normalTasks.length;i++){
+      let task = normalTasks[i];
+      const response = await fetch(task.url_gambar_data);
+      const blob = await response.blob();
+
+      formData.append('id['+index+']',task.id.toString());
+      formData.append('catatan['+index+']',task.catatan? task.catatan :"");
+      formData.append('status['+index+']',task.status);
+      formData.append('kerosakan_id['+index+']',task.defectId? task.defectId.toString() : "");
+      formData.append('berat_tandan['+index+']',task.berat_tandan.toString());
+      formData.append('id_sv_harvest['+index+']',task.id_sv_harvest.toString());
+      formData.append('url_gambar['+index+']', blob, task.url_gambar);
+      formData.append('pokok_id['+index+']',task.pokok_id.toString());
+      index++;
+    }
+
+    for(let i=0;i<rejectedTasks.length;i++){
+      let task = rejectedTasks[i];
+      const response = await fetch(task.url_gambar_data);
+      const blob = await response.blob();
+      formData.append('catatan['+index+']',task.catatan? task.catatan :"");
+      formData.append('status['+index+']',task.status);
+      formData.append('kerosakan_id['+index+']',task.defectId? task.defectId.toString() : "");
+      formData.append('berat_tandan['+index+']',task.berat_tandan.toString());
+      formData.append('id_sv_harvest['+index+']',task.id_sv_harvest.toString());
+      formData.append('url_gambar['+index+']', blob, task.url_gambar);
+      formData.append('pokok_id['+index+']',task.pokok_id.toString());
+      formData.append('tandan_id['+index+']',task.tandan_id.toString());
+      formData.append('id_sv_harvest['+index+']',this.accountService.getSessionDetails().id.toString());
+      formData.append('pengesah_id['+index+']',task.pengesah_id.toString());
+      index++;
+    }
+
+    for(let i=0;i<rejectedTasks.length;i++){
+      formData.append('id['+index+']',rejectedTasks[i].id.toString());
+      formData.append('status['+index+']',TaskStatus.redo);
+      formData.append('pokok_id['+index+']',rejectedTasks[i].pokok_id.toString());
+      index++;
+    }
+
+    this.harvestService.OfflineUpload(formData,(res:OfflineHarvestResponseModel)=>{
+      console.log(res);
+      this._saveOfflineHarvestInfo(res);
+      this._removeUploadedHarvestData(res);
+    })
+  }
+
+  private async _removeUploadedHarvestData(res:OfflineHarvestResponseModel){
+    let tasks:OfflineHarvestModel[] = await this.offlineHarvestService.getSavedHarvestTasks();
+    let tempTasks:OfflineQualityControlModel[] = [];
+    let tempIds:String[] = [];
+
+    if(res.harvest == null){
+      res.harvest = [];
+    }
+    if(tasks == null){
+      tasks = [];
+    }
+
+    res.harvest.forEach(el => {
+      tempIds.push(el.id.toString());
+    });
+
+    tasks.forEach(el => {
+      if(!tempIds.includes(el.id)){
+        tempTasks.push(el);
+      }
+    });
+
+    await this.storageService.set(this.storageService.harvestOfflineData,tempTasks);
+
+    if(tempTasks.length == 0){
+      this.modalService.successPrompt("Tugas Tuai Berjaya di sync").then();
+    }else{
+      this.modalService.successPrompt("Terdapat tugas tuai yang tidak berjaya di muat naik. Jumlah tugas tidak berjaya:"+tempTasks.length).then();
+    }
+  }
+
+  private async _saveOfflineHarvestInfo(res:OfflineHarvestResponseModel){
+    this.harvestList = res.newHarvest;
+    if(this.harvestList == null){
+      this.harvestList = [];
+    }
+
+    await this.storageService.set(this.storageService.offlineNewHarvest,this.harvestList);
+
+    this.baggingSvList = res.penyeliakk;
+    await this.storageService.set(this.storageService.baggingSvList,this.baggingSvList);
+
+    this.treeList = res.pokoks;
+    await this.storageService.set(this.storageService.offlineTreeList,this.treeList);
+
+    this.tandanList = res.tandans;
+    await this.storageService.set(this.storageService.offlineTandanList,this.tandanList);
+
+    this.defectList = res.korosakans;
+    await this.storageService.set(this.storageService.offlineDefectList,this.defectList);
   }
 
   private async _syncBaggingAndHarvestFatherpalm(){
