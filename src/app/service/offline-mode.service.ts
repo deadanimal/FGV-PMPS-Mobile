@@ -143,7 +143,7 @@ export class OfflineModeService {
 
   sync(){
     if(this.accountService.getUserRole() == UserRole.petugas_balut){
-      this._syncBaggingTask();
+      this._uploadCpAndSyncBaggingTask();
     }else if(this.accountService.getUserRole() == UserRole.petugas_balut_fatherpalm){
       this._syncBaggingAndHarvestFatherpalm();
     }else if(this.accountService.getUserRole() == UserRole.petugas_qc){
@@ -217,79 +217,103 @@ export class OfflineModeService {
       tasks = [];
     }if(redoTasks == null){
       redoTasks = [];
+    }if(posponed2xTasks == null){
+      posponed2xTasks = [];
     }
 
-    if(tasks.length == 0){
-      this._baggingCpSyncComplete('cpNormalUpload');
-    }if(redoTasks.length == 0){
-      this._baggingCpSyncComplete('cpRedoUpload');
-    }
+    var formData = new FormData();
+    let index = 0;
+
     // normal task
-    while(tasks.length > 0){
-      let task:OfflineControlPollinationModel = tasks.pop();
-      var formData = new FormData();
-
-      for ( var key in task ) {
+    for(let i=0; i<tasks.length; i++){
+      for ( var key in tasks[i] ) {
         if(key != 'url_gambar_data' && key != 'url_gambar'){
-          formData.append(key, task[key]);
+          formData.append(key+'['+index+']', tasks[i][key] != undefined? tasks[i][key]:null);
         }
       }
 
-      const response = await fetch(task.url_gambar_data);
+      const response = await fetch(tasks[i].url_gambar_data);
       const blob = await response.blob();
-      formData.append('url_gambar[]', blob, task.url_gambar);
-      this.controlPollinationService.create(formData,task.status ,async (res:ControlPollinationModel)=>{
-        this._uploadCpCallback(task.tandan_id.toString(),'cpNormal');
-        this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
-          v.dismiss();
-        });
-      });
+      formData.append('url_gambar'+'['+index+']', blob, tasks[i].url_gambar);
+      index++;
     }
-    //redo task
-    while(redoTasks.length > 0){
-      let task:OfflineControlPollinationModel = redoTasks.pop();
-      var formData = new FormData();
 
-      for ( var key in task ) {
+    //redo task (create)
+    for(let i=0; i<redoTasks.length; i++){
+      for ( var key in redoTasks[i] ) {
         if(key != 'url_gambar_data' && key != 'url_gambar' && key != 'id'){
-          formData.append(key, task[key]);
+          formData.append(key+'['+index+']', redoTasks[i][key] != undefined? redoTasks[i][key]:null);
         }
       }
 
-      const response = await fetch(task.url_gambar_data);
+      const response = await fetch(redoTasks[i].url_gambar_data);
       const blob = await response.blob();
-      formData.append('url_gambar[]', blob, task.url_gambar);
-      this.controlPollinationService.create(formData,task.status ,async (res:ControlPollinationModel)=>{
-        this.controlPollinationService.update(task.id,{status:TaskStatus.redo},()=>{
-          this._uploadCpCallback(task.id.toString(),'cpRedo');
-          this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
-            v.dismiss();
-          });
-        });
-      });
+      formData.append('url_gambar'+'['+index+']', blob, redoTasks[i].url_gambar);
+      index++;
     }
-    //posponed update task
-    while(posponed2xTasks.length > 0){
-      let task:OfflineControlPollinationModel = posponed2xTasks.pop();
-      var formData = new FormData();
 
-      for ( var key in task ) {
-        if(key != 'url_gambar_data' && key != 'url_gambar' && key != 'id'){
-          formData.append(key, task[key]);
+    //redo task (update)
+    for(let i=0; i<redoTasks.length; i++){
+      formData.append('id'+'['+index+']', redoTasks[i].id!.toString());
+      formData.append('status'+'['+index+']', TaskStatus.redo);
+      formData.append('pokok_id'+'['+index+']', redoTasks[i].pokok_id.toString());
+      index++;
+    }
+
+    for(let i=0; i<posponed2xTasks.length; i++){
+      for ( var key in posponed2xTasks[i] ) {
+        if(key != 'url_gambar_data' && key != 'url_gambar'){
+          formData.append(key+'['+index+']', posponed2xTasks[i][key] != undefined? posponed2xTasks[i][key]:null);
         }
       }
 
-      const response = await fetch(task.url_gambar_data);
+      const response = await fetch(posponed2xTasks[i].url_gambar_data);
       const blob = await response.blob();
-      formData.append('url_gambar[]', blob, task.url_gambar);
-      formData.append('_method','PUT');
-      this.controlPollinationService.updateUsingForm(task.id,formData,()=>{
-        this._uploadCpCallback(task.id.toString(),'cpPosponed');
-        this.loadingCtrl.getTop()?.then((v:HTMLIonLoadingElement)=>{
-          v.dismiss();
-        });
-      });
+      formData.append('url_gambar'+'['+index+']', blob, posponed2xTasks[i].url_gambar);
+
+      index++;
     }
+
+    this.controlPollinationService.OfflineUpload(formData,(res:ControlPollinationModel[])=>{
+      let tempTasks:OfflineControlPollinationModel[] = [];
+      let tempRedoTasks:OfflineControlPollinationModel[] = [];
+      let tempPosponed2xTasks:OfflineControlPollinationModel[] = [];
+      let tempTandanId:string[] = [];
+      let tempTaskId:String[] = [];
+
+      res.forEach(el => {
+        tempTandanId.push(el.tandan_id.toString());
+        tempTaskId.push(el.id.toString());
+      });
+
+      tasks.forEach(el => {
+        if(!tempTandanId.includes(el.tandan_id.toString())){
+          tempTasks.push(el);
+        }
+      });
+
+      redoTasks.forEach(el => {
+        if(!tempTaskId.includes(el.id)){
+          tempRedoTasks.push(el);
+        }
+      });
+
+      posponed2xTasks.forEach(el => {
+        if(!tempTaskId.includes(el.id)){
+          tempPosponed2xTasks.push(el);
+        }
+      });
+
+      this.storageService.set(this.storageService.posponedCPOfflineData,tempPosponed2xTasks);
+      this.storageService.set(this.storageService.controlPollinationOfflineData,tempTasks);
+      this.storageService.set(this.storageService.redoCPOfflineData,tempRedoTasks);
+      if(tempPosponed2xTasks.length == 0 && tempTasks.length == 0 && tempRedoTasks.length == 0){
+        this._syncBaggingTask();
+      }else{
+        this.modalService.successPrompt("Terdapat tugas Pendebungaan Terkawal yang tidak berjaya di muat naik. Jumlah tugas tidak berjaya:"+tempTasks.length).then();
+      }
+
+    });
   }
 
   private _getTreeAndTandan(nextMethod){
@@ -674,6 +698,10 @@ export class OfflineModeService {
     )
   }
 
+  private _uploadCpAndSyncBaggingTask(){
+    this._uploadCPTasks();
+  }
+
   private async _syncBaggingTask(){
     let tasks:OfflineBaggingModel[] = await this.offlineBaggingService.getSavedBaggingTasks();
     if(tasks == null){
@@ -695,8 +723,8 @@ export class OfflineModeService {
     }
 
     this.baggingService.OfflineUpload(formData,async (res:OfflineBaggingResponseModel)=>{
-      await this._removeUploadedBaggingTask(res);
       await this._saveOfflineBaggingInf(res);
+      await this._removeUploadedBaggingTask(res);
     });
   }
 
@@ -711,9 +739,6 @@ export class OfflineModeService {
     res.bagging.forEach(el => {
       tempTandanId.push(el.tandan_id.toString());
     });
-
-    console.log(tempTandanId);
-    console.log(tasks);
 
     tasks.forEach(el => {
       if(!tempTandanId.includes(el.tandan_id)){

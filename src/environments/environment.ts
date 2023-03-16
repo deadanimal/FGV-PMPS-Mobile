@@ -22,6 +22,9 @@ export const environment = {
   qualityControl:'/quality_control/',
   userByRole:'/users/peranan/',
   offlineBagging:'/multiple-bagging/',
+  offlineCp:'/multiple-cp/',
+  offlineQc:'/multiple-qc/',
+  offlineHarvest:'/multiple-harvest/',
   qcSearch:'/search/qc/',
   storageUrl:'https://fgv.prototype.com.my/storage/',
 };

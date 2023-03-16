@@ -318,4 +318,36 @@ export class ControlPollinationService {
       },false);
     },false);
   }
+
+  async OfflineUpload(
+    formData:FormData,
+    callback,
+    loadingAnim = true,
+  ){
+    if(loadingAnim){
+      this.loadingModal = await this.showLoading();
+    }
+    this.http.post<ControlPollinationModel>(
+      `${environment.baseUrl}${environment.offlineCp}`,
+      formData
+    ).subscribe(
+      async (res:ControlPollinationModel) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
+        }
+        callback(res);
+      },
+      async (err:HttpErrorResponse) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
+        }
+      }
+    );
+  }
 }
