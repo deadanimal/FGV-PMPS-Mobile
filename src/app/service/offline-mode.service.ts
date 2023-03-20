@@ -223,99 +223,103 @@ export class OfflineModeService {
       posponed2xTasks = [];
     }
 
-    var formData = new FormData();
-    let index = 0;
-
-    // normal task
-    for(let i=0; i<tasks.length; i++){
-      for ( var key in tasks[i] ) {
-        if(key != 'url_gambar_data' && key != 'url_gambar'){
-          formData.append(key+'['+index+']', tasks[i][key] != undefined? tasks[i][key]:null);
+    if(posponed2xTasks.length == 0 && redoTasks.length == 0 && tasks.length == 0){
+      this._syncBaggingTask()
+    }else{
+      var formData = new FormData();
+      let index = 0;
+  
+      // normal task
+      for(let i=0; i<tasks.length; i++){
+        for ( var key in tasks[i] ) {
+          if(key != 'url_gambar_data' && key != 'url_gambar'){
+            formData.append(key+'['+index+']', tasks[i][key] != undefined? tasks[i][key]:null);
+          }
         }
+  
+        const response = await fetch(tasks[i].url_gambar_data);
+        const blob = await response.blob();
+        formData.append('url_gambar'+'['+index+']', blob, tasks[i].url_gambar);
+        index++;
       }
-
-      const response = await fetch(tasks[i].url_gambar_data);
-      const blob = await response.blob();
-      formData.append('url_gambar'+'['+index+']', blob, tasks[i].url_gambar);
-      index++;
-    }
-
-    //redo task (create)
-    for(let i=0; i<redoTasks.length; i++){
-      for ( var key in redoTasks[i] ) {
-        if(key != 'url_gambar_data' && key != 'url_gambar' && key != 'id'){
-          formData.append(key+'['+index+']', redoTasks[i][key] != undefined? redoTasks[i][key]:null);
+  
+      //redo task (create)
+      for(let i=0; i<redoTasks.length; i++){
+        for ( var key in redoTasks[i] ) {
+          if(key != 'url_gambar_data' && key != 'url_gambar' && key != 'id'){
+            formData.append(key+'['+index+']', redoTasks[i][key] != undefined? redoTasks[i][key]:null);
+          }
         }
+  
+        const response = await fetch(redoTasks[i].url_gambar_data);
+        const blob = await response.blob();
+        formData.append('url_gambar'+'['+index+']', blob, redoTasks[i].url_gambar);
+        index++;
       }
-
-      const response = await fetch(redoTasks[i].url_gambar_data);
-      const blob = await response.blob();
-      formData.append('url_gambar'+'['+index+']', blob, redoTasks[i].url_gambar);
-      index++;
-    }
-
-    //redo task (update)
-    for(let i=0; i<redoTasks.length; i++){
-      formData.append('id'+'['+index+']', redoTasks[i].id!.toString());
-      formData.append('status'+'['+index+']', TaskStatus.redo);
-      formData.append('pokok_id'+'['+index+']', redoTasks[i].pokok_id.toString());
-      index++;
-    }
-
-    for(let i=0; i<posponed2xTasks.length; i++){
-      for ( var key in posponed2xTasks[i] ) {
-        if(key != 'url_gambar_data' && key != 'url_gambar'){
-          formData.append(key+'['+index+']', posponed2xTasks[i][key] != undefined? posponed2xTasks[i][key]:null);
-        }
+  
+      //redo task (update)
+      for(let i=0; i<redoTasks.length; i++){
+        formData.append('id'+'['+index+']', redoTasks[i].id!.toString());
+        formData.append('status'+'['+index+']', TaskStatus.redo);
+        formData.append('pokok_id'+'['+index+']', redoTasks[i].pokok_id.toString());
+        index++;
       }
-
-      const response = await fetch(posponed2xTasks[i].url_gambar_data);
-      const blob = await response.blob();
-      formData.append('url_gambar'+'['+index+']', blob, posponed2xTasks[i].url_gambar);
-
-      index++;
-    }
-
-    this.controlPollinationService.OfflineUpload(formData,(res:ControlPollinationModel[])=>{
-      let tempTasks:OfflineControlPollinationModel[] = [];
-      let tempRedoTasks:OfflineControlPollinationModel[] = [];
-      let tempPosponed2xTasks:OfflineControlPollinationModel[] = [];
-      let tempTandanId:string[] = [];
-      let tempTaskId:String[] = [];
-
-      res.forEach(el => {
-        tempTandanId.push(el.tandan_id.toString());
-        tempTaskId.push(el.id.toString());
-      });
-
-      tasks.forEach(el => {
-        if(!tempTandanId.includes(el.tandan_id.toString())){
-          tempTasks.push(el);
+  
+      for(let i=0; i<posponed2xTasks.length; i++){
+        for ( var key in posponed2xTasks[i] ) {
+          if(key != 'url_gambar_data' && key != 'url_gambar'){
+            formData.append(key+'['+index+']', posponed2xTasks[i][key] != undefined? posponed2xTasks[i][key]:null);
+          }
         }
-      });
-
-      redoTasks.forEach(el => {
-        if(!tempTaskId.includes(el.id)){
-          tempRedoTasks.push(el);
-        }
-      });
-
-      posponed2xTasks.forEach(el => {
-        if(!tempTaskId.includes(el.id)){
-          tempPosponed2xTasks.push(el);
-        }
-      });
-
-      this.storageService.set(this.storageService.posponedCPOfflineData,tempPosponed2xTasks);
-      this.storageService.set(this.storageService.controlPollinationOfflineData,tempTasks);
-      this.storageService.set(this.storageService.redoCPOfflineData,tempRedoTasks);
-      if(tempPosponed2xTasks.length == 0 && tempTasks.length == 0 && tempRedoTasks.length == 0){
-        this._syncBaggingTask();
-      }else{
-        this.modalService.successPrompt("Terdapat tugas Pendebungaan Terkawal yang tidak berjaya di muat naik. Jumlah tugas tidak berjaya:"+tempTasks.length).then();
+  
+        const response = await fetch(posponed2xTasks[i].url_gambar_data);
+        const blob = await response.blob();
+        formData.append('url_gambar'+'['+index+']', blob, posponed2xTasks[i].url_gambar);
+  
+        index++;
       }
-
-    });
+  
+      this.controlPollinationService.OfflineUpload(formData,(res:ControlPollinationModel[])=>{
+        let tempTasks:OfflineControlPollinationModel[] = [];
+        let tempRedoTasks:OfflineControlPollinationModel[] = [];
+        let tempPosponed2xTasks:OfflineControlPollinationModel[] = [];
+        let tempTandanId:string[] = [];
+        let tempTaskId:String[] = [];
+  
+        res.forEach(el => {
+          tempTandanId.push(el.tandan_id.toString());
+          tempTaskId.push(el.id.toString());
+        });
+  
+        tasks.forEach(el => {
+          if(!tempTandanId.includes(el.tandan_id.toString())){
+            tempTasks.push(el);
+          }
+        });
+  
+        redoTasks.forEach(el => {
+          if(!tempTaskId.includes(el.id)){
+            tempRedoTasks.push(el);
+          }
+        });
+  
+        posponed2xTasks.forEach(el => {
+          if(!tempTaskId.includes(el.id)){
+            tempPosponed2xTasks.push(el);
+          }
+        });
+  
+        this.storageService.set(this.storageService.posponedCPOfflineData,tempPosponed2xTasks);
+        this.storageService.set(this.storageService.controlPollinationOfflineData,tempTasks);
+        this.storageService.set(this.storageService.redoCPOfflineData,tempRedoTasks);
+        if(tempPosponed2xTasks.length == 0 && tempTasks.length == 0 && tempRedoTasks.length == 0){
+          this._syncBaggingTask();
+        }else{
+          this.modalService.successPrompt("Terdapat tugas Pendebungaan Terkawal yang tidak berjaya di muat naik. Jumlah tugas tidak berjaya:"+tempTasks.length).then();
+        }
+  
+      });
+    }
   }
 
   private _getTreeAndTandan(nextMethod){
