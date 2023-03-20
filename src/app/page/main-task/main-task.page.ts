@@ -448,6 +448,7 @@ export class MainTaskPage implements OnInit {
               this.finishedTaskList.push(el);
             }
           });
+          console.log(this.posponedTaskList);
           this.controlPollinationService.getNewlyCreatedTask(this.employeeId,(res1:[ControlPollinationModel])=>{
             this.numOfNewTask = res1.length;
             this.newTaskList = res1;
@@ -467,6 +468,7 @@ export class MainTaskPage implements OnInit {
         this.posponedTaskList.push(...tempList);
         this.numOfNewTask = this.newTaskList.length;
         this.numOfPosponedTask = this.posponedTaskList.length;
+        console.log(this.posponedTaskList);
       }
     }else{
       this.controlPollinationService.getAll((res:[ControlPollinationModel])=>{

@@ -6,7 +6,7 @@
     <div class="w-75 mx-auto d-flex flex-column">
       <div class="d-flex flex-row justify-content-between">
         <p class="mainTitle">Ladang<br/>Benih</p>
-        <div id="iconBg" class="rounded" style="width: 94px; height: 94px; background-color: rgba(64, 19, 28, 1);">
+        <div id="iconBg" class="rounded" style="width: 94px; height: 94px;" [class.orangeBackdrop]="role?.indexOf('Petugas')>=0" [class.brownBackdrop]="role?.indexOf('Petugas')<0" >
           <div class="h-50 mx-auto mt-2 text-center w-100">
             <img class="m-auto h-100" src={{userIconPath}}/>
           </div>

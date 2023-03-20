@@ -50,15 +50,10 @@ export class DashboardPage implements OnInit {
     }else if(this.role == UserRole.petugas_balut_fatherpalm){
       this.roleShort = "Petugas Fatherpalm";
     }
-    if( this.role == UserRole.general_worker || 
-        this.role == UserRole.petugas_balut || 
-        this.role == UserRole.petugas_qc
-      ){
+    if( this.role?.indexOf('Petugas')>=0){
       this.userIconPath="../../../assets/worker_icon.png"
-      document.getElementById('iconBg').style.backgroundColor = "#F89521";
     }else{
       this.userIconPath="../../../assets/penyelia_icon.png"
-      document.getElementById('iconBg').style.backgroundColor = "rgba(64, 19, 28, 1)";
     }
     this.wrapTask = false;
     this.debungTask = false;

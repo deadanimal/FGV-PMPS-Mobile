@@ -23,7 +23,7 @@
 
   <form #form="ngForm" class="mx-auto my-2" style="max-width: 300px;">
     <ion-item *ngIf="taskType == 'balut' || name != null" lines="full">
-      <ion-label position="floating">Nama Petugas</ion-label>
+      <ion-label position="floating">Nama Petugas {{workerTask}}</ion-label>
       <ion-input type="text" [(ngModel)]="name" name="name" required [readonly]="true"></ion-input>
     </ion-item>
     <ion-item *ngIf="taskType == 'balut' || treeNum != null" lines="full">
@@ -34,7 +34,7 @@
       <ion-label position="floating">No Daftar</ion-label>
       <ion-input type="text" [(ngModel)]="regNo" name="regNo" required [readonly]="true"></ion-input>
     </ion-item>
-    <ion-item *ngIf="taskType == 'qc' || qcSv!= null" lines="full">
+    <ion-item *ngIf="taskType != 'qc' && qcSv!= null" lines="full">
       <ion-label position="floating">Penyelia</ion-label>
       <ion-input type="text" [(ngModel)]="qcSv" name="qcSv" required [readonly]="true"></ion-input>
     </ion-item>
@@ -55,7 +55,7 @@
       <ion-input type="text" [(ngModel)]="defect" name="defect" required [readonly]="true"></ion-input>
     </ion-item>
     <ion-item *ngIf="(taskType == 'tuai' || taskType == 'tuaiposponed' || taskType == 'harvestsv') && defect == null && userRole != roles.petugas_balut_fatherpalm && userRole != roles.penyelia_fatherpalm" lines="full">
-      <ion-label position="floating">Berat Tandan (gram)</ion-label>
+      <ion-label position="floating">Berat Tandan (KG)</ion-label>
       <ion-input type="text" [(ngModel)]="weight" name="weight" required></ion-input>
     </ion-item>
     <ion-item lines="full" *ngIf="pollenViability != null">
@@ -66,8 +66,8 @@
       <ion-label position="floating">Catatan</ion-label>
       <ion-input type="text" [(ngModel)]="remark" name="remark" [readonly]="userRole!='Petugas Balut & Pendebungaan Terkawal' && userRole != roles.petugas_balut_fatherpalm && userRole!='Petugas Kawalan Kualiti' && userRole!='Petugas Tuai'&& userRole!='Petugas Makmal'"></ion-input>
     </ion-item>
-    <ion-item  lines="full" class="my-4" *ngIf="((userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Makmal' || (userRole == roles.petugas_balut_fatherpalm && (taskType != 'tuai' && taskType != 'tuaiposponed'))) )">
-      <ion-select placeholder="Pilih Penyelia" id= "id1" #id1 >
+    <ion-item  lines="full" class="my-4" *ngIf="((userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Kawalan Kualiti' ||userRole=='Petugas Makmal' || (userRole == roles.petugas_balut_fatherpalm && (taskType != 'tuai' && taskType != 'tuaiposponed'))) )">
+      <ion-select placeholder="Pilih Penyelia" id= "id1" #id1 [value]="qcSvId?.toString()">
         <ion-select-option *ngFor="let sv of userList" value={{sv.id}}>{{sv.nama}}</ion-select-option>
       </ion-select>
     </ion-item>

@@ -46,6 +46,7 @@ export class FinishedTaskPage implements OnInit {
   svRemark:string;
   treeType:string;
   pollenDiscarded:boolean;
+  workerTask:string;
   constructor(
     private activatedRoute:ActivatedRoute,
     private tandanService: TandanService,
@@ -81,6 +82,7 @@ export class FinishedTaskPage implements OnInit {
 
   private _getTaskInfo(){
     if(this.taskType == 'Balut'){
+      this.workerTask = 'Balut';
       this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
         this._getTandanInfo(res.tandan_id.toString());
         if(this.accountService.getUserRole() == UserRole.penyelia_balut){
@@ -93,6 +95,7 @@ export class FinishedTaskPage implements OnInit {
         }
       });
     }else if(this.taskType == 'Pendebungaan Terkawal (CP)'){
+      this.workerTask = 'Pendebungaan Terkawal';
       this.cpService.getById(this.taskId,(res:ControlPollinationModel)=>{
         this._getTandanInfo(res.tandan_id.toString());
         if(this.accountService.getUserRole() == UserRole.penyelia_balut){
@@ -105,6 +108,7 @@ export class FinishedTaskPage implements OnInit {
         }
       });
     }else if(this.taskType == 'Kawalan Kualiti (QC)'){
+      this.workerTask = 'Kawalan Kualiti';
       this.qcService.getById(this.taskId,(res:QualityControlModel)=>{
         this._getTandanInfo(res.tandan_id.toString());
         if(this.accountService.getUserRole() == UserRole.penyelia_qc){
@@ -117,6 +121,7 @@ export class FinishedTaskPage implements OnInit {
         }
       });
     }else if(this.taskType == 'Tuai'){
+      this.workerTask = 'Tuai';
       this.harvestService.getById(this.taskId,(res:HarvestModel)=>{
         this._getTandanInfo(res.tandan_id.toString());
         if(this.accountService.getUserRole() == UserRole.penyelia_tuai){
@@ -129,6 +134,7 @@ export class FinishedTaskPage implements OnInit {
         }
       });
     }else if(this.taskType == InAppTaskCycle.pp){
+      this.workerTask = '';
       this.pollenPrepService.getById(this.taskId,(res:PollenPreparationModel)=>{
         this._getTandanInfo(res.tandan_id.toString());
         this.workerRemark = res.catatan;
@@ -139,6 +145,7 @@ export class FinishedTaskPage implements OnInit {
         }
       });
     }else if(this.taskType == 'Penggunaan Pollen'){
+      this.workerTask = '';
       this.pollenPrepService.getById(this.taskId,(res:PollenPreparationModel)=>{
         this._getTandanInfo(res.tandan_id.toString());
         this.workerRemark = res.catatan;

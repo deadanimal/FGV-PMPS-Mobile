@@ -38,10 +38,8 @@ export class UserInfoHeaderComponent implements OnInit {
       this.role = loginDetails.peranan;
       if(this.role.indexOf('pekerja')>=0){
         this.userIconPath="../../../assets/worker_icon.png"
-        document.getElementById('iconBg').style.backgroundColor = "#F89521";
       }else{
         this.userIconPath="../../../assets/penyelia_icon.png"
-        document.getElementById('iconBg').style.backgroundColor = "rgba(64, 19, 28, 1)";
       }
       document.getElementById('iconBg').style.zIndex = "1000";
     }
@@ -55,10 +53,8 @@ export class UserInfoHeaderComponent implements OnInit {
     this.role = loginDetails.peranan;
     if(this.role.indexOf('pekerja')>=0){
       this.userIconPath="../../../assets/worker_icon.png"
-      document.getElementById('iconBg').style.backgroundColor = "#F89521";
     }else{
       this.userIconPath="../../../assets/penyelia_icon.png"
-      document.getElementById('iconBg').style.backgroundColor = "rgba(64, 19, 28, 1)";
     }
   }
 

@@ -31,6 +31,8 @@ export class UserProfilePage implements OnInit {
     this.date = this.datePipe.transform(Date.parse(loginDetails.created_at?.toString()),"dd-MM-YYYY");
     this.phone = loginDetails.no_telefon;
     this.role = loginDetails.peranan;
+    console.log(this.role);
+    console.log(this.role?.indexOf('Petugas')>=0);
 
     if(this.role == UserRole.penyelia_qc){
       this.roleShort = "Penyelia QC";

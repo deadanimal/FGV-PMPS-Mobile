@@ -92,6 +92,7 @@ export class TaskStatusPage implements OnInit {
   currentPollenPrepStatus:PollenStatus;
   pollenStatus = PollenStatus;
   pollenViability:String;
+  workerTask:string;
 
   constructor(
     private photoService:PhotoService,
@@ -923,25 +924,35 @@ export class TaskStatusPage implements OnInit {
   async _getTask(taskId:String){
     if(this.taskType == 'debung'){
       this._getCPTask(taskId);
+      this.workerTask = 'Pendebungaan Terkawal';
     }else if(this.taskType == InAppTaskCycle.posponedbagging){
       this._getPosponedBaggingTask();
     }else if(this.taskType == 'debungposponed'){
       this._getPosponedCPTask(taskId);
+      this.workerTask = 'Pendebungaan Terkawal';
     }else if(this.taskType == InAppTaskCycle.rejectedCp){
       this._getRejectedCPTask(taskId);
+      this.workerTask = 'Pendebungaan Terkawal';
     }else if(this.taskType == 'qc'){
+      this.workerTask = 'Kawalan Kualiti';
       this._getQCTask(taskId);
     }else if(this.taskType == InAppTaskCycle.posponedqc){
+      this.workerTask = 'Kawalan Kualiti';
       this._getPosponedQCTask(taskId);
     }else if(this.taskType == InAppTaskCycle.qcSv){
+      this.workerTask = 'Kawalan Kualiti';
       this._getQCTask(taskId);
     }else if(this.taskType == 'tuai'){
+      this.workerTask = 'Tuai';
       this._getHarvestTask(taskId);
     }else if(this.taskType == InAppTaskCycle.posponedharvest){
+      this.workerTask = 'Tuai';
       this._getPostponedHarvestTask(taskId);
     }else if(this.taskType == InAppTaskCycle.anjakharvest){
+      this.workerTask = 'Tuai';
       this._getPostponedHarvestTask(taskId);
     }else if(this.taskType == 'harvestsv'){
+      this.workerTask = 'Tuai';
       this._getHarvestTask(taskId);
     }else if(this.taskType == InAppTaskCycle.pp || this.taskType == InAppTaskCycle.ppSv){
       this._getPollenPrepTask();
@@ -1326,11 +1337,17 @@ export class TaskStatusPage implements OnInit {
         if(el.blok.includes(this.treeBlock.toString())){
           this.userList.push(el);
         }
+        if(this.userRole == UserRole.petugas_balut_fatherpalm && el.id == this.qcSvId){
+          this.qcSv = el.nama;
+        }
       });
     }else if(this.userRole == UserRole.petugas_qc){
       svList.forEach(el => {
         if(el.id == this.qcSvId){
           this.qcSv = el.nama;
+        }
+        if(el.blok.includes(this.treeBlock.toString())){
+          this.userList.push(el);
         }
       });
     }
@@ -1385,6 +1402,16 @@ export class TaskStatusPage implements OnInit {
             this.qcSv = el.nama;
           }
         });
+        if(this.treeBlock != null){
+          this.userList = [];
+          res.forEach(el => {
+            if(el.blok.includes(this.treeBlock.toString())){
+              this.userList.push(el);
+            }
+          });
+        }else{
+          this.userList = res;
+        }
       });
     }else if(this.userRole == UserRole.petugas_makmal){
       this.userServices.getByRole(UserRole.penyelia_fatherpalm.toString(),(res:[User])=>{

@@ -4,7 +4,7 @@
   <div class="mx-auto text-center">
     <div class="my-2" style="width: 304px; height: 59px; display: inline-flex; flex-direction: row; align-items: center; justify-content: flex-end;">
       <div style="width: 58px; height: 59px;">
-        <div id="iconBg" style="background-color:'#F89521'; width: 58px; height: 58px; border-radius: 10px; display: flex; flex-direction: row; align-items: center; justify-content: center;">
+        <div id="iconBg" [class.orangeBackdrop]="role?.indexOf('Petugas')>=0" [class.brownBackdrop]="role?.indexOf('Petugas')<0" style="width: 58px; height: 58px; border-radius: 10px; display: flex; flex-direction: row; align-items: center; justify-content: center;">
           <img style="height: 48px; border-radius: 8px;" src={{userIconPath}}/>
         </div>
       </div>
