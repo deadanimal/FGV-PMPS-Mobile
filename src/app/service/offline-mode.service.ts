@@ -9,6 +9,7 @@ import { HarvestModel } from '../model/harvest';
 import { OfflineBaggingModel } from '../model/offline-bagging';
 import { OfflineBaggingResponseModel } from '../model/offline-bagging-response';
 import { OfflineControlPollinationModel } from '../model/offline-control-pollination';
+import { OfflineCPResponseModel } from '../model/offline-control-pollination-response';
 import { OfflineHarvestModel } from '../model/offline-harvest';
 import { OfflineHarvestResponseModel } from '../model/offline-harvest-response';
 import { OfflineQualityControlModel } from '../model/offline-quality-control';
@@ -279,14 +280,18 @@ export class OfflineModeService {
         index++;
       }
   
-      this.controlPollinationService.OfflineUpload(formData,(res:ControlPollinationModel[])=>{
+      this.controlPollinationService.OfflineUpload(formData,(res:OfflineCPResponseModel)=>{
         let tempTasks:OfflineControlPollinationModel[] = [];
         let tempRedoTasks:OfflineControlPollinationModel[] = [];
         let tempPosponed2xTasks:OfflineControlPollinationModel[] = [];
         let tempTandanId:string[] = [];
         let tempTaskId:String[] = [];
+
+        if(res.cp == null){
+          res.cp = [];
+        }
   
-        res.forEach(el => {
+        res.cp.forEach(el => {
           tempTandanId.push(el.tandan_id.toString());
           tempTaskId.push(el.id.toString());
         });
