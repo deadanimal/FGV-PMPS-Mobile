@@ -8,6 +8,7 @@ import { StokPollenFormPageRoutingModule } from './stok-pollen-form-routing.modu
 
 import { StokPollenFormPage } from './stok-pollen-form.page';
 import { SharedComponentModule } from 'src/app/modules/shared-component/shared-component.module';
+import { IonicSelectableModule } from 'ionic-selectable';
 
 @NgModule({
   imports: [
@@ -16,6 +17,7 @@ import { SharedComponentModule } from 'src/app/modules/shared-component/shared-c
     IonicModule,
     StokPollenFormPageRoutingModule,
     SharedComponentModule,
+    IonicSelectableModule,
   ],
   declarations: [StokPollenFormPage]
 })

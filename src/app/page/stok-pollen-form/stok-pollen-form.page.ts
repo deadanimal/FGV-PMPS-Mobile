@@ -36,6 +36,8 @@ export class StokPollenFormPage implements OnInit {
   selectedBlock:string;
   selectedTandan:string;
   selectedPollen:PollenPreparationModel;
+  itemBlock = [];
+  itemTandan = [];
 
   constructor(
     private pollenUsageService:PollenUsageService,
@@ -174,18 +176,22 @@ export class StokPollenFormPage implements OnInit {
     this.pollenList.forEach(el => {
       if(!this.availableBlock.includes(el.pokok.blok)){
         this.availableBlock.push(el.pokok.blok);
+        this.itemBlock.push({id:el.pokok.blok,name:el.pokok.blok});
       }if(!this.availableTandan.includes(el.tandan?.no_daftar)){
         this.availableTandan.push(el.tandan?.no_daftar);
+        this.itemTandan.push({id:el.tandan?.no_daftar,name:el.tandan?.no_daftar});
       }
     });
   }
 
   filterAvailableTandan(){
     this.availableTandan = [];
+    this.itemTandan = [];
     if(this.selectedBlock != null){
       this.pollenList.forEach(el => {
         if(el.pokok.blok == this.selectedBlock && !this.availableTandan.includes(el.tandan?.no_daftar)){
           this.availableTandan.push(el.tandan?.no_daftar);
+          this.itemTandan.push({id:el.tandan?.no_daftar,name:el.tandan?.no_daftar});
         }
       });
     }
@@ -193,7 +199,7 @@ export class StokPollenFormPage implements OnInit {
   }
 
   getFilteredPollenList(){
-    let retVal:PollenPreparationModel[] = [];
+    let retVal = [];
     let tempArray:PollenPreparationModel[] = [];
     if(this.selectedBlock!= null){
       this.pollenList.forEach(el => {
@@ -208,11 +214,13 @@ export class StokPollenFormPage implements OnInit {
     if(this.selectedTandan != null){
       tempArray.forEach(el => {
         if(el.tandan.no_daftar == this.selectedTandan){
-          retVal.push(el);
+          retVal.push({id:el.id,name:el.pokok?.progeny+"-"+el.pokok?.no_pokok});
         }
       });
     }else{
-      retVal = tempArray;
+      tempArray.forEach(el => {
+        retVal.push({id:el.id,name:el.pokok?.progeny+"-"+el.pokok?.no_pokok});
+      });
     }
     
     return retVal;
@@ -220,17 +228,17 @@ export class StokPollenFormPage implements OnInit {
 
   
   blockChange(e) {
-    this.selectedBlock = e.detail.value;
+    this.selectedBlock = e.value.id;
     this.filterAvailableTandan();
   }
   
   tandanhange(e) {
-    this.selectedTandan = e.detail.value;
+    this.selectedTandan = e.value.id;
   }
 
   pollenChange(e){
     this.pollenList.forEach(el => {
-      if(el.id == e.detail.value){
+      if(el.id == e.value.id){
         this.getHarvestTask(el.tandan_id);
         this.selectedPollen = el;
       }

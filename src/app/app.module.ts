@@ -15,6 +15,8 @@ import { PosponePromptComponent } from './component/pospone-prompt/pospone-promp
 import { TextBtnPromptComponent } from './component/text-btn-prompt/text-btn-prompt.component';
 import { GenericTextModalComponent } from './component/generic-text-modal/generic-text-modal.component';
 import { MenuPromptComponent } from './component/menu-prompt/menu-prompt.component';
+import { IonicSelectableModule } from 'ionic-selectable';
+
 
 @NgModule({
   declarations: [
@@ -36,6 +38,7 @@ import { MenuPromptComponent } from './component/menu-prompt/menu-prompt.compone
     AppRoutingModule,
     IonicStorageModule.forRoot(),
     FormsModule,
+    IonicSelectableModule,
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     DatePipe],

@@ -15,15 +15,25 @@
     </ion-item>
 
     <ion-item *ngIf="block == null" lines="full" class="mt-4">
-      <ion-select (ionChange)="blockChange($event)" placeholder="Blok" id="block" #block required [disabled]="isReturn">
-        <ion-select-option *ngFor="let block of availableBlock" value={{block}}>{{block}}</ion-select-option>
-      </ion-select>
+      <ionic-selectable
+      [items]="itemBlock"
+      itemValueField="id"
+      itemTextField="name"
+      [canSearch]="true"
+      placeholder="Blok"
+      (onChange)="blockChange($event)">
+      </ionic-selectable>
     </ion-item>
 
     <ion-item *ngIf="tandan == null" lines="full" class="mt-4">
-      <ion-select (ionChange)="tandanhange($event)" placeholder="Tandan" id="tandan" #tandan required [disabled]="isReturn">
-        <ion-select-option *ngFor="let tandan of availableTandan" value={{tandan}}>{{tandan}}</ion-select-option>
-      </ion-select>
+      <ionic-selectable
+      [items]="itemTandan"
+      itemValueField="id"
+      itemTextField="name"
+      [canSearch]="true"
+      placeholder="Tandan"
+      (onChange)="tandanhange($event)">
+      </ionic-selectable>
     </ion-item>
 
     <ion-item *ngIf="no_pollen != null" lines="full">
@@ -36,10 +46,16 @@
       <ion-input type="text" value="Pendebungaan Terkawal" required [disabled]="isReturn"></ion-input>
     </ion-item>
 
+
     <ion-item *ngIf="no_pollen == null" lines="full" class="mt-4">
-      <ion-select (ionChange)="pollenChange($event)" placeholder="No. Pollen" id="block" #block required [disabled]="isReturn">
-        <ion-select-option *ngFor="let pollen of getFilteredPollenList()" value={{pollen?.id}}>{{pollen?.pokok?.progeny}} - {{pollen?.pokok?.no_pokok}}</ion-select-option>
-      </ion-select>
+      <ionic-selectable
+      [items]="getFilteredPollenList()"
+      itemValueField="id"
+      itemTextField="name"
+      [canSearch]="true"
+      placeholder="No. Pollen"
+      (onChange)="pollenChange($event)">
+      </ionic-selectable>
     </ion-item>
 
     <ion-item lines="full">
