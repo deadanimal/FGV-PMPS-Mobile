@@ -26,6 +26,7 @@ export const environment = {
   offlineQc:'/multiple-qc/',
   offlineHarvest:'/multiple-harvest/',
   qcSearch:'/search/qc/',
+  qcSearch2:'/search/qc2/',
   storageUrl:'https://fgv.prototype.com.my/storage/',
 };
 

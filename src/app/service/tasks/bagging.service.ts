@@ -290,6 +290,44 @@ export class BaggingService {
     );
   }
 
+  async searchByTreeInfo2(
+    blok:String,
+    progeny:String,
+    pembalut:String,
+    callback,
+    loadingAnim = true
+  ){
+    if(loadingAnim){
+      this.loadingModal = await this.showLoading();
+    }
+    this.http.post<[QcSearchResponse]>(
+      `${environment.baseUrl}${environment.qcSearch2}`,
+      {
+        blok:blok,
+        progeny:progeny,
+        pembalut:pembalut,
+      }
+    ).subscribe(
+      async (res:[QcSearchResponse]) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
+        }
+        callback(res);
+      },
+      async (err:HttpErrorResponse) => {
+        if(loadingAnim){
+          this.loadingModal = await this.loadingCtrl.getTop()
+          if(this.loadingModal != null){
+            this.loadingModal.dismiss();
+          }
+        }
+      }
+    );
+  }
+
   async getByTandanId(
     tandanId:number,
     callback,

@@ -68,7 +68,7 @@ export class HarvestSearchFormPage implements OnInit {
 
   submit(form:NgForm){
     this.searchResult = [];
-    this.baggingService.searchByTreeInfo(
+    this.baggingService.searchByTreeInfo2(
       this.blockSelect?.value?.toString(),
       this.progenySelect?.value?.toString(),
       this.userSelect?.value?.toString(),

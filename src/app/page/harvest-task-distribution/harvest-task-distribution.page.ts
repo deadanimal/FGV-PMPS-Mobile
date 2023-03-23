@@ -8,7 +8,9 @@ import { User } from 'src/app/model/user';
 import { AccountService } from 'src/app/service/account.service';
 import { ModalService } from 'src/app/service/modal.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
+import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
 import { HarvestService } from 'src/app/service/tasks/harvest.service';
+import { QualityControlService } from 'src/app/service/tasks/quality-control.service';
 
 @Component({
   selector: 'app-harvest-task-distribution',
@@ -29,6 +31,7 @@ export class HarvestTaskDistributionPage implements OnInit {
     private accountService:AccountService,
     private harvestService:HarvestService,
     private navCtrl:NavController,
+    private qcService:QualityControlService,
   ) { }
 
   ngOnInit() {
@@ -45,7 +48,7 @@ export class HarvestTaskDistributionPage implements OnInit {
   _getTask(){
     this.harvestService.getAllHarvestWorker((res:[User])=>{
       this.qcWorker = res;
-      this.baggingService.getById(this.taskId,(resCP:ControlPollinationModel)=>{
+      this.qcService.getById(this.taskId,(resCP:ControlPollinationModel)=>{
         this.tandanId = resCP.tandan_id;
         this.treeId = resCP.pokok_id;
       });
