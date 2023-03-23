@@ -51,6 +51,7 @@ export class OfflineModePage implements OnInit {
   harvestTaskDone:OfflineHarvestService[] = [];
   public appIsOnline$: Observable<boolean>;
   hasInternetConnection:boolean;
+  syncBtnPressed:boolean = false;
   constructor(
     private offlineModeService:OfflineModeService,
     private router:Router,
@@ -65,6 +66,7 @@ export class OfflineModePage implements OnInit {
 
   async ngOnInit() {
     this.hasInternetConnection = true;
+    this.syncBtnPressed = false;
     this.initConnectivityMonitoring();
     setTimeout( () => {
       this._refreshData();
@@ -103,6 +105,7 @@ export class OfflineModePage implements OnInit {
   }
 
   sync(){
+    this.syncBtnPressed = true;
     this.offlineModeService.sync();
     setTimeout(async () => {
       this._refreshData();
