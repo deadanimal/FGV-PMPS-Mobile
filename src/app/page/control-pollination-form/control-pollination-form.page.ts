@@ -23,10 +23,10 @@ import { OfflinePollenPrepService } from 'src/app/service/offline/offline-pollen
 export class ControlPollinationFormPage implements OnInit {
 
   @ViewChild("id1") id1!: IonSelect;
-  @ViewChild("pollenNumber") pollenNumber!: IonSelect;
   taskId:String;
   tandanId:String;
   taskType:String;
+  selectedPollen:PollenPreparationModel;
   isOfflineMode:boolean;
   pollenList:PollenPreparationModel[];
   constructor(
@@ -59,10 +59,10 @@ export class ControlPollinationFormPage implements OnInit {
   }
 
   async btnClick(form:NgForm){
-    console.log(this.pollenNumber?.value?.toString())
+    console.log(this.selectedPollen)
     console.log(this.id1?.value?.toString())
     if(!this.isOfflineMode){
-      this.controlPollinationService.updatePollenNumber(this.taskId,this.pollenNumber?.value?.toString(),this.id1?.value?.toString(),(res:ControlPollinationModel)=>{
+      this.controlPollinationService.updatePollenNumber(this.taskId,this.selectedPollen.id.toString(),this.id1?.value?.toString(),(res:ControlPollinationModel)=>{
         this.modalService.successPrompt("Borang Anda Telah Berjaya Dihantar Ke Penyelia").then(()=>{
           this.router.navigateByUrl(
             '/app/tabs/tab1',
@@ -78,7 +78,7 @@ export class ControlPollinationFormPage implements OnInit {
         let tasks:OfflineControlPollinationModel[] = await this.offlineCPService.getSavedRedoCPTasks();
         tasks.forEach(el => {
           if(el.id == this.taskId){
-            el.no_pollen = this.pollenNumber?.value?.toString();
+            el.no_pollen = this.selectedPollen.id.toString();
             el.peratus_pollen=this.id1?.value?.toString();
             el.status=TaskStatus.done;
           }
@@ -96,7 +96,7 @@ export class ControlPollinationFormPage implements OnInit {
         let tasks:OfflineControlPollinationModel[] = await this.offlineCPService.getSavedPosponed2CPTasks();
         tasks.forEach(el => {
           if(el.id == this.taskId){
-            el.no_pollen = this.pollenNumber?.value?.toString();
+            el.no_pollen = this.selectedPollen.id.toString();
             el.peratus_pollen=this.id1?.value?.toString();
             el.status=TaskStatus.done;
           }
@@ -114,7 +114,7 @@ export class ControlPollinationFormPage implements OnInit {
         let tasks:OfflineControlPollinationModel[] = await this.offlineCPService.getSavedCPTasks();
         tasks.forEach(el => {
           if(el.tandan_id == this.tandanId){
-            el.no_pollen = this.pollenNumber?.value?.toString();
+            el.no_pollen = this.selectedPollen.toString();
             el.peratus_pollen=this.id1?.value?.toString();
             el.status=TaskStatus.done;
           }
@@ -139,6 +139,7 @@ export class ControlPollinationFormPage implements OnInit {
         (res:PollenPreparationModel[])=>{
           res.forEach(el => {
             if(el.status == TaskStatus.verified && el.kerosakan_id == null){
+              el.in_app_name = 'Pollen-'+el.id;
               this.pollenList.push(el);
             }
           });

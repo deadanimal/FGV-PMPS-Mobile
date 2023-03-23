@@ -8,6 +8,7 @@ import { ControlPollinationFormPageRoutingModule } from './control-pollination-f
 
 import { ControlPollinationFormPage } from './control-pollination-form.page';
 import { SharedComponentModule } from 'src/app/modules/shared-component/shared-component.module';
+import { IonicSelectableModule } from 'ionic-selectable';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { SharedComponentModule } from 'src/app/modules/shared-component/shared-c
     FormsModule,
     IonicModule,
     ControlPollinationFormPageRoutingModule,
-    SharedComponentModule
+    SharedComponentModule,
+    IonicSelectableModule,
   ],
   declarations: [ControlPollinationFormPage]
 })

@@ -37,4 +37,5 @@ export interface PollenPreparationModel {
     catatan2: string;
     catatan3: string;
     kerosakan_id?: number;
+    in_app_name?: string;
 }

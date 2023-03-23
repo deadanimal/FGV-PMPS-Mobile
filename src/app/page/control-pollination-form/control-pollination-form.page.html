@@ -5,9 +5,15 @@
 
   <form #form="ngForm" class="mx-auto my-2" style="max-width: 300px;" (ngSubmit)="btnClick(form)">
     <ion-item lines="full">
-      <ion-select placeholder="No Pollen" id= "pollenNumber" #pollenNumber required>
-        <ion-select-option *ngFor="let item of pollenList" value={{item.id}}>Pollen-{{item.id}}</ion-select-option>
-      </ion-select>
+      <ionic-selectable
+      [(ngModel)]="selectedPollen"
+      [items]="pollenList"
+      itemValueField="id"
+      itemTextField="in_app_name"
+      [canSearch]="true"
+      [ngModelOptions]="{standalone: true}"
+      placeholder="No Pollen">
+      </ionic-selectable>
     </ion-item>
     <ion-item  lines="full" class="my-4">
       <ion-select placeholder="Peratus Viabiliti Pollen(%)" id= "id1" #id1 required>
@@ -19,7 +25,7 @@
       </ion-select>
     </ion-item>
     <div class="text-center mx-auto mt-4 w-100">
-      <button [disabled]="pollenNumber.value == null || id1.value == null" type="submit" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-auto">
+      <button [disabled]="selectedPollen == null || id1.value == null" type="submit" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-auto">
         <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
         <p class="m-auto">Hantar</p>
       </button>
