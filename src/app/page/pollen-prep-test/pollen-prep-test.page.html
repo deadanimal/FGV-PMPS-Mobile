@@ -38,6 +38,10 @@
       </ion-select>
     </ion-item>
     <ion-item lines="full">
+      <ion-label position="floating">Berat Pollen</ion-label>
+      <ion-input type="text" [(ngModel)]="pollenWeight" name="pollenWeight" required></ion-input>
+    </ion-item>
+    <ion-item lines="full">
       <ion-label position="floating">Bilangan Uji</ion-label>
       <ion-input type="text" [(ngModel)]="numberOfTest" name="numberOfTest" required [readonly]="true"></ion-input>
     </ion-item>

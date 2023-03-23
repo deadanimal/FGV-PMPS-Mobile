@@ -38,6 +38,7 @@ export class StokPollenFormPage implements OnInit {
   selectedPollen:PollenPreparationModel;
   itemBlock = [];
   itemTandan = [];
+  filteredPollenList = [];
 
   constructor(
     private pollenUsageService:PollenUsageService,
@@ -161,6 +162,7 @@ export class StokPollenFormPage implements OnInit {
       res.forEach(el => {
         if(el.status_pollen != 'lupus'){
           this.pollenList.push(el);
+          this.filteredPollenList.push({id:el.id,name:el.pokok?.progeny+"-"+el.pokok?.no_pokok});
         }
       });
       this.filterAvailableBlock();
@@ -223,17 +225,19 @@ export class StokPollenFormPage implements OnInit {
       });
     }
     
-    return retVal;
+    this.filteredPollenList =  retVal;
   }
 
   
   blockChange(e) {
     this.selectedBlock = e.value.id;
     this.filterAvailableTandan();
+    this.getFilteredPollenList();
   }
   
   tandanhange(e) {
     this.selectedTandan = e.value.id;
+    this.getFilteredPollenList();
   }
 
   pollenChange(e){

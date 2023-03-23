@@ -93,6 +93,11 @@ export class TaskStatusPage implements OnInit {
   pollenStatus = PollenStatus;
   pollenViability:String;
   workerTask:string;
+  noOfTest:string;
+  dateAndTimeBagging:String;
+  dateAndTimeHarvest:String;
+  dateAndTimeTest:String;
+  baggingWorker:String;
 
   constructor(
     private photoService:PhotoService,
@@ -886,7 +891,14 @@ export class TaskStatusPage implements OnInit {
         }
         this.tandanId = res.tandan_id.toString();
         this.currentPollenPrepStatus = this.getStatusPollen(res);
+        this.weight = res.berat_pollen;
+        this.noOfTest = res.bil_uji;
+        this.treeBlock = res.pokok.blok;
+        this.regNo = res.tandan.no_daftar;
+        this.dateAndTimeTest = this.datePipe.transform(Date.parse(res.tarikh_uji+' '+res.masa_uji), 'dd-MM-yyyy HH:mm:ss');
         this.getServerImagePollenPrepTask(res);
+        this._getBaggingTaskForPP(res.tandan_id);
+        this._getUserInfo(res.id_sv_pollen);
         if(res.kerosakan_id != null){
           this._getDefectList(res.kerosakan_id);
         }
@@ -894,6 +906,38 @@ export class TaskStatusPage implements OnInit {
     }else{
       this._getTandanInfo(this.tandanId);
     }
+  }
+
+  _getBaggingTaskForPP(tandanId){
+    this.baggingService.getByTandanId(tandanId,(res:BaggingModel[])=>{
+      res.forEach(el => {
+        if(el.status == TaskStatus.verified){
+          this.dateAndTimeBagging = this.datePipe.transform(el.updated_at, 'dd-MM-yyyy HH:mm:ss');
+        }
+      });
+      this._getBaggingUserNameForPP(res[res.length - 1].id_sv_balut);
+      this._getharvestTaskForPP(tandanId);
+    },false);
+  }
+
+  _getBaggingUserNameForPP(userId){
+    this.taskService.getUserById(userId).subscribe(
+      (res:LoginResponseModel) => {
+        this.baggingWorker = res.nama;
+      },
+      (err:HttpErrorResponse) => {
+      }
+    );
+  }
+
+  _getharvestTaskForPP(tandanId){
+    this.harvestService.getByTandanId(tandanId,(res:HarvestModel[])=>{
+      res.forEach(el => {
+        if(el.status == TaskStatus.verified){
+          this.dateAndTimeHarvest = this.datePipe.transform(el.updated_at, 'dd-MM-yyyy HH:mm:ss');
+        }
+      });
+    },false);
   }
 
   getServerImagePollenPrepTask(pollen:PollenPreparationModel){

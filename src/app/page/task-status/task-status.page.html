@@ -26,6 +26,10 @@
       <ion-label position="floating">Nama Petugas {{workerTask}}</ion-label>
       <ion-input type="text" [(ngModel)]="name" name="name" required [readonly]="true"></ion-input>
     </ion-item>
+    <ion-item *ngIf="baggingWorker != null" lines="full">
+      <ion-label position="floating">Nama Petugas Balut</ion-label>
+      <ion-input type="text" [(ngModel)]="baggingWorker" name="baggingWorker" [readonly]="true"></ion-input>
+    </ion-item>
     <ion-item *ngIf="taskType == 'balut' || treeNum != null" lines="full">
       <ion-label position="floating">No Pokok</ion-label>
       <ion-input type="text" [(ngModel)]="treeNum" name="treeNum" required [readonly]="true"></ion-input>
@@ -33,6 +37,10 @@
     <ion-item *ngIf="taskType == 'balut' || taskType == 'qc' || taskType == 'pollenprep' || regNo != null" lines="full">
       <ion-label position="floating">No Daftar</ion-label>
       <ion-input type="text" [(ngModel)]="regNo" name="regNo" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="treeBlock != null && taskType == 'pollenprepsv'" lines="full">
+      <ion-label position="floating">Blok</ion-label>
+      <ion-input type="text" [(ngModel)]="treeBlock" name="treeBlock" [readonly]="true"></ion-input>
     </ion-item>
     <ion-item *ngIf="taskType != 'qc' && qcSv!= null" lines="full">
       <ion-label position="floating">Penyelia</ion-label>
@@ -57,6 +65,26 @@
     <ion-item *ngIf="(taskType == 'tuai' || taskType == 'tuaiposponed' || taskType == 'harvestsv') && defect == null && userRole != roles.petugas_balut_fatherpalm && userRole != roles.penyelia_fatherpalm" lines="full">
       <ion-label position="floating">Berat Tandan (KG)</ion-label>
       <ion-input type="text" [(ngModel)]="weight" name="weight" required></ion-input>
+    </ion-item>
+    <ion-item *ngIf="(taskType == 'pollenprepsv') && weight != null" lines="full">
+      <ion-label position="floating">Berat Pollen (Gram)</ion-label>
+      <ion-input type="text" [(ngModel)]="weight" name="weight" [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="noOfTest != null" lines="full">
+      <ion-label position="floating">Bilangan Ujian</ion-label>
+      <ion-input type="text" [(ngModel)]="noOfTest" name="noOfTest" [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="dateAndTimeBagging != null" lines="full">
+      <ion-label position="floating">Tarikh Balut</ion-label>
+      <ion-input type="text" [(ngModel)]="dateAndTimeBagging" name="dateAndTimeBagging" [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="dateAndTimeHarvest != null" lines="full">
+      <ion-label position="floating">Tarikh Tuai</ion-label>
+      <ion-input type="text" [(ngModel)]="dateAndTimeHarvest" name="dateAndTimeHarvest" [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="dateAndTimeTest != null" lines="full">
+      <ion-label position="floating">Tarikh Uji</ion-label>
+      <ion-input type="text" [(ngModel)]="dateAndTimeTest" name="dateAndTimeTest" [readonly]="true"></ion-input>
     </ion-item>
     <ion-item lines="full" *ngIf="pollenViability != null">
       <ion-label position="floating">Peratusan Pollen</ion-label>

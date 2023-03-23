@@ -27,6 +27,7 @@ export class PollenPrepTestPage implements OnInit {
   dateAndTimeBagging:String;
   dateAndTimeHarvest:String;
   numberOfTest:String;
+  pollenWeight:String;
   pollenNo:string;
   tandan:string;
 
@@ -60,6 +61,7 @@ export class PollenPrepTestPage implements OnInit {
       this.dateAndTimeBagging = this.datePipe.transform(Date.now(), 'dd-MM-yyyy HH:mm:ss');
       this.dateAndTimeHarvest = this.datePipe.transform(Date.now(), 'dd-MM-yyyy HH:mm:ss');
       this.numberOfTest = res.bil_uji == null? '1':(parseInt(res.bil_uji)+1).toString();
+      this.pollenWeight = res.berat_pollen == null? '0':res.berat_pollen;
       this.id1.value = res.viabiliti_pollen??"";
       this._getBaggingTask(res.tandan_id);
       this._getharvestTask(res.tandan_id);
@@ -93,6 +95,7 @@ export class PollenPrepTestPage implements OnInit {
     this.pollenPrepService.update(this.taskId,
       {
         bil_uji : this.numberOfTest,
+        berat_pollen : this.pollenWeight,
         tarikh_uji : date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate(),
         masa_uji : hour + ":"+ minute + ":"+ date.getSeconds(),
         viabiliti_pollen : this.id1?.value
@@ -122,6 +125,7 @@ export class PollenPrepTestPage implements OnInit {
     this.pollenPrepService.update(this.taskId,
       {
         bil_uji : this.numberOfTest,
+        berat_pollen : this.pollenWeight,
         tarikh_uji : date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate(),
         masa_uji : hour + ":"+ minute + ":"+ date.getSeconds(),
         viabiliti_pollen : this.id1?.value,
