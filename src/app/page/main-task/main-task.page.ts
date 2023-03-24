@@ -11,6 +11,7 @@ import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { HarvestModel } from 'src/app/model/harvest';
 import { LoginResponseModel } from 'src/app/model/login-response';
 import { PokokResponse } from 'src/app/model/pokok-respons';
+import { QcSearchResponse } from 'src/app/model/qc-search-response';
 import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
 import { QualityControlModel } from 'src/app/model/quality-control';
 import { AccountService, UserRole } from 'src/app/service/account.service';
@@ -28,6 +29,7 @@ import { HarvestService } from 'src/app/service/tasks/harvest.service';
 import { PollenPreparationService } from 'src/app/service/tasks/pollen-preparation.service';
 import { QualityControlService } from 'src/app/service/tasks/quality-control.service';
 import { TreeService } from 'src/app/service/tasks/tree.service';
+import { TreeType } from 'src/app/common/tree-type';
 
 @Component({
   selector: 'app-main-task',
@@ -543,13 +545,18 @@ export class MainTaskPage implements OnInit {
             }
           }
         });
-        this.controlPollinationService.getAll((resBag:[ControlPollinationModel])=>{
-          resBag.forEach(el => {
-            if(el.status == TaskStatus.verified && !this._hasQcTaskCreated(res,el)){
-              this.numOfActiveTask++;
-            }
-          });
-        });
+        this.baggingService.searchByTreeInfo(
+          "",
+          "",
+          "",
+          (res:[QcSearchResponse])=>{
+            res.forEach(el => {
+              if(el.tandan.kitaran == 'debung' && el.tandan.status_tandan == 'aktif'){
+                this.numOfActiveTask++;
+              }
+            });
+          }
+        )
       });
     }
   }
@@ -665,13 +672,21 @@ export class MainTaskPage implements OnInit {
           }
         });
 
-        this.qcService.getAll((resBag:[QualityControlModel])=>{
-          resBag.forEach(el => {
-            if(el.status == TaskStatus.verified && !this._hasHarvestTaskCreated(res,el)){
-              this.numOfActiveTask++;
-            }
-          });
-        });
+        this.baggingService.searchByTreeInfo2(
+          "","","",
+          (res:[QcSearchResponse])=>{
+            res.forEach(el => {
+              if(( this.role != UserRole.penyelia_fatherpalm && el.pokok.jantina == TreeType.Motherpalm && el.tandan.kitaran == 'kawal' && el.status == TaskStatus.verified) && el.tandan.status_tandan == 'aktif'){
+                this.numOfActiveTask++;
+              }else if( ( this.role == UserRole.penyelia_fatherpalm &&
+                          el.pokok.jantina == TreeType.Fatherpalm && 
+                          el.tandan.kitaran == 'balut' ) && 
+                          el.tandan.status_tandan == 'aktif'){
+                this.numOfActiveTask++;
+              }
+            });
+          }
+        );
       });
     }
   }

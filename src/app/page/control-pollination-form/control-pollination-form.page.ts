@@ -150,6 +150,9 @@ export class ControlPollinationFormPage implements OnInit {
       if(this.pollenList == null){
         this.pollenList = [];
       }
+      this.pollenList.forEach(el => {
+        el.in_app_name = 'Pollen-'+el.id;
+      });
     }
   }
 

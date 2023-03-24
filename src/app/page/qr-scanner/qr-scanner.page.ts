@@ -81,8 +81,13 @@ export class QrScannerPage implements OnInit {
     // if the result has content
     if (result.hasContent) {
       // console.log(result.content); // log the raw scanned content
-      let scanResult = result.content.replace('http://fgv.prototype.com.my/pengurusan-pokok-induk/pokok/edit/',""); // for pokok
-      scanResult = scanResult.replace('http://fgv.prototype.com.my/pengurusan-pokok-induk/tandan/edit/',""); // for pokok
+      let scanResult = result.content;
+      if(this.task == 'Balut' && this.returnUrl.indexOf('start-work-find')>0){
+        scanResult = scanResult.replace('http://fgv.prototype.com.my/pengurusan-pokok-induk/tandan/edit/',""); // for tandan
+      }else{
+        scanResult = scanResult.replace('http://fgv.prototype.com.my/pengurusan-pokok-induk/pokok/edit/',""); // for pokok
+        scanResult = scanResult.replace('http://fgv.prototype.com.my/pengurusan-pokok-induk/tandan/edit/',""); // for tandan
+      }
       if(this.treeNum!=null){
         this.router.navigate(
           [
