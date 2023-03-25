@@ -302,7 +302,10 @@ export class TaskStatusPage implements OnInit {
                           taskId:res.id,
                           tandanId:this.tandanId,
                         }
-                      ]
+                      ],
+                      {
+                        replaceUrl : true
+                      }
                     );
                   },
                   500
@@ -371,7 +374,10 @@ export class TaskStatusPage implements OnInit {
                           tandanId:this.tandanId,
                           qcDone:true
                         }
-                      ]
+                      ],
+                      {
+                        replaceUrl : true
+                      }
                     );
                   },
                   50
@@ -405,7 +411,10 @@ export class TaskStatusPage implements OnInit {
       this.router.navigate(
         [
           '/app/tabs/tab1/'
-        ]
+        ],
+        {
+          replaceUrl : true
+        }
       );
     });
   }
@@ -443,7 +452,10 @@ export class TaskStatusPage implements OnInit {
               {
                 taskId:resCP.id,
               }
-            ]
+            ],
+            {
+              replaceUrl : true
+            }
           );
         },
         false
@@ -460,6 +472,7 @@ export class TaskStatusPage implements OnInit {
       pokok_id:this.treeId,
       defect:this.defect?.toString(),
       status:status,
+      kerosakan_id:this.defectId? this.defectId : null,
     };
     this.offlineCpService.savePosponedCPTask(data);
     if(this.defect == null){
@@ -471,13 +484,19 @@ export class TaskStatusPage implements OnInit {
             taskId:this.taskId,
             taskType:this.taskType,
           }
-        ]
+        ],
+        {
+          replaceUrl : true
+        }
       );
     }else{
       this.router.navigate(
         [
           '/app/tabs/tab1/'
-        ]
+        ],
+        {
+          replaceUrl : true
+        }
       );
     }
     }
@@ -496,7 +515,10 @@ export class TaskStatusPage implements OnInit {
                 {
                   taskId:resCP.id,
                 }
-              ]);
+              ],
+              {
+                replaceUrl : true
+              });
           }else{
             this._promptCompleted();
           }
@@ -529,7 +551,10 @@ export class TaskStatusPage implements OnInit {
                     {
                       taskId:resCP.id,
                     }
-                  ]
+                  ],
+                  {
+                    replaceUrl : true
+                  }
                 );
               },false);
             },false);
@@ -549,6 +574,7 @@ export class TaskStatusPage implements OnInit {
         pokok_id:this.treeId,
         defect:this.defect?.toString(),
         status:status,
+        kerosakan_id:this.defectId? this.defectId : null,
       };
       if(this.taskType == InAppTaskCycle.rejectedCp){
         data.id = this.taskId;
@@ -565,14 +591,13 @@ export class TaskStatusPage implements OnInit {
               taskId:this.taskId,
               taskType:this.taskType,
             }
-          ]
+          ],
+          {
+            replaceUrl : true
+          }
         );
       }else{
-        this.router.navigate(
-          [
-            '/app/tabs/tab1/'
-          ]
-        );
+        this._promptCompleted();
       }
     }
   }
@@ -600,7 +625,10 @@ export class TaskStatusPage implements OnInit {
                 treeNum:this.treeId,
                 taskType:this.taskType,
               }
-            ]
+            ],
+            {
+              replaceUrl : true
+            }
           );
         }
       }
@@ -690,7 +718,10 @@ export class TaskStatusPage implements OnInit {
                   treeNum:this.treeId,
                   taskType:this.taskType,
                 }
-              ]
+              ],
+              {
+                replaceUrl : true
+              }
             );
           }
         }
@@ -1264,7 +1295,10 @@ export class TaskStatusPage implements OnInit {
       this.router.navigate(
         [
           '/app/tabs/tab1/'
-        ]
+        ],
+        {
+          replaceUrl : true
+        }
       );
     }
   }
@@ -1311,13 +1345,17 @@ export class TaskStatusPage implements OnInit {
         bil_pemeriksaan:this.numOfCheck.toString(),
         tambahan_hari:this.posponedDay.toString(),
         status:TaskStatus.postpone,
+        kerosakan_id:this.defectId? this.defectId : null,
       };
       data.id = this.taskId;
       this.offlineCpService.savePosponedCPTask(data);
       this.router.navigate(
         [
           '/app/tabs/tab1/'
-        ]
+        ],
+        {
+          replaceUrl : true
+        }
       );
     }
   }

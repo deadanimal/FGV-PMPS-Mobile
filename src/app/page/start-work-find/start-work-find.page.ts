@@ -75,7 +75,10 @@ export class StartWorkFindPage implements OnInit {
             taskStatus:'new',
             tandanId:this.tandanId,
           }
-        ]
+        ],
+        {
+          replaceUrl : true
+        }
       );
     }else{
       if(this.regNumber!=null && this.regNumber!=""){
@@ -88,7 +91,10 @@ export class StartWorkFindPage implements OnInit {
               treeNumber:this.treeNumber,
               taskType:this.taskType,
             }
-          ]
+          ],
+          {
+            replaceUrl : true
+          }
         );
       }
     }

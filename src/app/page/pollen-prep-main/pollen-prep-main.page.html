@@ -99,7 +99,7 @@
       <div *ngIf="disableNewRecord">
         <div *ngFor="let item of newTaskList"class="p-3 my-3 mx-auto w-75 shadow rounded border border-warning d-flex justify-content-between align-items-center">
           <p class="h6">Rekod {{item.id}} ({{item.tarikh_uji}})</p>
-          <button (click)="viewTask('pending','activeTaskSV',item.id,item.pokok_id)" class="btn orangeBtn text-white">Info</button>
+          <button (click)="viewTask('pending','activeTaskSV',item.id)" class="btn orangeBtn text-white">Info</button>
         </div>
       </div>
     </div>

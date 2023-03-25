@@ -10,6 +10,7 @@ import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.c
 import { BaggingModel } from 'src/app/model/bagging';
 import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { HarvestModel } from 'src/app/model/harvest';
+import { OfflineControlPollinationModel } from 'src/app/model/offline-control-pollination';
 import { PokokResponse } from 'src/app/model/pokok-respons';
 import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
 import { QualityControlModel } from 'src/app/model/quality-control';
@@ -22,6 +23,7 @@ import { OfflineControlPollinationService } from 'src/app/service/offline/offlin
 import { OfflineHarvestService } from 'src/app/service/offline/offline-harvest.service';
 import { OfflineQcService } from 'src/app/service/offline/offline-qc.service';
 import { OfflineTandanService } from 'src/app/service/offline/offline-tandan.service';
+import { StorageService } from 'src/app/service/storage.service';
 import { TaskService } from 'src/app/service/task.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
@@ -51,6 +53,7 @@ export class RegisterStatusPage implements OnInit {
   treeNumberDisplay:String;
   svComment:String;
   isOfflineMode = false;
+  offlineCpTask:OfflineControlPollinationModel;
 
   constructor(
     private activatedRoute:ActivatedRoute,
@@ -72,6 +75,7 @@ export class RegisterStatusPage implements OnInit {
     private offlineTandanService: OfflineTandanService,
     private offlineQCService: OfflineQcService,
     private offlineHarvestService: OfflineHarvestService,
+    private storageService: StorageService,
   ) { }
 
   ngOnInit() {
@@ -245,12 +249,17 @@ export class RegisterStatusPage implements OnInit {
       },false);
     }else{
       let task = await this.offlineCPService.getPostponedTaskByTandanId(this.tandanId.toString());
+      if(task != null){
+        this.treeNumberDisplay = task.pokok?.progeny+'-'+task.pokok?.no_pokok;
+      }else{
+        this.offlineCpTask = await this.offlineCPService.getPostponedTaskById(this.taskId.toString());
+        this.treeNumberDisplay = this.offlineCpTask?.pokok?.progeny+'-'+this.offlineCpTask?.pokok?.no_pokok;
+      }
       let tandan:TandanResponse = await this.offlineTandanService.getById(parseInt(this.tandanId.toString()));
       this.regNumber = tandan.no_daftar;
       this.cycle = this._getCycleName(tandan)?.toUpperCase();
       this.status=tandan.status_tandan?.toUpperCase();
       this.age=tandan.umur? tandan.umur.toString(): this._calculateAge(tandan.tarikh_daftar).toString();
-      this.treeNumberDisplay = task?.pokok?.progeny+'-'+task?.pokok?.no_pokok;
     }
   }
 
@@ -302,7 +311,7 @@ export class RegisterStatusPage implements OnInit {
       this._getQcTask();
     }else if(this.taskType == "Tuai" || this.taskType == "Tuaiposponed" || this.taskType == "Tuaianjak"){
       this._getHarvestTask();
-    }else if(this.taskType == "Penyediaan Pollen" || this.taskType == InAppTaskCycle.posponedpp){
+    }else if(this.taskType == "Penyediaan Pollen" || this.taskType == InAppTaskCycle.posponedpp || this.taskType == InAppTaskCycle.pp){
       this._getPollenPrepTask();
     }else if(this.taskType == "Balutposponed"){
       this._getBaggingTask();
@@ -419,7 +428,7 @@ export class RegisterStatusPage implements OnInit {
     );
   }
 
-  _proceedToWork(){
+  async _proceedToWork(){
     if(this.taskType == "Pendebungaan Terkawal (CP)"){
       this.router.navigate(
         [
@@ -545,6 +554,18 @@ export class RegisterStatusPage implements OnInit {
           {
             taskId:this.taskId,
             tandanId:this.tandanId
+          }
+        ]
+      );
+    }else if(this.taskType == InAppTaskCycle.pp){
+      this.router.navigate(
+        [
+          'app/tabs/tab1/defect',
+          {
+            taskType:InAppTaskCycle.pp,
+            taskId:this.taskId,
+            tandanId:this.tandanId,
+            var1:null
           }
         ]
       );

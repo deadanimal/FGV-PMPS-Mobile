@@ -17,4 +17,5 @@ export interface OfflineControlPollinationModel {
     bil_pemeriksaan?:string;
     tambahan_hari?:string;
     catatan_pengesah?:string;
+    kerosakan_id?:number;
 }

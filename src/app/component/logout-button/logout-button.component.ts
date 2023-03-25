@@ -36,7 +36,7 @@ export class LogoutButtonComponent implements OnInit {
           navigator['app'].exitApp();
         }else if(value['data'] == 'back'){
           try{
-            this.navCtrl.pop();
+            this.navCtrl.navigateBack('/app/tabs/tab1');
           }catch{
             this.navCtrl.navigateBack('/app/tabs/tab1');
           }

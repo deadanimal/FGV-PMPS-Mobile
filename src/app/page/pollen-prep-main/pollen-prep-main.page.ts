@@ -92,12 +92,12 @@ export class PollenPrepMainPage implements OnInit {
           taskType:InAppTaskCycle.posponedpp,
         }]);
     }else if(taskStatus == 'continue'){
-      this.navService.tandanVerification(
-        id,
-        InAppTaskCycle.pp,
-        value,
-        "app/tabs/tab1/defect"
-      );
+      this.router.navigate(['/app/tabs/tab1/reg-status',
+        {
+          taskId:id,
+          tandanId:value,
+          taskType:InAppTaskCycle.pp,
+        }]);
     }
     else{
       this.router.navigate(['app/tabs/tab1/task-finished',{taskId:id,taskType:InAppTaskCycle.pp}]);

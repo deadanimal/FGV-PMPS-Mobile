@@ -48,6 +48,9 @@ export class OfflineControlPollinationService {
 
   async getSavedCPTasks():Promise<OfflineControlPollinationModel[]>{
     let retVal = await this.storageService.get(this.storageService.controlPollinationOfflineData);
+    if(retVal == null){
+      retVal = [];
+    }
     return retVal;
   }
 
@@ -158,8 +161,9 @@ export class OfflineControlPollinationService {
         retVal = el;
       }
     });
-
-    retVal.pokok = await this.offlineTreeService.getById(retVal.pokok_id);
+    if(retVal != null){
+      retVal.pokok = await this.offlineTreeService.getById(retVal.pokok_id);
+    }
     return retVal;
   }
 

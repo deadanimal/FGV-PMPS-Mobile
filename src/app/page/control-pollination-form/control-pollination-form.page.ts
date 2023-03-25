@@ -14,6 +14,8 @@ import { StorageService } from 'src/app/service/storage.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
 import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
 import { OfflinePollenPrepService } from 'src/app/service/offline/offline-pollen-prep.service';
+import { OfflineTreeService } from 'src/app/service/offline/offline-tree.service';
+import { PokokResponse } from 'src/app/model/pokok-respons';
 
 @Component({
   selector: 'app-control-pollination-form',
@@ -39,6 +41,7 @@ export class ControlPollinationFormPage implements OnInit {
     private storageService:StorageService,
     private pollenPrepService:PollenPreparationService,
     private offlinePollenPrepService:OfflinePollenPrepService,
+    private offlineTreeService:OfflineTreeService,
   ) { }
 
   ngOnInit() {
@@ -59,8 +62,6 @@ export class ControlPollinationFormPage implements OnInit {
   }
 
   async btnClick(form:NgForm){
-    console.log(this.selectedPollen)
-    console.log(this.id1?.value?.toString())
     if(!this.isOfflineMode){
       this.controlPollinationService.updatePollenNumber(this.taskId,this.selectedPollen.id.toString(),this.id1?.value?.toString(),(res:ControlPollinationModel)=>{
         this.modalService.successPrompt("Borang Anda Telah Berjaya Dihantar Ke Penyelia").then(()=>{
@@ -112,14 +113,28 @@ export class ControlPollinationFormPage implements OnInit {
         });
       }else{
         let tasks:OfflineControlPollinationModel[] = await this.offlineCPService.getSavedCPTasks();
+        let foundTask = false;
         tasks.forEach(el => {
           if(el.tandan_id == this.tandanId){
-            el.no_pollen = this.selectedPollen.toString();
+            foundTask = true;
+            el.no_pollen = this.selectedPollen.id.toString();
             el.peratus_pollen=this.id1?.value?.toString();
             el.status=TaskStatus.done;
           }
         });
-        this.storageService.set(this.storageService.controlPollinationOfflineData,tasks);
+        if(foundTask){
+          this.storageService.set(this.storageService.controlPollinationOfflineData,tasks);
+        }else{
+          if(this.taskId != null){
+            let posponedTask:OfflineControlPollinationModel = await this.offlineCPService.getPostponedTaskById(this.taskId.toString());
+            if(posponedTask != null){
+              posponedTask.no_pollen = this.selectedPollen.id.toString();
+              posponedTask.peratus_pollen=this.id1?.value?.toString();
+              posponedTask.status=TaskStatus.done;
+              this.offlineCPService.savePosponedCPTask(posponedTask);
+            }
+          }
+        }
         this.modalService.successPrompt("Borang Anda Telah Berjaya Dihantar Ke Penyelia").then(()=>{
           this.router.navigateByUrl(
             '/app/tabs/tab1',
@@ -139,7 +154,7 @@ export class ControlPollinationFormPage implements OnInit {
         (res:PollenPreparationModel[])=>{
           res.forEach(el => {
             if(el.status == TaskStatus.verified && el.kerosakan_id == null){
-              el.in_app_name = 'Pollen-'+el.id;
+              el.in_app_name = el.pokok.progeny +"-"+el.pokok.no_pokok +" (#"+el.id+")";
               this.pollenList.push(el);
             }
           });
@@ -150,8 +165,9 @@ export class ControlPollinationFormPage implements OnInit {
       if(this.pollenList == null){
         this.pollenList = [];
       }
-      this.pollenList.forEach(el => {
-        el.in_app_name = 'Pollen-'+el.id;
+      this.pollenList.forEach(async el => {
+        let tree: PokokResponse = await this.offlineTreeService.getById(el.pokok_id.toString());
+        el.in_app_name = tree.progeny +"-"+tree.no_pokok +" (#"+el.id+")";
       });
     }
   }

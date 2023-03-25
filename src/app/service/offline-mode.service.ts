@@ -234,7 +234,13 @@ export class OfflineModeService {
       for(let i=0; i<tasks.length; i++){
         for ( var key in tasks[i] ) {
           if(key != 'url_gambar_data' && key != 'url_gambar'){
-            formData.append(key+'['+index+']', tasks[i][key] != undefined? tasks[i][key]:null);
+            if(key == 'kerosakan_id'){
+              if(tasks[i][key] != null){
+                formData.append(key+'['+index+']', tasks[i][key] != undefined? tasks[i][key].toString():null);
+              }
+            }else{
+              formData.append(key+'['+index+']', tasks[i][key] != undefined? tasks[i][key]:null);
+            }
           }
         }
   
@@ -248,7 +254,13 @@ export class OfflineModeService {
       for(let i=0; i<redoTasks.length; i++){
         for ( var key in redoTasks[i] ) {
           if(key != 'url_gambar_data' && key != 'url_gambar' && key != 'id'){
-            formData.append(key+'['+index+']', redoTasks[i][key] != undefined? redoTasks[i][key]:null);
+            if(key == 'kerosakan_id'){
+              if(redoTasks[i][key] != null){
+                formData.append(key+'['+index+']', redoTasks[i][key] != undefined? redoTasks[i][key].toString():null);
+              }
+            }else{
+              formData.append(key+'['+index+']', redoTasks[i][key] != undefined? redoTasks[i][key]:null);
+            }
           }
         }
   
@@ -269,7 +281,13 @@ export class OfflineModeService {
       for(let i=0; i<posponed2xTasks.length; i++){
         for ( var key in posponed2xTasks[i] ) {
           if(key != 'url_gambar_data' && key != 'url_gambar'){
-            formData.append(key+'['+index+']', posponed2xTasks[i][key] != undefined? posponed2xTasks[i][key]:null);
+            if(key == 'kerosakan_id'){
+              if(posponed2xTasks[i][key] != null){
+                formData.append(key+'['+index+']', posponed2xTasks[i][key] != undefined? posponed2xTasks[i][key].toString():null);
+              }
+            }else{
+              formData.append(key+'['+index+']', posponed2xTasks[i][key] != undefined? posponed2xTasks[i][key]:null);
+            }
           }
         }
   
@@ -303,13 +321,13 @@ export class OfflineModeService {
         });
   
         redoTasks.forEach(el => {
-          if(!tempTaskId.includes(el.id)){
+          if(!tempTaskId.includes(el.id.toString())){
             tempRedoTasks.push(el);
           }
         });
   
         posponed2xTasks.forEach(el => {
-          if(!tempTaskId.includes(el.id)){
+          if(!tempTaskId.includes(el.id.toString())){
             tempPosponed2xTasks.push(el);
           }
         });
@@ -320,7 +338,8 @@ export class OfflineModeService {
         if(tempPosponed2xTasks.length == 0 && tempTasks.length == 0 && tempRedoTasks.length == 0){
           this._syncBaggingTask();
         }else{
-          this.modalService.successPrompt("Terdapat tugas Pendebungaan Terkawal yang tidak berjaya di muat naik. Jumlah tugas tidak berjaya:"+tempTasks.length).then();
+          let total = tempPosponed2xTasks.length + tempTasks.length + tempRedoTasks.length;
+          this.modalService.successPrompt("Terdapat tugas Pendebungaan Terkawal yang tidak berjaya di muat naik. Jumlah tugas tidak berjaya:"+total).then();
         }
   
       });
