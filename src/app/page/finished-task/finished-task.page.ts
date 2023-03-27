@@ -47,6 +47,7 @@ export class FinishedTaskPage implements OnInit {
   treeType:string;
   pollenDiscarded:boolean;
   workerTask:string;
+  pollenName:string;
   constructor(
     private activatedRoute:ActivatedRoute,
     private tandanService: TandanService,
@@ -106,6 +107,9 @@ export class FinishedTaskPage implements OnInit {
         if(res.kerosakan_id != null){
           this._getDefect(parseInt(res.kerosakan_id));
         }
+        if(res.no_pollen != null){
+          this._getPollenInfo(res.no_pollen!);
+        }
       });
     }else if(this.taskType == 'Kawalan Kualiti (QC)'){
       this.workerTask = 'Kawalan Kualiti';
@@ -162,6 +166,12 @@ export class FinishedTaskPage implements OnInit {
   private _getDefect(id:number){
     this.defectService.getById(id,(res:DefectModel)=>{
       this.defect = res.nama;
+    });
+  }
+
+  private _getPollenInfo(id:String){
+    this.pollenPrepService.getById(id,(res:PollenPreparationModel)=>{
+      this.pollenName = res.pokok!.progeny + "-" + res.pokok!.no_pokok;
     });
   }
 

@@ -86,6 +86,10 @@
       <ion-label position="floating">Umur Tandan (Hari)</ion-label>
       <ion-input type="text" [(ngModel)]="age" name="age" required [readonly]="true"></ion-input>
     </ion-item>
+    <ion-item lines="full" *ngIf="pollenName != null">
+      <ion-label position="floating">Nombor Pollen</ion-label>
+      <ion-input type="text" [(ngModel)]="pollenName" name="pollenName" required [readonly]="true"></ion-input>
+    </ion-item>
     <ion-item lines="full" *ngIf="baggingWorkerName!= null && taskType != 'Balut'">
       <ion-label position="floating">Nama Pekerja Balut</ion-label>
       <ion-input type="text" [(ngModel)]="baggingWorkerName" name="baggingWorkerName" required [readonly]="true"></ion-input>

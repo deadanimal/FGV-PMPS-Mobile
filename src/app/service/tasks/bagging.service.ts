@@ -267,7 +267,7 @@ export class BaggingService {
       {
         blok:blok,
         progeny:progeny,
-        pembalut:pembalut,
+        user_id:pembalut,
       }
     ).subscribe(
       async (res:[QcSearchResponse]) => {
@@ -305,7 +305,7 @@ export class BaggingService {
       {
         blok:blok,
         progeny:progeny,
-        pembalut:pembalut,
+        user_id:pembalut,
       }
     ).subscribe(
       async (res:[QcSearchResponse]) => {

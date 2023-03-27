@@ -545,17 +545,21 @@ export class TaskStatusPage implements OnInit {
             this.controlPollinationService.update(this.taskId,{status:TaskStatus.redo},()=>{
               this.tandanService.update(this.tandanId,{status_tandan:'aktif'},async ()=>{
                 (await this.loadingCtrl.getTop())?.dismiss();
-                this.router.navigate(
-                  [
-                    '/app/tabs/tab1/control-pollen-form',
+                if(this.defect == null){
+                  this.router.navigate(
+                    [
+                      '/app/tabs/tab1/control-pollen-form',
+                      {
+                        taskId:resCP.id,
+                      }
+                    ],
                     {
-                      taskId:resCP.id,
+                      replaceUrl : true
                     }
-                  ],
-                  {
-                    replaceUrl : true
-                  }
-                );
+                  );
+                }else{
+                  this._promptCompleted();
+                }
               },false);
             },false);
             },false

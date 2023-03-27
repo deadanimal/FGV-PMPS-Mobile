@@ -19,6 +19,7 @@ export interface QualityControlModel {
     status?: string;
     pokok?:PokokResponse;
     kerosakan_id?: string;
+    late?: boolean;
     created_at: Date;
     updated_at: Date;
 }

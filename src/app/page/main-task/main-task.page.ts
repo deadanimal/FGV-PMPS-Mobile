@@ -22,7 +22,6 @@ import { OfflineControlPollinationService } from 'src/app/service/offline/offlin
 import { OfflineHarvestService } from 'src/app/service/offline/offline-harvest.service';
 import { OfflineQcService } from 'src/app/service/offline/offline-qc.service';
 import { OfflineTreeService } from 'src/app/service/offline/offline-tree.service';
-import { TaskService } from 'src/app/service/task.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
 import { ControlPollinationService } from 'src/app/service/tasks/control-pollination.service';
 import { HarvestService } from 'src/app/service/tasks/harvest.service';
@@ -30,6 +29,7 @@ import { PollenPreparationService } from 'src/app/service/tasks/pollen-preparati
 import { QualityControlService } from 'src/app/service/tasks/quality-control.service';
 import { TreeService } from 'src/app/service/tasks/tree.service';
 import { TreeType } from 'src/app/common/tree-type';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-main-task',
@@ -67,7 +67,7 @@ export class MainTaskPage implements OnInit {
     private activatedRoute:ActivatedRoute,
     private router:Router,
     private accountService:AccountService,
-    private taskService:TaskService,
+    private datePipe:DatePipe,
     private loadingCtrl: LoadingController,
     private modalService: ModalService,
     private baggingService:BaggingService,
@@ -501,8 +501,15 @@ export class MainTaskPage implements OnInit {
         this.qcService.getByUserId(this.accountService.getSessionDetails().id,(res:[QualityControlModel])=>{
           res.forEach(el => {
             if(el.status == TaskStatus.created){
-              this.numOfNewTask++;
-              this.newTaskList.push(el);
+              if(this.isLate(el.created_at)){
+                el.late = true;
+                this.numOfPosponedTask++;
+                this.posponedTaskList.push(el);
+              }else{
+                el.late = false;
+                this.numOfNewTask++;
+                this.newTaskList.push(el);
+              }
             }else if(el.status == TaskStatus.done || el.status == TaskStatus.defect){
               this.numOfActiveTask++;
               this.activeTaskList.push(el);
@@ -522,8 +529,15 @@ export class MainTaskPage implements OnInit {
         }
         taskList.forEach(el => {
           if(el.status == TaskStatus.created){
-            this.numOfNewTask++;
-            this.newTaskList.push(el);
+            if(this.isLate(el.created_at)){
+              el.late = true;
+              this.numOfPosponedTask++;
+              this.posponedTaskList.push(el);
+            }else{
+              el.late = false;
+              this.numOfNewTask++;
+              this.newTaskList.push(el);
+            }
           }else if(el.status == TaskStatus.rejected){
             this.numOfPosponedTask++;
             this.posponedTaskList.push(el);
@@ -623,8 +637,15 @@ export class MainTaskPage implements OnInit {
           (res:[HarvestModel])=>{
           res.forEach(el => {
             if(el.status == TaskStatus.created){
-              this.numOfNewTask++;
-              this.newTaskList.push(el);
+              if(this.isLate(el.created_at)){
+                el.late = true;
+                this.numOfPosponedTask++;
+                this.posponedTaskList.push(el);
+              }else{
+                el.late = false;
+                this.numOfNewTask++;
+                this.newTaskList.push(el);
+              }
             }else if(el.status == TaskStatus.done || el.status == TaskStatus.defect){
               this.numOfActiveTask++;
               this.activeTaskList.push(el);
@@ -641,8 +662,15 @@ export class MainTaskPage implements OnInit {
         let tasksList = await this.offlineHarvestService.getNewHarvestTaskList();
         tasksList.forEach(el => {
           if(el.status == TaskStatus.created){
-            this.numOfNewTask++;
-            this.newTaskList.push(el);
+            if(this.isLate(el.created_at)){
+              el.late = true;
+              this.numOfPosponedTask++;
+              this.posponedTaskList.push(el);
+            }else{
+              el.late = false;
+              this.numOfNewTask++;
+              this.newTaskList.push(el);
+            }
           }else if(el.status == TaskStatus.done || el.status == TaskStatus.defect){
             this.numOfActiveTask++;
             this.activeTaskList.push(el);
@@ -767,6 +795,12 @@ export class MainTaskPage implements OnInit {
         '/app/tabs/tab1/stok-pollen-list'
       ]
     );
+  }
+
+  isLate(dateString){
+    let createdDate = new Date(dateString);
+    let today = new Date();
+    return createdDate.toDateString() !== today.toDateString();
   }
 
 }
