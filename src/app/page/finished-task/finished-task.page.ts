@@ -51,6 +51,11 @@ export class FinishedTaskPage implements OnInit {
   pollenName:string;
   taskStatus:string;
   lastUpdate:string;
+  baggingDate:string;
+  cpDate:string;
+  cpWorkerName:string;
+  qcDate:string;
+  qcWorkerName:string;
   constructor(
     private activatedRoute:ActivatedRoute,
     private tandanService: TandanService,
@@ -86,6 +91,7 @@ export class FinishedTaskPage implements OnInit {
 
   private _getTaskInfo(){
     if(this.taskType == 'Balut'){
+      this.cycle = 'Balut';
       this.workerTask = 'Balut';
       this.baggingService.getById(this.taskId,(res:BaggingModel)=>{
         this._getTandanInfo(res.tandan_id.toString());
@@ -99,6 +105,7 @@ export class FinishedTaskPage implements OnInit {
         }
       });
     }else if(this.taskType == 'Pendebungaan Terkawal (CP)'){
+      this.cycle = 'Pendebungaan Terkawal (CP)';
       this.workerTask = 'Pendebungaan Terkawal';
       this.cpService.getById(this.taskId,(res:ControlPollinationModel)=>{
         this._getTandanInfo(res.tandan_id.toString());
@@ -117,6 +124,7 @@ export class FinishedTaskPage implements OnInit {
         }
       });
     }else if(this.taskType == 'Kawalan Kualiti (QC)'){
+      this.cycle = 'Kawalan Kualiti (QC)';
       this.workerTask = 'Kawalan Kualiti';
       this.qcService.getById(this.taskId,(res:QualityControlModel)=>{
         this._getTandanInfo(res.tandan_id.toString());
@@ -130,6 +138,7 @@ export class FinishedTaskPage implements OnInit {
         }
       });
     }else if(this.taskType == 'Tuai'){
+      this.cycle = 'Tuai';
       this.workerTask = 'Tuai';
       this.harvestService.getById(this.taskId,(res:HarvestModel)=>{
         this._getTandanInfo(res.tandan_id.toString());
@@ -141,8 +150,11 @@ export class FinishedTaskPage implements OnInit {
         if(res.kerosakan_id != null){
           this._getDefect(parseInt(res.kerosakan_id));
         }
+        this._getCPInfo(res.tandan_id);
+        this._getQcInfo(res.tandan_id);
       });
     }else if(this.taskType == InAppTaskCycle.pp){
+      this.cycle = 'Penyediaan Pollen';
       this.workerTask = '';
       this.pollenPrepService.getById(this.taskId,(res:PollenPreparationModel)=>{
         this._getTandanInfo(res.tandan_id.toString());
@@ -154,6 +166,7 @@ export class FinishedTaskPage implements OnInit {
         }
       });
     }else if(this.taskType == 'Penggunaan Pollen'){
+      this.cycle = 'Penggunaan Pollen';
       this.workerTask = '';
       this.pollenPrepService.getById(this.taskId,(res:PollenPreparationModel)=>{
         this._getTandanInfo(res.tandan_id.toString());
@@ -197,9 +210,12 @@ export class FinishedTaskPage implements OnInit {
   }
 
   private _getPollenInfo(id:String){
-    this.pollenPrepService.getById(id,(res:PollenPreparationModel)=>{
-      this.pollenName = res.pokok!.progeny + "-" + res.pokok!.no_pokok;
+    this.treeService.getById(id,(res:PokokResponse)=>{
+      this.pollenName = res.progeny + "-" + res.no_pokok;
     });
+    // this.pollenPrepService.getById(id,(res:PollenPreparationModel)=>{
+    //   this.pollenName = res.pokok!.progeny + "-" + res.pokok!.no_pokok;
+    // });
   }
 
   private _getUser(id:number){
@@ -223,7 +239,7 @@ export class FinishedTaskPage implements OnInit {
       this.regNo = res.no_daftar;
       this.regNo = res.no_daftar;
       this.age = res.umur? res.umur.toString(): this._calculateAge(res.tarikh_daftar).toString();
-      this.cycle = this._getCycleName(res)?.toUpperCase();
+      // this.cycle = this._getCycleName(res)?.toUpperCase();
       this.status = res.status_tandan? res.status_tandan.toUpperCase():"-";
       this.indicator = this._getStage(res);
       this.treeService.getById(res.pokok_id.toString(),(treeRes:PokokResponse)=>{
@@ -234,6 +250,7 @@ export class FinishedTaskPage implements OnInit {
           parseInt(tandanId.toString()),
           (res2:BaggingModel[])=>{
             res2.forEach(el => {
+              this.baggingDate = this.datePipe.transform(Date.parse(el.created_at?.toString()),"dd-MM-YYYY HH:mm:ss");
               this._getBaggingUsername(el.id_sv_balut);
             });
           }
@@ -289,6 +306,28 @@ export class FinishedTaskPage implements OnInit {
     let prevDate = Date.parse(prvDate);
     let retVal = (currentDate - prevDate)/1000/60/60/24;
     return retVal;
+  }
+
+  _getCPInfo(tandanId){
+    this.cpService.getByTandanId(tandanId,(res:ControlPollinationModel[])=>{
+      this.cpDate = this.datePipe.transform(Date.parse(res[0].created_at?.toString()),"dd-MM-YYYY HH:mm:ss");
+      this.taskService.getUserById(res[0].id_sv_cp).subscribe(
+        (res2:LoginResponseModel) => {
+          this.cpWorkerName = res2.nama;
+        }
+      );
+    },false);
+  }
+
+  _getQcInfo(tandanId){
+    this.qcService.getByTandanId(tandanId,(res:QualityControlModel[])=>{
+      this.qcDate = this.datePipe.transform(Date.parse(res[0].created_at?.toString()),"dd-MM-YYYY HH:mm:ss");
+      this.taskService.getUserById(res[0].id_sv_qc).subscribe(
+        (res2:LoginResponseModel) => {
+          this.qcWorkerName = res2.nama;
+        }
+      );
+    },false);
   }
 
 }

@@ -91,11 +91,31 @@
       <ion-input type="text" [(ngModel)]="pollenName" name="pollenName" required [readonly]="true"></ion-input>
     </ion-item>
     <ion-item lines="full" *ngIf="baggingWorkerName!= null && taskType != 'Balut'">
-      <ion-label position="floating">Nama Pekerja Balut</ion-label>
+      <ion-label position="floating">Nama Petugas Balut</ion-label>
       <ion-input type="text" [(ngModel)]="baggingWorkerName" name="baggingWorkerName" required [readonly]="true"></ion-input>
     </ion-item>
+    <ion-item lines="full" *ngIf="baggingDate!= null">
+      <ion-label position="floating">Tarikh Balut</ion-label>
+      <ion-input type="text" [(ngModel)]="baggingDate" name="baggingDate" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="cpWorkerName!= null">
+      <ion-label position="floating">Nama Petugas Pendebungaan Terkawal</ion-label>
+      <ion-input type="text" [(ngModel)]="cpWorkerName" name="cpWorkerName" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="cpDate!= null">
+      <ion-label position="floating">Tarikh Pendebungaan Terkawal</ion-label>
+      <ion-input type="text" [(ngModel)]="cpDate" name="cpDate" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="qcWorkerName!= null">
+      <ion-label position="floating">Nama Petugas Kawalan Kualiti</ion-label>
+      <ion-input type="text" [(ngModel)]="qcWorkerName" name="qcWorkerName" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="qcDate!= null">
+      <ion-label position="floating">Tarikh Kawalan Kualiti</ion-label>
+      <ion-input type="text" [(ngModel)]="qcDate" name="qcDate" required [readonly]="true"></ion-input>
+    </ion-item>
     <ion-item lines="full" *ngIf="workerName!= null">
-      <ion-label position="floating">Nama Pekerja {{workerTask}}</ion-label>
+      <ion-label position="floating">Nama Petugas {{workerTask}}</ion-label>
       <ion-input type="text" [(ngModel)]="workerName" name="workerName" required [readonly]="true"></ion-input>
     </ion-item>
     <ion-item lines="full" *ngIf="defect!= null">
@@ -103,7 +123,7 @@
       <ion-input type="text" [(ngModel)]="defect" name="defect" required [readonly]="true"></ion-input>
     </ion-item>
     <ion-item lines="full" *ngIf="workerRemark!= null">
-      <ion-label position="floating">Catatan Pekerja</ion-label>
+      <ion-label position="floating">Catatan Petugas</ion-label>
       <ion-input type="text" [(ngModel)]="workerRemark" name="workerRemark" required [readonly]="true"></ion-input>
     </ion-item>
     <ion-item lines="full mb-4" *ngIf="svRemark!= null">

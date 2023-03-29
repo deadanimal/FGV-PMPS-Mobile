@@ -30,6 +30,7 @@ import { QualityControlService } from 'src/app/service/tasks/quality-control.ser
 import { TreeService } from 'src/app/service/tasks/tree.service';
 import { TreeType } from 'src/app/common/tree-type';
 import { DatePipe } from '@angular/common';
+import { PollenUsageService } from 'src/app/service/tasks/pollen-usage.service';
 
 @Component({
   selector: 'app-main-task',
@@ -80,6 +81,7 @@ export class MainTaskPage implements OnInit {
     private offlineBaggingService:OfflineBaggingService,
     private offlineCPService:OfflineControlPollinationService,
     private pollenPrepService:PollenPreparationService,
+    private pollenUseService:PollenUsageService,
     private offlineQCService:OfflineQcService,
     private offlineHarvestService:OfflineHarvestService,
   ) { }
@@ -395,7 +397,7 @@ export class MainTaskPage implements OnInit {
             // }else if(el.status == TaskStatus.rejected){
             //   this.numOfPosponedTask++;
             //   this.posponedTaskList.push(el);
-            }else{
+            }else if(el.status != TaskStatus.redo){
               this.numOfFinishTask++;
               this.finishedTaskList.push(el);
             }
@@ -445,12 +447,11 @@ export class MainTaskPage implements OnInit {
             }else if(el.status == TaskStatus.postpone || el.status == TaskStatus.created || el.status == TaskStatus.rejected){
               this.numOfPosponedTask++;
               this.posponedTaskList.push(el);
-            }else{
+            }else if(el.status != TaskStatus.redo){
               this.numOfFinishTask++;
               this.finishedTaskList.push(el);
             }
           });
-          console.log(this.posponedTaskList);
           this.controlPollinationService.getNewlyCreatedTask(this.employeeId,(res1:[ControlPollinationModel])=>{
             this.numOfNewTask = res1.length;
             this.newTaskList = res1;
@@ -470,7 +471,6 @@ export class MainTaskPage implements OnInit {
         this.posponedTaskList.push(...tempList);
         this.numOfNewTask = this.newTaskList.length;
         this.numOfPosponedTask = this.posponedTaskList.length;
-        console.log(this.posponedTaskList);
       }
     }else{
       this.controlPollinationService.getAll((res:[ControlPollinationModel])=>{
@@ -480,8 +480,7 @@ export class MainTaskPage implements OnInit {
               this.numOfNewTask++;
               this.newTaskList.push(el);
             }else if(el.status == TaskStatus.verified ||
-                      el.status == TaskStatus.rejected ||
-                      el.status == TaskStatus.redo){
+                      el.status == TaskStatus.rejected){
               this.numOfFinishTask++;
               this.finishedTaskList.push(el);
             }
@@ -516,7 +515,7 @@ export class MainTaskPage implements OnInit {
             }else if(el.status == TaskStatus.rejected){
               this.numOfPosponedTask++;
               this.posponedTaskList.push(el);
-            }else{
+            }else if(el.status != TaskStatus.redo){
               this.numOfFinishTask++;
               this.finishedTaskList.push(el);
             }
@@ -553,7 +552,7 @@ export class MainTaskPage implements OnInit {
               this.newTaskList.push(el);
             }else if(el.status == TaskStatus.created){
 
-            }else{
+            }else if(el.status != TaskStatus.redo){
               this.numOfFinishTask++;
               this.finishedTaskList.push(el);
             }
@@ -652,7 +651,7 @@ export class MainTaskPage implements OnInit {
             }else if(el.status == TaskStatus.rejected || el.status == TaskStatus.postpone){
               this.numOfPosponedTask++;
               this.posponedTaskList.push(el);
-            }else{
+            }else if(el.status != TaskStatus.redo){
               this.numOfFinishTask++;
               this.finishedTaskList.push(el);
             }
@@ -693,7 +692,7 @@ export class MainTaskPage implements OnInit {
               this.newTaskList.push(el);
             }else if(el.status == TaskStatus.created || el.status == TaskStatus.postpone){
 
-            }else{
+            }else if(el.status != TaskStatus.redo){
               this.numOfFinishTask++;
               this.finishedTaskList.push(el);
             }

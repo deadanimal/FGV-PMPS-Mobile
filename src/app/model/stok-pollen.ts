@@ -10,6 +10,8 @@ export interface StokPollenModel {
     dicipta_oleh?: string;
     dikemaskini_oleh?: string;
     status?: string;
+    blok?: string;
+    berat?: string;
     pokok?:PokokResponse;
     created_at?: Date;
     updated_at?: Date;

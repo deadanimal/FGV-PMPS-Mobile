@@ -98,6 +98,7 @@ export class TaskStatusPage implements OnInit {
   dateAndTimeHarvest:String;
   dateAndTimeTest:String;
   baggingWorker:String;
+  pollenNumber:String;
 
   constructor(
     private photoService:PhotoService,
@@ -744,6 +745,7 @@ export class TaskStatusPage implements OnInit {
           this._getDefectList(res.kerosakan_id);
         }
         this._getTandanInfo(this.tandanId);
+        this._getPollen(res.no_pollen);
         this._getUserInfo(res.id_sv_cp);
         this.treeNum = res.pokok.progeny+'-'+res.pokok.no_pokok;
       });
@@ -759,6 +761,14 @@ export class TaskStatusPage implements OnInit {
         this._getTandanInfo(this.tandanId);
       }
     }
+  }
+
+  _getPollen(pollenId){
+    this.pollenNumber;
+
+    this.treeService.getById(pollenId,(res:PokokResponse)=>{
+      this.pollenNumber = res.progeny+"-"+res.no_pokok;
+    });
   }
 
   async _getPosponedBaggingTask(){

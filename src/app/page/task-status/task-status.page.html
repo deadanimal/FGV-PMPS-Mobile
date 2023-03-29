@@ -86,6 +86,10 @@
       <ion-label position="floating">Tarikh Uji</ion-label>
       <ion-input type="text" [(ngModel)]="dateAndTimeTest" name="dateAndTimeTest" [readonly]="true"></ion-input>
     </ion-item>
+    <ion-item *ngIf="pollenNumber != null" lines="full">
+      <ion-label position="floating">No Pollen</ion-label>
+      <ion-input type="text" [(ngModel)]="pollenNumber" name="pollenNumber" [readonly]="true"></ion-input>
+    </ion-item>
     <ion-item lines="full" *ngIf="pollenViability != null">
       <ion-label position="floating">Peratusan Pollen</ion-label>
       <ion-input type="text" [(ngModel)]="pollenViability" name="pollenViability" [readonly]="userRole!='Petugas Balut & Pendebungaan Terkawal' && userRole != roles.petugas_balut_fatherpalm && userRole!='Petugas Kawalan Kualiti' && userRole!='Petugas Tuai'&& userRole!='Petugas Makmal'"></ion-input>

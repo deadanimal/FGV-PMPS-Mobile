@@ -36,9 +36,9 @@
       </ionic-selectable>
     </ion-item>
 
-    <ion-item *ngIf="no_pollen != null" lines="full">
+    <ion-item lines="full">
       <ion-label position="floating">No. Pollen</ion-label>
-      <ion-input type="text" [(ngModel)]="no_pollen" name="no_pollen" required [disabled]="isReturn"></ion-input>
+      <ion-input type="text" [(ngModel)]="no_pollen" name="no_pollen" required [disabled]="true"></ion-input>
     </ion-item>
   
     <ion-item *ngIf="isReturn" lines="full">
@@ -47,7 +47,7 @@
     </ion-item>
 
 
-    <ion-item *ngIf="no_pollen == null" lines="full" class="mt-4">
+    <!-- <ion-item *ngIf="no_pollen == null" lines="full" class="mt-4">
       <ionic-selectable
       [items]="filteredPollenList"
       itemValueField="id"
@@ -56,7 +56,7 @@
       placeholder="No. Pollen"
       (onChange)="pollenChange($event)">
       </ionic-selectable>
-    </ion-item>
+    </ion-item> -->
 
     <ion-item lines="full">
       <ion-label position="floating">Berat Pollen (gram)</ion-label>
@@ -94,7 +94,7 @@
     </ion-item>
 
     <div class="text-center mx-auto mt-4 w-100">
-      <button [disabled]="!form.valid" type="submit" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-auto">
+      <button [disabled]="!form.valid || selectedBlock==null" type="submit" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-auto">
         <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
         <p class="m-auto">Hantar</p>
       </button>

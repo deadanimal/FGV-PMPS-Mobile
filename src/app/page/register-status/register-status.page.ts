@@ -10,6 +10,7 @@ import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.c
 import { BaggingModel } from 'src/app/model/bagging';
 import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { HarvestModel } from 'src/app/model/harvest';
+import { LoginResponseModel } from 'src/app/model/login-response';
 import { OfflineControlPollinationModel } from 'src/app/model/offline-control-pollination';
 import { PokokResponse } from 'src/app/model/pokok-respons';
 import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
@@ -53,6 +54,10 @@ export class RegisterStatusPage implements OnInit {
   treeNumberDisplay:String;
   svComment:String;
   isOfflineMode = false;
+  baggingWorker:String;
+  cpWorker:String;
+  baggingDate:String;
+  cpDate:String;
   offlineCpTask:OfflineControlPollinationModel;
 
   constructor(
@@ -122,6 +127,7 @@ export class RegisterStatusPage implements OnInit {
         this.tandanId = res.tandan_id.toString();
         this._getTandanInfo(res.tandan_id.toString());
         this.svComment = res.catatan_pengesah;
+        this._getBaggingInfo(res.tandan_id);
       });
     }else{
       let qcTask:QualityControlModel = await this.offlineQCService.getNewTaskById(parseInt(this.taskId.toString()));
@@ -134,6 +140,29 @@ export class RegisterStatusPage implements OnInit {
       this.age=tandan.umur? tandan.umur.toString(): this._calculateAge(tandan.tarikh_daftar).toString();
       this.svComment = qcTask.catatan_pengesah;
     }
+  }
+
+  _getBaggingInfo(tandanId){
+    this.baggingService.getByTandanId(tandanId,(res:BaggingModel[])=>{
+      this.baggingDate = this.datePipe.transform(Date.parse(res[0].created_at?.toString()),"dd-MM-YYYY HH:mm:ss");
+      this.taskService.getUserById(res[0].id_sv_balut).subscribe(
+        (res2:LoginResponseModel) => {
+          this.baggingWorker = res2.nama;
+          this._getCPInfo(tandanId);
+        }
+      );
+    },false);
+  }
+
+  _getCPInfo(tandanId){
+    this.controlPollinationService.getByTandanId(tandanId,(res:ControlPollinationModel[])=>{
+      this.cpDate = this.datePipe.transform(Date.parse(res[0].created_at?.toString()),"dd-MM-YYYY HH:mm:ss");
+      this.taskService.getUserById(res[0].id_sv_cp).subscribe(
+        (res2:LoginResponseModel) => {
+          this.cpWorker = res2.nama;
+        }
+      );
+    },false);
   }
 
   _getPollenPrepTask(){

@@ -27,6 +27,22 @@
       <ion-label position="floating">Catatan Penyelia</ion-label>
       <ion-input type="text" [(ngModel)]="svComment" name="svComment" required [readonly]="true"></ion-input>
     </ion-item>
+    <ion-item *ngIf="baggingWorker!=null && baggingWorker != ''" lines="full">
+      <ion-label position="floating">Petugas Balut</ion-label>
+      <ion-input type="text" [(ngModel)]="baggingWorker" name="baggingWorker" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="baggingDate!=null && baggingDate != ''" lines="full">
+      <ion-label position="floating">Tarikh Balut</ion-label>
+      <ion-input type="text" [(ngModel)]="baggingDate" name="baggingDate" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="cpWorker!=null && cpWorker != ''" lines="full">
+      <ion-label position="floating">Petugas Pendebungaan Terkawal</ion-label>
+      <ion-input type="text" [(ngModel)]="cpWorker" name="cpWorker" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="cpDate!=null && cpDate != ''" lines="full">
+      <ion-label position="floating">Tarikh Pendebungaan Terkawal</ion-label>
+      <ion-input type="text" [(ngModel)]="cpDate" name="cpDate" required [readonly]="true"></ion-input>
+    </ion-item>
     <div class="w-100 text-center mt-5">
       <button [disabled]="scanInput != null" (click)="promptScan()" type="button" class="btn primary-red text-white mx-auto">Seterusnya</button>
     </div>
