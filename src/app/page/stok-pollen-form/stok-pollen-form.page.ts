@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IonSelect, NavController } from '@ionic/angular';
 import { TaskStatus } from 'src/app/common/task-status';
 import { HarvestModel } from 'src/app/model/harvest';
+import { PokokResponse } from 'src/app/model/pokok-respons';
 import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
 import { StokPollenModel } from 'src/app/model/stok-pollen';
 import { AccountService } from 'src/app/service/account.service';
@@ -10,6 +11,7 @@ import { ModalService } from 'src/app/service/modal.service';
 import { HarvestService } from 'src/app/service/tasks/harvest.service';
 import { PollenPreparationService } from 'src/app/service/tasks/pollen-preparation.service';
 import { PollenUsageService } from 'src/app/service/tasks/pollen-usage.service';
+import { TreeService } from 'src/app/service/tasks/tree.service';
 
 @Component({
   selector: 'app-stok-pollen-form',
@@ -49,6 +51,7 @@ export class StokPollenFormPage implements OnInit {
     private modalService:ModalService,
     private navCtrl:NavController,
     private router:Router,
+    private treeService:TreeService,
   ) { }
 
   ngOnInit() {
@@ -175,11 +178,20 @@ export class StokPollenFormPage implements OnInit {
   filterAvailableBlock(){
     this.availableBlock = [];
     this.availableTandan = [];
+
+    this.treeService.getAll((res:PokokResponse[])=>{
+      res.forEach(el => {
+        // if(el.jantina == 'Fatherpalm'){
+          if(!this.availableBlock.includes(el.blok)){
+            this.availableBlock.push(el.blok);
+            this.itemBlock.push({id:el.blok,name:el.blok});
+          }
+        // }
+      });
+    });
+
     this.pollenList.forEach(el => {
-      if(!this.availableBlock.includes(el.pokok.blok)){
-        this.availableBlock.push(el.pokok.blok);
-        this.itemBlock.push({id:el.pokok.blok,name:el.pokok.blok});
-      }if(!this.availableTandan.includes(el.tandan?.no_daftar)){
+      if(!this.availableTandan.includes(el.tandan?.no_daftar)){
         this.availableTandan.push(el.tandan?.no_daftar);
         this.itemTandan.push({id:el.tandan?.no_daftar,name:el.tandan?.no_daftar});
       }

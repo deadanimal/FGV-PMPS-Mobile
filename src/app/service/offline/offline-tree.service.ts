@@ -22,4 +22,10 @@ export class OfflineTreeService {
 
     return retVal;
   }
+
+  async getAll():Promise<PokokResponse[]>{
+    let retVal:PokokResponse[] = await this.storageService.get(this.storageService.offlineTreeList);
+
+    return retVal;
+  }
 }

@@ -110,6 +110,14 @@
       <ion-label position="floating">Catatan Penyelia</ion-label>
       <ion-input type="text" [(ngModel)]="svRemark" name="svRemark" required [readonly]="true"></ion-input>
     </ion-item>
+    <ion-item lines="full mb-4" *ngIf="taskStatus!= null">
+      <ion-label position="floating">Status Tugas</ion-label>
+      <ion-input type="text" [(ngModel)]="taskStatus" name="taskStatus" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full mb-4" *ngIf="lastUpdate!= null">
+      <ion-label position="floating">Dikemaskini pada</ion-label>
+      <ion-input type="text" [(ngModel)]="lastUpdate" name="lastUpdate" required [readonly]="true"></ion-input>
+    </ion-item>
     <ion-item lines="full mb-4" *ngIf="pollenDiscarded">
       <ion-label position="floating">Status Pollen</ion-label>
       <ion-input type="text" value="TELAH DILUPUS" required [readonly]="true"></ion-input>

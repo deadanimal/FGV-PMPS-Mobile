@@ -10,5 +10,6 @@ export interface PokokResponse {
     induk?: string;
     user_id: number;
     created_at?: Date;
+    in_app_name?:string;
     updated_at: Date;
 }

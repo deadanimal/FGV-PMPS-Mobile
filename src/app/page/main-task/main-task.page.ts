@@ -439,7 +439,7 @@ export class MainTaskPage implements OnInit {
       if(!this.isOfflineMode){
         this.controlPollinationService.getByUserId(this.employeeId,(res:[ControlPollinationModel])=>{
           res.forEach(el => {
-            if(el.status == TaskStatus.done){
+            if(el.status == TaskStatus.done || el.status == TaskStatus.defect){
               this.numOfActiveTask++;
               this.activeTaskList.push(el);
             }else if(el.status == TaskStatus.postpone || el.status == TaskStatus.created || el.status == TaskStatus.rejected){

@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
 import { TandanCycle } from 'src/app/common/tandan-cycle';
+import { TaskStatus } from 'src/app/common/task-status';
 import { BaggingModel } from 'src/app/model/bagging';
 import { ControlPollinationModel } from 'src/app/model/control-pollination';
 import { DefectModel } from 'src/app/model/defect';
@@ -48,6 +49,8 @@ export class FinishedTaskPage implements OnInit {
   pollenDiscarded:boolean;
   workerTask:string;
   pollenName:string;
+  taskStatus:string;
+  lastUpdate:string;
   constructor(
     private activatedRoute:ActivatedRoute,
     private tandanService: TandanService,
@@ -99,6 +102,8 @@ export class FinishedTaskPage implements OnInit {
       this.workerTask = 'Pendebungaan Terkawal';
       this.cpService.getById(this.taskId,(res:ControlPollinationModel)=>{
         this._getTandanInfo(res.tandan_id.toString());
+        this.taskStatus = this.parseStatus(res.status);
+        this.lastUpdate = this.datePipe.transform(Date.parse(res.updated_at.toString()),"yyyy-MM-dd HH:mm:ss a");
         if(this.accountService.getUserRole() == UserRole.penyelia_balut){
           this.workerRemark = res.catatan;
           this.svRemark = res.catatan_pengesah;
@@ -161,6 +166,28 @@ export class FinishedTaskPage implements OnInit {
         }
       });
     }
+  }
+
+  parseStatus(status){
+    let retVal = '';
+    if(status == TaskStatus.created){
+      retVal = 'Di Cipta';
+    }else if(status == TaskStatus.defect){
+      retVal = 'Rosak';
+    }else if(status == TaskStatus.delete){
+      retVal = 'Di Lupus';
+    }else if(status == TaskStatus.done){
+      retVal = 'Telah Siap';
+    }else if(status == TaskStatus.postpone){
+      retVal = 'Di Anjak';
+    }else if(status == TaskStatus.redo){
+      retVal = 'Penyelia tolak dan dibuat semula';
+    }else if(status == TaskStatus.rejected){
+      retVal = 'Telah di tolak penyelia';
+    }else if(status == TaskStatus.verified){
+      retVal = 'Telah di sahkan penyelia';
+    }
+    return retVal;
   }
 
   private _getDefect(id:number){

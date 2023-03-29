@@ -16,6 +16,7 @@ import { PollenPreparationModel } from 'src/app/model/pollen-preparation-model';
 import { OfflinePollenPrepService } from 'src/app/service/offline/offline-pollen-prep.service';
 import { OfflineTreeService } from 'src/app/service/offline/offline-tree.service';
 import { PokokResponse } from 'src/app/model/pokok-respons';
+import { TreeService } from 'src/app/service/tasks/tree.service';
 
 @Component({
   selector: 'app-control-pollination-form',
@@ -30,7 +31,7 @@ export class ControlPollinationFormPage implements OnInit {
   taskType:String;
   selectedPollen:PollenPreparationModel;
   isOfflineMode:boolean;
-  pollenList:PollenPreparationModel[];
+  pollenList:PokokResponse[];
   constructor(
     private activatedRoute:ActivatedRoute,
     private controlPollinationService:ControlPollinationService,
@@ -42,6 +43,7 @@ export class ControlPollinationFormPage implements OnInit {
     private pollenPrepService:PollenPreparationService,
     private offlinePollenPrepService:OfflinePollenPrepService,
     private offlineTreeService:OfflineTreeService,
+    private treeService:TreeService,
   ) { }
 
   ngOnInit() {
@@ -150,24 +152,21 @@ export class ControlPollinationFormPage implements OnInit {
   async _getPollen(){
     this.pollenList = [];
     if(!this.isOfflineMode){
-      this.pollenPrepService.getAll(
-        (res:PollenPreparationModel[])=>{
-          res.forEach(el => {
-            if(el.status == TaskStatus.verified && el.kerosakan_id == null){
-              el.in_app_name = el.pokok.progeny +"-"+el.pokok.no_pokok +" (#"+el.id+")";
-              this.pollenList.push(el);
-            }
-          });
-        }
-      );
+      this.treeService.getAll((res:PokokResponse[])=>{
+        res.forEach(el => {
+          if(el.jantina == 'Fatherpalm'){
+            el.in_app_name = el.progeny+'-'+el.no_pokok;
+            this.pollenList.push(el);
+          }
+        });
+      });
     }else{
-      this.pollenList = await this.offlinePollenPrepService.getAll();
-      if(this.pollenList == null){
-        this.pollenList = [];
-      }
-      this.pollenList.forEach(async el => {
-        let tree: PokokResponse = await this.offlineTreeService.getById(el.pokok_id.toString());
-        el.in_app_name = tree.progeny +"-"+tree.no_pokok +" (#"+el.id+")";
+      var res:PokokResponse[] = await this.offlineTreeService.getAll();
+      res.forEach(el => {
+        if(el.jantina == 'Fatherpalm'){
+          el.in_app_name = el.progeny+'-'+el.no_pokok;
+          this.pollenList.push(el);
+        }
       });
     }
   }
