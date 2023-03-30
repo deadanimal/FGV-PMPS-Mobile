@@ -56,8 +56,11 @@ export class RegisterStatusPage implements OnInit {
   isOfflineMode = false;
   baggingWorker:String;
   cpWorker:String;
+  qcWorker:String;
   baggingDate:String;
   cpDate:String;
+  qcDate:String;
+  pollenNumber:String;
   offlineCpTask:OfflineControlPollinationModel;
 
   constructor(
@@ -142,6 +145,18 @@ export class RegisterStatusPage implements OnInit {
     }
   }
 
+  _getQcInfo(tandanId){
+    this.qualityControlService.getByTandanId(tandanId,(res:QualityControlModel[])=>{
+      this.qcDate = this.datePipe.transform(Date.parse(res[0].created_at?.toString()),"dd-MM-YYYY HH:mm:ss");
+      this.taskService.getUserById(res[0].id_sv_qc).subscribe(
+        (res2:LoginResponseModel) => {
+          this.qcWorker = res2.nama;
+          this._getBaggingInfo(tandanId);
+        }
+      );
+    },false);
+  }
+
   _getBaggingInfo(tandanId){
     this.baggingService.getByTandanId(tandanId,(res:BaggingModel[])=>{
       this.baggingDate = this.datePipe.transform(Date.parse(res[0].created_at?.toString()),"dd-MM-YYYY HH:mm:ss");
@@ -160,6 +175,9 @@ export class RegisterStatusPage implements OnInit {
       this.taskService.getUserById(res[0].id_sv_cp).subscribe(
         (res2:LoginResponseModel) => {
           this.cpWorker = res2.nama;
+          this.treeService.getById(res[0].pokok_id.toString(),(res2:PokokResponse)=>{
+            this.pollenNumber = res2.progeny+'-'+res2.no_pokok;
+          });
         }
       );
     },false);
@@ -178,6 +196,7 @@ export class RegisterStatusPage implements OnInit {
         this.tandanId = res.tandan_id.toString();
         this._getTandanInfo(res.tandan_id.toString());
         this.svComment = res.catatan_pengesah;
+        this._getQcInfo(res.tandan_id);
       });
     }else{
       let harvestTask:HarvestModel = await this.offlineHarvestService.getNewTaskById(parseInt(this.taskId.toString()));

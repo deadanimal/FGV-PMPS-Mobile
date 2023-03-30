@@ -19,6 +19,10 @@
       <ion-label position="floating">Status Tandan</ion-label>
       <ion-input type="text" [(ngModel)]="status" name="status" required [readonly]="true"></ion-input>
     </ion-item>
+    <ion-item lines="full" *ngIf="pollenNumber != null">
+      <ion-label position="floating">Nombor Pollen</ion-label>
+      <ion-input type="text" [(ngModel)]="pollenNumber" name="pollenNumber" required [readonly]="true"></ion-input>
+    </ion-item>
     <ion-item lines="full">
       <ion-label position="floating">Umur Tandan (Hari)</ion-label>
       <ion-input type="text" [(ngModel)]="age" name="age" required [readonly]="true"></ion-input>
@@ -42,6 +46,14 @@
     <ion-item *ngIf="cpDate!=null && cpDate != ''" lines="full">
       <ion-label position="floating">Tarikh Pendebungaan Terkawal</ion-label>
       <ion-input type="text" [(ngModel)]="cpDate" name="cpDate" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="qcWorker!=null && qcWorker != ''" lines="full">
+      <ion-label position="floating">Petugas Kawalan Kualiti</ion-label>
+      <ion-input type="text" [(ngModel)]="qcWorker" name="qcWorker" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="qcDate!=null && qcDate != ''" lines="full">
+      <ion-label position="floating">Tarikh Kawalan Kualiti</ion-label>
+      <ion-input type="text" [(ngModel)]="qcDate" name="qcDate" required [readonly]="true"></ion-input>
     </ion-item>
     <div class="w-100 text-center mt-5">
       <button [disabled]="scanInput != null" (click)="promptScan()" type="button" class="btn primary-red text-white mx-auto">Seterusnya</button>

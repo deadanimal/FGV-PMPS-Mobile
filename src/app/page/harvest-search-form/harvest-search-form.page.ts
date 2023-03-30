@@ -75,10 +75,12 @@ export class HarvestSearchFormPage implements OnInit {
       (res:[QcSearchResponse])=>{
         res.forEach(el => {
           if(( el.pokok.jantina == TreeType.Motherpalm && el.tandan.kitaran == 'kawal' && el.status == TaskStatus.verified) && el.tandan.status_tandan == 'aktif'){
-            el.tandan.kitaran = "Kawalan Kualiti";
+            // el.tandan.kitaran = "Kawalan Kualiti";
+            el.tandan.kitaran = "Tuai";
             this.searchResult.push(el);
           }else if(( el.pokok.jantina == TreeType.Fatherpalm && el.tandan.kitaran == 'balut') && el.tandan.status_tandan == 'aktif'){
-            el.tandan.kitaran = "Balut";
+            // el.tandan.kitaran = "Balut";
+            el.tandan.kitaran = "Tuai";
             this.searchResult.push(el);
           }
         });

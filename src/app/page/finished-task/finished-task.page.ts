@@ -56,6 +56,7 @@ export class FinishedTaskPage implements OnInit {
   cpWorkerName:string;
   qcDate:string;
   qcWorkerName:string;
+  tandanWeight:string;
   constructor(
     private activatedRoute:ActivatedRoute,
     private tandanService: TandanService,
@@ -136,11 +137,14 @@ export class FinishedTaskPage implements OnInit {
         if(res.kerosakan_id != null){
           this._getDefect(parseInt(res.kerosakan_id));
         }
+
+        this._getCPInfo(res.tandan_id);
       });
     }else if(this.taskType == 'Tuai'){
       this.cycle = 'Tuai';
       this.workerTask = 'Tuai';
       this.harvestService.getById(this.taskId,(res:HarvestModel)=>{
+        this.tandanWeight = (res.berat_tandan??"")+" KG";
         this._getTandanInfo(res.tandan_id.toString());
         if(this.accountService.getUserRole() == UserRole.penyelia_tuai){
           this.workerRemark = res.catatan;
@@ -314,9 +318,16 @@ export class FinishedTaskPage implements OnInit {
       this.taskService.getUserById(res[0].id_sv_cp).subscribe(
         (res2:LoginResponseModel) => {
           this.cpWorkerName = res2.nama;
+          this._getPollenName(res[0].no_pollen);
         }
       );
     },false);
+  }
+
+  _getPollenName(pollenId){
+    this.treeService.getById(pollenId,(res:PokokResponse)=>{
+      this.pollenName = res.progeny +'-'+res.no_pokok;
+    });
   }
 
   _getQcInfo(tandanId){
