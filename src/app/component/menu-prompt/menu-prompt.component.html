@@ -1,0 +1,20 @@
+<div class="mt-2 d-flex flex-column justify-content-center align-items-center">
+  <div style="height: 48px;" class="p-1 w-100 text-center">
+    <p class="h3">Menu:</p>
+  </div>
+  <div style="height: 48px;" class="p-1 w-100 text-center">
+    <button (click)="dashboard()" class="btn btn-danger shadow my-auto w-75">Halaman Utama</button>
+  </div>
+  <div style="height: 48px;" class="p-1 w-100 text-center">
+    <button (click)="back()" class="btn btn-danger shadow my-auto w-75">Kembali</button>
+  </div>
+  <div *ngIf="showSync" style="height: 48px;" class="p-1 w-100 text-center">
+    <button (click)="sync()" class="btn btn-danger shadow my-auto w-75">Mod Offline</button>
+  </div>
+  <div style="height: 48px;" class="p-1 w-100 text-center">
+    <button (click)="logOut()" class="btn btn-danger shadow my-auto w-75">Log Keluar</button>
+  </div>
+  <div style="height: 48px;" class="p-1 w-100 text-center">
+    <button (click)="exit()" class="btn btn-danger shadow my-auto w-75">Keluar Aplikasi</button>
+  </div>
+</div>

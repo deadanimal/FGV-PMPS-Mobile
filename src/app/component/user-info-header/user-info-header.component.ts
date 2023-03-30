@@ -14,6 +14,8 @@ export class UserInfoHeaderComponent implements OnInit {
   name:String;
   id:String;
   role:String;
+  userIconPath:String;
+  userIconBgColor:String;
 
   constructor(
     private accountService:AccountService,
@@ -22,6 +24,9 @@ export class UserInfoHeaderComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+  }
+
+  ngAfterViewInit(){
     if(this.accountService.getSessionDetails() == null){
       setTimeout(() => {
         this._getFromStorage();
@@ -31,16 +36,26 @@ export class UserInfoHeaderComponent implements OnInit {
       this.name = loginDetails.nama;
       this.id = loginDetails.no_kakitangan;
       this.role = loginDetails.peranan;
+      if(this.role.indexOf('pekerja')>=0){
+        this.userIconPath="../../../assets/worker_icon.png"
+      }else{
+        this.userIconPath="../../../assets/penyelia_icon.png"
+      }
+      document.getElementById('iconBg').style.zIndex = "1000";
     }
   }
 
   async _getFromStorage(){
     const loginDetails = await this.storageService.get(this.storageService.loginDetail);
-    console.log(loginDetails);
     this.accountService.saveAsSessionDetails(loginDetails);
     this.name = loginDetails.nama;
     this.id = loginDetails.no_kakitangan;
     this.role = loginDetails.peranan;
+    if(this.role.indexOf('pekerja')>=0){
+      this.userIconPath="../../../assets/worker_icon.png"
+    }else{
+      this.userIconPath="../../../assets/penyelia_icon.png"
+    }
   }
 
   logout(){

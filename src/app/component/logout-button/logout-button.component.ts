@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoginResponseModel } from 'src/app/model/login-response';
-import { AccountService } from 'src/app/service/account.service';
+import { NavController } from '@ionic/angular';
+import { ModalService } from 'src/app/service/modal.service';
 import { StorageService } from 'src/app/service/storage.service';
 
 @Component({
@@ -14,17 +14,39 @@ export class LogoutButtonComponent implements OnInit {
   constructor(
     private storageService:StorageService,
     private router:Router,
-    private accountService:AccountService,
+    private modalService:ModalService,
+    private navCtrl:NavController,
   ) { }
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  async promptMenu(){
+    this.modalService.menuPrompt().then(
+      async (value)=>{
+        if(value['data'] == 'logOut'){
+          this.storageService.eraseAll();
+          this.router.navigateByUrl('/login',{
+            replaceUrl : true
+          });
+        }else if(value['data'] == 'dashboard'){
+          this.router.navigate(['app/tabs/tab1/'],{
+            replaceUrl : true
+          });
+        }else if(value['data'] == 'exit'){
+          navigator['app'].exitApp();
+        }else if(value['data'] == 'back'){
+          try{
+            this.navCtrl.navigateBack('/app/tabs/tab1');
+          }catch{
+            this.navCtrl.navigateBack('/app/tabs/tab1');
+          }
+        }else if(value['data'] == 'sync'){
+          this.router.navigate(['offline-mode']);
+        }
+      }
+    );
   }
 
-  logout(){
-    this.storageService.eraseAll();
-    this.router.navigateByUrl('/login',{
-      replaceUrl : true
-    });
-  }
+
 
 }

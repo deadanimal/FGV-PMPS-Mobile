@@ -24,6 +24,12 @@ export class LandingPage implements OnInit {
   }
 
   async checkForLoginDetails(){
+    // this.router.navigate(
+    //     ['/test-page'],
+    //     {
+    //       replaceUrl : true
+    //     }
+    //   );
     const loginDetail = await this.storageService.get(this.storageService.loginDetail);
     if(loginDetail!=null){
       this.accountService.saveAsSessionDetails(loginDetail);

@@ -1,0 +1,18 @@
+<div class="mx-auto my-2 text-center">
+  <p style="width: 202px;font-size: 16.63px; font-weight: 600; line-height: 100%; text-align: center; color: rgba(57.37, 57.37, 57.37, 1);">
+    Jumlah hari yang ingin dianjak
+  </p>
+  <ion-row class="justify-content-around align-items-center">
+    <button [disabled]="numberOfDays<=1" (click)="minus()" style="height: 32pt; width: 32pt;" class="btn rounded-circle btn-outline-danger p-auto text-center">-</button>
+    <p style="font-weight: 600; text-align: center; color: rgba(57.37, 57.37, 57.37, 1);" class="my-auto">
+      {{numberOfDays}}
+    </p>
+    <button [disabled]="numberOfDays>=2" (click)="add()" style="height: 32pt; width: 32pt;" class="btn rounded-circle btn-outline-danger p-auto text-center">+</button>
+  </ion-row>
+  <ion-row>
+    <ion-col class="text-center my-4">
+      <button (click)="btnClick()" class="btn primary-red text-white w-100 mx-auto">Seterusnya</button>
+    </ion-col>
+  </ion-row>
+  
+</div>

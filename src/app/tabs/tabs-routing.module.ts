@@ -37,6 +37,82 @@ const routes: Routes = [
         loadChildren: () => import('../page/new-task-info/new-task-info.module').then(m => m.NewTaskInfoPageModule)
       },
       {
+        path: 'tab1/start-work-find',
+        loadChildren: () => import('../page/start-work-find/start-work-find.module').then(m => m.StartWorkFindPageModule)
+      },
+      {
+        path: 'tab1/create-new-task',
+        loadChildren: () => import('../page/create-new-task/create-new-task.module').then(m => m.CreateNewTaskPageModule)
+      },
+      {
+        path: 'tab1/defect',
+        loadChildren: () => import('../page/defect/defect.module').then(m => m.DefectPageModule)
+      },
+      {
+        path: 'tab1/reg-status',
+        loadChildren: () => import('../page/register-status/register-status.module').then(m => m.RegisterStatusPageModule)
+      },
+      {
+        path: 'tab1/pollen-preps',
+        loadChildren: () => import('../page/pollen-prep-main/pollen-prep-main.module').then(m => m.PollenPrepMainPageModule)
+      },
+      {
+        path: 'tab1/pollen-prep-tandan-list',
+        loadChildren: () => import('../page/pollen-prep-tandan-list/pollen-prep-tandan-list.module').then(m => m.PollenPrepTandanListPageModule)
+      },
+      {
+        path: 'tab1/pollen-prep-form',
+        loadChildren: () => import('../page/pollen-prep-form/pollen-prep-form.module').then(m => m.PollenPrepFormPageModule)
+      },
+      {
+        path: 'tab1/control-pollen-form',
+        loadChildren: () => import('../page/control-pollination-form/control-pollination-form.module').then(m => m.ControlPollinationFormPageModule)
+      },
+      {
+        path: 'tab1/qc-search-form',
+        loadChildren: () => import('../page/qc-search-form/qc-search-form.module').then(m => m.QcSearchFormPageModule)
+      },
+      {
+        path: 'tab1/qc-task-distribution',
+        loadChildren: () => import('../page/qc-task-distribution/qc-task-distribution.module').then(m => m.QcTaskDistributionPageModule)
+      },
+      {
+        path: 'tab1/harvest-search-form',
+        loadChildren: () => import('../page/harvest-search-form/harvest-search-form.module').then(m => m.HarvestSearchFormPageModule)
+      },
+      {
+        path: 'tab1/harvest-task-distribution',
+        loadChildren: () => import('../page/harvest-task-distribution/harvest-task-distribution.module').then(m => m.HarvestTaskDistributionPageModule)
+      },
+      {
+        path: 'tab1/tandan-verification',
+        loadChildren: () => import('../page/tandan-verification/tandan-verification.module').then(m => m.TandanVerificationPageModule)
+      },
+      {
+        path: 'tab1/pollen-prep-task-status',
+        loadChildren: () => import('../page/pollen-prep-task-status/pollen-prep-task-status.module').then(m => m.PollenPrepTaskStatusPageModule)
+      },
+      {
+        path: 'tab1/pollen-prep-test',
+        loadChildren: () => import('../page/pollen-prep-test/pollen-prep-test.module').then(m => m.PollenPrepTestPageModule)
+      },
+      {
+        path: 'tab1/task-distributed',
+        loadChildren: () => import('../page/task-distributed/task-distributed.module').then( m => m.TaskDistributedPageModule)
+      },
+      {
+        path: 'tab1/stok-pollen-form',
+        loadChildren: () => import('../page/stok-pollen-form/stok-pollen-form.module').then( m => m.StokPollenFormPageModule)
+      },
+      {
+        path: 'tab1/stok-pollen-list',
+        loadChildren: () => import('../page/stok-pollen-list/stok-pollen-list.module').then( m => m.StokPollenListPageModule)
+      },
+      {
+        path: 'tab1/stok-pollen-viability-check',
+        loadChildren: () => import('../page/stok-pollen-viability-check/stok-pollen-viability-check.module').then( m => m.StokPollenViabilityCheckPageModule)
+      },
+      {
         path: '',
         redirectTo: 'tabs/tab1/',
         pathMatch: 'full'

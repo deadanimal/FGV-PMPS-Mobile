@@ -1,0 +1,18 @@
+export enum InAppTaskCycle {
+    bagging     = 'balut',
+    posponedbagging = 'balutposponed',
+    cp          = 'debung',
+    posponedCp  = 'debungposponed',
+    rejectedCp  = 'debungrejected',
+    qc          = 'qc',
+    posponedqc  = 'qcposponed',
+    qcSv        = 'qcsv',
+    harvest     = 'tuai',
+    posponedharvest= 'tuaiposponed',
+    anjakharvest= 'tuaianjak',
+    harvestSv   = 'harvestsv',
+    pp          = 'pollenprep',
+    ppSv        = 'pollenprepsv',
+    posponedpp  = 'posponedpollenprep',
+    pollenPrepForm  = 'pollen-prep-form',
+}

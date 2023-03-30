@@ -1,0 +1,163 @@
+<ion-content>
+  <app-offline-header></app-offline-header>
+  <app-logout-button></app-logout-button>
+  <app-user-info-header></app-user-info-header>
+
+  <div *ngIf="tandanReqNumber!= null" class="w-75 mx-auto my-4">
+
+    <div class="w-100 text-center mt-5">
+      <p style="color: #626262;">No Daftar Tandan:</p>
+      <p class="font-weight-bold h2">{{tandanReqNumber}}</p>
+    </div>
+  </div>
+
+  <div class="w-75 mx-auto my-2">
+    <div class="rounded border border-danger p-2">
+      <div class="row border-bottom mx-1">
+        <small style="font-size: 10px; font-weight: 600; color: rgba(98.81, 98.81, 98.81, 1);" class="col-6">
+          PROCESS
+        </small>
+        <small style="font-size: 10px; font-weight: 600; color: rgba(98.81, 98.81, 98.81, 1);" class="col-3 text-center">
+          MASUK
+        </small>
+        <small style="font-size: 10px; font-weight: 600; color: rgba(98.81, 98.81, 98.81, 1);" class="col-3 text-center">
+          KELUAR
+        </small>
+      </div>
+
+      <div class="mt-2 row mx-1">
+        <div class="col-6">
+          <small style="font-size: 15px; font-weight: 600; line-height: 100%; color: black;">1. Bilik Panas (4 Jam)</small>
+        </div>
+        <div class="col-3 px-2 text-center">
+          <button (click)="btnPress(0)" class="btn btn-outline-danger text-center p-auto" style="width: 24pt; height: 24pt;">
+            <ion-icon *ngIf="btn0" name="checkmark-outline"></ion-icon>
+          </button>
+        </div>
+        <div class="col-3 px-2 text-center">
+          <button (click)="btnPress(1)" class="btn btn-outline-danger mx-auto" style="width: 24pt; height: 24pt;">
+            <ion-icon *ngIf="btn1" name="checkmark-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="w-75 mx-auto my-2">
+    <div class="rounded border border-danger p-2">
+      <div class="row border-bottom mx-1">
+        <small style="font-size: 10px; font-weight: 600; color: rgba(98.81, 98.81, 98.81, 1);" class="col-9">
+          PROCESS
+        </small>
+        <small style="font-size: 10px; font-weight: 600; color: rgba(98.81, 98.81, 98.81, 1);" class="col-3 text-center">
+          SEMAK
+        </small>
+      </div>
+      <div class="mt-2 row mx-1">
+        <div class="col-9">
+          <small style="font-size: 15px; font-weight: 600; line-height: 100%; color: black;">2. Ketuk</small>
+        </div>
+        <div class="col-3 px-2 text-center">
+          <button (click)="btnPress(2)" class="btn btn-outline-danger text-center p-auto" style="width: 24pt; height: 24pt;">
+            <ion-icon *ngIf="btn2" name="checkmark-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="w-75 mx-auto my-2">
+    <div class="rounded border border-danger p-2">
+      <div class="row border-bottom mx-1">
+        <small style="font-size: 10px; font-weight: 600; color: rgba(98.81, 98.81, 98.81, 1);" class="col-6">
+          PROCESS
+        </small>
+        <small style="font-size: 10px; font-weight: 600; color: rgba(98.81, 98.81, 98.81, 1);" class="col-3 text-center">
+          MASUK
+        </small>
+        <small style="font-size: 10px; font-weight: 600; color: rgba(98.81, 98.81, 98.81, 1);" class="col-3 text-center">
+          KELUAR
+        </small>
+      </div>
+      <div class="mt-2 row mx-1">
+        <div class="col-6">
+          <small style="font-size: 15px; font-weight: 600; line-height: 100%; color: black;">3. Bilik Panas (24 Jam)</small>
+        </div>
+        <div class="col-3 px-2 text-center">
+          <button (click)="btnPress(3)" class="btn btn-outline-danger text-center p-auto" style="width: 24pt; height: 24pt;">
+            <ion-icon *ngIf="btn3" name="checkmark-outline"></ion-icon>
+          </button>
+        </div>
+        <div class="col-3 px-2 text-center">
+          <button (click)="btnPress(4)" class="btn btn-outline-danger mx-auto" style="width: 24pt; height: 24pt;">
+            <ion-icon *ngIf="btn4" name="checkmark-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="w-75 mx-auto my-2">
+    <div class="rounded border border-danger p-2">
+      <div class="row border-bottom mx-1">
+        <small style="font-size: 10px; font-weight: 600; color: rgba(98.81, 98.81, 98.81, 1);" class="col-9">
+          PROCESS
+        </small>
+        <small style="font-size: 10px; font-weight: 600; color: rgba(98.81, 98.81, 98.81, 1);" class="col-3 text-center">
+          SEMAK
+        </small>
+      </div>
+      <div class="mt-2 row mx-1">
+        <div class="col-9">
+          <small style="font-size: 15px; font-weight: 600; line-height: 100%; color: black;">4. Ayak</small>
+        </div>
+        <div class="col-3 px-2 text-center">
+          <button (click)="btnPress(5)" class="btn btn-outline-danger text-center p-auto" style="width: 24pt; height: 24pt;">
+            <ion-icon *ngIf="btn5" name="checkmark-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="w-75 mx-auto my-2">
+    <div class="rounded border border-danger p-2">
+      <div class="row border-bottom mx-1">
+        <small style="font-size: 10px; font-weight: 600; color: rgba(98.81, 98.81, 98.81, 1);" class="col-9">
+          PROCESS
+        </small>
+        <small style="font-size: 10px; font-weight: 600; color: rgba(98.81, 98.81, 98.81, 1);" class="col-3 text-center">
+          SEMAK
+        </small>
+      </div>
+      <div class="mt-2 row mx-1">
+        <div class="col-9">
+          <small style="font-size: 15px; font-weight: 600; line-height: 100%; color: black;">5. Kerosakan Sebelum Ujian Pollen</small>
+        </div>
+        <div class="col-3 px-2 text-center">
+          <button (click)="btnPress(6)" class="btn btn-outline-danger text-center p-auto" style="width: 24pt; height: 24pt;">
+            <ion-icon *ngIf="btn6" name="checkmark-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="w-75 mx-auto mt-2 mb-4">
+    <div class="rounded border border-danger p-2">
+      <div class="row border-bottom mx-1">
+        <small style="font-size: 10px; font-weight: 600; color: rgba(98.81, 98.81, 98.81, 1);" class="col-9">
+          PROCESS
+        </small>
+        <small style="font-size: 10px; font-weight: 600; color: rgba(98.81, 98.81, 98.81, 1);" class="col-3 text-center">
+          SEMAK
+        </small>
+      </div>
+      <div class="mt-2 row mx-1">
+        <div class="col-9">
+          <small style="font-size: 15px; font-weight: 600; line-height: 100%; color: black;">6. Ujian Viabiliti</small>
+        </div>
+        <div class="col-3 px-2 text-center">
+          <button (click)="btnPress(7)" class="btn btn-outline-danger text-center p-auto" style="width: 24pt; height: 24pt;">
+            <ion-icon *ngIf="btn7" name="checkmark-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

@@ -10,6 +10,29 @@ export class StorageService {
 
   loginDetail:string = "loginDetail";
   language:string = "lang";
+  offlineData:string = "offlineData";
+  offlineMode:string = "offlineMode";
+  offlineTreeList:string = "offlineTree";
+  offlineTandanList:string = "offlineTandan";
+  baggingSvList:string = "offlineBaggingSv";
+  offlineNewCp:string = "offlineNewCp";
+  offlineDefectList:string = "offlineDefectList";
+  baggingOfflineData:string = "baggingOffline";
+  redoBaggingOfflineData:string = "redoBaggingOfflineData";
+  redoCPOfflineData:string = "redoCPOfflineData";
+  redoQCOfflineData:string = "redoQCOfflineData";
+  redoHarvestOfflineData:string = "redoHarvestOfflineData";
+  controlPollinationOfflineData:string = "cpOffline";
+  offlineNewQc:string = "offlineNewQc";
+  qcOfflineData:string = "qcOffline";
+  offlineNewHarvest:string = "offlineNewHarvest";
+  harvestOfflineData:string = "harvestOfflineData";
+  posponedBaggingTask:string = "posponedBaggingTask";
+  rejectedCPTask:string = "rejectedCPTask";
+  posponedQCTask:string = "posponedQCTask";
+  posponedHarvestTask:string = "posponedHarvestTask";
+  posponedCPOfflineData:string = "posponedCPOfflineData";
+  pollenPrep:string = "pollenPrep";
 
   constructor(private storage: Storage) {
     this.init();
@@ -21,14 +44,14 @@ export class StorageService {
   }
 
   public set(key: string, value: any) {
-    this._storage?.set(key, value);
+    return this._storage?.set(key, value);
   }
 
   public get(key: string) {
     return this._storage?.get(key);
   }
 
-  public eraseAll(){
-    this._storage?.clear();
+  public async eraseAll(){
+    await this._storage?.clear();
   }
 }

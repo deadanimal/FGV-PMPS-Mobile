@@ -1,0 +1,38 @@
+<ion-content>
+  <app-offline-header></app-offline-header>
+  <app-logout-button></app-logout-button>
+  <app-user-info-header></app-user-info-header>
+
+  <div class="mx-auto" style="width: 58px; height: 58px; padding-top: 14px; padding-bottom: 14px; padding-left: 13px; padding-right: 14px; background-color: white; border-radius: 10px; display: flex; flex-direction: row; align-items: center; justify-content: center;">
+    <img style="width: 31.32px; height: 30px; border-radius: 8px;" src={{taskIconPath}}/>
+  </div>
+  <h2 class="mx-auto w-100 text-center mb-3">{{taskBtnName}}</h2>
+
+  <div class="mx-2 h-100">
+    <form (ngSubmit)="submit(form)" #form="ngForm">
+      <div class="d-flex flex-col mx-2">
+        <ion-item class="col-10">
+          <ion-label position="floating">ID Tandan</ion-label>
+          <ion-input type="text" [(ngModel)]="tandanId" name="tandanId" required></ion-input>
+        </ion-item>
+      </div>
+      <div class="d-flex flex-col mx-2">
+        <ion-item class="col-10">
+          <ion-label position="floating">Tarikh</ion-label>
+          <ion-input type="text" [(ngModel)]="date" name="date" required></ion-input>
+        </ion-item>
+      </div>
+      <div class="d-flex flex-col mx-2">
+        <ion-item class="col-10">
+          <ion-label position="floating">ID Pekerja</ion-label>
+          <ion-input type="text" [(ngModel)]="workerId" name="workerId" required></ion-input>
+        </ion-item>
+      </div>
+
+      <div class="w-100 text-center mt-5">
+        <button [disabled]="!form.valid" type="submit" class="btn primary-red text-white mx-auto">Seterusnya</button>
+      </div>
+    </form>
+  </div>
+
+</ion-content>

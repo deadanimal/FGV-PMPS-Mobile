@@ -1,0 +1,25 @@
+<ion-content>
+  <app-offline-header></app-offline-header>
+  <app-logout-button></app-logout-button>
+  <app-user-info-header></app-user-info-header>
+  <div class="w-75 mx-auto">
+    <ion-list>
+      <ion-item>
+        <ion-select (ionChange)="handleChange($event)" value=100000 placeholder="Pilih Kerosakan">
+          <ion-select-option value=100000>Pilih Kerosakan</ion-select-option>
+          <ion-select-option *ngFor="let item of defectList" value={{item.id}}>{{item.nama}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+  </div>
+  <div class="d-flex flex-row text-center mx-auto w-75 mt-5 justify-content-around">
+    <button (click)="reject()" [disabled]="defect == 100000" class="mx-3 btn btn-danger text-white">
+      <ion-icon name="remove-circle-outline"></ion-icon>
+      Gagal
+    </button>
+    <button (click)="continue()" [disabled]="defect != 100000" class="mx-3 btn btn-success text-white">
+      <ion-icon name="checkmark-circle-outline"></ion-icon>
+      Lulus
+    </button>
+  </div>
+</ion-content>

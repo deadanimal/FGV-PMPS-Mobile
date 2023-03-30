@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'io.ionic.starter',
-  appName: 'fpg',
+  appName: 'FGV',
   webDir: 'www',
   bundledWebRuntime: false
 };

@@ -72,9 +72,34 @@ ion-button.mainBtn {
     --background: rgb(14 116 144);
     --color: white;
   }
+
+  .menu-modal {
+    --height: 300px;
+    --border-radius: 16px;
+    --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --width: 338px;
+
+    .modal-wrapper {
+        height: 70%;
+        width: 60%;
+    }
+  }
+  
+  .menu-modal::part(backdrop) {
+    background: rgba(209, 213, 219);
+    opacity: 1;
+  }
+  
+  .menu-modal ion-toolbar {
+    --background: rgb(14 116 144);
+    --color: white;
+  }
   
   body.scanner-active {
     --background: transparent;
     --ion-background-color: transparent;
   }
   
+  .primary-red {
+    background-color: #EC2427;
+  }

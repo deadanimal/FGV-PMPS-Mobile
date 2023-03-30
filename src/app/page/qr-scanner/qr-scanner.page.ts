@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 
 @Component({
@@ -8,13 +9,60 @@ import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 })
 export class QrScannerPage implements OnInit {
 
-  constructor() { }
+  treeNum:String;
+  taskId:String;
+  returnUrl:String;
+  task:String;
+  expactedTandanId:String;
+  redirect:String;
+  var1:String;
+
+  constructor(
+    private activatedRoute:ActivatedRoute,
+    private router:Router,
+  ) { }
 
   ngOnInit() {
+    this.activatedRoute.params.subscribe(params => {
+      if(params['treeNum']!=null){
+        this.treeNum = params['treeNum'];
+      }
+      if(params['taskId']!=null){
+        this.taskId = params['taskId'];
+      }
+      if(params['expactedTandanId']!=null){
+        this.expactedTandanId = params['expactedTandanId'];
+      }
+      if(params['redirect']!=null){
+        this.redirect = params['redirect'];
+      }
+      if(params['var1']!=null){
+        this.var1 = params['var1'];
+      }
+      
+      if(params['returnUrl']!=null){
+        this.returnUrl = params['returnUrl'];
+      }else{
+        this.returnUrl = 'app/tabs/tab1/start-work-find';
+      }
+
+      if(params['task']!=null){
+        this.task = params['task'];
+      }
+
+      console.log(this.returnUrl);
+    });
+  }
+
+  ionViewWillEnter(){
     this.didUserGrantPermission();
+    setTimeout(() => {
+      this.startScan();
+    }, 500);
   }
 
   async ionViewWillLeave(){
+    document.querySelector('body').classList.remove('scanner-active');
     await BarcodeScanner.stopScan();
   }
 
@@ -32,7 +80,67 @@ export class QrScannerPage implements OnInit {
   
     // if the result has content
     if (result.hasContent) {
-      console.log(result.content); // log the raw scanned content
+      // console.log(result.content); // log the raw scanned content
+      let scanResult = result.content;
+      if(this.task == 'Balut' && this.returnUrl.indexOf('start-work-find')>0){
+        scanResult = scanResult.replace('http://fgv.prototype.com.my/pengurusan-pokok-induk/tandan/edit/',""); // for tandan
+      }else if(this.task == 'Balut' && this.returnUrl.indexOf('main-task')>0){
+        scanResult = scanResult.replace('http://fgv.prototype.com.my/pengurusan-pokok-induk/pokok/edit/',""); // for pokok
+      }else{
+        scanResult = scanResult.replace('http://fgv.prototype.com.my/pengurusan-pokok-induk/pokok/edit/',""); // for pokok
+        scanResult = scanResult.replace('http://fgv.prototype.com.my/pengurusan-pokok-induk/tandan/edit/',""); // for tandan
+      }
+      if(this.treeNum!=null){
+        this.router.navigate(
+          [
+            this.returnUrl,
+            {
+              task:this.task,
+              treeNum:this.treeNum,
+              regNo:scanResult,
+              taskId:this.taskId,
+              scanInput:scanResult
+            }
+          ]
+        );
+      }else if(this.expactedTandanId != null){
+        this.router.navigate(
+          [
+            this.returnUrl,
+            {
+              taskType:this.task,
+              taskId:this.taskId,
+              scanInput:scanResult,
+              expactedTandanId:this.expactedTandanId,
+              var1:this.var1,
+              redirect:this.redirect,
+            }
+          ]
+        );
+      }else if(this.task != null){
+        this.router.navigate(
+          [
+            this.returnUrl,
+            {
+              task:this.task,
+              taskId:this.taskId,
+              scanInput:scanResult
+            }
+          ]
+        );
+      }else{
+        this.router.navigate(
+          [
+            this.returnUrl,
+            {
+              treeNum:scanResult,
+              taskId:this.taskId,
+              scanInput:scanResult,
+              redirect:this.redirect,
+            }
+          ]
+        );
+      }
     }
     document.querySelector('body').classList.remove('scanner-active');
   };

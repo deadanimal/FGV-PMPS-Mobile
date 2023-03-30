@@ -1,0 +1,107 @@
+<ion-content>
+  <app-offline-header></app-offline-header>
+  <app-logout-button></app-logout-button>
+  <app-user-info-header></app-user-info-header>
+
+  <div class="w-75 mx-auto text-center text-white font-weight-bold h5 p-2" style="background-color: rgba(236, 36, 39, 1); border-radius: 10px;">
+    Penyediaan Pollen
+  </div>
+
+  <ion-grid class="my-5">
+    <ion-row *ngIf="role == 'Petugas Makmal' || role == roles.petugas_balut_fatherpalm" class="ion-justify-content-center">
+      <ion-col *ngIf="role == roles.petugas_balut_fatherpalm || role == roles.petugas_makmal" size="6" size-md="4" size-lg="2">
+        <div>
+          <button (click)="view('new')" [disabled]="disableNewTaskBtn" class="btn w-100 mx-auto rounded orangeBtn text-center text-white p-2">
+            <ion-badge *ngIf="numOfNewTask > 0" color="danger">{{numOfNewTask}}</ion-badge>
+            <img height="56px" src="../../../assets/new_record_icon.png">
+            <h5>Tugas Baharu</h5>
+          </button>
+        </div>
+      </ion-col>
+      <ion-col size="6" size-md="4" size-lg="2">
+        <div>
+          <button (click)="view('posponed')" [disabled]="disablePosponedTaskBtn" class="btn w-100 mx-auto rounded btn-danger text-center text-white p-2">
+            <ion-badge *ngIf="numOfPosponedTask > 0" color="danger">{{numOfPosponedTask}}</ion-badge>
+            <img height="56px" src="../../../assets/posponed_task_icon.png">
+            <h5>Tugas Tertunggak</h5>
+          </button>
+        </div>
+      </ion-col>
+      <ion-col size="6" size-md="4" size-lg="2">
+        <div>
+          <button (click)="view('active')" [disabled]="disableActiveTaskBtn" class="btn w-100 mx-auto rounded blueBtn text-center text-white p-2">
+            <ion-badge *ngIf="numOfActiveTask > 0" color="danger">{{numOfActiveTask}}</ion-badge>
+            <img height="56px" src="../../../assets/active_task_icon.png">
+            <h5>Tugas Aktif</h5>
+          </button>
+        </div>
+      </ion-col>
+      <ion-col size="6" size-md="4" size-lg="2">
+        <div>
+          <button (click)="view('finished')" [disabled]="disableFinishRecord" class="btn w-100 mx-auto rounded greenBtn text-center text-white p-2">
+            <ion-badge *ngIf="numOfFinishTask > 0" color="danger">{{numOfFinishTask}}</ion-badge>
+            <img height="56px" src="../../../assets/finished_record_icon.png">
+            <h5>Tugas Selesai</h5>
+          </button>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="role == 'Penyelia Makmal'" class="ion-justify-content-center">
+      <ion-col size="6" size-md="4" size-lg="2">
+        <div>
+          <button (click)="newRecord()" [disabled]="disableNewRecord" class="btn w-100 mx-auto rounded orangeBtn text-center text-white p-2">
+            <ion-badge *ngIf="numOfNewTask > 0" color="danger">{{numOfNewTask}}</ion-badge>
+            <img height="56px" src="../../../assets/new_record_icon.png">
+            <h5>Rekod Baharu</h5>
+          </button>
+        </div>
+      </ion-col>
+      <ion-col size="6" size-md="4" size-lg="2">
+        <div>
+          <button (click)="finishRecord()" [disabled]="disableFinishRecord" class="btn w-100 mx-auto rounded greenBtn text-center text-white p-2">
+            <ion-badge *ngIf="numOfFinishTask > 0" color="danger">{{numOfFinishTask}}</ion-badge>
+            <img height="56px" src="../../../assets/finished_record_icon.png">
+            <h5>Rekod Selesai</h5>
+          </button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <p *ngIf="disableFinishRecord || disableActiveTaskBtn || disableNewTaskBtn || disablePosponedTaskBtn || disableNewRecord" style="font-size: 14px; font-weight: 600; line-height: 100%; text-align: center; color: rgba(57.37, 57.37, 57.37, 1);">Senarai Rekod</p>
+    <div>
+      <div *ngIf="disableFinishRecord">
+        <div *ngFor="let item of finishedTaskList" class="p-3 my-3 mx-auto w-75 shadow rounded border border-success d-flex justify-content-between align-items-center">
+          <p class="h5">Rekod {{item.id}} ({{item.pokok.progeny}}-{{item.pokok.no_pokok}})</p>
+          <button *ngIf="item.status == 'sah' && item.kerosakan_id != null" (click)="viewTask('finished',item.id)" class="btn btn-danger text-white">Info</button>
+          <button *ngIf="item.status != 'sah' || item.kerosakan_id == null" (click)="viewTask('finished',item.id)" class="btn greenBtn text-white">Info</button>
+        </div>
+      </div>
+      <div *ngIf="disableActiveTaskBtn">
+        <div *ngFor="let item of activeTaskList" class="p-3 my-3 mx-auto w-75 shadow rounded border border-primary d-flex justify-content-between align-items-center">
+          <p class="h5">Rekod {{item.id}} ({{item.pokok?.progeny}}-{{item.pokok?.no_pokok}})</p>
+          <button (click)="viewTask('active',item.id)" class="btn blueBtn text-white">Info</button>
+        </div>
+      </div>
+      <div *ngIf="disableNewTaskBtn">
+        <div *ngFor="let item of newTaskList" class="p-3 my-3 mx-auto w-75 shadow rounded border border-warning d-flex justify-content-between align-items-center">
+          <p class="h5">Rekod {{item.id}} ({{item.pokok.progeny}}-{{item.pokok.no_pokok}})</p>
+          <button *ngIf="role == roles.petugas_balut_fatherpalm" (click)="viewTask('new',item.id,item.pokok_id)" class="btn orangeBtn text-white">Info</button>
+          <button *ngIf="role != roles.petugas_balut_fatherpalm" (click)="viewTask('continue',item.id,item.tandan_id)" class="btn orangeBtn text-white">Info</button>
+        </div>
+      </div>
+      <div *ngIf="disablePosponedTaskBtn">
+        <div *ngFor="let item of posponedTaskList" class="p-3 my-3 mx-auto w-75 shadow rounded border border-danger d-flex justify-content-between align-items-center">
+          <p class="h5">Rekod {{item.id}} ({{item.pokok?.progeny}}-{{item.pokok?.no_pokok}})</p>
+          <button (click)="viewTask('posponed',item.id,item.tandan_id)" class="btn btn-danger text-white">Info</button>
+        </div>
+      </div>
+      <div *ngIf="disableNewRecord">
+        <div *ngFor="let item of newTaskList"class="p-3 my-3 mx-auto w-75 shadow rounded border border-warning d-flex justify-content-between align-items-center">
+          <p class="h6">Rekod {{item.id}} ({{item.tarikh_uji}})</p>
+          <button (click)="viewTask('pending','activeTaskSV',item.id)" class="btn orangeBtn text-white">Info</button>
+        </div>
+      </div>
+    </div>
+
+</ion-content>

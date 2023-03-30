@@ -1,4 +1,5 @@
 <ion-content>
+  <app-offline-header></app-offline-header>
   <app-logout-button></app-logout-button>
   <app-user-info-header></app-user-info-header>
   <div class="mx-2">
@@ -9,33 +10,50 @@
         </div>
         <small class="font-weight-light">Balut</small>
       </div>
-      <div class="col text-center">
-        <div style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
+      <div *ngIf="treeType != 'Fatherpalm'" class="col text-center">
+        <div *ngIf="indicator < 1" style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
+          <p class="m-auto">2</p>
+        </div>
+        <div *ngIf="indicator >= 1" style="height: 32px; width: 32px; background-color: #40131C;" class="mx-auto rounded-circle text-center text-white p-auto">
           <p class="m-auto">2</p>
         </div>
         <small class="font-weight-light">Kerosakan Sebelum CP</small>
       </div>
-      <div class="col text-center">
-        <div style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
+      <div  *ngIf="treeType != 'Fatherpalm'" class="col text-center">
+        <div *ngIf="indicator < 2" style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
+          <p class="m-auto">3</p>
+        </div>
+        <div *ngIf="indicator >= 2" style="height: 32px; width: 32px; background-color: #40131C;" class="mx-auto rounded-circle text-center text-white p-auto">
           <p class="m-auto">3</p>
         </div>
         <small class="font-weight-light">CP</small>
       </div>
-      <div class="col text-center">
-        <div style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
+      <div *ngIf="treeType != 'Fatherpalm'"  class="col text-center">
+        <div *ngIf="indicator < 3" style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
+          <p class="m-auto">4</p>
+        </div>
+        <div *ngIf="indicator >= 3" style="height: 32px; width: 32px; background-color: #40131C;" class="mx-auto rounded-circle text-center text-white p-auto">
           <p class="m-auto">4</p>
         </div>
         <small class="font-weight-light">QC</small>
       </div>
-      <div class="col text-center">
-        <div style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
+      <div *ngIf="treeType != 'Fatherpalm'" class="col text-center">
+        <div *ngIf="indicator < 4" style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
+          <p class="m-auto">5</p>
+        </div>
+        <div *ngIf="indicator >= 4" style="height: 32px; width: 32px; background-color: #40131C;" class="mx-auto rounded-circle text-center text-white p-auto">
           <p class="m-auto">5</p>
         </div>
         <small class="font-weight-light">Kerosakan Sebelum Tuai</small>
       </div>
       <div class="col text-center">
-        <div style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
-          <p class="m-auto">6</p>
+        <div *ngIf="indicator < 5" style="height: 32px; width: 32px; background-color: #40131c81;" class="mx-auto rounded-circle text-center text-white p-auto">
+          <p *ngIf="treeType != 'Fatherpalm'" class="m-auto">6</p>
+          <p *ngIf="treeType == 'Fatherpalm'" class="m-auto">2</p>
+        </div>
+        <div *ngIf="indicator >= 5" style="height: 32px; width: 32px; background-color: #40131C;" class="mx-auto rounded-circle text-center text-white p-auto">
+          <p *ngIf="treeType != 'Fatherpalm'" class="m-auto">6</p>
+          <p *ngIf="treeType == 'Fatherpalm'" class="m-auto">2</p>
         </div>
         <small class="font-weight-light">Tuai</small>
       </div>
@@ -48,6 +66,10 @@
   </div>
 
   <form #form="ngForm" class="mx-auto my-2" style="max-width: 300px;">
+    <ion-item lines="full">
+      <ion-label position="floating">Blok</ion-label>
+      <ion-input type="text" [(ngModel)]="block" name="block" required [readonly]="true"></ion-input>
+    </ion-item>
     <ion-item lines="full">
       <ion-label position="floating">No Daftar</ion-label>
       <ion-input type="text" [(ngModel)]="regNo" name="regNo" required [readonly]="true"></ion-input>
@@ -63,6 +85,66 @@
     <ion-item lines="full">
       <ion-label position="floating">Umur Tandan (Hari)</ion-label>
       <ion-input type="text" [(ngModel)]="age" name="age" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="pollenName != null">
+      <ion-label position="floating">Nombor Pollen</ion-label>
+      <ion-input type="text" [(ngModel)]="pollenName" name="pollenName" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="tandanWeight != null">
+      <ion-label position="floating">Berat Tandan</ion-label>
+      <ion-input type="text" [(ngModel)]="tandanWeight" name="tandanWeight" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="baggingWorkerName!= null && taskType != 'Balut'">
+      <ion-label position="floating">Nama Petugas Balut</ion-label>
+      <ion-input type="text" [(ngModel)]="baggingWorkerName" name="baggingWorkerName" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="baggingDate!= null">
+      <ion-label position="floating">Tarikh Balut</ion-label>
+      <ion-input type="text" [(ngModel)]="baggingDate" name="baggingDate" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="cpWorkerName!= null">
+      <ion-label position="floating">Nama Petugas Pendebungaan Terkawal</ion-label>
+      <ion-input type="text" [(ngModel)]="cpWorkerName" name="cpWorkerName" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="cpDate!= null">
+      <ion-label position="floating">Tarikh Pendebungaan Terkawal</ion-label>
+      <ion-input type="text" [(ngModel)]="cpDate" name="cpDate" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="qcWorkerName!= null">
+      <ion-label position="floating">Nama Petugas Kawalan Kualiti</ion-label>
+      <ion-input type="text" [(ngModel)]="qcWorkerName" name="qcWorkerName" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="qcDate!= null">
+      <ion-label position="floating">Tarikh Kawalan Kualiti</ion-label>
+      <ion-input type="text" [(ngModel)]="qcDate" name="qcDate" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="workerName!= null">
+      <ion-label position="floating">Nama Petugas {{workerTask}}</ion-label>
+      <ion-input type="text" [(ngModel)]="workerName" name="workerName" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="defect!= null">
+      <ion-label position="floating">Jenis Kerosakan</ion-label>
+      <ion-input type="text" [(ngModel)]="defect" name="defect" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="workerRemark!= null">
+      <ion-label position="floating">Catatan Petugas</ion-label>
+      <ion-input type="text" [(ngModel)]="workerRemark" name="workerRemark" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full mb-4" *ngIf="svRemark!= null">
+      <ion-label position="floating">Catatan Penyelia</ion-label>
+      <ion-input type="text" [(ngModel)]="svRemark" name="svRemark" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full mb-4" *ngIf="taskStatus!= null">
+      <ion-label position="floating">Status Tugas</ion-label>
+      <ion-input type="text" [(ngModel)]="taskStatus" name="taskStatus" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full mb-4" *ngIf="lastUpdate!= null">
+      <ion-label position="floating">Dikemaskini pada</ion-label>
+      <ion-input type="text" [(ngModel)]="lastUpdate" name="lastUpdate" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full mb-4" *ngIf="pollenDiscarded">
+      <ion-label position="floating">Status Pollen</ion-label>
+      <ion-input type="text" value="TELAH DILUPUS" required [readonly]="true"></ion-input>
     </ion-item>
   </form>
 </ion-content>

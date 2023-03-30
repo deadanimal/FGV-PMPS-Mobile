@@ -49,7 +49,27 @@ const routes: Routes = [
   {
     path: 'new-task-info',
     loadChildren: () => import('./page/new-task-info/new-task-info.module').then( m => m.NewTaskInfoPageModule)
-  }
+  },
+  {
+    path: 'start-work-find',
+    loadChildren: () => import('./page/start-work-find/start-work-find.module').then( m => m.StartWorkFindPageModule)
+  },
+  {
+    path: 'create-new-task',
+    loadChildren: () => import('./page/create-new-task/create-new-task.module').then( m => m.CreateNewTaskPageModule)
+  },
+  {
+    path: 'pollen-prep-main',
+    loadChildren: () => import('./page/pollen-prep-main/pollen-prep-main.module').then( m => m.PollenPrepMainPageModule)
+  },
+  {
+    path: 'offline-mode',
+    loadChildren: () => import('./page/offline-mode/offline-mode.module').then( m => m.OfflineModePageModule)
+  },
+  // {
+  //   path: 'test-page',
+  //   loadChildren: () => import('./page/test-page/test-page.module').then( m => m.TestPagePageModule)
+  // }
 ];
 @NgModule({
   imports: [

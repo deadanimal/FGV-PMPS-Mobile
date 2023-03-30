@@ -1,15 +1,20 @@
 <ion-content>
+  <app-offline-header></app-offline-header>
   <app-logout-button></app-logout-button>
   <div class="w-100 text-center mt-3">
     <img class="mx-auto w-25" src="../../../assets/logo_fgv.png"/>
   </div>
   <div class="mx-auto mt-4" style="width: 124px; height: 124px; ">
-    <div class="p-3 rounded" style="width: 124px; height: 124px;  background-color: rgba(64, 19, 28, 1); align-items: center; justify-content: center;">
+    <div class="p-3 rounded" style="width: 124px; height: 124px; align-items: center; justify-content: center;" [class.orangeBackdrop]="role?.indexOf('Petugas')>=0" [class.brownBackdrop]="role?.indexOf('Petugas')<0">
       <div class="text-center w-75 m-auto">
-        <div class="mx-auto" style="width: 48px; height: 48px; background-color: rgba(64, 19, 28, 1); border-radius: 8px;">
-          <img class="m-auto" src="../../../assets/penyelia_icon.png"/>
+        <div class="mx-auto" style="width: 48px; height: 48px; border-radius: 8px;" [class.orangeBackdrop]="role?.indexOf('Petugas')>=0" [class.brownBackdrop]="role?.indexOf('Petugas')<0">
+          <img *ngIf="role?.indexOf('Petugas')>=0" class="m-auto" src="../../../assets/worker_icon.png"/>
+          <img *ngIf="role?.indexOf('Petugas')<0" class="m-auto" src="../../../assets/penyelia_icon.png"/>
         </div>
-          <p class="my-2 mx-auto text-white">{{role}}</p>
+          <p *ngIf="roleShort == null; else qcSV" class="my-2 mx-auto text-white" style="line-height: 1;">{{role}}</p>
+          <ng-template #qcSV>
+            <p class="small my-2 mx-auto text-white text-capitalize" style="line-height: 1;">{{roleShort}}</p>
+          </ng-template>
       </div>
     </div>
   </div>

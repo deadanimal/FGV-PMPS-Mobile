@@ -1,58 +1,183 @@
 <ion-content>
+  <app-offline-header></app-offline-header>
   <app-logout-button></app-logout-button>
   <app-user-info-header></app-user-info-header>
   <div class="text-center mx-auto" style="width: 90%;">
     <div class="imageContainer w-100">
       <!-- when no photo -->
-      <img  *ngIf="photo==null" src="../../../assets/placeholder.png" alt="Snow">
-      <button *ngIf="photo==null" (click)="takePicture()" class="btn">+</button>
+      <img  *ngIf="serverImage==null && photo==null" src="../../../assets/placeholder.png" alt="Snow">
+      <button *ngIf="serverImage==null && photo==null" (click)="takePicture()" class="btn">+</button>
       <!-- when have photo -->
       <img *ngIf="photo!=null" class="rounded mx-auto" [src]="photo.dataUrl"/>
       <button *ngIf="photo!=null" (click)="erasePicture()" class="btn-danger">
+        <ion-icon name="trash-outline"></ion-icon>
+      </button>
+      <!-- photo from server -->
+      <img *ngIf="serverImage!=null" class="rounded mx-auto" [src]="serverImage"/>
+      <img *ngIf="serverImage2!=null" class="rounded mx-auto" [src]="serverImage2"/>
+      <button *ngIf="serverImage!=null && enableImgDeleteBtn" (click)="erasePicture()" class="btn-danger">
         <ion-icon name="trash-outline"></ion-icon>
       </button>
     </div>
   </div>
 
   <form #form="ngForm" class="mx-auto my-2" style="max-width: 300px;">
-    <ion-item lines="full">
-      <ion-label position="floating">Petugas Balut</ion-label>
+    <ion-item *ngIf="taskType == 'balut' || name != null" lines="full">
+      <ion-label position="floating">Nama Petugas {{workerTask}}</ion-label>
       <ion-input type="text" [(ngModel)]="name" name="name" required [readonly]="true"></ion-input>
     </ion-item>
-    <ion-item lines="full">
-      <ion-label position="floating">No Pokok</ion-label>
-      <ion-input type="text" [(ngModel)]="treeId" name="treeId" required [readonly]="true"></ion-input>
+    <ion-item *ngIf="baggingWorker != null" lines="full">
+      <ion-label position="floating">Nama Petugas Balut</ion-label>
+      <ion-input type="text" [(ngModel)]="baggingWorker" name="baggingWorker" [readonly]="true"></ion-input>
     </ion-item>
-    <ion-item lines="full">
+    <ion-item *ngIf="taskType == 'balut' || treeNum != null" lines="full">
+      <ion-label position="floating">No Pokok</ion-label>
+      <ion-input type="text" [(ngModel)]="treeNum" name="treeNum" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="taskType == 'balut' || taskType == 'qc' || taskType == 'pollenprep' || regNo != null" lines="full">
       <ion-label position="floating">No Daftar</ion-label>
       <ion-input type="text" [(ngModel)]="regNo" name="regNo" required [readonly]="true"></ion-input>
     </ion-item>
+    <ion-item *ngIf="treeBlock != null && taskType == 'pollenprepsv'" lines="full">
+      <ion-label position="floating">Blok</ion-label>
+      <ion-input type="text" [(ngModel)]="treeBlock" name="treeBlock" [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="taskType != 'qc' && qcSv!= null" lines="full">
+      <ion-label position="floating">Penyelia</ion-label>
+      <ion-input type="text" [(ngModel)]="qcSv" name="qcSv" required [readonly]="true"></ion-input>
+    </ion-item>
+    <!-- <ion-item *ngIf="taskType == 'pollenprep'" lines="full">
+      <ion-label position="floating">Status Bunga</ion-label>
+      <ion-input type="text" [(ngModel)]="flowerStatus" name="flowerStatus" required [readonly]="true"></ion-input>
+    </ion-item> -->
     <ion-item lines="full">
       <ion-label position="floating">Tarikh</ion-label>
       <ion-input type="text" [(ngModel)]="date" name="date" required [readonly]="true"></ion-input>
     </ion-item>
-    <ion-item lines="full">
-      <ion-label position="floating">Catatan</ion-label>
-      <ion-input type="text" [(ngModel)]="remark" name="remark" required [readonly]="userRole!='Pengguna'"></ion-input>
+    <ion-item *ngIf="taskType == 'debung' || taskType == 'pollenprep' || taskType == 'debungposponed'" lines="full">
+      <ion-label position="floating">Masa</ion-label>
+      <ion-input type="text" [(ngModel)]="time" name="time" required [readonly]="true"></ion-input>
     </ion-item>
-    <ion-item *ngIf="userRole=='Penyelia'" lines="full">
+    <ion-item *ngIf="defect != null" lines="full">
+      <ion-label position="floating">Kerosakan</ion-label>
+      <ion-input type="text" [(ngModel)]="defect" name="defect" required [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="(taskType == 'tuai' || taskType == 'tuaiposponed' || taskType == 'harvestsv') && defect == null && userRole != roles.petugas_balut_fatherpalm && userRole != roles.penyelia_fatherpalm" lines="full">
+      <ion-label position="floating">Berat Tandan (KG)</ion-label>
+      <ion-input type="text" [(ngModel)]="weight" name="weight" required></ion-input>
+    </ion-item>
+    <ion-item *ngIf="(taskType == 'pollenprepsv') && weight != null" lines="full">
+      <ion-label position="floating">Berat Pollen (Gram)</ion-label>
+      <ion-input type="text" [(ngModel)]="weight" name="weight" [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="noOfTest != null" lines="full">
+      <ion-label position="floating">Bilangan Ujian</ion-label>
+      <ion-input type="text" [(ngModel)]="noOfTest" name="noOfTest" [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="dateAndTimeBagging != null" lines="full">
+      <ion-label position="floating">Tarikh Balut</ion-label>
+      <ion-input type="text" [(ngModel)]="dateAndTimeBagging" name="dateAndTimeBagging" [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="dateAndTimeHarvest != null" lines="full">
+      <ion-label position="floating">Tarikh Tuai</ion-label>
+      <ion-input type="text" [(ngModel)]="dateAndTimeHarvest" name="dateAndTimeHarvest" [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="dateAndTimeTest != null" lines="full">
+      <ion-label position="floating">Tarikh Uji</ion-label>
+      <ion-input type="text" [(ngModel)]="dateAndTimeTest" name="dateAndTimeTest" [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="pollenNumber != null" lines="full">
+      <ion-label position="floating">No Pollen</ion-label>
+      <ion-input type="text" [(ngModel)]="pollenNumber" name="pollenNumber" [readonly]="true"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="pollenViability != null">
+      <ion-label position="floating">Peratusan Pollen</ion-label>
+      <ion-input type="text" [(ngModel)]="pollenViability" name="pollenViability" [readonly]="userRole!='Petugas Balut & Pendebungaan Terkawal' && userRole != roles.petugas_balut_fatherpalm && userRole!='Petugas Kawalan Kualiti' && userRole!='Petugas Tuai'&& userRole!='Petugas Makmal'"></ion-input>
+    </ion-item>
+    <ion-item lines="full" *ngIf="pollenViability == null">
+      <ion-label position="floating">Catatan</ion-label>
+      <ion-input type="text" [(ngModel)]="remark" name="remark" [readonly]="userRole!='Petugas Balut & Pendebungaan Terkawal' && userRole != roles.petugas_balut_fatherpalm && userRole!='Petugas Kawalan Kualiti' && userRole!='Petugas Tuai'&& userRole!='Petugas Makmal'"></ion-input>
+    </ion-item>
+    <ion-item  lines="full" class="my-4" *ngIf="((userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Kawalan Kualiti' ||userRole=='Petugas Makmal' || (userRole == roles.petugas_balut_fatherpalm && (taskType != 'tuai' && taskType != 'tuaiposponed'))) )">
+      <ion-select placeholder="Pilih Penyelia" id= "id1" #id1 [value]="qcSvId?.toString()">
+        <ion-select-option *ngFor="let sv of userList" value={{sv.id}}>{{sv.nama}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="
+          userRole=='Penyelia Balut & Pendebungaan Terkawal' ||
+          userRole=='Penyelia Kawalan Kualiti' ||
+          userRole=='Penyelia Tuai' ||
+          userRole== roles.penyelia_fatherpalm ||
+          userRole=='Penyelia Makmal'"
+          lines="full">
       <ion-label position="floating">Catatan Penyelia</ion-label>
-      <ion-input type="text" [(ngModel)]="svRemark" name="svRemark" required></ion-input>
+      <ion-input type="text" [(ngModel)]="svRemark" name="svRemark"></ion-input>
     </ion-item>
   </form>
 
-  <div class="d-flex flex-row mx-3 justify-content-center my-4">
-    <button *ngIf="userRole=='Penyelia'" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+  <div *ngIf="!viewOnly" class="d-flex flex-row mx-3 justify-content-center my-4">
+    <button (click)="reject()" [disabled]="!form.valid"
+          *ngIf=" userRole=='Penyelia Balut & Pendebungaan Terkawal' ||
+                  userRole=='Penyelia Kawalan Kualiti' ||
+                  userRole=='Penyelia Tuai' ||
+                  userRole==roles.penyelia_fatherpalm ||
+                  userRole=='Penyelia Makmal'
+                  " class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="close-circle-outline"></ion-icon>
       <p class="m-auto">TOLAK</p>
     </button>
 
-    <button *ngIf="userRole == 'Penyelia'" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
+    <button (click)="accept()" [disabled]="!form.valid"
+          *ngIf=" userRole=='Penyelia Balut & Pendebungaan Terkawal' ||
+                  userRole=='Penyelia Kawalan Kualiti' ||
+                  userRole=='Penyelia Tuai' ||
+                  userRole==roles.penyelia_fatherpalm ||
+                  userRole=='Penyelia Makmal'
+                  " class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="checkmark-circle-outline"></ion-icon>
       <p class="m-auto">TERIMA</p>
     </button>
 
-    <button [disabled]="!form.valid || photo ==null" (click)="submitTask()" *ngIf="userRole=='Pengguna'" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+    <button [disabled]="!form.valid || submitClicked ||((( userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole == roles.petugas_balut_fatherpalm ) && id1?.value == null)) || photo ==null || id1==null && id1.value==null" (click)="submitTask()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole=='Petugas Kawalan Kualiti'|| userRole==roles.petugas_balut_fatherpalm) && ( taskType == 'balut' || taskType == 'balutposponed')" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+      <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
+      <p class="m-auto">Hantar</p>
+    </button>
+
+    <button [disabled]="photo ==null && serverImage == null" (click)="pospone()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' || userRole==roles.petugas_balut_fatherpalm) && (taskType == 'debung' || taskType == 'debungposponed' || taskType == 'tuai'|| taskType == 'tuaianjak') && defect == null" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+      <ion-icon size="large" color="white" name="add-circle-outline"></ion-icon>
+      <p class="m-auto">Anjak</p>
+    </button>
+
+    <button [disabled]="!form.valid || submitClicked ||((userRole=='Petugas Balut & Pendebungaan Terkawal' && id1?.value == null))|| (photo ==null&& serverImage == null)" (click)="submitNormalCp()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' ) && (taskType == 'debung' || taskType == 'debungposponed' || taskType == 'debungrejected') && defect == null" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
+      <ion-icon size="large" color="white" name="checkmark-circle-outline"></ion-icon>
+      <p class="m-auto">Hantar</p>
+    </button>
+  
+    <button [disabled]="!form.valid || submitClicked ||((userRole=='Petugas Balut & Pendebungaan Terkawal' && id1?.value == null))|| (photo ==null&& serverImage == null)" (click)="submitCPDefect()" *ngIf="(userRole=='Petugas Balut & Pendebungaan Terkawal' ) && (taskType == 'debung' || taskType == 'debungposponed' || taskType == 'debungrejected') && defect != null" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
+      <ion-icon size="large" color="white" name="checkmark-circle-outline"></ion-icon>
+      <p class="m-auto">Hantar</p>
+    </button>
+
+    <button [disabled]="!form.valid || submitClicked || (photo ==null&& serverImage == null)" (click)="submitNormalQc()" *ngIf="(userRole=='Petugas Kawalan Kualiti' ) && (taskType == 'qc' || taskType == 'qcposponed') && defect == null" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
+      <ion-icon size="large" color="white" name="checkmark-circle-outline"></ion-icon>
+      <p class="m-auto">Hantar</p>
+    </button>
+
+    <button [disabled]="!form.valid || submitClicked || (photo ==null&& serverImage == null)" (click)="submitQcDefect()" *ngIf="(userRole=='Petugas Kawalan Kualiti' ) && (taskType == 'qc' || taskType == 'qcposponed') && defect != null" class="btn btn-success text-white d-flex flex-row px-4 py-2 mx-2">
+      <ion-icon size="large" color="white" name="checkmark-circle-outline"></ion-icon>
+      <p class="m-auto">Hantar</p>
+    </button>
+
+    <button [disabled]="!form.valid || submitClicked || photo ==null || id1==null && id1.value==null" (click)="submitPollenPrep()" *ngIf="(userRole=='Petugas Makmal' || ( userRole == roles.petugas_balut_fatherpalm && (taskType =='pollenprep' || taskType == 'pollen-prep-form')))" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+      <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
+      <p class="m-auto">Hantar</p>
+    </button>
+
+    <button [disabled]="!form.valid || submitClicked || (photo ==null&& serverImage == null)" (click)="submitHarvestDefect()" *ngIf="(userRole=='Petugas Tuai' || userRole == roles.petugas_balut_fatherpalm) && ( taskType == 'tuai' || taskType == 'tuaiposponed' || taskType == 'tuaianjak') && defect != null" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
+      <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
+      <p class="m-auto">Hantar</p>
+    </button>
+    <button [disabled]="!form.valid || submitClicked || (photo ==null&& serverImage == null)" (click)="submitHarvestNormal()" *ngIf="(userRole=='Petugas Tuai' || userRole == roles.petugas_balut_fatherpalm) && ( taskType == 'tuai' || taskType == 'tuaiposponed'|| taskType == 'tuaianjak') && defect == null" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-2">
       <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
       <p class="m-auto">Hantar</p>
     </button>

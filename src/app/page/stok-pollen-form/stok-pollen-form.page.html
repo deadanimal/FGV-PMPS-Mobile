@@ -1,0 +1,103 @@
+<ion-content>
+  <app-offline-header></app-offline-header>
+  <app-logout-button></app-logout-button>
+  <app-user-info-header></app-user-info-header>
+
+  <form #form="ngForm" class="mx-auto my-2" style="max-width: 300px;" (ngSubmit)="submit()">
+    <ion-item *ngIf="block != null" lines="full">
+      <ion-label position="floating">Blok</ion-label>
+      <ion-input type="text" [(ngModel)]="block" name="block" required [disabled]="isReturn"></ion-input>
+    </ion-item>
+  
+    <ion-item *ngIf="tandan != null" lines="full">
+      <ion-label position="floating">Tandan</ion-label>
+      <ion-input type="text" [(ngModel)]="tandan" name="tandan" required [disabled]="isReturn"></ion-input>
+    </ion-item>
+
+    <ion-item *ngIf="block == null" lines="full" class="mt-4">
+      <ionic-selectable
+      [items]="itemBlock"
+      itemValueField="id"
+      itemTextField="name"
+      [canSearch]="true"
+      placeholder="Blok"
+      (onChange)="blockChange($event)">
+      </ionic-selectable>
+    </ion-item>
+
+    <ion-item *ngIf="tandan == null" lines="full" class="mt-4">
+      <ionic-selectable
+      [items]="itemTandan"
+      itemValueField="id"
+      itemTextField="name"
+      [canSearch]="true"
+      placeholder="Tandan"
+      (onChange)="tandanhange($event)">
+      </ionic-selectable>
+    </ion-item>
+
+    <ion-item lines="full">
+      <ion-label position="floating">No. Pollen</ion-label>
+      <ion-input type="text" [(ngModel)]="no_pollen" name="no_pollen" required [disabled]="true"></ion-input>
+    </ion-item>
+  
+    <ion-item *ngIf="isReturn" lines="full">
+      <ion-label position="floating">Proses</ion-label>
+      <ion-input type="text" value="Pendebungaan Terkawal" required [disabled]="isReturn"></ion-input>
+    </ion-item>
+
+
+    <!-- <ion-item *ngIf="no_pollen == null" lines="full" class="mt-4">
+      <ionic-selectable
+      [items]="filteredPollenList"
+      itemValueField="id"
+      itemTextField="name"
+      [canSearch]="true"
+      placeholder="No. Pollen"
+      (onChange)="pollenChange($event)">
+      </ionic-selectable>
+    </ion-item> -->
+
+    <ion-item lines="full">
+      <ion-label position="floating">Berat Pollen (gram)</ion-label>
+      <ion-input type="text" [(ngModel)]="pollen_weight" name="pollen_weight" required [disabled]="isReturn"></ion-input>
+    </ion-item>
+
+    <ion-item *ngIf="viability != null" lines="full">
+      <ion-label position="floating">Viabiliti. Pollen</ion-label>
+      <ion-input type="text" [(ngModel)]="viability" name="viability" required [disabled]="isReturn"></ion-input>
+    </ion-item>
+
+    <ion-item *ngIf="viability == null" lines="full" class="mt-4">
+      <ion-select placeholder="Viabiliti Pollen" id= "id1" #id1 required [disabled]="isReturn">
+        <ion-select-option value=0%-59%>0%-59%</ion-select-option>
+        <ion-select-option value=60%-69%>60%-69%</ion-select-option>
+        <ion-select-option value=70%-79%>70%-79%</ion-select-option>
+        <ion-select-option value=80%-89%>80%-89%</ion-select-option>
+        <ion-select-option value=90%-100%>90%-100%</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item lines="full">
+      <ion-label position="floating">Amaun Keluar</ion-label>
+      <ion-input type="text" [(ngModel)]="outgoing_amount" name="outgoing_amount" required [disabled]="isReturn"></ion-input>
+    </ion-item>
+
+    <ion-item lines="full" *ngIf="isReturn">
+      <ion-label position="floating">Amaun Kembali</ion-label>
+      <ion-input type="text" [(ngModel)]="returned_ammount" name="returned_ammount" required></ion-input>
+    </ion-item>
+
+    <ion-item lines="full">
+      <ion-label position="floating">Amaun Semasa</ion-label>
+      <ion-input type="text" [(ngModel)]="current_ammount" name="current_ammount" required></ion-input>
+    </ion-item>
+
+    <div class="text-center mx-auto mt-4 w-100">
+      <button [disabled]="!form.valid || selectedBlock==null" type="submit" class="btn btn-danger text-white d-flex flex-row px-4 py-2 mx-auto">
+        <ion-icon size="large" color="white" name="paper-plane-outline"></ion-icon>
+        <p class="m-auto">Hantar</p>
+      </button>
+    </div>
+  </form>
+</ion-content>
