@@ -10,6 +10,7 @@ import { UserRole } from 'src/app/service/account.service';
 import { BaggingService } from 'src/app/service/tasks/bagging.service';
 import { TreeService } from 'src/app/service/tasks/tree.service';
 import { UserService } from 'src/app/service/user.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-qc-search-form',
@@ -77,8 +78,11 @@ export class QcSearchFormPage implements OnInit {
       (res:[QcSearchResponse])=>{
         res.forEach(el => {
           if(el.tandan.kitaran == 'debung' && el.tandan.status_tandan == 'aktif'){
-            el.tandan.kitaran = "Pendebungaan Terkawal";
-            this.searchResult.push(el);
+            const differenceInDays: number = this.getDaysPassed(el);
+            if(differenceInDays >= environment.qcStartDelay){
+              el.tandan.kitaran = "Pendebungaan Terkawal";
+              this.searchResult.push(el);
+            }
           }
         });
       }
@@ -123,5 +127,25 @@ export class QcSearchFormPage implements OnInit {
 
   userSelectEvent(event){
     this.baggingWorker = event.detail.value;
+  }
+
+  private getDaysPassed(el: any) {
+    let baggedAt = new Date(Date.parse(el.created_at));
+    let currentTime = new Date();
+    baggedAt.setHours(0);
+    baggedAt.setMinutes(0);
+    baggedAt.setSeconds(0);
+    baggedAt.setMilliseconds(0);
+
+    currentTime.setHours(0);
+    currentTime.setMinutes(0);
+    currentTime.setSeconds(0);
+    currentTime.setMilliseconds(0);
+
+    // Calculate the difference in milliseconds
+    const differenceInMilliseconds: number = Math.abs(currentTime.getTime() - baggedAt.getTime());
+    // Calculate the difference in days
+    const differenceInDays: number = differenceInMilliseconds / (1000 * 3600 * 24);
+    return differenceInDays;
   }
 }
