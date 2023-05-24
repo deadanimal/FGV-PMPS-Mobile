@@ -159,7 +159,7 @@ export class FinishedTaskPage implements OnInit {
       });
     }else if(this.taskType == InAppTaskCycle.pp){
       this.cycle = 'Penyediaan Pollen';
-      this.workerTask = '';
+      this.workerTask = 'Makmal';
       this.pollenPrepService.getById(this.taskId,(res:PollenPreparationModel)=>{
         this._getTandanInfo(res.tandan_id.toString());
         this.workerRemark = res.catatan;
