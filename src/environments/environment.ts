@@ -31,7 +31,8 @@ export const environment = {
 
   cpStartDelay:8,
   qcStartDelay:28,
-  fpHarvestStartDelay:140,
+  fpHarvestStartDelay:8,
+  harvestStartDelay:140 - 28, //we compare using qc data.
 };
 
 /*

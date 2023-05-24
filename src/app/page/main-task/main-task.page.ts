@@ -721,14 +721,27 @@ export class MainTaskPage implements OnInit {
         let tasksList = await this.offlineHarvestService.getNewHarvestTaskList();
         tasksList.forEach(el => {
           if(el.status == TaskStatus.created){
-            if(this.isLate(el.created_at)){
-              el.late = true;
-              this.numOfPosponedTask++;
-              this.posponedTaskList.push(el);
+            if(this.role == UserRole.petugas_balut_fatherpalm){
+              const differenceInDays: number = this.getDaysPassed(el);
+              if(differenceInDays == environment.fpHarvestStartDelay){
+                el.late = false;
+                this.numOfNewTask++;
+                this.newTaskList.push(el);
+              }else if(differenceInDays > environment.fpHarvestStartDelay){
+                el.late = true;
+                this.numOfPosponedTask++;
+                this.posponedTaskList.push(el);
+              }
             }else{
-              el.late = false;
-              this.numOfNewTask++;
-              this.newTaskList.push(el);
+              if(this.isLate(el.created_at)){
+                el.late = true;
+                this.numOfPosponedTask++;
+                this.posponedTaskList.push(el);
+              }else{
+                el.late = false;
+                this.numOfNewTask++;
+                this.newTaskList.push(el);
+              }
             }
           }else if(el.status == TaskStatus.done || el.status == TaskStatus.defect){
             this.numOfActiveTask++;
@@ -764,7 +777,10 @@ export class MainTaskPage implements OnInit {
           (res:[QcSearchResponse])=>{
             res.forEach(el => {
               if(( this.role != UserRole.penyelia_fatherpalm && el.pokok.jantina == TreeType.Motherpalm && el.tandan.kitaran == 'kawal' && el.status == TaskStatus.verified) && el.tandan.status_tandan == 'aktif'){
-                this.numOfActiveTask++;
+                const differenceInDays: number = this.getDaysPassed(el);
+                if(differenceInDays >= environment.harvestStartDelay){
+                  this.numOfActiveTask++;
+                }
               }else if( ( this.role == UserRole.penyelia_fatherpalm &&
                           el.pokok.jantina == TreeType.Fatherpalm && 
                           el.tandan.kitaran == 'balut' ) && 
