@@ -90,6 +90,10 @@
       <ion-label position="floating">Nombor Pollen</ion-label>
       <ion-input type="text" [(ngModel)]="pollenName" name="pollenName" required [readonly]="true"></ion-input>
     </ion-item>
+    <ion-item lines="full" *ngIf="pollenViability != null">
+      <ion-label position="floating">Peratusan Pollen</ion-label>
+      <ion-input type="text" [(ngModel)]="pollenViability" name="pollenViability" [readonly]="true"></ion-input>
+    </ion-item>
     <ion-item lines="full" *ngIf="tandanWeight != null">
       <ion-label position="floating">Berat Tandan</ion-label>
       <ion-input type="text" [(ngModel)]="tandanWeight" name="tandanWeight" required [readonly]="true"></ion-input>

@@ -57,6 +57,7 @@ export class FinishedTaskPage implements OnInit {
   qcDate:string;
   qcWorkerName:string;
   tandanWeight:string;
+  pollenViability:string;
   constructor(
     private activatedRoute:ActivatedRoute,
     private tandanService: TandanService,
@@ -99,6 +100,8 @@ export class FinishedTaskPage implements OnInit {
         if(this.accountService.getUserRole() == UserRole.penyelia_balut){
           this.workerRemark = res.catatan;
           this.svRemark = res.catatan_pengesah;
+        }else if(res.status == TaskStatus.rejected){
+          this.svRemark = res.catatan_pengesah;
         }
         this._getUser(res.id_sv_balut);
         if(res.kerosakans_id != null){
@@ -115,6 +118,7 @@ export class FinishedTaskPage implements OnInit {
         if(this.accountService.getUserRole() == UserRole.penyelia_balut){
           this.workerRemark = res.catatan;
           this.svRemark = res.catatan_pengesah;
+          this.pollenViability = res.peratus_pollen;
           this._getUser(res.id_sv_cp);
         }
         if(res.kerosakan_id != null){

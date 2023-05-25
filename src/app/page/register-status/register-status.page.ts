@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
 import { InAppTaskCycle } from 'src/app/common/inapp-task-cycle';
 import { TandanCycle } from 'src/app/common/tandan-cycle';
+import { TaskStatus } from 'src/app/common/task-status';
 import { UserSelection } from 'src/app/component/scanner-prompt/scanner-prompt.component';
 import { BaggingModel } from 'src/app/model/bagging';
 import { ControlPollinationModel } from 'src/app/model/control-pollination';
@@ -61,6 +62,7 @@ export class RegisterStatusPage implements OnInit {
   cpDate:String;
   qcDate:String;
   pollenNumber:String;
+  block:string;
   offlineCpTask:OfflineControlPollinationModel;
 
   constructor(
@@ -186,7 +188,19 @@ export class RegisterStatusPage implements OnInit {
   _getPollenPrepTask(){
     this.pollenPrepService.getById(this.taskId,(res:PollenPreparationModel)=>{
       this.tandanId = res.tandan_id.toString();
+      this.block = res.pokok?.blok;
       this._getTandanInfo(res.tandan_id.toString());
+      this.baggingService.getByTandanId(res.tandan_id,(res:BaggingModel[])=>{
+        res.forEach(el => {
+          if(el.status == TaskStatus.verified){
+            this.taskService.getUserById(el.id_sv_balut).subscribe(
+              (res2:LoginResponseModel) => {
+                this.baggingWorker = res2.nama;
+              }
+            );
+          }
+        });
+      },false);
     });
   }
 
