@@ -28,6 +28,11 @@ export const environment = {
   qcSearch:'/search/qc/',
   qcSearch2:'/search/qc2/',
   storageUrl:'https://fgv.prototype.com.my/storage/',
+
+  cpStartDelay:8,
+  qcStartDelay:28,
+  fpHarvestStartDelay:8,
+  harvestStartDelay:140 - 28, //we compare using qc data.
 };
 
 /*

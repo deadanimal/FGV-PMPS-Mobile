@@ -744,6 +744,7 @@ export class TaskStatusPage implements OnInit {
         if(res.kerosakan_id != null){
           this._getDefectList(res.kerosakan_id);
         }
+        this.pollenViability = res.peratus_pollen;
         this._getTandanInfo(this.tandanId);
         this._getPollen(res.no_pollen);
         this._getUserInfo(res.id_sv_cp);
@@ -1446,6 +1447,10 @@ export class TaskStatusPage implements OnInit {
       });
       this.userList = svList;
     }
+
+    if(this.userList.length != 0){
+      this.userList = this.userList.sort((a, b) => a.nama.localeCompare(b.nama));
+    }
   }
 
   _getSupervisors(){
@@ -1464,6 +1469,7 @@ export class TaskStatusPage implements OnInit {
           this.userList = res;
         }
         this.userList = res;
+        this._sortSv();
         this._getTandanId();
       });
     }else if(this.userRole == UserRole.petugas_balut_fatherpalm){
@@ -1481,8 +1487,10 @@ export class TaskStatusPage implements OnInit {
               }
             }
           });
+          this._sortSv();
         }else{
           this.userList = res;
+          this._sortSv();
         }
         if((this.taskType != InAppTaskCycle.harvest &&
           this.taskType != InAppTaskCycle.posponedharvest) &&
@@ -1490,6 +1498,7 @@ export class TaskStatusPage implements OnInit {
           this.userList = res;
         }
         this.userList = res;
+        this._sortSv();
         this._getTandanId();
       });
     }else if(this.userRole == UserRole.petugas_qc){
@@ -1510,6 +1519,7 @@ export class TaskStatusPage implements OnInit {
           this.userList = res;
         }
         this.userList = res;
+        this._sortSv();
       });
     }else if(this.userRole == UserRole.petugas_makmal){
       this.userServices.getByRole(UserRole.penyelia_fatherpalm.toString(),(res:[User])=>{
@@ -1526,6 +1536,7 @@ export class TaskStatusPage implements OnInit {
           this.userList = res;
         }
         this.userList = res;
+        this._sortSv();
       });
     }else if(this.userRole == UserRole.petugas_tuai){
       this.userServices.getByRole(UserRole.penyelia_tuai.toString(),(res:[User])=>{
@@ -1535,7 +1546,14 @@ export class TaskStatusPage implements OnInit {
           }
         });
         this.userList = res;
+        this._sortSv();
       });
+    }
+  }
+
+  _sortSv(){
+    if(this.userList.length != 0){
+      this.userList = this.userList.sort((a, b) => a.nama.localeCompare(b.nama));
     }
   }
 

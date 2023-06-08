@@ -31,6 +31,7 @@ import { TreeService } from 'src/app/service/tasks/tree.service';
 import { TreeType } from 'src/app/common/tree-type';
 import { DatePipe } from '@angular/common';
 import { PollenUsageService } from 'src/app/service/tasks/pollen-usage.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-main-task',
@@ -453,12 +454,35 @@ export class MainTaskPage implements OnInit {
             }
           });
           this.controlPollinationService.getNewlyCreatedTask(this.employeeId,(res1:[ControlPollinationModel])=>{
-            this.numOfNewTask = res1.length;
-            this.newTaskList = res1;
+            let newTask:ControlPollinationModel[] = [];
+            res1.forEach(el => {
+              const differenceInDays: number = this.getDaysPassed(el);
+              if(differenceInDays == environment.cpStartDelay){
+                newTask.push(el);
+              }else if(differenceInDays > environment.cpStartDelay){
+                el.delayed = true;
+                newTask.push(el);
+              }
+            });
+
+            this.numOfNewTask = newTask.length;
+            this.newTaskList = newTask;
           },false);
         });
       }else{
-        this.newTaskList = await this.offlineCPService.getNewCpTaskList();
+        this.newTaskList = [];
+        let newTaskTempList:any[] = await this.offlineCPService.getNewCpTaskList();
+        newTaskTempList.forEach(el => {
+          const differenceInDays: number = this.getDaysPassed(el);
+          if(differenceInDays == environment.cpStartDelay){
+            this.newTaskList.push(el);
+          }else if(differenceInDays > environment.cpStartDelay){
+            el.delayed = true;
+            this.newTaskList.push(el);
+          }
+        });
+        
+
         this.posponedTaskList = await this.offlineCPService.getPostponedTask();
         let tempList = await this.offlineCPService.getRejectedCpTaskList();
         if(this.newTaskList == null){
@@ -488,6 +512,26 @@ export class MainTaskPage implements OnInit {
         });
       })
     }
+  }
+
+  private getDaysPassed(el: any) {
+    let baggedAt = new Date(Date.parse(el.created_at));
+    let currentTime = new Date();
+    baggedAt.setHours(0);
+    baggedAt.setMinutes(0);
+    baggedAt.setSeconds(0);
+    baggedAt.setMilliseconds(0);
+
+    currentTime.setHours(0);
+    currentTime.setMinutes(0);
+    currentTime.setSeconds(0);
+    currentTime.setMilliseconds(0);
+
+    // Calculate the difference in milliseconds
+    const differenceInMilliseconds: number = Math.abs(currentTime.getTime() - baggedAt.getTime());
+    // Calculate the difference in days
+    const differenceInDays: number = differenceInMilliseconds / (1000 * 3600 * 24);
+    return differenceInDays;
   }
 
   async _getQCTask(){
@@ -565,7 +609,10 @@ export class MainTaskPage implements OnInit {
           (res:[QcSearchResponse])=>{
             res.forEach(el => {
               if(el.tandan.kitaran == 'debung' && el.tandan.status_tandan == 'aktif'){
-                this.numOfActiveTask++;
+                const differenceInDays: number = this.getDaysPassed(el);
+                if(differenceInDays >= environment.qcStartDelay){
+                  this.numOfActiveTask++;
+                }
               }
             });
           }
@@ -636,14 +683,27 @@ export class MainTaskPage implements OnInit {
           (res:[HarvestModel])=>{
           res.forEach(el => {
             if(el.status == TaskStatus.created){
-              if(this.isLate(el.created_at)){
-                el.late = true;
-                this.numOfPosponedTask++;
-                this.posponedTaskList.push(el);
+              if(this.role == UserRole.petugas_balut_fatherpalm){
+                const differenceInDays: number = this.getDaysPassed(el);
+                if(differenceInDays == environment.fpHarvestStartDelay){
+                  el.late = false;
+                  this.numOfNewTask++;
+                  this.newTaskList.push(el);
+                }else if(differenceInDays > environment.fpHarvestStartDelay){
+                  el.late = true;
+                  this.numOfPosponedTask++;
+                  this.posponedTaskList.push(el);
+                }
               }else{
-                el.late = false;
-                this.numOfNewTask++;
-                this.newTaskList.push(el);
+                if(this.isLate(el.created_at)){
+                  el.late = true;
+                  this.numOfPosponedTask++;
+                  this.posponedTaskList.push(el);
+                }else{
+                  el.late = false;
+                  this.numOfNewTask++;
+                  this.newTaskList.push(el);
+                }
               }
             }else if(el.status == TaskStatus.done || el.status == TaskStatus.defect){
               this.numOfActiveTask++;
@@ -661,14 +721,27 @@ export class MainTaskPage implements OnInit {
         let tasksList = await this.offlineHarvestService.getNewHarvestTaskList();
         tasksList.forEach(el => {
           if(el.status == TaskStatus.created){
-            if(this.isLate(el.created_at)){
-              el.late = true;
-              this.numOfPosponedTask++;
-              this.posponedTaskList.push(el);
+            if(this.role == UserRole.petugas_balut_fatherpalm){
+              const differenceInDays: number = this.getDaysPassed(el);
+              if(differenceInDays == environment.fpHarvestStartDelay){
+                el.late = false;
+                this.numOfNewTask++;
+                this.newTaskList.push(el);
+              }else if(differenceInDays > environment.fpHarvestStartDelay){
+                el.late = true;
+                this.numOfPosponedTask++;
+                this.posponedTaskList.push(el);
+              }
             }else{
-              el.late = false;
-              this.numOfNewTask++;
-              this.newTaskList.push(el);
+              if(this.isLate(el.created_at)){
+                el.late = true;
+                this.numOfPosponedTask++;
+                this.posponedTaskList.push(el);
+              }else{
+                el.late = false;
+                this.numOfNewTask++;
+                this.newTaskList.push(el);
+              }
             }
           }else if(el.status == TaskStatus.done || el.status == TaskStatus.defect){
             this.numOfActiveTask++;
@@ -704,7 +777,10 @@ export class MainTaskPage implements OnInit {
           (res:[QcSearchResponse])=>{
             res.forEach(el => {
               if(( this.role != UserRole.penyelia_fatherpalm && el.pokok.jantina == TreeType.Motherpalm && el.tandan.kitaran == 'kawal' && el.status == TaskStatus.verified) && el.tandan.status_tandan == 'aktif'){
-                this.numOfActiveTask++;
+                const differenceInDays: number = this.getDaysPassed(el);
+                if(differenceInDays >= environment.harvestStartDelay){
+                  this.numOfActiveTask++;
+                }
               }else if( ( this.role == UserRole.penyelia_fatherpalm &&
                           el.pokok.jantina == TreeType.Fatherpalm && 
                           el.tandan.kitaran == 'balut' ) && 

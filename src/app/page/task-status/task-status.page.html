@@ -42,6 +42,10 @@
       <ion-label position="floating">Blok</ion-label>
       <ion-input type="text" [(ngModel)]="treeBlock" name="treeBlock" [readonly]="true"></ion-input>
     </ion-item>
+    <ion-item *ngIf="treeBlock != null && taskType == 'pollenprep'" lines="full">
+      <ion-label position="floating">Blok</ion-label>
+      <ion-input type="text" [(ngModel)]="treeBlock" name="treeBlock" [readonly]="true"></ion-input>
+    </ion-item>
     <ion-item *ngIf="taskType != 'qc' && qcSv!= null" lines="full">
       <ion-label position="floating">Penyelia</ion-label>
       <ion-input type="text" [(ngModel)]="qcSv" name="qcSv" required [readonly]="true"></ion-input>

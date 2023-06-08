@@ -7,6 +7,10 @@
       <ion-label position="floating">No Pokok</ion-label>
       <ion-input type="text" [(ngModel)]="treeNumberDisplay" name="treeNumberDisplay" required [readonly]="true"></ion-input>
     </ion-item>
+    <ion-item lines="full"*ngIf="block != null">
+      <ion-label position="floating">Blok</ion-label>
+      <ion-input type="text" [(ngModel)]="block" name="block" required [readonly]="true"></ion-input>
+    </ion-item>
     <ion-item lines="full">
       <ion-label position="floating">No Daftar</ion-label>
       <ion-input type="text" [(ngModel)]="regNumber" name="regNumber" required [readonly]="true"></ion-input>

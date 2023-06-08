@@ -83,12 +83,11 @@ export class QrScannerPage implements OnInit {
       // console.log(result.content); // log the raw scanned content
       let scanResult = result.content;
       if(this.task == 'Balut' && this.returnUrl.indexOf('start-work-find')>0){
-        scanResult = scanResult.replace('http://fgv.prototype.com.my/pengurusan-pokok-induk/tandan/edit/',""); // for tandan
+        scanResult = this.getTandanIdFromQr(scanResult);
       }else if(this.task == 'Balut' && this.returnUrl.indexOf('main-task')>0){
-        scanResult = scanResult.replace('http://fgv.prototype.com.my/pengurusan-pokok-induk/pokok/edit/',""); // for pokok
+        scanResult = this.getTreeIdFromQr(scanResult);
       }else{
-        scanResult = scanResult.replace('http://fgv.prototype.com.my/pengurusan-pokok-induk/pokok/edit/',""); // for pokok
-        scanResult = scanResult.replace('http://fgv.prototype.com.my/pengurusan-pokok-induk/tandan/edit/',""); // for tandan
+        scanResult = this.getTandanOrPokokIdFromQr(scanResult);
       }
       if(this.treeNum!=null){
         this.router.navigate(
@@ -198,5 +197,35 @@ export class QrScannerPage implements OnInit {
     // user did not grant the permission, so he must have declined the request
     return false;
   };
+
+  getTreeIdFromQr(qrRaw){
+    const regex = /pengurusan-pokok-induk\/pokok\/edit\/(.+)/;
+    const match = qrRaw.match(regex);
+    const treeId = match ? match[1] : '';
+    return treeId;
+  }
+
+  getTandanIdFromQr(qrRaw){
+    const regex = /pengurusan-pokok-induk\/tandan\/edit\/(.+)/;
+    const match = qrRaw.match(regex);
+    const tandanId = match ? match[1] : '';
+    return tandanId;
+  }
+
+  getTandanOrPokokIdFromQr(qrRaw){
+    let retVal = '';
+    let treeId = this.getTreeIdFromQr(qrRaw);
+    let tandanId = this.getTandanIdFromQr(qrRaw);
+
+    if(treeId != ''){
+      retVal = treeId;
+    }else if(tandanId != ''){
+      retVal = treeId;
+    }else{
+      retVal = qrRaw;
+    }
+
+    return retVal;
+  }
 
 }

@@ -35,7 +35,7 @@
     "@ionic/storage-angular": "^3.0.6",
     "bootstrap": "^5.2.2",
     "cordova-js": "^6.1.0",
-    "ionic-selectable": "^4.8.0",
+    "ionic-selectable": "^4.9.0",
     "ionicons": "^6.0.3",
     "jquery": "^3.6.1",
     "popper.js": "^1.16.1",

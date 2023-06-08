@@ -17,6 +17,7 @@ export interface ControlPollinationModel {
     status?: string;
     kerosakan_id?: string;
     pokok?:PokokResponse;
-    created_at: Date;
+    delayed?:boolean;
+    created_at: string;
     updated_at: Date;
 }
