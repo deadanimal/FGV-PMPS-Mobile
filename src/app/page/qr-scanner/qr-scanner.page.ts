@@ -220,7 +220,7 @@ export class QrScannerPage implements OnInit {
     if(treeId != ''){
       retVal = treeId;
     }else if(tandanId != ''){
-      retVal = treeId;
+      retVal = tandanId;
     }else{
       retVal = qrRaw;
     }
